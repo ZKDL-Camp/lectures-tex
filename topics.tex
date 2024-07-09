@@ -1,0 +1,65 @@
+\documentclass{zkdl-template}
+
+\begin{document}
+
+\section*{ZKDL Camp Topics}
+
+\subsection*{Basic Topics (Preliminaries)}
+
+\begin{enumerate}
+    \item \textbf{Mathematics for cryptographers.}
+    \begin{enumerate}
+        \item Basics of number theory, RSA case study.
+        \item Definition of a group. Subgroups, cosets, quotient groups, isomorphisms and automorphisms. Applications.
+        \item Vector spaces.
+        \item Polynomials.
+        \item Definition of a field. Finite fields.
+    \end{enumerate}
+    \item \textbf{Elliptic Curves.}
+    \begin{enumerate}
+        \item Defining a group structure.
+        \item Points addition in affine form.
+        \item Scalar multiplication, effective implementation in $O(\log_2(k))$.
+        \item Twisted Curves.
+        \item Useful endomorphism.
+        \item Examples of widely used curves.
+    \end{enumerate}
+    \item \textbf{Elliptic Curve Pairings} (\textit{might simply redirect to the zksync lecture}).
+    \begin{enumerate}
+        \item Definition and applications.
+        \item Finite field extensions $\mathbb{F}_{p^n}$.
+        \item \textit{(optional, possibly advanced topic)} Implementation details: divisors, ate pairing, Miller Loop.
+    \end{enumerate}
+    \item \textbf{Cryptographic Commitments}.
+    \begin{enumerate}
+        \item Hash and Pedersen commitments.
+        \item Functional commitments: Polynomial commitments.
+        \item KZG commitment scheme.
+        \item $\tau$ ceremony.
+    \end{enumerate}
+\end{enumerate}
+
+\subsection*{Medium Topics}
+\begin{enumerate}
+    \item Introduction: What are zero-knowledge proofs? Basic examples.
+    \item Succinct Non-Interactive Arguments of Knowledge (SNARK): what succinctness means and security definitions. 
+    \item Arithmetic Circuits. Rank-1 Constraint Systems. Quadratic Arithmetic Programs.
+    \item Programming SNARKs. Circom. Solving real-world problems with Circom and many practical examples.
+    \item Zero-knowledge proving systems case studies:
+    \begin{enumerate}
+        \item Groth16 
+        \item Plonk 
+        \item Range proofs + Bulletproofs + Bulletproofs+ + Bulletproofs++
+        \item STARKs 
+    \end{enumerate}
+\end{enumerate}
+
+\subsection*{Advanced topics}
+\begin{enumerate}
+    \item Low-level arithmetic and optimizations.
+    \item Halo2.
+    \item Nova, Supernova, Hypernova.
+    \item Folding schemes.
+\end{enumerate}
+
+\end{document}

@@ -1,0 +1,65 @@
+\documentclass[../lecture-notes.tex]{subfiles}
+
+\begin{document}
+\subsection{Introduction to Abstract Algebra}
+
+\subsubsection{Group Definition}
+
+Throughout the lectures, probably the most important topic is the \textit{group theory}. 
+
+As you can recall from the high school math, typically real-world processes are described using real numbers, denoted by $\mathbb{R}$. For example, to describe the position or the velocity of an object, you would rather use real numbers. 
+
+When it comes to working with computers though, real numbers become very inconvenient to work with. For instance, different programming languages might output different values for quite a straightforward operation \textsf{2.01 + 2.00}. This becomes a huge problem when dealing with cryptography, which must check \textit{precisely} whether two quantities are equal. For example, if the person's card number is $N$ and the developed system pays from a different, but very similar card with number $N + k$ for $k \ll N$, then this system can be safely thrown out of the window.
+
+This motivates us to work with integers (denoted by $\mathbb{Z}$), instead. This solves the problem with card numbers, but for cryptography this object is still not really suitable since it is hard to build a secure and reliable protocol exploiting pure integers. 
+
+This motivates us to use a different primitive for dealing with cryptographic systems. Similarly to programmers working with interfaces (or traits, if you are the \textit{Rust} developer), mathematicians also use the so-called \textit{groups} to represent objects obeying a certain set of rules. The beauty is that we do not concretize \textit{how} operations in this set are performed, but rather state the fact that we can somehow combine elements with the pre-defined properties. We can then discover properties of such objects and whenever we apply the concrete ``implementation'' (spoiler, group of points on elliptic curve), these properties would still hold.
+
+\begin{remark}
+    Further discussion with abstract objects should be regarded as ``interfaces'' which do not concretize the ``implementation'' of an object. It merely shows the nature of an object without going into the details.
+\end{remark}
+
+Now, let us get dirty and define what the \textbf{group} is.
+
+\begin{definition}
+    \textbf{Group}, further denoted by $(\mathbb{G},\oplus)$, is a set with a binary operation $\oplus$, obeying the following rules:
+    \begin{enumerate}
+        \item \textbf{Closure:} Binary operations always outputs an element from $\mathbb{G}$, that is $\forall a,b \in \mathbb{G}: a \oplus b \in \mathbb{G}$.
+        \item \textbf{Associativity:} $\forall a,b,c \in \mathbb{G}: (a \oplus b)\oplus c = a \oplus (b \oplus c)$.
+        \item \textbf{Identity element:} There exists a so-called identity element $e \in \mathbb{G}$ such that $\forall a \in \mathbb{G}: e \oplus a = a \oplus e = a$.
+        \item \textbf{Inverse element:} $\forall a \in \mathbb{G} \; \exists a^{-1} \in \mathbb{G}: a\oplus a^{-1} = a^{-1} \oplus a = e$.
+    \end{enumerate}
+\end{definition}
+
+Quite confusing at first glance, right? The best way to grasp this concept is to consider a couple of examples.
+
+\begin{example}
+    A group of integers with the regular addition $(\mathbb{Z},+)$ (also called the \textit{additive} group of integers) is a group. Indeed, an identity element is $e_{\mathbb{Z}}=0$, associativity obviously holds, and an inverse for each element $a \in \mathbb{Z}$ is $a^{-1} := -a \in \mathbb{Z}$. 
+\end{example}
+
+\begin{remark}
+    Sometimes we use the term \textit{additive group} when we mean that the binary operations in the set is addition $+$, while \textit{multiplicative group} means that we are multiplying two numbers via $\cdot$.
+\end{remark}
+
+\begin{example}
+    The multiplicative group of positive real numbers $(\mathbb{R}_{> 0}, \cdot)$ is a group for similar reasons. An identity element is $e_{\mathbb{R}_{>0}} = 1$, while the inverse for $a \in \mathbb{R}_{>0}$ is defined as $a^{-1} = \frac{1}{a}$.
+\end{example}
+
+\begin{example}
+    The additive group of natural numbers $(\mathbb{N}, +)$ is not a group. Although operation of addition is closed, there is no identity element nor inverse element for, say, $2$ or $10$.
+\end{example}
+
+One might ask a reasonable question: suppose you pick $a,b \in \mathbb{G}$. Is $a \oplus b$ the same as $b \oplus a$? Unfortunately, generally, this is not true. Indeed, consider $(\mathbb{Z}, -)$ -- this is clearly a group. However,  $a-b \neq b-a$ for obvious reasons. 
+
+\subsubsection{Subgroup}
+
+
+\subsection{Basic Number Theory}
+
+Here be number theory
+
+\subsection{Other Primitives}
+
+Here be vector spaces etc.
+
+\end{document}
