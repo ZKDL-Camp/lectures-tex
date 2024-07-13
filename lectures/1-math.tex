@@ -1,7 +1,13 @@
 \documentclass[../lecture-notes.tex]{subfiles}
 
 \begin{document}
+
+\subsection{Basic Number Theory}
+
+Here be number theory
+
 \subsection{Introduction to Abstract Algebra}
+
 
 \subsubsection{Groups}
 
@@ -252,13 +258,273 @@ Finally, we will define the concept of an endomorphism and automorphism to finis
 
 Last two definitions are especially frequently used in Elliptic Curves theory.
 
-\subsection{Basic Number Theory}
+\subsection{Fields}
 
-Here be number theory
+\subsubsection{Formal Definition}
+Although typically one introduces rings before fields, we believe that for the basic understanding, it is better to start with fields. 
 
-\subsection{Other Primitives}
+Notice that when dealing with groups, we had a single operation $\oplus$, which, depending on the context, is either interpreted as addition or multiplication. 
+However, fields allow to extend this concept a little bit further by introducing a new operation, say, $\odot$, which, combined with $\oplus$, allows us to perform the basic arithmetic.
 
-Here be vector spaces etc.
+This is very similar to the real or rational numbers, for example. We can add, subtract, multiply, and divide them. This is exactly what fields are about, but in a more abstract way. That being said, let us see the definition.
+
+\begin{definition}
+    A \textbf{field} is a set $\mathbb{F}$ with two operations $\oplus$ and $\odot$ such that:
+    \begin{enumerate}
+        \item $(\mathbb{F}, \oplus)$ is an abelian group with identity $e_{\oplus}$.
+        \item $(\mathbb{F} \setminus \{e_{\oplus}\}, \odot)$ is an abelian group.
+        \item The \textbf{distributive law} holds: $\forall a,b,c \in \mathbb{F}: a \odot (b \oplus c) = a \odot b \oplus a \odot c$.
+    \end{enumerate}
+\end{definition}
+
+What this definition basically states is that we can perform the following operations:
+\begin{enumerate}
+    \item Addition: $a \oplus b$, inherited from group structure $(\mathbb{F}, \oplus)$.
+    \item Subtraction: $a \oplus (\ominus b)$, inherited from group structure $(\mathbb{F}, \oplus)$.
+    \item Multiplication: $a \odot b$, inherited from group structure $(\mathbb{F} \setminus \{e_{\oplus}\}, \odot)$.
+    \item Division: $a \odot b^{-1}$, except for $b=0$, inherited from group structure $(\mathbb{F} \setminus \{e_{\oplus}\}, \odot)$.
+\end{enumerate}
+
+\begin{example}
+    The set of real numbers $(\mathbb{R}, +, \cdot)$ is obviously a field.
+\end{example}
+
+\begin{example}
+    The set of complex numbers $(\mathbb{C}, +, \cdot)$ is also a field. Indeed, let us see how we can perform operations. Suppose we are given $z = a_0 + a_1i$ and $w = b_0 + b_1i$ with $i^2+1=0$. In this case:
+    \begin{enumerate}
+        \item Addition: $z + w = (a_0 + b_0) + (a_1 + b_1)i$.
+        \item Subtraction: $z - w = (a_0 - b_0) + (a_1 - b_1)i$.
+        \item Multiplication: $z \cdot w = (a_0b_0 - a_1b_1) + (a_0b_1 + a_1b_0)i$.
+        \item Division: $z / w = \frac{a_0b_0 + a_1b_1}{b_0^2 + b_1^2} + \frac{a_1b_0 - a_0b_1}{b_0^2 + b_1^2}i$.
+    \end{enumerate}
+\end{example}
+
+Interestingly though, it is very difficult to come up with some more complicated, non-trivial examples. For that reason, we will simply move to the most central field used in cryptography -- finite fields.
+
+\subsubsection{Finite Fields}
+Recall: we do not like reals, we want to operate with integers! But notice that $(\mathbb{Z},+,\cdot)$ does not form a field since division is not closed. For that reason, fixate some integer $p$ and consider the set $\mathbb{Z}_p := \{0,1,2,\dots,p-2,p-1\}$. Now, we will define operations as follows:
+
+\textbf{Addition.} To add $a,b \in \mathbb{F}_p$, add them as usual to get $c \gets a+b$. However, this way, operation is not closed, since $c$ might be easily greater than $p-1$ (e.g., for $a=b=p-2$). To fix this, take $c' \in \mathbb{F}_p$ such that $c \equiv c' \pmod{p}$ (or, written more concisely, $c' = (a+b) \;\text{mod} \; p$). 
+
+\begin{example}
+    Take $p=5$. Then, $3+4 = 2$ in $\mathbb{F}_5$ since $c=3+4=7$ and $7 \equiv 2 = c' \pmod{5}$.
+\end{example}
+
+\textbf{Multiplication and subtraction.} The algorithm is the same. Find $c \gets ab$ or $c \gets a-b$, respectively, and find $c' \in \mathbb{F}_p$ such that $c' \equiv c \pmod{p}$.
+
+\begin{example}
+    Again, suppose $p=5$. Then, $3 \cdot 4 = 2$ in $\mathbb{F}_5$ since $c=3 \cdot 4 = 12$ and $12 \equiv 2 = c' \pmod{5}$. Similarly, $3-4 = 4$ in $\mathbb{F}_5$ since $c=3-4=-1$ and $-1 \equiv 4 = c' \pmod{5}$.
+\end{example}
+
+\textbf{Inversion.} Inversion is a bit more tricky. Recall that $(\mathbb{F}_p \setminus \{0\}, \cdot)$ must be an abelian group, meaning that for each $a \in \mathbb{F}_p$ there should be some $x \in \mathbb{F}_p$ such that $ax = 1$ (multiplication in a sense of definition above). In other words, we need to solve the modular equation:
+\begin{equation}
+    ax \equiv 1 \pmod{p}.
+\end{equation}
+
+Note that there is no guarantee that for any $a \in \mathbb{F}_p \setminus \{0\}$ we might find such $x$. For example, take $p=10$ and $a=2$. Then, $2x \equiv 1 \pmod{10}$ has no solution. 
+
+The only way to guarantee that for any $a \in \mathbb{F}_p \setminus \{0\}$ we might find such $x$ is to take $p$ to be a prime number. This is the reason why we call such fields \textbf{prime fields}.
+
+So finally, with all the definitions, we can define the prime field.
+
+\begin{definition}
+    A \textbf{prime field} is a set with prime number $p$ of elements $\{0,1,\dots,p-2,p-1\}$, in which operations are defined ``modulo $p$'' (see details above). 
+
+    Typically, finite fields are denoted as $\mathbb{F}_p$ or $\text{GF}(p)$.
+\end{definition}
+
+
+\subsection{Polynomials}
+
+\subsubsection{Basic Definition}
+
+Polynomials are intensively used in almost all areas of cryptography. In our particular case, polynomials will encode the information about
+statements we will need to prove. That being said, let us define what polynomial is.
+
+\begin{definition}
+    A \textbf{polynomial} $f(x)$ is a function of the form
+    \begin{equation}
+        p(x) = c_0 + c_1 x + c_2 x^2 + \dots + c_n x^n = \sum_{k=0}^{n} c_k x^k,
+    \end{equation}
+    where $c_0, c_1, \dots, c_n$ are coefficients of the polynomial.
+\end{definition}
+
+Notice that for now we did not specify what are $c_i$'s. We are interested in the case where $c_i \in \mathbb{F}$, where $\mathbb{F}$ is a field. 
+
+\begin{definition}
+    A set of polynomials depending on $x$ with coefficients in a field $\mathbb{F}$ is denoted as $\mathbb{F}[x]$, that is
+    \begin{equation}
+        \mathbb{F}[x] = \left\{p(x) = \sum_{k=0}^{n} c_k x^k: c_k \in \mathbb{F}, \; k = 0,\dots,n\right\}.
+    \end{equation}
+\end{definition}
+
+\begin{example}
+    Consider the finite field $\mathbb{F}_3$. Then, some examples of polynomials from $\mathbb{F}_3[x]$ are listed below:
+    \begin{enumerate}
+        \item $p(x) = 1 + x + 2x^2$.
+        \item $q(x) = 1 + x^2 + x^3$.
+        \item $r(x) = 2x^3$.
+    \end{enumerate}
+
+   If we were to evaluate these polynomials at $1 \in \mathbb{F}_2$, we would get:
+    \begin{enumerate}
+        \item $p(1) = 1 + 1 + 2 \cdot 1 \; \text{mod} \; 3 = 1$.
+        \item $q(1) = 1 + 1 + 1 \; \text{mod} \; 3 = 0$.
+        \item $r(1) = 2 \cdot 1 = 2$.
+    \end{enumerate}
+\end{example}
+
+\begin{definition}
+    The \textbf{degree} of a polynomial $p(x) = c_0+c_1x+c_2x^2+\dots$ is the largest $k \in \mathbb{Z}_{\geq 0}$ such that $c_k \neq 0$. We denote the degree of a polynomial as $\deg p$. We also denote by $\mathbb{F}^{(\leq m)}[x]$ a set of polynomials of degree at most $m$.
+\end{definition}
+
+\begin{example}
+    The degree of the polynomial $p(x) = 1 + 2x + 3x^2$ is $2$, so $p(x) \in \mathbb{F}_3^{(\leq 2)}[x]$.
+\end{example}
+
+\begin{theorem}
+    For any two polynomials $p,q \in \mathbb{F}[x]$ and $n = \deg p, m = \deg q$, the following two statements are true:
+    \begin{enumerate}
+        \item $\deg (pq) = n + m$.
+        \item $\deg (p + q) = \max\{n,m\}$ if $n \neq m$ and $\deg (p+q) \leq m$ for $m=n$.
+    \end{enumerate}
+\end{theorem}
+
+\subsubsection{Roots and divisibility}
+
+\begin{definition}
+    Let $p(x) \in \mathbb{F}[x]$ be a polynomial of degree $\deg p \geq 1$. A field element $x_0 \in \mathbb{F}$ is called a root of $p(x)$ if $p(x_0) = 0$.
+\end{definition}
+
+\begin{example}
+    Consider the polynomial $p(x) = 1 + x + x^2 \in \mathbb{F}_3[x]$. Then, $x_0=1$ is a root of $p(x)$ since $p(x_0) = 1 + 1 + 1 \; \text{mod} \; 3 = 0$.
+\end{example}
+
+One of the fundamental theorems of polynomials is following.
+
+\begin{theorem}
+    Let $p(x) \in \mathbb{F}[x], \deg p \geq 1$. Then, $x_0 \in \mathbb{F}$ is a root of $p(x)$ if and only if there exists a polynomial $q(x)$ (with $\deg q = n-1$) such that
+    \begin{equation}
+        p(x) = (x-x_0)q(x)
+    \end{equation}
+\end{theorem}
+
+\begin{example}
+    Note that $x_0=1$ is a root of $p(x) = x^2+2$. Indeed, we can write $p(x) = (x-1)(x-2)$, so here $q(x) = x-2$.
+\end{example}
+
+Also, this might not be obvious, but we can also divide polynomials in the same way as we divide integers. The result of division is not always a polynomial, so we also get a remainder.
+
+\begin{theorem}
+    Given $f,g \in \mathbb{F}[x]$ with $g \neq 0$, there are unique polynomials $p,q \in \mathbb{F}[x]$ such that 
+    \begin{equation}
+        f = q \cdot g + r, \; 0 \leq \deg r < \deg g
+    \end{equation}
+\end{theorem}
+
+\begin{example}
+    Consider $f(x) = x^3+2$ and $g(x) = x+1$ over $\mathbb{R}$. Then, we can write $f(x) = (x^2-x+1)g(x) + 1$, so the remainder of the division is $1$.
+\end{example}
+
+Similarly, one can define $\text{gcd}$, $\text{lcm}$, and other number field theory operations for polynomials. However, we will not go into details here, besides mentioning the divisibility.
+
+\begin{definition}
+    A polynomial $f(x) \in \mathbb{F}[x]$ is called \textbf{divisible} by $g(x) \in \mathbb{F}[x]$ (or, $g$ \textbf{divides} $f$, written as $g \mid f$) if there exists a polynomial $h(x) \in \mathbb{F}[x]$ such that $f=gh$.
+\end{definition}
+
+\begin{theorem}
+    If $x_0 \in \mathbb{F}$ is a root of $p(x) \in \mathbb{F}[x]$, then $(x-x_0) \mid p(x)$.
+\end{theorem}
+
+\begin{definition}
+    A polynomial $f(x) \in \mathbb{F}[x]$ is said to be \textbf{irreducible} in $\mathbb{F}$ if there are no polynomials $g,h \in \mathbb{F}[x]$ both of degree more than $1$ such that $f = gh$.
+\end{definition}
+
+\begin{example}
+    A polynomial $f(x) = x^2+16$ is irreducible in $\mathbb{R}$. In turn, $f(x) = x^2-2$ is not irreducible since $f(x) = (x-\sqrt{2})(x+\sqrt{2})$. 
+\end{example}
+
+\begin{example}
+    There are no polynomials over complex numbers $\mathbb{C}$ with degree more than $2$ that are irreducible. This follows from the \textit{fundamental theorem of algebra}.
+\end{example}
+
+\subsubsection{Interpolation}
+
+Now, let us ask the question: what defines the polynomial? Well, given expression $p(x) = \sum_{k=0}^n c_kx^k$ one can easily say: ``hey, I need to know the coefficients $\{c_k\}_{k=0}^n$''.
+
+Indeed, each polynomial of degree $n$ is uniquely determined by the vector of its coefficients $(c_0,c_1,\dots,c_n) \in \mathbb{F}^n$. However, that is not the only way to define a polynomial.
+
+Suppose I tell you that $p(x) = ax + b$ -- just a simple linear function over $\mathbb{R}$. Suppose I tell you that $f(x)$ intercepts $(0,0)$ and $(1,2)$. Then, you can easily say that $p(x) = 2x$. 
+
+The more general question is: suppose $\deg p = n$, how many points do I need to define the polynomial $p(x)$ uniquely? The answer is $n+1$ distinct points. This is the idea behind the interpolation:
+the polynomial is uniquely defined by $n+1$ distinct points on the plane. Now, let us see how we can interpolate the polynomial.
+
+\begin{theorem}
+    Given a set of points $\{(x_0,y_0),(x_1,y_1),\dots,(x_n,y_n)\} \subset \mathbb{F} \times \mathbb{F}$, there is a unique polynomial $L(x)$ of degree $n$ such that $L(x_i) = y_i$ for all $i=0,\dots,n$. This polynomial is called the \textbf{Lagrange interpolation polynomial} and can be 
+    found through the following formula:
+    \begin{equation}
+        L(x) = \sum_{i=0}^{n} y_i \ell_i(x), \quad \ell_i(x) = \prod_{j=0, j \neq i}^{n} \frac{x-x_j}{x_i-x_j}.
+    \end{equation}  
+\end{theorem}
+
+\begin{lemma}
+    The polynomials $\{\ell_i\}_{i=1}^n$, in fact, have quite an interesting property:
+    \begin{equation}
+        \ell_i(x_j) = \delta_{ij} = \begin{cases}
+            1, & i = j \\ 0, & i \neq j
+        \end{cases},
+    \end{equation}
+    where $\delta_{ij}$ is the Kronecker delta. Moreover, $\{\ell_i\}_{i=1}^n$ form a basis of $\mathbb{F}^{(\leq n)}[x]$: for any polynomial $p(x) \in \mathbb{F}^{(\leq n)}[x]$ there exist unique coefficients $\alpha_0,\dots,\alpha_n \in \mathbb{F}$ such that
+    \begin{equation}
+        p(x) = \sum_{i=0}^{n} \alpha_i \ell_i(x).
+    \end{equation}
+\end{lemma}
+
+\begin{example}
+    Suppose we have points $(0,1)$ and $(1,2)$. Then, the Lagrange interpolation polynomial is
+    \begin{equation}
+        L(x) = 1 \cdot \frac{x-1}{0-1} + 2 \cdot \frac{x-0}{1-0} = (-1) \cdot (x-1) + 2 \cdot x = x + 1
+    \end{equation}
+\end{example}
+
+\subsubsection{Some Fun: Shamir's Secret Sharing}
+
+Shamir's Secret Sharing, also known as $(k,n)$-threshold scheme, is one of the protocols exploiting Lagrange Interpolation. 
+
+But first, let us define what secret sharing is. Suppose we have a secret data $\alpha$, which is represented as an element from some finite set $F$. We divide this secret into $n$ pieces $\alpha_1,\dots,\alpha_n \in F$ in such a way:
+\begin{enumerate}
+    \item Knowledge of any $k$ shares can reconstruct the secret $\alpha$.
+    \item Knowledge of any number of shares below $k$ cannot be used to reconstruct the secret $\alpha$.
+\end{enumerate}
+
+Now, let us define the sharing scheme.
+
+\begin{definition}
+    \textbf{Secret Sharing} scheme is a pair of efficient algorithms $(\mathsf{Gen}, \mathsf{Comb})$ which work as follows:
+    \begin{itemize}
+        \item $\mathsf{Gen}(\alpha, k, n)$: probabilistic sharing algorithm that yields $n$ shards $(\alpha_1,\dots,\alpha_n)$ for which $t$ shards are needed to reconstruct the secret $\alpha$.
+        \item $\mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}})$: deterministic reconstruction algorithm that reconstructs the secret $\alpha$ from the shards $\mathcal{I} \subset \{1,\dots,n\}$ of size $t$.
+    \end{itemize}
+
+    Here, we require the \textbf{correctness}: for every $\alpha \in F$, for every possible output $(\alpha_1,\dots,\alpha_n) \gets \mathsf{Gen}(\alpha, k, n)$, and any $t$-size subset $\mathcal{I}$ of $\{1,\dots,n\}$ we have
+    \begin{equation}
+        \mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}}) = \alpha.
+    \end{equation}
+\end{definition}
+
+Now, Shamir's protocol is one of the most famous secret sharing schemes. It works as follows: our finite set is $\mathbb{F}_q$ for some large prime $q$. Then, algorithms in the protocol are defined as follows:
+\begin{itemize}
+    \item $\mathsf{Gen}(\alpha, k, n)$: choose random $k_1,\dots,k_{t-1} \xleftarrow[]{R} \mathbb{F}_q$ and define the polynomial
+    \begin{equation}
+        \omega(x) := \alpha + k_1x + k_2x^2 + \dots + k_{t-1}x^{t-1} \in \mathbb{F}_q^{\leq (t-1)}[x],     
+    \end{equation}
+    and then compute $\alpha_i \gets \omega(i) \in \mathbb{F}_q, \; i = 1,\dots,n$. Return $(\alpha_1,\dots,\alpha_n)$.
+    \item $\mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}})$: reconstruct the polynomial $\omega(x)$ using Lagrange interpolation and return $\omega(0) = \alpha$.
+\end{itemize}
+
+The combination function is possible since, having $t$ points $\{i,\alpha_i\}_{i \in \mathcal{I}}$ with $\omega(i) = \alpha_i$, we can fully reconstruct the polynomial $\omega(x)$ and then evaluate it at $0$ to get $\alpha$.
+
+Instead, suppose we have only $t-1$ (or less) pairs $\{i,\alpha_i\}_{i \in \mathcal{I}}$. Then, there are many polynomials $\omega(x)$ that pass through these points (in fact, if we were in the field of real numbers, this number would be infinite), and thus the secret $\alpha$ is not uniquely determined.
 
 \pagebreak
 
@@ -483,5 +749,61 @@ Here, there are two tricky moments:
     \item To generate a random rotation matrix, we generate three random angles and create a rotation matrix from these angles.
 \end{enumerate}
 
+\subsection{Exercises}
+
+
+\textbf{Exercise 1.} Does a tuple $(\mathbb{Z},\oplus)$ with operation defined as $a \oplus b = a + b - 1$ define a group?
+\begin{enumerate}[a)]
+    \item Yes, and this group is abelian.
+    \item Yes, but this group is not abelian.
+    \item No, since the associativity property does not hold.
+    \item No, since there is no identity element in this group.
+    \item No, since there is no inverse element in this group.
+\end{enumerate}
+
+\textbf{Exercise 2*.} Denote by $\text{GL}(2,\mathbb{R})$ a set of $2\times 2$ invertable matrices with real entries. Define two functions $\varphi: \text{GL}(2,\mathbb{R}) \to \mathbb{R}$:
+\begin{equation}
+    \varphi_1 \left(\begin{bmatrix}
+        a & b \\ c & d
+    \end{bmatrix}\right) = ad - bc, \; \varphi_2 \left(\begin{bmatrix}
+        a & b \\ c & d
+    \end{bmatrix}\right) = a + d
+\end{equation}
+
+Den claims the following:
+\begin{enumerate}
+    \item $\varphi_1$ is a group homomorphism between multiplicative groups $(GL(2,\mathbb{R}), \cdot)$ and $(\mathbb{R}, \cdot)$.
+    \item $\varphi_2$ is a group homomorphism between additive groups $(GL(2, \mathbb{R}), +)$ and $(\mathbb{R}, +)$.
+\end{enumerate}
+
+Which of the following is true?
+
+\begin{enumerate}[a)]
+    \item Only statement 1 is correct.
+    \item Only statement 2 is correct.
+    \item Both statements 1 and 2 are correct.
+    \item None of the statements is correct.
+\end{enumerate}
+
+\textbf{Exercise 3.} Find the inverse of $4$ in $\mathbb{F}_{11}$.
+\begin{enumerate}[a)]
+    \item 8
+    \item 5
+    \item 3
+    \item 7
+\end{enumerate}
+
+\textbf{Exercise 4.} Suppose for three polynomials $p,q,r \in \mathbb{F}[x]$ we have $\deg p = 3, \deg q = 4, \deg r = 5$. Which of the following is true for $n := \deg ((p-q)r)$?
+\begin{enumerate}[a)]
+    \item $n = 9$.
+    \item $n$ might be less than $9$.
+    \item $n = 20$.
+    \item $n$ is less than $\deg (qr)$. 
+\end{enumerate}
+
+\textbf{Exercise 5.} Define the polynomial over $\mathbb{F}_2$: $f(x) := x^{100} + x^{20} + 1$. Which of the polynomials below divides $f$?
+\begin{enumerate}[a)]
+    \item 
+\end{enumerate}
 
 \end{document}
