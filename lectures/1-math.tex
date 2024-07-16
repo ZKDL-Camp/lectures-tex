@@ -600,12 +600,12 @@ the polynomial is uniquely defined by $n+1$ distinct points on the plane. Now, l
 
 \subsubsection{Some Fun: Shamir's Secret Sharing}
 
-Shamir's Secret Sharing, also known as $(k,n)$-threshold scheme, is one of the protocols exploiting Lagrange Interpolation. 
+Shamir's Secret Sharing, also known as $(t,n)$-threshold scheme, is one of the protocols exploiting Lagrange Interpolation. 
 
 But first, let us define what secret sharing is. Suppose we have a secret data $\alpha$, which is represented as an element from some finite set $F$. We divide this secret into $n$ pieces $\alpha_1,\dots,\alpha_n \in F$ in such a way:
 \begin{enumerate}
-    \item Knowledge of any $k$ shares can reconstruct the secret $\alpha$.
-    \item Knowledge of any number of shares below $k$ cannot be used to reconstruct the secret $\alpha$.
+    \item Knowledge of any $t$ shares can reconstruct the secret $\alpha$.
+    \item Knowledge of any number of shares below $t$ cannot be used to reconstruct the secret $\alpha$.
 \end{enumerate}
 
 Now, let us define the sharing scheme.
@@ -613,11 +613,11 @@ Now, let us define the sharing scheme.
 \begin{definition}
     \textbf{Secret Sharing} scheme is a pair of efficient algorithms $(\mathsf{Gen}, \mathsf{Comb})$ which work as follows:
     \begin{itemize}
-        \item $\mathsf{Gen}(\alpha, k, n)$: probabilistic sharing algorithm that yields $n$ shards $(\alpha_1,\dots,\alpha_n)$ for which $t$ shards are needed to reconstruct the secret $\alpha$.
+        \item $\mathsf{Gen}(\alpha, t, n)$: probabilistic sharing algorithm that yields $n$ shards $(\alpha_1,\dots,\alpha_t)$ for which $t$ shards are needed to reconstruct the secret $\alpha$.
         \item $\mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}})$: deterministic reconstruction algorithm that reconstructs the secret $\alpha$ from the shards $\mathcal{I} \subset \{1,\dots,n\}$ of size $t$.
     \end{itemize}
 
-    Here, we require the \textbf{correctness}: for every $\alpha \in F$, for every possible output $(\alpha_1,\dots,\alpha_n) \gets \mathsf{Gen}(\alpha, k, n)$, and any $t$-size subset $\mathcal{I}$ of $\{1,\dots,n\}$ we have
+    Here, we require the \textbf{correctness}: for every $\alpha \in F$, for every possible output $(\alpha_1,\dots,\alpha_n) \gets \mathsf{Gen}(\alpha, t, n)$, and any $t$-size subset $\mathcal{I}$ of $\{1,\dots,n\}$ we have
     \begin{equation}
         \mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}}) = \alpha.
     \end{equation}
@@ -627,7 +627,7 @@ Now, Shamir's protocol is one of the most famous secret sharing schemes. It work
 \begin{itemize}
     \item $\mathsf{Gen}(\alpha, k, n)$: choose random $k_1,\dots,k_{t-1} \xleftarrow[]{R} \mathbb{F}_q$ and define the polynomial
     \begin{equation}
-        \omega(x) := \alpha + k_1x + k_2x^2 + \dots + k_{t-1}x^{t-1} \in \mathbb{F}_q^{\leq (t-1)}[x],     
+        \omega(x) := \alpha + k_1x + k_2x^2 + \cdots + k_{t-1}x^{t-1} \in \mathbb{F}_q^{\leq (t-1)}[x],     
     \end{equation}
     and then compute $\alpha_i \gets \omega(i) \in \mathbb{F}_q, \; i = 1,\dots,n$. Return $(\alpha_1,\dots,\alpha_n)$.
     \item $\mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}})$: reconstruct the polynomial $\omega(x)$ using Lagrange interpolation and return $\omega(0) = \alpha$.
@@ -636,6 +636,15 @@ Now, Shamir's protocol is one of the most famous secret sharing schemes. It work
 The combination function is possible since, having $t$ points $\{i,\alpha_i\}_{i \in \mathcal{I}}$ with $\omega(i) = \alpha_i$, we can fully reconstruct the polynomial $\omega(x)$ and then evaluate it at $0$ to get $\alpha$.
 
 Instead, suppose we have only $t-1$ (or less) pairs $\{i,\alpha_i\}_{i \in \mathcal{I}}$. Then, there are many polynomials $\omega(x)$ that pass through these points (in fact, if we were in the field of real numbers, this number would be infinite), and thus the secret $\alpha$ is not uniquely determined.
+
+The intuition behind the Shamir's protocol is illustrated in Figure~\ref{fig:shamir}.
+
+\begin{figure}
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/lecture_1/shamir_demo.pdf}
+    \caption{Suppose we have $t=3$. Having only 2 points means knowing two \textcolor{blue}{blue} points without knowing the \textcolor{red}{red} one. There are infinitely many quadratic polynomials passing through these two points (\textcolor{gray}{gray dashed} lines). However, knowing the third \textcolor{red}{red} point allows us to uniquely determine the polynomial and thus get its value at $0$. Note that this is illustrated over $\mathbb{R}$, but for $\mathbb{F}_q$ the logic is similar.}
+    \label{fig:shamir}
+\end{figure}
 
 \pagebreak
 
