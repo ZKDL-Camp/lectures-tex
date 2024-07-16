@@ -202,6 +202,30 @@
         \end{alertblock}
     \end{frame}
 
+    \subsection{Randomness and Sequences}
+
+    \begin{frame}{Randomness and Sequences}
+        \begin{block}{Notation}
+          To denote probability of event $E$, we use notation $\text{Pr}[E]$. For example,
+          \begin{equation*}
+              \text{Pr}[\text{It will be cold tomorrow}] = 0
+          \end{equation*}
+        \end{block}
+
+        \begin{block}{Notation}
+            To denote that we take an element from a set $S$ uniformly at random, we use notation $x \xleftarrow{R} S$.
+
+            For example, when throwing a coin, we can write $x \xleftarrow{R} \{\text{heads}, \text{tails}\}$.
+        \end{block}
+
+        \begin{block}{Notation}
+          To denote an infinite sequence $x_1,x_2,\cdots$, we use $\{x_i\}_{i \in \mathbb{N}}$. To denote
+          a finite sequence $x_1,x_2,\cdots,x_n$, we use $\{x_i\}_{i=1}^n$. To enumerate 
+          through a list of indeces $\mathcal{I} \subset \mathbb{N}$, we use notation
+          $\{x_i\}_{i \in \mathcal{I}}$.
+        \end{block}
+    \end{frame}
+
     \section{Basic Group Theory}
 
     \subsection{Reasoning behind Groups}
@@ -269,17 +293,30 @@
       \end{example}
       
       \begin{example}
-          The multiplicative group of positive real numbers $(\mathbb{R}_{> 0}, \cdot)$ is a group for similar reasons. 
+          The multiplicative group of positive real numbers $(\mathbb{R}_{> 0}, \times)$ is a group for similar reasons. 
       \end{example}
       
       \begin{alertblock}{Question \#1}
-          Is $(\mathbb{R}, \cdot)$ a group? If no, what is missing?
+          Is $(\mathbb{R}, \times)$ a group? If no, what is missing?
       \end{alertblock}
 
       \begin{alertblock}{Question \#2}
-        Is $(\mathbb{Z}, \cdot)$ a group? If no, what is missing?
+        Is $(\mathbb{Z}, \times)$ a group? If no, what is missing?
       \end{alertblock}
     \end{frame}
+
+    \begin{frame}{Small Note on Notation}
+      \begin{block}{Additive group}
+          We say that a group is \textit{additive} if the operation is denoted as $+$, and the identity element is denoted as $0$.
+      \end{block}
+
+      \begin{block}{Multiplicative group}
+          We say that a group is \textit{multiplicative} if the operation is denoted as $\times$, and the identity element is denoted as $1$.
+      \end{block}
+      \begin{block}{Rule of thumb}
+        We use additive notation when we imply that the group $\mathbb{G}$ is the set of points on the elliptic curve, while multiplicative is typically used in the rest of the cases.
+      \end{block}
+  \end{frame}
 
     \begin{frame}{Abelian Groups Examples and Non-Examples}
       \begin{alertblock}{Question \#3}
@@ -298,23 +335,98 @@
       \end{block}
     \end{frame}
 
+    \subsection{Subgroup}
+    \begin{frame}{Subgroup}
+
+      \begin{alertblock}{Question}
+          Suppose $(\mathbb{G}, \oplus)$ is a group. Is any subset $\mathbb{H} \subset \mathbb{G}$ a group?
+      \end{alertblock}
+
+      \begin{definition}
+          A \textbf{subgroup} is a subset $\mathbb{H} \subset \mathbb{G}$ that is a group with the same operation $\oplus$. We denote it as $\mathbb{H} \leq \mathbb{G}$.
+      \end{definition}
+
+      \begin{example}
+          Consider $(\mathbb{Z}, +)$. Then, although $\mathbb{N} \subset \mathbb{Z}$, it is not a subgroup, as it does not have inverses.
+      \end{example}
+
+      \begin{example}
+          Consider $(\mathbb{Z}, +)$. Then, $3\mathbb{Z} = \{3k: k \in \mathbb{Z}\} \subset \mathbb{Z}$ is a subgroup.
+      \end{example}
+  \end{frame}
+
+  \begin{frame}{Tiny question}
+    \begin{alertblock}{Question}
+      Does any group have at least one subgroup?
+  \end{alertblock}
+
+  Yeah, $\mathbb{H} = \{e_{\mathbb{G}}\} \leq \mathbb{G}$.
+  \end{frame}
+
+  \subsection{Homomorphism and Isomorphism}
+
+  \begin{frame}{Homomorphism}
+    \begin{definition}
+      A \textbf{homomorphism} is a function $\phi: \mathbb{G} \rightarrow \mathbb{H}$ between two groups $(\mathbb{G}, \oplus)$ and $(\mathbb{H}, \odot)$ that preserves the group structure, i.e., 
+      \begin{equation*}
+        \forall a,b \in \mathbb{G}: \phi(a \oplus b) = \phi(a) \odot \phi(b)
+      \end{equation*}
+    \end{definition}
+
+    \begin{example}
+      Consider $(\mathbb{Z}, +)$ and $(\mathbb{R}_{>0}, \times)$. Then, the function $\phi: \mathbb{Z} \rightarrow \mathbb{R}_{>0}$ defined as $\phi(k) = 2^k$ is a homomorphism.
+    \end{example}
+
+    \textbf{Proof}. Take any $n,m \in \mathbb{Z}$ and consider $\phi(n+m)$:
+    \begin{equation*}
+      \phi(n+m) = 2^{n+m} = 2^n \times 2^m = \phi(n) \times \phi(m)
+    \end{equation*}
+  \end{frame}
+
+  \begin{frame}{Mapping types}
+    \begin{figure}
+      \includegraphics[width=0.7\textwidth]{images/lecture_1/mapping.pdf}
+      \label{fig:mappings}
+    \end{figure}
+  \end{frame}
+
+  \begin{frame}{Homomorphism}
+    \begin{definition}
+      \textbf{Isomorphism} is a bijective homomorphism.
+    \end{definition}
+
+    \begin{definition}
+      Two groups $\mathbb{G}$ and $\mathbb{H}$ are \textbf{isomorphic} if there exists an isomorphism between them. We denote it as $\mathbb{G} \cong \mathbb{H}$.
+    \end{definition}
+
+    \begin{example}
+     $\phi: k \mapsto 2^k$ from the previous example is a homomorphism between $(\mathbb{Z},+)$ and $(\mathbb{R}_{>0},\times)$, but not an isomorphism. Indeed, there is no $x \in \mathbb{Z}$ such that $2^x = 3 \in \mathbb{R}_{>0}$.
+    \end{example}
+
+    \begin{alertblock}{Question}
+      What can we do to make $\phi$ an isomorphism?
+     \end{alertblock}
+  \end{frame}
+
+  \begin{frame}{Field}
+    \begin{definition}{}
+        \textbf{Field} $K$ is a set equipped with appropriate \textbf{addition} and \textbf{multiplication} operations with the corresponding well-defined inverses, where you can perform the basic arithmetic.
+    \end{definition}
+    \pause
+    \begin{exampleblock}{}
+        \begin{itemize}
+            \item $\mathbb{R}$ (real numbers) is a field.
+            \item $\mathbb{Q}$ (rational numbers) is a field.
+            \item $\mathbb{C}$ (complex numbers) is a field.
+            \item $\mathbb{N}$ (natural numbers) is not a field: there is no additive inverse for $2$ ($-2$ is not in $\mathbb{N}$).
+            \item $\mathbb{Z}$ (integers) is not a field: additive inverse is defined, but the multiplicative is not ($2^{-1}$ is not defined).
+        \end{itemize}
+    \end{exampleblock}
+\end{frame}
+
     \section{Polynomials}
 
-      \begin{frame}{Polynomial}
-          \begin{definition}{}
-              \textbf{Field} $K$ is a set equipped with appropriate \textbf{addition} and \textbf{multiplication} operations with the corresponding well-defined inverses, where you can perform the basic arithmetic.
-          \end{definition}
-          \pause
-          \begin{exampleblock}{}
-              \begin{itemize}
-                  \item $\mathbb{R}$ (real numbers) is a field.
-                  \item $\mathbb{Q}$ (rational numbers) is a field.
-                  \item $\mathbb{C}$ (complex numbers) is a field.
-                  \item $\mathbb{N}$ (natural numbers) is not a field: there is no additive inverse for $2$ ($-2$ is not in $\mathbb{N}$).
-                  \item $\mathbb{Z}$ (integers) is not a field: additive inverse is defined, but the multiplicative is not ($2^{-1}$ is not defined).
-              \end{itemize}
-          \end{exampleblock}
-      \end{frame}
+      
   
     \begin{frame}{}
         \centering \Large
