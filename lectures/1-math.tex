@@ -158,7 +158,7 @@ Quite confusing at first glance, right? The best way to grasp this concept is to
 \end{example}
 
 \begin{example}
-    The additive group of natural numbers $(\mathbb{N}, +)$ is not a group. Although operation of addition is closed, there is no identity element nor inverse element for, say, $2$ or $10$.
+    The additive set of natural numbers $(\mathbb{N}, +)$ is not a group. Although operation of addition is closed, there is no identity element nor inverse element for, say, $2$ or $10$.
 \end{example}
 
 One might ask a reasonable question: suppose you pick $a,b \in \mathbb{G}$. Is $a \oplus b$ the same as $b \oplus a$? Unfortunately, generally, this is not true. 
@@ -211,13 +211,13 @@ Finally, for cryptography it is important to know the number of elements in a gr
 \end{example}
 
 Despite the aforementioned definitions, many things are not generally obvious. For example, one might ask whether the identity element is unique. Or, 
-whether the inverse element is unique. For that reason, we formulate the following lemma.
+whether the inverse element is unique for each group element. For that reason, we formulate the following lemma.
 
 \begin{lemma}
     Suppose $\mathbb{G}$ is a group. Then, the following statements hold:
     \begin{enumerate}
         \item The identity element is unique.
-        \item The inverse element is unique.
+        \item The inverse element is unique for each element: $\forall a,b \in \mathbb{G}, a \neq b: a^{-1} \neq b^{-1}$.
         \item For all $a,b \in \mathbb{G}$ there is a unique $x \in \mathbb{G}$ such that $ax = b$.
         \item If $ab=ac$ then $b=c$. Similarly, if $xy=zy$ then $x=z$.
     \end{enumerate}
