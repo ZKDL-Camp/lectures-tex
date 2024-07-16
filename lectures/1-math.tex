@@ -13,6 +13,7 @@ First, let us enumerate some fundamental sets:
     \item $\mathbb{Z}$ -- a set of integers. Examples: $-2, -6, 0, 62, 103, \dots$.
     \item $\mathbb{Q}$ -- a set of rational numbers. Examples: $\{\frac{n}{m}: n \in \mathbb{Z}, m \in \mathbb{N}\}$.
     \item $\mathbb{R}$ -- a set of real numbers. Examples: $2.2, 1.4, -6.7, \dots$.
+    \item $\mathbb{R}_{>0}$ -- a set of positive real numbers. Examples: $2.6, 10.4, 100.2$.
     \item $\mathbb{C}$ -- a set of complex numbers\footnote{Complex number is an expression in a form $x+iy$ for $i^2=-1$}. Examples: $1+2i, 5i, -7-5.7i, \dots$.
 \end{itemize}
 
@@ -83,6 +84,8 @@ The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \i
 Statement beginning with $\forall$ means ``for all...''. For instance, $(\forall a \in A \subset \mathbb{R}): \{a < 1\}$ is read as: ``For any $a$ in set $A$ (which is a subset of real numbers), it is true that $a<1$''. Or, more shortly, ``Any (real) $a$ from $A$ is less than $1$''.
 
 Statement beginning from $\exists$ means ``there exists such...''. Let us consider the following example: $(\exists \varepsilon > 0) (\forall a \in A): \{a > \varepsilon\}$ is read as ``there exists such a positive $\varepsilon$ such that for any element $a$ from $A$, $a$ is greater than $\varepsilon$'', or, more concisely, ``there exists a positive constant $\varepsilon$ such that any element from $A$ is greater than $\varepsilon$''.
+
+Statement beginning from $\exists !$ means ``there exists a unique...''. For example, $(\exists! x \in \mathbb{R}_{>0}): \{x^2 = 4\}$ is read as ``there exists a unique positive real $x$ such that $x^2 = 4$''.
 
 Symbol $\wedge$ means ``and''. For example, $\{x \in \mathbb{R}: x^2 = 4 \wedge x > 0\}$ is read as ``a set of real $x$ such that $x^2=4$ and $x$ is positive''. Of course, $\{x \in \mathbb{R}: x^2 = 4 \wedge x > 0\} = \{2\}$.
 
@@ -217,7 +220,7 @@ whether the inverse element is unique for each group element. For that reason, w
     Suppose $\mathbb{G}$ is a group. Then, the following statements hold:
     \begin{enumerate}
         \item The identity element is unique.
-        \item The inverse element is unique for each element: $\forall a,b \in \mathbb{G}, a \neq b: a^{-1} \neq b^{-1}$.
+        \item The inverse element is unique for each element: $\forall a \in \mathbb{G} \, \exists! a^{-1} \in \mathbb{G}: aa^{-1} = a^{-1}a = e$.
         \item For all $a,b \in \mathbb{G}$ there is a unique $x \in \mathbb{G}$ such that $ax = b$.
         \item If $ab=ac$ then $b=c$. Similarly, if $xy=zy$ then $x=z$.
     \end{enumerate}
@@ -568,7 +571,15 @@ Indeed, each polynomial of degree $n$ is uniquely determined by the vector of it
 Suppose I tell you that $p(x) = ax + b$ -- just a simple linear function over $\mathbb{R}$. Suppose I tell you that $p(x)$ intercepts $(0,0)$ and $(1,2)$. Then, you can easily say that $p(x) = 2x$. 
 
 The more general question is: suppose $\deg p = n$, how many points do I need to define the polynomial $p(x)$ uniquely? The answer is $n+1$ distinct points. This is the idea behind the interpolation:
-the polynomial is uniquely defined by $n+1$ distinct points on the plane. Now, let us see how we can interpolate the polynomial.
+the polynomial is uniquely defined by $n+1$ distinct points on the plane. An example is depicted 
+in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the polynomial practically.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/lecture_1/interpolation.pdf}
+    \caption{$5$ points on the plane uniquely define the polynomial of degree $4$.}
+    \label{fig:interpolation}
+\end{figure}
 
 \begin{theorem}
     Given a set of points $\{(x_0,y_0),(x_1,y_1),\dots,(x_n,y_n)\} \subset \mathbb{F} \times \mathbb{F}$, there is a unique polynomial $L(x)$ of degree $n$ such that $L(x_i) = y_i$ for all $i=0,\dots,n$. This polynomial is called the \textbf{Lagrange interpolation polynomial} and can be 
@@ -881,7 +892,39 @@ Here, there are two tricky moments:
     \item No, since there is no inverse element in this group.
 \end{enumerate}
 
-\textbf{Exercise 2*.} Denote by $\text{GL}(2,\mathbb{R})$ a set of $2\times 2$ invertable matrices with real entries. Define two functions $\varphi: \text{GL}(2,\mathbb{R}) \to \mathbb{R}$:
+\textbf{Exercise 2.} Find the inverse of $4$ in $\mathbb{F}_{11}$.
+\begin{enumerate}[a)]
+    \item 8
+    \item 5
+    \item 3
+    \item 7
+\end{enumerate}
+
+\textbf{Exercise 3.} Suppose for three polynomials $p,q,r \in \mathbb{F}[x]$ we have $\deg p = 3, \deg q = 4, \deg r = 5$. Which of the following is true for $n := \deg ((p-q)r)$?
+\begin{enumerate}[a)]
+    \item $n = 9$.
+    \item $n$ might be less than $9$.
+    \item $n = 20$.
+    \item $n$ is less than $\deg (qr)$. 
+\end{enumerate}
+
+\textbf{Exercise 4.} Define the polynomial over $\mathbb{F}_5$: $f(x) := 4x^2 + 7$. Which of the following is the zero of $f(x)$?
+\begin{enumerate}[a)]
+    \item $2$
+    \item $3$
+    \item $4$
+    \item This polynomial has no roots over $\mathbb{F}_5$.
+\end{enumerate}
+
+\textbf{Exercise 5.} Quadratic polynomial $p(x) = ax^2+bx+c \in \mathbb{R}[x]$ has zeros at $1$ and $2$ and $p(0) = 2$. Find the value of $a+b+c$.
+\begin{enumerate}[a)]
+    \item $0$
+    \item $-1$
+    \item $1$
+    \item Not enough information to determine.
+\end{enumerate}
+
+\textbf{Exercise 6*.} Denote by $\text{GL}(2,\mathbb{R})$ a set of $2\times 2$ invertable matrices with real entries. Define two functions $\varphi: \text{GL}(2,\mathbb{R}) \to \mathbb{R}$:
 \begin{equation}
     \varphi_1 \left(\begin{bmatrix}
         a & b \\ c & d
@@ -903,27 +946,6 @@ Which of the following is true?
     \item Only statement 2 is correct.
     \item Both statements 1 and 2 are correct.
     \item None of the statements is correct.
-\end{enumerate}
-
-\textbf{Exercise 3.} Find the inverse of $4$ in $\mathbb{F}_{11}$.
-\begin{enumerate}[a)]
-    \item 8
-    \item 5
-    \item 3
-    \item 7
-\end{enumerate}
-
-\textbf{Exercise 4.} Suppose for three polynomials $p,q,r \in \mathbb{F}[x]$ we have $\deg p = 3, \deg q = 4, \deg r = 5$. Which of the following is true for $n := \deg ((p-q)r)$?
-\begin{enumerate}[a)]
-    \item $n = 9$.
-    \item $n$ might be less than $9$.
-    \item $n = 20$.
-    \item $n$ is less than $\deg (qr)$. 
-\end{enumerate}
-
-\textbf{Exercise 5.} Define the polynomial over $\mathbb{F}_2$: $f(x) := x^{100} + x^{20} + 1$. Which of the polynomials below divides $f$?
-\begin{enumerate}[a)]
-    \item 
 \end{enumerate}
 
 \end{document}
