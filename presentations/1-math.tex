@@ -15,6 +15,7 @@
 \usetheme{Boadilla}
 \usecolortheme{whale}
 % \usefonttheme[onlymath]{serif}
+\setbeamercolor{alerted text}{fg=purple} % Making alerted text non-red
 
 % Tikz
 \usepackage{tikz}
@@ -67,32 +68,178 @@
       \begin{itemize}
         \item ZKDL Camp is a series of lectures and workshops on zero-knowledge proofs and cryptography.
         \item Here, we will learn state-of-the-art zero-knowledge systems: what are SNARKs, how they work under the hood from total scratch.
-        \item Note, that this is not a regular course: we require a lot of commitment and the material is fairly complex.
         \item If possible, we will conduct workshops, where we will show practical implementations of the theoretical material.
+        \item Primary audience: cryptographers, R\&D Engineers, ZK developers, and everyone wanting to boost their understanding of cryptography.
       \end{itemize}
+
+      \begin{alertblock}{Note}
+        This is not a regular course: we require a lot of commitment and the material is fairly complex. However, we will try to make it as simple as possible.
+      \end{alertblock}
 
     \end{frame}
 
     \begin{frame}{Approximate Camp Structure}
       \begin{enumerate}
-        \item Basic Mathematics: group and number theory, finite fields, polynomials, elliptic curves etc.
+        \item Mathematics Preliminaries (3-4 lectures): group and number theory, finite fields, polynomials, elliptic curves etc.
         \item Deep Delve into SNARKs: General definition, arithmetic circuits, commitment schemes, encryption etc.
         \item Analysis of modern zero-knowledge proving systems: Groth16, Plonk, BulletProofs, STARK etc.
         \item Specialization topics: low-level optimizations, advanced protocols such as folding schemes, Nova etc.
       \end{enumerate}
     \end{frame}
 
-    \section{Number Theory}
+    \section{Notation}
+
+    \subsection{Sets}
+
+    \begin{frame}{Sets}
+      \begin{definition}
+        \textbf{Set} is a collection of distinct objects, considered as an object in its own right.
+      \end{definition}
+
+      \begin{example}
+        \begin{itemize}
+          \item $\mathbb{N}$ is a set of natural numbers.
+          \item $\mathbb{Z}$ is a set of integers.
+          \item $\mathbb{R}$ is a set of real numbers.
+          \item $\mathbb{C}$ is a set of complex numbers.
+          \item $\{1, 2, 5, 10\}$ is a set of four elements.
+          \item $\{1, 2, 2, 3\}$ simply equals to $\{1,2,3\}$ -- we do not count duplicates.
+        \end{itemize}
+      \end{example}
+    \end{frame}
+
+    \begin{frame}{Operations on sets}
+    % --- Writing diagrams ---
+    \def\firstcircle{(0,0) circle (1.5cm)}
+    \def\secondcircle{(0:2cm) circle (1.5cm)}
+
+    \colorlet{circle edge}{blue!50}
+    \colorlet{circle area}{blue!20}
+
+    \tikzset{filled/.style={fill=circle area, draw=circle edge, thick},
+        outline/.style={draw=circle edge, thick}}    
+
+      \begin{figure}
+        \begin{center}
+        \begin{tabular}{cc}
+        % Set A and B
+        \begin{tikzpicture}
+            \begin{scope}
+                \clip \firstcircle;
+                \fill[filled] \secondcircle;
+            \end{scope}
+            \draw[outline] \firstcircle node {$A$};
+            \draw[outline] \secondcircle node {$B$};
+            \node[anchor=south] at (current bounding box.north) {$A \cap B$};
+        \end{tikzpicture} &   
+        %Set A or B but not (A and B) also known a A xor B
+        \begin{tikzpicture}
+            \draw[filled, even odd rule] \firstcircle node {$A$}
+                                        \secondcircle node{$B$};
+            \node[anchor=south] at (current bounding box.north) {$\overline{A \cap B}$};
+        \end{tikzpicture}
+        \\
+        % Set A or B
+        \begin{tikzpicture}
+            \draw[filled] \firstcircle node {$A$}
+                        \secondcircle node {$B$};
+            \node[anchor=south] at (current bounding box.north) {$A \cup B$};
+        \end{tikzpicture} &  
+        % Set A but not B
+        \begin{tikzpicture}
+            \begin{scope}
+                \clip \firstcircle;
+                \draw[filled, even odd rule] \firstcircle node {$A$}
+                                            \secondcircle;
+            \end{scope}
+            \draw[outline] \firstcircle
+                        \secondcircle node {$B$};
+            \node[anchor=south] at (current bounding box.north) {$A \setminus B$};
+        \end{tikzpicture}
+    \end{tabular}
+    \end{center}
+    \label{fig:venn_diagrams}
+    \end{figure}
+    \end{frame}
+    
+    \begin{frame}{Defining sets}
+      \begin{example}
+        \begin{itemize}
+          \item $\{x \in \mathbb{R}: x^2 = 1\}$ -- a set of real numbers that satisfy the equation $x^2 = 1$.
+          \item $\{x \in \mathbb{Z}: x \text{ is even}\}$ -- a set of even integers.
+          \item $\{x^2: x \in \mathbb{R}, x^3 = 1\}$ -- a set of squares of real numbers that satisfy the equation $x^3 = 1$.
+          \item $\{x \in \mathbb{N}: x \text{ is prime}\}$ -- a set of prime natural numbers.
+        \end{itemize}
+      \end{example}
+
+      \begin{alertblock}{Question \#1}
+        How to simplify the set $\{x \in \mathbb{N}: x^2 = 2\}$?
+      \end{alertblock}
+  
+      \begin{alertblock}{Question \#2(*)}
+        How to simplify the set $\{\sin \pi k: k \in \mathbb{Z}\}$?
+      \end{alertblock}
+    \end{frame}
+
+    \subsection{Logic}
+    \begin{frame}{Basic Logic}
+        \begin{itemize}
+          \item $\forall$ means ``for all''.
+          \item $\exists$ means ``there exists''.
+          \item $\land$ means ``and''.
+          \item $\lor$ means ``or''.
+        \end{itemize}
+
+        \begin{alertblock}{Question \#1}
+            Is it true that $(\forall x \in \mathbb{N}): \{x > 0\}$?
+        \end{alertblock}
+
+        \begin{alertblock}{Question \#2}
+            Is it true that $(\exists x \in \mathbb{N}): \{x \geq 0 \land x < 1\}$?
+        \end{alertblock}
+
+        \begin{alertblock}{Question \#3}
+            Is it true that $(\forall x \in \mathbb{Z})\, (\exists y \in \mathbb{N}): \{y > x\}$?
+        \end{alertblock}
+    \end{frame}
 
     \section{Basic Group Theory}
 
-    \begin{frame}{Why groups}
+    \subsection{Reasoning behind Groups}
+    \begin{frame}{Why Groups?!}
+        Well, first of all, we want to work with integers...
 
+        Imagine that Alice pays to Bob with a card number $N$, but instead of paying to a number $N$, the system pays 
+        to another card number $N+k, k \ll N$, which is only by 0.001\% different. Bob would not be 99.999\% happy...
+
+        \begin{figure}
+          \includegraphics[width=1.0\textwidth]{images/lecture_1/why_integers.pdf}
+          \label{fig:why_integers}
+        \end{figure}
     \end{frame}
 
+    \begin{frame}{Why Groups?!}
+        But integers on their own are not enough. We need to define a structure that allows us to perform operations on them.
+
+        This is very similar to interfaces: we abstract from the implementation, just merely stating we have ``some'' addition/multiplication.
+
+        \begin{example}
+            Consider set $\mathbb{G} := \{\text{Dmytro}, \text{Dan}, \text{Friendship}\}$. We can safely define an operation $\oplus$ as:
+            \begin{gather*}
+                \text{Dmytro} \oplus \text{Dan} = \text{Friendship} \\ 
+                \text{Dan} \oplus \text{Friendship} = \text{Dmytro} \\
+                \text{Friendship} \oplus \text{Dmytro} = \text{Dan}
+            \end{gather*}
+        \end{example}
+
+        \begin{block}{Rethorical question}
+            What makes $(\mathbb{G}, \oplus)$ a group?
+        \end{block}
+    \end{frame}
+    \subsection{Group Definition and Examples}
     \begin{frame}{Group Definition}
       \begin{definition}
-        \textbf{Group}, denoted by $(\mathbb{G}, \oplus)$, is a set with a binary operation $\oplus$, obeying the following rules:
+        \textbf{Group} $(\mathbb{G}, \oplus)$, is a set with a binary operation $\oplus$ with following rules:
         \begin{enumerate}
             \item \textbf{Closure:} Binary operations always outputs an element from $\mathbb{G}$, that is $\forall a,b \in \mathbb{G}: a \oplus b \in \mathbb{G}$.
             \item \textbf{Associativity:} $\forall a,b,c \in \mathbb{G}: (a \oplus b)\oplus c = a \oplus (b \oplus c)$.
@@ -100,29 +247,61 @@
             \item \textbf{Inverse element:} $\forall a \in \mathbb{G} \; \exists b \in \mathbb{G}: a\oplus b = b \oplus a = e$. We commonly denote the inverse element as $(\ominus a)$.
         \end{enumerate}
     \end{definition}
+
+    \begin{definition}
+        A group is called \textbf{abelian} if it satisfies the additional rule called \textbf{commutativity}: $\forall a,b \in \mathbb{G}: a \oplus b = b \oplus a$.
+    \end{definition}
+    \end{frame}
+
+    \begin{frame}{Explanation for Developers: Trait}
+      \begin{center}
+        \begin{figure}
+          \includegraphics[width=0.8\textwidth]{images/lecture_1/group_in_rust.png}
+          \label{fig:group_in_rust}
+        \end{figure}
+
+        More on that: \url{https://github.com/ZKDL-Camp/lecture-1-math}.
+      \end{center}
     \end{frame}
 
     \begin{frame}{Group Examples}
       \begin{example}
-        A group of integers with the regular addition $(\mathbb{Z},+)$ (also called the \textit{additive} group of integers) is a group. Indeed, an identity element is $e=0$, associativity obviously holds, and an inverse for each element $a \in \mathbb{Z}$ is $(\ominus a) := -a \in \mathbb{Z}$. 
+        A group of integers with the regular addition $(\mathbb{Z},+)$ (also called the \textit{additive} group of integers) is a group.
       \end{example}
       
       \begin{example}
-          The multiplicative group of positive real numbers $(\mathbb{R}_{> 0}, \cdot)$ is a group for similar reasons. An identity element is $e = 1$, while the inverse for $a \in \mathbb{R}_{>0}$ is defined as $\frac{1}{a}$.
+          The multiplicative group of positive real numbers $(\mathbb{R}_{> 0}, \cdot)$ is a group for similar reasons. 
       \end{example}
       
-      \begin{example}
-          The additive group of natural numbers $(\mathbb{N}, +)$ is not a group. Although operation of addition is closed, there is no identity element nor inverse element for, say, $2$ or $10$.
-      \end{example}
+      \begin{alertblock}{Question \#1}
+          Is $(\mathbb{R}, \cdot)$ a group? If no, what is missing?
+      \end{alertblock}
+
+      \begin{alertblock}{Question \#2}
+        Is $(\mathbb{Z}, \cdot)$ a group? If no, what is missing?
+      \end{alertblock}
     \end{frame}
 
-    \begin{frame}{Explanation for Developers}
-      \includegraphics[width=\textwidth]{images/lecture_1/group_in_rust.png}
+    \begin{frame}{Abelian Groups Examples and Non-Examples}
+      \begin{alertblock}{Question \#3}
+        Is $(\mathbb{R}, -)$ a group? If no, what is missing?
+      \end{alertblock}
+      \begin{alertblock}{Question \#4}
+          Set $V$ is a set of tuples $(v_1,v_2,v_3)$ where each $v_i \in \mathbb{R} \setminus \{0\}$. Define the operation $\odot$ as
+          \begin{equation*}
+              (v_1,v_2,v_3) \odot (u_1,u_2,u_3) = (v_1u_1, v_2u_2, v_3u_3)
+          \end{equation*}
+
+          Is $(V, \odot)$ a group? If no, what is missing?
+      \end{alertblock}
+      \begin{block}{Conclusion}
+        Group is just a fancy name for a set with a binary operation that behaves nicely.
+      \end{block}
     \end{frame}
 
     \section{Polynomials}
 
-      \begin{frame}{Field}
+      \begin{frame}{Polynomial}
           \begin{definition}{}
               \textbf{Field} $K$ is a set equipped with appropriate \textbf{addition} and \textbf{multiplication} operations with the corresponding well-defined inverses, where you can perform the basic arithmetic.
           \end{definition}

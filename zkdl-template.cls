@@ -5,6 +5,7 @@
 \providecommand\mtfntsize{12pt}
 \ProcessOptions\relax
 \LoadClass[a4paper,\mtfntsize]{extarticle}
+\usepackage{titlepic} % For the image on the title page
 
 % --- Required packages ---
 \RequirePackage[T1,T2A]{fontenc}
