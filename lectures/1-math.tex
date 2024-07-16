@@ -32,8 +32,8 @@ The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \i
 \colorlet{circle edge}{blue!50}
 \colorlet{circle area}{blue!20}
 
-\tikzset{filled/.style={fill=circle area, draw=circle edge, thick},
-    outline/.style={draw=circle edge, thick}}
+\tikzset{filled/.style={fill=circle area, draw=circle edge, ultra thick},
+    outline/.style={draw=circle edge, ultra thick}}
 
 \begin{figure}
     \begin{center}
@@ -78,7 +78,7 @@ The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \i
 \label{fig:venn_diagrams}
 \end{figure}
 
-\subsubsection{Logic} 
+\subsubsection{Logic}
 
 Statement beginning with $\forall$ means ``for all...''. For instance, $(\forall a \in A \subset \mathbb{R}): \{a < 1\}$ is read as: ``For any $a$ in set $A$ (which is a subset of real numbers), it is true that $a<1$''. Or, more shortly, ``Any (real) $a$ from $A$ is less than $1$''.
 
@@ -150,11 +150,11 @@ Quite confusing at first glance, right? The best way to grasp this concept is to
 \end{example}
 
 \begin{remark}
-    Sometimes we use the term \textit{additive group} when we mean that the binary operations in the set is addition $+$, while \textit{multiplicative group} means that we are multiplying two numbers via $\cdot$.
+    We use the term \textbf{additive group} when we mean that the binary operation is addition $+$, while \textbf{multiplicative group} means that we are multiplying two numbers via $\times$\footnote{In this section, regard $\cdot$ and $\times$ as the same operation of multiplication.}.
 \end{remark}
 
 \begin{example}
-    The multiplicative group of positive real numbers $(\mathbb{R}_{> 0}, \cdot)$ is a group for similar reasons. An identity element is $e_{\mathbb{R}_{>0}} = 1$, while the inverse for $a \in \mathbb{R}_{>0}$ is defined as $\frac{1}{a}$.
+    The multiplicative group of positive real numbers $(\mathbb{R}_{> 0}, \times)$ is a group for similar reasons. An identity element is $e_{\mathbb{R}_{>0}} = 1$, while the inverse for $a \in \mathbb{R}_{>0}$ is defined as $\frac{1}{a}$.
 \end{example}
 
 \begin{example}
@@ -199,7 +199,7 @@ For this reason, it makes sense to give a special name to a group in which the o
 \end{example}
 
 \begin{remark}
-    Further, we will write $ab$ instead of $a \oplus b$ and $a^{-1}$ instead of $\ominus a$ for the sake of simplicity (and because it is more common in the literature). This is commonly called the \textit{multiplicative notation}.
+    Further, we will write $ab$ instead of $a \oplus b$ and $a^{-1}$ instead of $\ominus a$ for the sake of simplicity (and because it is more common in the literature). As mentioned before, it is usually called the \textit{multiplicative notation}.
 \end{remark}
 
 Finally, for cryptography it is important to know the number of elements in a group. This number is called the \textit{order} of the group.
@@ -263,15 +263,15 @@ is the case, then $\mathbb{H}$ is called a \textbf{subgroup} of $\mathbb{G}$.
     Now, let us define some valid subgroup of $\mathbb{Z}$. Take $\mathbb{H} = \{3k: k \in \mathbb{Z}\}$ -- a set of integers divisible by $3$ (commonly denoted as $3\mathbb{Z}$). This is a subgroup of $\mathbb{Z}$, since it is closed under addition, has an identity element $0$, and has an inverse for each element $3k$ (namely, $-3k$). That being said, $3\mathbb{Z} \leq \mathbb{Z}$.
 \end{example}
 
-These are good examples, but let us consider a more interesting example:
-\begin{example}
+These are good examples, but let us consider a more interesting example, which we call a lemma. It is frequently used further when dealing with cosets and normal subgroups, but currently regard this just as an exercise.
+\begin{lemma}
     Let $\mathbb{G}$ be a group and $g \in \mathbb{G}$. The centralizer of $g$ is defined to be
     \begin{equation}
         C_g = \{h \in \mathbb{G}: h g = g h\}
     \end{equation}
 
     Then, $C_g$ is a subgroup of $\mathbb{G}$.
-\end{example}
+\end{lemma}
 
 \begin{exercise}
     Prove the lemma.
@@ -333,11 +333,11 @@ suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is t
 \end{example}
 
 \begin{example}
-    Additive group of reals $(\mathbb{R}, +)$ and the multiplicative group of positive reals $(\mathbb{R}_{>0}, \cdot)$ are isomorphic. The function $\varphi: \mathbb{R} \to \mathbb{R}_{>0}$ defined as $\varphi(x) = e^x$ is an isomorphism. Indeed:
+    Additive group of reals $(\mathbb{R}, +)$ and the multiplicative group of positive reals $(\mathbb{R}_{>0}, \times)$ are isomorphic. The function $\varphi: \mathbb{R} \to \mathbb{R}_{>0}$ defined as $\varphi(x) = e^x$ is an isomorphism. Indeed:
     \begin{equation}
         \varphi(a+b) = e^{a+b} = e^a \cdot e^b = \varphi(a) \cdot \varphi(b).
     \end{equation}
-    Thus, $\varphi$ is a homomorphism. It is also injective since $e^x = e^y \implies x=y$. Finally, it is obviously onto. This means $(\mathbb{R}, +) \cong (\mathbb{R}_{>0}, \cdot)$.
+    Thus, $\varphi$ is a homomorphism. It is also injective since $e^x = e^y \implies x=y$. Finally, it is obviously onto. This means $(\mathbb{R}, +) \cong (\mathbb{R}_{>0}, \times)$.
 \end{example}
 
 One of the interesting theorems is the following.
@@ -392,11 +392,11 @@ What this definition basically states is that we can perform the following opera
 \end{enumerate}
 
 \begin{example}
-    The set of real numbers $(\mathbb{R}, +, \cdot)$ is obviously a field.
+    The set of real numbers $(\mathbb{R}, +, \times)$ is obviously a field.
 \end{example}
 
 \begin{example}
-    The set of complex numbers $(\mathbb{C}, +, \cdot)$ is also a field. Indeed, let us see how we can perform operations. Suppose we are given $z = a_0 + a_1i$ and $w = b_0 + b_1i$ with $i^2+1=0$. In this case:
+    The set of complex numbers $(\mathbb{C}, +, \times)$ is also a field. Indeed, let us see how we can perform operations. Suppose we are given $z = a_0 + a_1i$ and $w = b_0 + b_1i$ with $i^2+1=0$. In this case:
     \begin{enumerate}
         \item Addition: $z + w = (a_0 + b_0) + (a_1 + b_1)i$.
         \item Subtraction: $z - w = (a_0 - b_0) + (a_1 - b_1)i$.
@@ -408,7 +408,7 @@ What this definition basically states is that we can perform the following opera
 Interestingly though, it is very difficult to come up with some more complicated, non-trivial examples. For that reason, we will simply move to the most central field used in cryptography -- finite fields.
 
 \subsubsection{Finite Fields}
-Recall: we do not like reals, we want to operate with integers! But notice that $(\mathbb{Z},+,\cdot)$ does not form a field since division is not closed. For that reason, fixate some integer $p$ and consider the set $\mathbb{Z}_p := \{0,1,2,\dots,p-2,p-1\}$. Now, we will define operations as follows:
+Recall: we do not like reals, we want to operate with integers! But notice that $(\mathbb{Z},+,\times)$ does not form a field since division is not closed. For that reason, fixate some integer $p$ and consider the set $\mathbb{Z}_p := \{0,1,2,\dots,p-2,p-1\}$. Now, we will define operations as follows:
 
 \textbf{Addition.} To add $a,b \in \mathbb{F}_p$, add them as usual to get $c \gets a+b$. However, this way, operation is not closed, since $c$ might be easily greater than $p-1$ (e.g., for $a=b=p-2$). To fix this, take $c' \in \mathbb{F}_p$ such that $c \equiv c' \pmod{p}$ (or, written more concisely, $c' = (a+b) \;\text{mod} \; p$). 
 
@@ -422,7 +422,7 @@ Recall: we do not like reals, we want to operate with integers! But notice that 
     Again, suppose $p=5$. Then, $3 \cdot 4 = 2$ in $\mathbb{F}_5$ since $c=3 \cdot 4 = 12$ and $12 \equiv 2 = c' \pmod{5}$. Similarly, $3-4 = 4$ in $\mathbb{F}_5$ since $c=3-4=-1$ and $-1 \equiv 4 = c' \pmod{5}$.
 \end{example}
 
-\textbf{Inversion.} Inversion is a bit more tricky. Recall that $(\mathbb{F}_p \setminus \{0\}, \cdot)$ must be an abelian group, meaning that for each $a \in \mathbb{F}_p$ there should be some $x \in \mathbb{F}_p$ such that $ax = 1$ (multiplication in a sense of definition above). In other words, we need to solve the modular equation:
+\textbf{Inversion.} Inversion is a bit more tricky. Recall that $(\mathbb{F}_p \setminus \{0\}, \times)$ must be an abelian group, meaning that for each $a \in \mathbb{F}_p$ there should be some $x \in \mathbb{F}_p$ such that $ax = 1$ (multiplication in a sense of definition above). In other words, we need to solve the modular equation:
 \begin{equation}
     ax \equiv 1 \pmod{p}.
 \end{equation}
@@ -450,7 +450,7 @@ statements we will need to prove. That being said, let us define what polynomial
 \begin{definition}
     A \textbf{polynomial} $f(x)$ is a function of the form
     \begin{equation}
-        p(x) = c_0 + c_1 x + c_2 x^2 + \dots + c_n x^n = \sum_{k=0}^{n} c_k x^k,
+        p(x) = c_0 + c_1 x + c_2 x^2 + \cdots + c_n x^n = \sum_{k=0}^{n} c_k x^k,
     \end{equation}
     where $c_0, c_1, \dots, c_n$ are coefficients of the polynomial.
 \end{definition}
@@ -529,7 +529,12 @@ Also, this might not be obvious, but we can also divide polynomials in the same 
 \end{theorem}
 
 \begin{example}
-    Consider $f(x) = x^3+2$ and $g(x) = x+1$ over $\mathbb{R}$. Then, we can write $f(x) = (x^2-x+1)g(x) + 1$, so the remainder of the division is $1$.
+    Consider $f(x) = x^3+2$ and $g(x) = x+1$ over $\mathbb{R}$. Then, we can write $f(x) = (x^2-x+1)g(x) + 1$, so the remainder of the division is $1$. Typically, we denote this as:
+    \begin{equation}
+        f \, \text{div} \, g = x^2-x+1, \quad f \, \text{mod} \, g = 1.
+    \end{equation}
+
+    The notation is pretty similar to one used in integer division.
 \end{example}
 
 Similarly, one can define $\text{gcd}$, $\text{lcm}$, and other number field theory operations for polynomials. However, we will not go into details here, besides mentioning the divisibility.
@@ -560,7 +565,7 @@ Now, let us ask the question: what defines the polynomial? Well, given expressio
 
 Indeed, each polynomial of degree $n$ is uniquely determined by the vector of its coefficients $(c_0,c_1,\dots,c_n) \in \mathbb{F}^n$. However, that is not the only way to define a polynomial.
 
-Suppose I tell you that $p(x) = ax + b$ -- just a simple linear function over $\mathbb{R}$. Suppose I tell you that $f(x)$ intercepts $(0,0)$ and $(1,2)$. Then, you can easily say that $p(x) = 2x$. 
+Suppose I tell you that $p(x) = ax + b$ -- just a simple linear function over $\mathbb{R}$. Suppose I tell you that $p(x)$ intercepts $(0,0)$ and $(1,2)$. Then, you can easily say that $p(x) = 2x$. 
 
 The more general question is: suppose $\deg p = n$, how many points do I need to define the polynomial $p(x)$ uniquely? The answer is $n+1$ distinct points. This is the idea behind the interpolation:
 the polynomial is uniquely defined by $n+1$ distinct points on the plane. Now, let us see how we can interpolate the polynomial.
@@ -878,7 +883,7 @@ Here, there are two tricky moments:
 
 Den claims the following:
 \begin{enumerate}
-    \item $\varphi_1$ is a group homomorphism between multiplicative groups $(GL(2,\mathbb{R}), \cdot)$ and $(\mathbb{R}, \cdot)$.
+    \item $\varphi_1$ is a group homomorphism between multiplicative groups $(GL(2,\mathbb{R}), \times)$ and $(\mathbb{R}, \times)$.
     \item $\varphi_2$ is a group homomorphism between additive groups $(GL(2, \mathbb{R}), +)$ and $(\mathbb{R}, +)$.
 \end{enumerate}
 

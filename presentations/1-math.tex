@@ -14,7 +14,6 @@
 
 \usetheme{Boadilla}
 \usecolortheme{whale}
-% \usefonttheme[onlymath]{serif}
 \setbeamercolor{alerted text}{fg=purple} % Making alerted text non-red
 
 % Tikz
@@ -116,8 +115,8 @@
     \colorlet{circle edge}{blue!50}
     \colorlet{circle area}{blue!20}
 
-    \tikzset{filled/.style={fill=circle area, draw=circle edge, thick},
-        outline/.style={draw=circle edge, thick}}    
+    \tikzset{filled/.style={fill=circle area, draw=circle edge, ultra thick},
+        outline/.style={draw=circle edge, ultra thick}}    
 
       \begin{figure}
         \begin{center}
@@ -207,10 +206,10 @@
 
     \subsection{Reasoning behind Groups}
     \begin{frame}{Why Groups?!}
-        Well, first of all, we want to work with integers...
+        Well, first of all, we want to work with integers\ldots
 
         Imagine that Alice pays to Bob with a card number $N$, but instead of paying to a number $N$, the system pays 
-        to another card number $N+k, k \ll N$, which is only by 0.001\% different. Bob would not be 99.999\% happy...
+        to another card number $N+k, k \ll N$, which is only by 0.001\% different. Bob would not be 99.999\% happy\ldots
 
         \begin{figure}
           \includegraphics[width=1.0\textwidth]{images/lecture_1/why_integers.pdf}

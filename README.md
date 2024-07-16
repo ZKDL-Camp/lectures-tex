@@ -29,29 +29,29 @@ It is important that this course is designed for a full low-level understanding 
 3. Add lecture to the [`lecture-notes.tex`](lecture-notes.tex) file. For example, if the code looks as:
 
     ```tex
-        \section{Mathematics Preliminaries}
+    \section{Mathematics Preliminaries}
 
-        \subfile{lectures/1-math}
+    \subfile{lectures/1-math}
 
-        \section{Elliptic Curves}
+    \section{Elliptic Curves}
 
-        \subfile{lectures/2-ec}
+    \subfile{lectures/2-ec}
     ```
 
     and you want to add `lectures/3-commitment-schemes`, you do
 
     ```tex
-        \section{Mathematics Preliminaries}
+    \section{Mathematics Preliminaries}
 
-        \subfile{lectures/1-math}
+    \subfile{lectures/1-math}
 
-        \section{Elliptic Curves}
+    \section{Elliptic Curves}
 
-        \subfile{lectures/2-ec}
+    \subfile{lectures/2-ec}
 
-        \section{Commitment Schemes}
+    \section{Commitment Schemes}
 
-        \subfile{lectures/3-commitment-schemes}
+    \subfile{lectures/3-commitment-schemes}
     ```
 
 4. To add the presentation, navigate to the [`presentations`](presentations) folder and add the same name as for
