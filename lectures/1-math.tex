@@ -261,7 +261,28 @@ of two smaller natural number. In other words, the prime number is divisible onl
 
 \subsubsection{Deterministic prime tests}
 
-A primality test is deterministic if it outputs True when the number is a prime and False when the input is composite with probability 1.
+A primality test is deterministic if it outputs $True$ when the number is a prime and $False$ when the input is composite with probability 1.
+An example of a deterministic prime test is Trial Division test. 
+
+\begin{lstlisting}[language=Rust]
+    fn is_prime(n: u32) -> bool {
+        let square_root = (n as f64).sqrt() as u32;
+
+        for i in 2.. = square_root {
+            if n % i == 0 {
+                return false;
+            }
+        }
+
+        true
+    }
+\end{lstlisting}
+
+Deterministic tests often lack efficiency. For instance, even with square root optimization, the asymptotic complexity is $O(\sqrt{N})$. 
+While further optimizations are possible, they do not change the overall asymptotic complexity.
+
+In cryptography, $N$ can be extremely large — $256$ bits, $512$ bits, or even $6144$ bits. 
+An algorithm is impractical when dealing with such large numbers.
 
 
 \subsection{Other Primitives}
