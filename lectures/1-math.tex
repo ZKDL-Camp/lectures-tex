@@ -24,7 +24,7 @@ $A \cap B$ means the intersection of $A$ and $B$ (a set of elements belonging to
 
 To define the set, we typically write $\{f(a): \phi(a)\}$, where $f(a)$ is some function and $\phi(a)$ is a predicate (function, inputting $a$ and returning true/false if a certain condition on $a$ is met). For example, $\{x^3: x \in \mathbb{R}, x^2 = 4\}$ is ``a set of values $x^3$ which are the real solutions to equation $x^2 = 4$''. It is quite easy to see that this set is simply $\{2^3, (-2)^3\} = \{8,-8\}$. 
 
-The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \in B$ (or, written shortly, $A \times B = \{(a,b): a \in A, b \in B\}$), called a Cartesian product. We additionally introduce notation $A^n := \underbrace{A \times A \times \dots \times A}_{n \; \text{times}}$ -- Cartesian product $n$ times. 
+The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \in B$ (or, written shortly, $A \times B = \{(a,b): a \in A, b \in B\}$), called a Cartesian product. We additionally introduce notation $A^n := \underbrace{A \times A \times \dots \times A}_{n \; \text{times}}$ -- Cartesian product $n$ times. For example, $\mathbb{Q}^3$ is a set of triplets $(a,b,c)$ where $a,b,c \in \mathbb{Q}$, while $\mathbb{Q}^2 \times \mathbb{R}$ is a set of triplets $(a,b,c)$ where $a,b \in \mathbb{Q}$ and $c \in \mathbb{R}$.
 
 % --- Writing diagrams ---
 \def\firstcircle{(0,0) circle (1.5cm)}
@@ -968,7 +968,7 @@ Here, there are two tricky moments:
     \item $(\forall x \in \mathbb{Z} \setminus \{-1\}) \; (\exists! y \in \mathbb{Q}): \{(x+1)y = 2\}$.
 \end{enumerate}
 
-\textbf{Exercise 2.} Denote $X := \{(x,y) \in \mathbb{Q}^2: xy = 1\}$. Sasha claims the following:
+\textbf{Exercise 2.} Denote $X := \{(x,y) \in \mathbb{Q}^2: xy = 1\}$. Oleksandr claims the following:
 \begin{enumerate}
     \item $X \cap \mathbb{N}^2 = \{(1,1)\}$. 
     \item $|X \cap \mathbb{Z}^2| = 2|X \cap \mathbb{N}^2|$.
@@ -984,7 +984,7 @@ Which statements are \textbf{true}?
     \item All statements are correct.
 \end{enumerate}
 
-\textbf{Exercise 3.} Does a tuple $(\mathbb{Z},\oplus)$ with operation defined as $a \oplus b = a + b - 1$ define a group?
+\textbf{Exercise 3.} Does a tuple $(\mathbb{Z},\oplus)$ with operation $a \oplus b = a + b - 1$ define a group?
 \begin{enumerate}[a)]
     \item Yes, and this group is abelian.
     \item Yes, but this group is not abelian.
@@ -993,7 +993,7 @@ Which statements are \textbf{true}?
     \item No, since there is no inverse element in this group.
 \end{enumerate}
 
-\textbf{Exercise 4.} Consider the Cartesian plane $\mathbb{R}^2$, where two coordinates are real numbers. For two points $A,B$ define the operation
+\textbf{Exercise 4.} Consider the Cartesian plane $\mathbb{R}^2$, where two coordinates are real numbers. For two points $A,B$ define the operation $\oplus$
 as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \oplus)$ define a group? 
 \begin{enumerate}[a)]
     \item Yes, and this group is abelian.
@@ -1034,12 +1034,12 @@ as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \
     \item Not enough information to determine.
 \end{enumerate}
 
-\textbf{Exercise 9.} Which of the following is a valid endomorphism $f: X \to X$? 
+\textbf{Exercise 9.} Which of the following is a \textbf{valid} endomorphism $f: X \to X$? 
 \begin{enumerate}[a)]
     \item $X = [0,1]$, $f: x \mapsto x^2$.
     \item $X = [0,1]$, $f: x \mapsto x + 1$.
-    \item $X = \mathbb{R}_{>0}$, $f = (x-1)^3$.
-    \item $X = \mathbb{Q}$, $f: x \mapsto \sqrt{x}$.
+    \item $X = \mathbb{R}_{>0}$, $f: x \mapsto (x-1)^3$.
+    \item $X = \mathbb{Q}_{>0}$, $f: x \mapsto \sqrt{x}$.
 \end{enumerate}
 
 \textbf{Exercise 10*.} Denote by $\text{GL}(2,\mathbb{R})$ a set of $2\times 2$ invertable matrices with real entries. Define two functions $\varphi: \text{GL}(2,\mathbb{R}) \to \mathbb{R}$:
@@ -1053,11 +1053,11 @@ as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \
 
 Den claims the following:
 \begin{enumerate}
-    \item $\varphi_1$ is a group homomorphism between multiplicative groups $(GL(2,\mathbb{R}), \times)$ and $(\mathbb{R}, \times)$.
-    \item $\varphi_2$ is a group homomorphism between additive groups $(GL(2, \mathbb{R}), +)$ and $(\mathbb{R}, +)$.
+    \item $\varphi_1$ is a group homomorphism between multiplicative groups $(\text{GL}(2,\mathbb{R}), \times)$ and $(\mathbb{R}, \times)$.
+    \item $\varphi_2$ is a group homomorphism between additive groups $(\text{GL}(2, \mathbb{R}), +)$ and $(\mathbb{R}, +)$.
 \end{enumerate}
 
-Which of the following is true?
+Which of the following is \textbf{true}?
 
 \begin{enumerate}[a)]
     \item Only statement 1 is correct.
