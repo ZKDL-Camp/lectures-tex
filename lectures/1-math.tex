@@ -112,8 +112,8 @@ of two smaller natural number. In other words, the prime number is divisible onl
 
 \subsubsection{Deterministic prime tests}
 
-A primality test is deterministic if it outputs $True$ when the number is a prime and $False$ when the input is composite with probability 1.
-An example of a deterministic prime test is $Trial Division test$. Here is an example implementation in Rust: 
+A primality test is deterministic if it outputs $\mathsf{True}$ when the number is a prime and $\mathsf{False}$ when the input is composite with probability 1.
+An example of a deterministic prime test is $\mathsf{Trial\_Division\_Test}$. Here is an example implementation in Rust: 
 
 \begin{lstlisting}[language=Rust]
     fn is_prime(n: u32) -> bool {
@@ -137,7 +137,7 @@ An algorithm is impractical when dealing with such large numbers.
 
 \subsubsection{Probabilistic prime tests}
 
-A primality test is probabilistic if it outputs True when the number is a prime and False when the input is composite with probability less than 1. Such test is often called a pseudoprimality test.
+A primality test is probabilistic if it outputs $\mathsf{True}$ when the number is a prime and $\mathsf{False}$ when the input is composite with probability less than 1. Such test is often called a pseudoprimality test.
 Fermat Primality and Miller-Rabin Primality Tests are examples of probabilistic primality test. Both of them use the idea of \textbf{Fermat's Little Theorem}:
 
 \begin{theorem}
@@ -232,10 +232,10 @@ Quite confusing at first glance, right? The best way to grasp this concept is to
 \end{example}
 
 \begin{example}
-    That is possible to have the situation when the element $a \in \mathbb{G}$ can be its own inverse, meaning $a = a^{-1}$. This happens when $a^2 = e$. Additionally, we can mention that for any group $\mathbb{G} = \{g, e\}$ we have $g^2 = e$.
+    That is possible to have the situation when the element $a \in \mathbb{G}$ can be its own inverse, meaning $a = a^{-1}$. This happens when $a^2 = e$. Additionally, we can mention that for any group $\mathbb{G} = \{g, e\}$ with the order $|\mathbb{G}| = 2$ we have $g^2 = e$.
 \end{example}
 
-One might ask a reasonable question: suppose you pick $a,b \in \mathbb{G}$. Is $a \oplus b$ the same as $b \oplus a$? Unfortunately, generally, this is not true. 
+One might ask a reasonable question: suppose you pick $a,b \in \mathbb{G}$. Is $a \oplus b$ the same as $b \oplus a$? Unfortunately, for some groups, this is not true. 
 
 For this reason, it makes sense to give a special name to a group in which the operation is commutative (meaning, we can swap the elements in the operation).
 
@@ -273,7 +273,7 @@ For this reason, it makes sense to give a special name to a group in which the o
 \end{example}
 
 \begin{remark}
-    Further, we will write $ab$ instead of $a \oplus b$ and $a^{-1}$ instead of $\ominus a$ for the sake of simplicity (and because it is more common in the literature). As mentioned before, it is usually called the \textit{multiplicative notation}.
+    Further, we will write $ab$ instead of $a \times b$ and $a^{-1}$ instead of $\ominus a$ for the sake of simplicity (and because it is more common in the literature). As mentioned before, it is usually called the \textit{multiplicative notation}.
 \end{remark}
 
 Finally, for cryptography it is important to know the number of elements in a group. This number is called the \textit{order} of the group.
