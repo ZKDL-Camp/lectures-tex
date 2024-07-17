@@ -427,7 +427,7 @@ A generalization of the above example is the following quite interesting theorem
 
 Here, it is quite evident that isomorphism tells us that the groups have the same structure. Moreover, it is correct to say that if $\mathbb{G} \equiv \mathbb{H}$, then $\mathbb{G}$ and $\mathbb{H}$ are \textit{equivalent} since $\cong$ is an equivalence relation.
 
-\textbf{Exercise(*).} Prove that $\cong$ is an equivalence relation.
+\textbf{Exercise (*).} Prove that $\cong$ is an equivalence relation.
 
 Finally, we will define the concept of an endomorphism and automorphism to finish the section.
 
@@ -960,8 +960,31 @@ Here, there are two tricky moments:
 
 \subsection{Exercises}
 
+\textbf{Exercise 1.} Which of the following statements is \textbf{false}?
+\begin{enumerate}
+    \item $(\forall a, b \in \mathbb{Q}, a \neq b) \; (\exists q \in \mathbb{R}): \{a < q < b\}$.
+    \item $(\forall \varepsilon > 0) \, (\exists n_{\varepsilon} \in \mathbb{N}) \, (\forall n \geq n_{\varepsilon}): \{1/n < \varepsilon\}$.
+    \item $(\forall k \in \mathbb{Z}) \; (\exists n \in \mathbb{N}): \{n < k\}$.
+    \item $(\forall x \in \mathbb{Z} \setminus \{-1\}) \; (\exists! y \in \mathbb{Q}): \{(x+1)y = 2\}$.
+\end{enumerate}
 
-\textbf{Exercise 1.} Does a tuple $(\mathbb{Z},\oplus)$ with operation defined as $a \oplus b = a + b - 1$ define a group?
+\textbf{Exercise 2.} Denote $X := \{(x,y) \in \mathbb{Q}^2: xy = 1\}$. Sasha claims the following:
+\begin{enumerate}
+    \item $X \cap \mathbb{N}^2 = \{(1,1)\}$. 
+    \item $|X \cap \mathbb{Z}^2| = 2|X \cap \mathbb{N}^2|$.
+    \item $X$ is a group under the operation $(x_1,y_1) \oplus (x_2,y_2) = (x_1x_2, y_1y_2)$.
+\end{enumerate}
+
+Which statements are \textbf{true}?
+\begin{enumerate}[a)]
+    \item Only 1.
+    \item Only 1 and 2.
+    \item Only 1 and 3.
+    \item Only 2 and 3.
+    \item All statements are correct.
+\end{enumerate}
+
+\textbf{Exercise 3.} Does a tuple $(\mathbb{Z},\oplus)$ with operation defined as $a \oplus b = a + b - 1$ define a group?
 \begin{enumerate}[a)]
     \item Yes, and this group is abelian.
     \item Yes, but this group is not abelian.
@@ -970,7 +993,16 @@ Here, there are two tricky moments:
     \item No, since there is no inverse element in this group.
 \end{enumerate}
 
-\textbf{Exercise 2.} Find the inverse of $4$ in $\mathbb{F}_{11}$.
+\textbf{Exercise 4.} Consider the Cartesian plane $\mathbb{R}^2$, where two coordinates are real numbers. For two points $A,B$ define the operation
+as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \oplus)$ define a group? 
+\begin{enumerate}[a)]
+    \item Yes, and this group is abelian.
+    \item Yes, but this group is not abelian.
+    \item No, since the associativity property does not hold and there is no identity element in this group.
+    \item No, since the associativity property does not hold, but we might define an identity element nonetheless.
+\end{enumerate}
+
+\textbf{Exercise 5.} Find the inverse of $4$ in $\mathbb{F}_{11}$.
 \begin{enumerate}[a)]
     \item 8
     \item 5
@@ -978,15 +1010,15 @@ Here, there are two tricky moments:
     \item 7
 \end{enumerate}
 
-\textbf{Exercise 3.} Suppose for three polynomials $p,q,r \in \mathbb{F}[x]$ we have $\deg p = 3, \deg q = 4, \deg r = 5$. Which of the following is true for $n := \deg ((p-q)r)$?
+\textbf{Exercise 6.} Suppose for three polynomials $p,q,r \in \mathbb{F}[x]$ we have $\deg p = 3, \deg q = 4, \deg r = 5$. Which of the following is true for $n := \deg \{(p-q)r\}$?
 \begin{enumerate}[a)]
     \item $n = 9$.
     \item $n$ might be less than $9$.
     \item $n = 20$.
-    \item $n$ is less than $\deg (qr)$. 
+    \item $n$ is less than $\deg \{qr\}$. 
 \end{enumerate}
 
-\textbf{Exercise 4.} Define the polynomial over $\mathbb{F}_5$: $f(x) := 4x^2 + 7$. Which of the following is the zero of $f(x)$?
+\textbf{Exercise 7.} Define the polynomial over $\mathbb{F}_5$: $f(x) := 4x^2 + 7$. Which of the following is the root of $f(x)$?
 \begin{enumerate}[a)]
     \item $2$
     \item $3$
@@ -994,7 +1026,7 @@ Here, there are two tricky moments:
     \item This polynomial has no roots over $\mathbb{F}_5$.
 \end{enumerate}
 
-\textbf{Exercise 5.} Quadratic polynomial $p(x) = ax^2+bx+c \in \mathbb{R}[x]$ has zeros at $1$ and $2$ and $p(0) = 2$. Find the value of $a+b+c$.
+\textbf{Exercise 8.} Quadratic polynomial $p(x) = ax^2+bx+c \in \mathbb{R}[x]$ has zeros at $1$ and $2$ and $p(0) = 2$. Find the value of $a+b+c$.
 \begin{enumerate}[a)]
     \item $0$
     \item $-1$
@@ -1002,7 +1034,15 @@ Here, there are two tricky moments:
     \item Not enough information to determine.
 \end{enumerate}
 
-\textbf{Exercise 6*.} Denote by $\text{GL}(2,\mathbb{R})$ a set of $2\times 2$ invertable matrices with real entries. Define two functions $\varphi: \text{GL}(2,\mathbb{R}) \to \mathbb{R}$:
+\textbf{Exercise 9.} Which of the following is a valid endomorphism $f: X \to X$? 
+\begin{enumerate}[a)]
+    \item $X = [0,1]$, $f: x \mapsto x^2$.
+    \item $X = [0,1]$, $f: x \mapsto x + 1$.
+    \item $X = \mathbb{R}_{>0}$, $f = (x-1)^3$.
+    \item $X = \mathbb{Q}$, $f: x \mapsto \sqrt{x}$.
+\end{enumerate}
+
+\textbf{Exercise 10*.} Denote by $\text{GL}(2,\mathbb{R})$ a set of $2\times 2$ invertable matrices with real entries. Define two functions $\varphi: \text{GL}(2,\mathbb{R}) \to \mathbb{R}$:
 \begin{equation}
     \varphi_1 \left(\begin{bmatrix}
         a & b \\ c & d
