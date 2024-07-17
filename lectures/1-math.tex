@@ -262,7 +262,7 @@ of two smaller natural number. In other words, the prime number is divisible onl
 \subsubsection{Deterministic prime tests}
 
 A primality test is deterministic if it outputs $True$ when the number is a prime and $False$ when the input is composite with probability 1.
-An example of a deterministic prime test is Trial Division test. 
+An example of a deterministic prime test is $Trial Division test$. Here is an example implementation in Rust: 
 
 \begin{lstlisting}[language=Rust]
     fn is_prime(n: u32) -> bool {
@@ -287,11 +287,15 @@ An algorithm is impractical when dealing with such large numbers.
 \subsubsection{Deterministic prime tests}
 
 A primality test is probabilistic if it outputs True when the number is a prime and False when the input is composite with probability less than 1. Such test is often called a pseudoprimality test.
-Fermat Primality and Miller-Rabin Primality Tests are examples of probabilistic primality test. Both of them use the idea of Fermat's little theorem:
+Fermat Primality and Miller-Rabin Primality Tests are examples of probabilistic primality test. Both of them use the idea of Fermat's Little Theorem:
 
 \begin{theorem}
-    Let $p$ be a prime number and $a$ be an integer not divisible by $p$. Then $a ^ {p-1} - 1$ is always divisible by $p$:  $a^{p-1} \equiv 1 (mod p)$
+    Let $p$ be a prime number and $a$ be an integer not divisible by $p$. Then $a ^ {p-1} - 1$ is always divisible by $p$:  $a^{p-1} \equiv 1 (\mod p)$
 \end{theorem}
+
+\subsubsection{Fermat Primality Test}
+
+The key idea behind Fermat Primality Test: if for some a not divisible by n we have $a^{n-1} \not\equiv 1 (\mod n)$
 
 \subsubsection{Prime fields}
 
