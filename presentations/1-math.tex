@@ -121,7 +121,7 @@
       \begin{enumerate}
         \item We will gather every Thursday at 7PM.
         \item Lecturer will be different based on the topic.
-        \item We will send you the lecture notes beforehand. Highly recommented to read it before the lecture.
+        \item We will send you the lecture notes beforehand. Highly recommended to read it before the lecture.
         \item We also attach exercises, which are optional but highly recommended. You might ask questions about them during the lecture.
         \item \textit{Optionally}, we will conduct workshops on a separate day. We will discuss this later.
       \end{enumerate}
@@ -418,12 +418,23 @@
       \end{example}
   \end{frame}
 
-  \begin{frame}{Tiny question}
-    \begin{alertblock}{Question}
+  \begin{frame}{Questions}
+    \begin{alertblock}{Question \#1}
       Does any group have at least one subgroup?
-  \end{alertblock}
+    \end{alertblock}
 
-  Yeah, $\mathbb{H} = \{e_{\mathbb{G}}\} \leq \mathbb{G}$.
+    \textbf{Answer.} Yes, take $\mathbb{H} = \{e\} \leq \mathbb{G}$.
+
+    \begin{alertblock}{Question \#2*}
+      Let $\mathsf{GL}(\mathbb{R},2)$ be a mutliplicative group of invertable matrices, while $\mathsf{SL}(\mathbb{R},2)$ be a multiplicative group of matrices with determinant 1. Is $\mathsf{SL}(\mathbb{R},2) \leq \mathsf{GL}(\mathbb{R},2)$?
+    \end{alertblock}
+
+    \textbf{Answer.} Yes. For $A = \begin{bmatrix}
+      a & b \\
+      c & d
+    \end{bmatrix} \in \mathsf{SL}(\mathbb{R},2)$ the inverse is $A^{-1} = \begin{bmatrix}
+      d & -b \\ -c & a
+    \end{bmatrix}$. Also, $\det (AB) = \det A \cdot \det B$, so the product of two matrices with determinant 1 has determinant 1, so the operation in closed.
   \end{frame}
 
   \subsection{Homomorphism and Isomorphism}
@@ -472,20 +483,19 @@
   \end{frame}
 
   \begin{frame}{Field}
-    \begin{definition}{}
-        \textbf{Field} $K$ is a set equipped with appropriate \textbf{addition} and \textbf{multiplication} operations with the corresponding well-defined inverses, where you can perform the basic arithmetic.
-    \end{definition}
-    \pause
-    \begin{exampleblock}{}
-        \begin{itemize}
-            \item $\mathbb{R}$ (real numbers) is a field.
-            \item $\mathbb{Q}$ (rational numbers) is a field.
-            \item $\mathbb{C}$ (complex numbers) is a field.
-            \item $\mathbb{N}$ (natural numbers) is not a field: there is no additive inverse for $2$ ($-2$ is not in $\mathbb{N}$).
-            \item $\mathbb{Z}$ (integers) is not a field: additive inverse is defined, but the multiplicative is not ($2^{-1}$ is not defined).
-        \end{itemize}
-    \end{exampleblock}
-\end{frame}
+    \begin{block}{Informal Definition}
+        \textbf{Field} $\mathbb{F}$ is a set equipped with appropriate \textbf{addition} and \textbf{multiplication} operations with the corresponding well-defined inverses, where you can perform the basic arithmetic.
+    \end{block}
+    
+      \begin{definition}
+        A \textbf{field} is a set $\mathbb{F}$ with two operations $\oplus$ and $\odot$ such that:
+        \begin{enumerate}
+            \item $(\mathbb{F}, \oplus)$ is an abelian group with identity $e_{\oplus}$.
+            \item $(\mathbb{F} \setminus \{e_{\oplus}\}, \odot)$ is an abelian group.
+            \item The \textbf{distributive law} holds: $\forall a,b,c \in \mathbb{F}: a \odot (b \oplus c) = (a \odot b) \oplus (a \odot c)$.
+        \end{enumerate}
+      \end{definition}
+    \end{frame}
 
     \section{Polynomials}
 
