@@ -144,6 +144,19 @@ Fermat Primality and Miller-Rabin Primality Tests are examples of probabilistic 
     Let $p$ be a prime number and $a$ be an integer not divisible by $p$. Then $a ^ {p-1} - 1$ is always divisible by $p$:  $a^{p-1} \equiv 1 \pmod{p}$
 \end{theorem}
 
+\subsubsection{Fermat Primality Test}
+
+The key idea behind Fermat Primality Test: if for some a not divisible by n we have $a^{n-1} \not\equiv 1 \pmod{n}$ then $n$ is definitely NOT prime.
+Athough, with such approach we might get a false positive, as you cannot state for sure that $n$ is prime. For example, consider $n = 15$ and $a = 4$.
+$4^{15-1} \equiv 1 \pmod{15}$, but $n = 15 = 3 \cdot 5$ is composite. To solve this issue $a$ is picked many times, decreasing the chances of false positive.
+The probability of a composite number is mistakenly called prime for $k$ iterations is $2^{-k}$ = $\dfrac{1}{2^k}$.
+
+There exist a problem with such an algorithm in form of $Carmichael numbers$, which are numbers that are Fermat pseudoprime to all bases. To put it simple,
+no matter how many times you would check whether the number is prime using this type of primality test, it would always stay positive, even though the number is
+composite. The good thing is that Carmichael numbers are pretty rare. The bad thing is that there are infinitely many of them. 
+
+Even though this algorithm is probabilistic (which does not guarantee the correctness of the output), and has a vulnerability in the form of $Carmichael numbers$,
+it runs with asymptotic complexity $O(\ln^3{n})$. This is much better for large numbers, often used in cryptography.
 
 \subsection{Introduction to Abstract Algebra}
 
