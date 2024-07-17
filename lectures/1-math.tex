@@ -144,7 +144,7 @@ Fermat Primality and Miller-Rabin Primality Tests are examples of probabilistic 
     Let $p$ be a prime number and $a$ be an integer not divisible by $p$. Then $a ^ {p-1} - 1$ is always divisible by $p$:  $a^{p-1} \equiv 1 \pmod{p}$
 \end{theorem}
 
-The key idea behind the Fermat Primality Test is that if for some a not divisible by $n$ we have $a^{n-1} \not\equiv 1 \pmod{n}$ then $n$ is definitely NOT prime.
+The key idea behind the Fermat Primality Test is that if for some $a$ not divisible by $n$ we have $a^{n-1} \not\equiv 1 \pmod{n}$ then $n$ is definitely NOT prime.
 Athough, with such an approach, we might get a false positive, as you cannot state for sure that $n$ is prime. For example, consider $n = 15$ and $a = 4$.
 $4^{15-1} \equiv 1 \pmod{15}$, but $n = 15 = 3 \cdot 5$ is composite. To solve this issue, $a$ is picked many times, decreasing the chances of a false positive.
 The probability that a composite number is mistakenly called prime for $k$ iterations is $2^{-k}$ = $\dfrac{1}{2^k}$.
@@ -155,7 +155,6 @@ composite. The good thing is that Carmichael numbers are pretty rare. The bad th
 
 Even though this algorithm is probabilistic (which does not guarantee the correctness of the output) and has a vulnerability in the form of \textit{Carmichael numbers},
 it runs with an asymptotic complexity $O(\log^3{n})$. This is much better for large numbers and is often used in cryptography. Here is a pseudocode implementation of this algorithm:
-
 
 \begin{lstlisting}[language=Python]
 # n = number to be tested for primality
@@ -171,14 +170,12 @@ def is_prime(n, k):
         i++
 
     return True
-
 \end{lstlisting}
 
-Miller-Rabin primality test, is a more advanced form of Fermat primality test. The main difference is it is not vulnerable to $Carmichael numbers$,
+Miller-Rabin primality test, is a more advanced form of Fermat primality test. The main difference is it is not vulnerable to \textit{Carmichael numbers},
 which makes it much better to use in practice.
 
 \subsection{Introduction to Abstract Algebra}
-
 
 \subsubsection{Groups}
 
@@ -189,7 +186,7 @@ As you can recall from the high school math, typically real-world processes are 
 When it comes to working with computers though, real numbers become very inconvenient to work with. For instance, different programming languages might output different values for quite a straightforward operation \textsf{2.01 + 2.00}. This becomes a huge problem when dealing with cryptography, which must check \textit{precisely} whether two quantities are equal. 
 For example, if the person's card number is $N$ and the developed system operates with a different, but very similar card with number $N + k$ for $k \ll N$, then this system can be safely thrown out of the window. See Figure \ref{fig:why_integers}.
 
-\begin{figure}
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.8\textwidth]{images/lecture_1/why_integers.pdf}
     \caption{Alice pays to Bob to a card number $N$, but our awesome system pays to $N+k$ instead. Bob would not be happy...}
