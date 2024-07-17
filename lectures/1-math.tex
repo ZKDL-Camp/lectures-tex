@@ -232,7 +232,7 @@ Quite confusing at first glance, right? The best way to grasp this concept is to
 \end{example}
 
 \begin{example}
-    That is possible to have the situation when the element $a \in \mathbb{G}$ can be its own inverse, meaning $a = a^{-1}$. This happens when $a^2 = e$. Additionally, we can mention that any group $\mathbb{G} = {g, e}$ with the order $|\mathbb{G}| = 2$ have a group generator $g$ which satisfy $g^2 = e$.
+    That is possible to have the situation when the element $a \in \mathbb{G}$ can be its own inverse, meaning $a = a^{-1}$. This happens when $a^2 = e$. Additionally, we can mention that for any group $\mathbb{G} = \{g, e\}$ we have $g^2 = e$.
 \end{example}
 
 One might ask a reasonable question: suppose you pick $a,b \in \mathbb{G}$. Is $a \oplus b$ the same as $b \oplus a$? Unfortunately, generally, this is not true. 
@@ -413,7 +413,11 @@ suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is t
     Thus, $\varphi$ is a homomorphism. It is also injective since $e^x = e^y \implies x=y$. Finally, it is obviously onto. This means $(\mathbb{R}, +) \cong (\mathbb{R}_{>0}, \times)$.
 \end{example}
 
-One of the interesting theorems is the following.
+\begin{example}
+    All groups of order $2$ are isomorphic to $\mathbb{Z}_2$. Indeed, let $\mathbb{G} = \{g,e\}$ -- any group of order 2, and define $\varphi: \mathbb{Z}_2 \to \mathbb{G}$ as $\varphi(0) = e$ and $\varphi(1) = g$. This is an isomorphism.
+\end{example}
+
+A generalization of the above example is the following quite interesting theorem:
 
 \begin{theorem}
     Suppose $\mathbb{G} = \langle g \rangle$ is a finite cyclic group, meaning $|G| = n \in \mathbb{N}$. Then, $\mathbb{G} \cong \mathbb{Z}_n$.
@@ -421,10 +425,14 @@ One of the interesting theorems is the following.
 
 \textbf{Idea of the proof.} Define a function $\varphi: \mathbb{Z}_n \to \mathbb{G}$ as $m \mapsto g^m$. One can prove that this is an isomorphism.
 
+Here, it is quite evident that isomorphism tells us that the groups have the same structure. Moreover, it is correct to say that if $\mathbb{G} \equiv \mathbb{H}$, then $\mathbb{G}$ and $\mathbb{H}$ are \textit{equivalent} since $\cong$ is an equivalence relation.
+
+\textbf{Exercise(*).} Prove that $\cong$ is an equivalence relation.
+
 Finally, we will define the concept of an endomorphism and automorphism to finish the section.
 
 \begin{definition}
-    An \textbf{endomorphism} is a function $\varphi: \mathbb{G} \to \mathbb{G}$.
+    An \textbf{endomorphism} is a function $\varphi$ which maps set $X$ to itself ($\varphi: X \to X$).
 \end{definition}
 
 \begin{definition}
