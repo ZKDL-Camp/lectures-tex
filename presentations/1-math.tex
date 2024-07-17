@@ -31,7 +31,7 @@
 \DeclareMathOperator*{\argmin}{arg\,min}
 
 \title[Mathematics I]{\textbf{Mathematics for Cryptography: Number Theory, Groups, Polynomials}}
-\author{ZKDL Camp}
+\author{Distributed Lab}
 \date{July 18, 2024}
 \titlegraphic{
     \includegraphics[width=\textwidth]{images/banner_wide.png}
@@ -155,7 +155,7 @@
 
     \begin{frame}{Sets}
       \begin{definition}
-        \textbf{Set} is a collection of distinct objects, considered as an object in its own right.
+        \textbf{Set} is a collection of \textit{distinct} objects, considered as an object in its own right.
       \end{definition}
 
       \begin{example}
@@ -163,9 +163,10 @@
           \item $\mathbb{N}$ is a set of natural numbers.
           \item $\mathbb{Z}$ is a set of integers.
           \item $\mathbb{R}$ is a set of real numbers.
-          \item $\mathbb{C}$ is a set of complex numbers.
+          \item $\mathbb{R}_{>0}$ is a set of positive real numbers.
           \item $\{1, 2, 5, 10\}$ is a set of four elements.
-          \item $\{1, 2, 2, 3\}$ simply equals to $\{1,2,3\}$ -- we do not count duplicates.
+          \item $\{1, 2, 2, 3\} = \{1,2,3\}$ -- we do not count duplicates.
+          \item $\{1,2,3\} = \{2,1,3\}$ -- order does not matter.
         \end{itemize}
       \end{example}
     \end{frame}
@@ -230,7 +231,7 @@
           \item $\{x \in \mathbb{R}: x^2 = 1\}$ -- a set of real numbers that satisfy the equation $x^2 = 1$.
           \item $\{x \in \mathbb{Z}: x \text{ is even}\}$ -- a set of even integers.
           \item $\{x^2: x \in \mathbb{R}, x^3 = 1\}$ -- a set of squares of real numbers that satisfy the equation $x^3 = 1$.
-          \item $\{x \in \mathbb{N}: x \text{ is prime}\}$ -- a set of prime natural numbers.
+          \item $\{x \in \mathbb{N}: x \text{ is prime}\} \setminus \{2\}$ -- a set of odd prime numbers.
         \end{itemize}
       \end{example}
 
@@ -318,7 +319,7 @@
             \end{gather*}
         \end{example}
 
-        \begin{block}{Rethorical question}
+        \begin{block}{Rhetorical question}
             What makes $(\mathbb{G}, \oplus)$ a group?
         \end{block}
     \end{frame}
@@ -495,6 +496,25 @@
             \item The \textbf{distributive law} holds: $\forall a,b,c \in \mathbb{F}: a \odot (b \oplus c) = (a \odot b) \oplus (a \odot c)$.
         \end{enumerate}
       \end{definition}
+    \end{frame}
+
+    \begin{frame}{Field Examples}
+      \begin{example}
+        The set of real numbers $(\mathbb{R}, +, \times)$ is obviously a field. So is $(\mathbb{Q}, +, \times)$.
+    \end{example}
+
+    \begin{definition}
+      \textbf{Finite Field} is the set $\{0,\dots,p-1\}$ equipped with operations modulo $p$ is a field if $p$ is a prime number.
+    \end{definition}
+
+    \begin{example}
+      The set $\mathbb{F}_5 = \{0,1,2,3,4\}$ with operations modulo $5$ is a field. Operation examples:
+      \begin{itemize}
+        \item $3 + 4 = 2$.
+        \item $3 \times 2 = 1$.
+        \item $4^{-1} = 4$ since $4 \times 4 = 1$.
+      \end{itemize}
+    \end{example}
     \end{frame}
 
     \section{Polynomials}
