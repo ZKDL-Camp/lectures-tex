@@ -284,6 +284,18 @@ While further optimizations are possible, they do not change the overall asympto
 In cryptography, $N$ can be extremely large — $256$ bits, $512$ bits, or even $6144$ bits. 
 An algorithm is impractical when dealing with such large numbers.
 
+\subsubsection{Deterministic prime tests}
+
+A primality test is probabilistic if it outputs True when the number is a prime and False when the input is composite with probability less than 1. Such test is often called a pseudoprimality test.
+Fermat Primality and Miller-Rabin Primality Tests are examples of probabilistic primality test. Both of them use the idea of Fermat's little theorem:
+
+\begin{theorem}
+    Let $p$ be a prime number and $a$ be an integer not divisible by $p$. Then $a ^ {p-1} - 1$ is always divisible by $p$:  $a^{p-1} \equiv 1 (mod p)$
+\end{theorem}
+
+\subsubsection{Prime fields}
+
+\subsubsection{Modular inverse}
 
 \subsection{Other Primitives}
 
