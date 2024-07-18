@@ -156,18 +156,19 @@
 
     \begin{frame}{Sets}
       \begin{definition}
-        \textbf{Set} is a collection of \textit{distinct} objects, considered as an object in its own right.
-      \end{definition}\pause
+        \textbf{Set} is a collection of \textit{distinct} objects, considered as an object in its own right. \pause
+      \end{definition}
 
       \begin{example}
         \begin{itemize}
           \item $\mathbb{N}$ is a set of natural numbers.
           \item $\mathbb{Z}$ is a set of integers.
           \item $\mathbb{R}$ is a set of real numbers.
-          \item $\mathbb{R}_{>0}$ is a set of positive real numbers.\pause
+          \item $\mathbb{R}_{>0}$ is a set of positive real numbers. \pause
           \item $\{1, 2, 5, 10\}$ is a set of four elements.
-          \item $\{1, 2, 2, 3\} = \{1,2,3\}$ -- we do not count duplicates.
+          \item $\{1, 2, 2, 3\} = \{1,2,3\}$ -- we do not count duplicates. \pause
           \item $\{1,2,3\} = \{2,1,3\}$ -- order does not matter.
+          \item $\{\{1,2\},\{3,4\}, \{\sqrt{5}\}\}$ is a valid set -- elements can be sets themselves.
         \end{itemize}
       \end{example}
     \end{frame}
@@ -226,6 +227,20 @@
     \end{figure}
     \end{frame}
     
+    \begin{frame}{Operations on sets: Examples}
+      \begin{alertblock}{Question \#1}
+        What does $\mathbb{Z} \setminus \{0,1\}$ mean?\pause
+      \end{alertblock} 
+
+      \begin{alertblock}{Question \#2}
+        How to simplify $\mathbb{Q} \cap \mathbb{Z}$?\pause
+      \end{alertblock}
+
+      \begin{alertblock}{Question \#3}
+        What is the result of $\{1,2,3\} \cup \{3,4,5\}$?
+      \end{alertblock}
+    \end{frame}
+
     \begin{frame}{Defining sets}
       \begin{example}
         \begin{itemize}
@@ -237,11 +252,43 @@
       \end{example}
 
       \begin{alertblock}{Question \#1}
-        How to simplify the set $\{x \in \mathbb{N}: x^2 = 2\}$?
+        How to simplify the set $\{x \in \mathbb{N}: x^2 = 2\}$?\pause
       \end{alertblock}
-      \pause
+  
       \begin{alertblock}{Question \#2(*)}
         How to simplify the set $\{\sin \pi k: k \in \mathbb{Z}\}$?
+      \end{alertblock}
+    \end{frame}
+
+    \begin{frame}{Cartesian Product}
+        \begin{definition}
+          \textbf{Cartesian product} of two sets $A$ and $B$ is a set of all possible ordered pairs $(a,b)$ where $a \in A$ and $b \in B$. We denote it as $A \times B$.\pause
+        \end{definition}
+
+        \begin{definition}
+          \textbf{Cartesian power} of a set $A$ is a set of all possible ordered tuples $(a_1,a_2,\cdots,a_n)$ where $a_i \in A$. We denote it as $A^n$.\pause
+        \end{definition}
+
+        \begin{example}
+          Consider sets $A = \{1,2\}$ and $B = \{3,4\}$. Then, $A \times B = \{(1,3), (1,4), (2,3), (2,4)\}$.\pause
+        \end{example}
+
+        \begin{example}
+          $\mathbb{R}^2$ is a set of all possible points in the Cartesian plane.
+        \end{example}
+    \end{frame}
+
+    \begin{frame}{Cartesian Product Questions}
+      \begin{alertblock}{Question \#1}
+        What does $\{0,1\}^{5}$ mean?\pause
+      \end{alertblock}
+
+      \begin{alertblock}{Question \#2}
+        How to interpret the set $\{(x,y) \in \mathbb{N}^2: x = y\}$?\pause
+      \end{alertblock}
+
+      \begin{alertblock}{Question \#3(*)}
+        How to interpret the set $\{(x,y) \in \mathbb{R}^2: x^2+y^2=1\}$?
       \end{alertblock}
     \end{frame}
 
@@ -251,17 +298,17 @@
           \item $\forall$ means ``for all''.
           \item $\exists$ means ``there exists'', $\exists!$ means ``there exists the only''.
           \item $\land$ means ``and''.
-          \item $\lor$ means ``or''.
+          \item $\lor$ means ``or''.\pause
         \end{itemize}
-        \pause
+
         \begin{alertblock}{Question \#1}
-            Is it true that $(\forall x \in \mathbb{N}): \{x > 0\}$?
+            Is it true that $(\forall x \in \mathbb{N}): \{x > 0\}$?\pause
         \end{alertblock}
-        \pause
+
         \begin{alertblock}{Question \#2}
-            Is it true that $(\exists x \in \mathbb{N}): \{x \geq 0 \land x < 1\}$?
+            Is it true that $(\exists x \in \mathbb{N}): \{x \geq 0 \land x < 1\}$?\pause
         \end{alertblock}
-        \pause
+
         \begin{alertblock}{Question \#3}
             Is it true that $(\forall x \in \mathbb{Z})\, (\exists y \in \mathbb{N}): \{y > x\}$?
         \end{alertblock}
@@ -281,9 +328,8 @@
         \begin{block}{Notation}
             To denote that we take an element from a set $S$ uniformly at random, we use notation $x \xleftarrow{R} S$.
 
-            For example, when throwing a coin, we can write $x \xleftarrow{R} \{\text{heads}, \text{tails}\}$.
+            For example, when throwing a coin, we can write $x \xleftarrow{R} \{\text{heads}, \text{tails}\}$.\pause
         \end{block}
-        \pause
 
         \begin{block}{Notation}
           To denote an infinite sequence $x_1,x_2,\cdots$, we use $\{x_i\}_{i \in \mathbb{N}}$. To denote
@@ -311,7 +357,7 @@
     \begin{frame}{Why Groups?!}
         But integers on their own are not enough. We need to define a structure that allows us to perform operations on them.
 
-        This is very similar to interfaces: we abstract from the implementation, just merely stating we have ``some'' addition/multiplication.\pause
+        This is very similar to interfaces: we abstract from the implementation, just merely stating we have ``some'' addition/multiplication.
 
         \begin{example}
             Consider set $\mathbb{G} := \{\text{Dmytro}, \text{Dan}, \text{Friendship}\}$. We can safely define an operation $\oplus$ as:
@@ -335,11 +381,10 @@
             \item \textbf{Closure:} Binary operations always outputs an element from $\mathbb{G}$, that is $\forall a,b \in \mathbb{G}: a \oplus b \in \mathbb{G}$.\pause
             \item \textbf{Associativity:} $\forall a,b,c \in \mathbb{G}: (a \oplus b)\oplus c = a \oplus (b \oplus c)$.\pause
             \item \textbf{Identity element:} There exists a so-called identity element $e \in \mathbb{G}$ such that $\forall a \in \mathbb{G}: e \oplus a = a \oplus e = a$.\pause
-            \item \textbf{Inverse element:} $\forall a \in \mathbb{G} \; \exists b \in \mathbb{G}: a\oplus b = b \oplus a = e$. We commonly denote the inverse element as $(\ominus a)$.
+            \item \textbf{Inverse element:} $\forall a \in \mathbb{G} \; \exists b \in \mathbb{G}: a\oplus b = b \oplus a = e$. We commonly denote the inverse element as $(\ominus a)$. \pause
         \end{enumerate}
     \end{definition}
 
-    \pause
     \begin{definition}
         A group is called \textbf{abelian} if it satisfies the additional rule called \textbf{commutativity}: $\forall a,b \in \mathbb{G}: a \oplus b = b \oplus a$.
     \end{definition}
@@ -358,19 +403,16 @@
 
     \begin{frame}{Group Examples}
       \begin{example}
-        A group of integers with the regular addition $(\mathbb{Z},+)$ (also called the \textit{additive} group of integers) is a group.
+        A group of integers with the regular addition $(\mathbb{Z},+)$ (also called the \textit{additive} group of integers) is a group.\pause
       \end{example}
-      \pause
       
       \begin{example}
-          The multiplicative group of positive real numbers $(\mathbb{R}_{> 0}, \times)$ is a group for similar reasons. 
+          The multiplicative group of positive real numbers $(\mathbb{R}_{> 0}, \times)$ is a group for similar reasons.\pause
       \end{example}
-      \pause
-
+      
       \begin{alertblock}{Question \#1}
-          Is $(\mathbb{R}, \times)$ a group? If no, what is missing?
+          Is $(\mathbb{R}, \times)$ a group? If no, what is missing?\pause
       \end{alertblock}
-      \pause
 
       \begin{alertblock}{Question \#2}
         Is $(\mathbb{Z}, \times)$ a group? If no, what is missing?
@@ -379,15 +421,12 @@
 
     \begin{frame}{Small Note on Notation}
       \begin{block}{Additive group}
-          We say that a group is \textit{additive} if the operation is denoted as $+$, and the identity element is denoted as $0$.
+          We say that a group is \textit{additive} if the operation is denoted as $+$, and the identity element is denoted as $0$.\pause
       \end{block}
-      \pause
 
       \begin{block}{Multiplicative group}
-          We say that a group is \textit{multiplicative} if the operation is denoted as $\times$, and the identity element is denoted as $1$.
+          We say that a group is \textit{multiplicative} if the operation is denoted as $\times$, and the identity element is denoted as $1$.\pause
       \end{block}
-      \pause
-
       \begin{block}{Rule of thumb}
         We use additive notation when we imply that the group $\mathbb{G}$ is the set of points on the elliptic curve, while multiplicative is typically used in the rest of the cases.
       \end{block}
@@ -395,42 +434,35 @@
 
     \begin{frame}{Abelian Groups Examples and Non-Examples}
       \begin{alertblock}{Question \#3}
-        Is $(\mathbb{R}, -)$ a group? If no, what is missing?
+        Is $(\mathbb{R}, -)$ a group? If no, what is missing? \pause
       \end{alertblock}
-      \pause
-
       \begin{alertblock}{Question \#4}
           Set $V$ is a set of tuples $(v_1,v_2,v_3)$ where each $v_i \in \mathbb{R} \setminus \{0\}$. Define the operation $\odot$ as
           \begin{equation*}
               (v_1,v_2,v_3) \odot (u_1,u_2,u_3) = (v_1u_1, v_2u_2, v_3u_3)
           \end{equation*}
 
-          Is $(V, \odot)$ a group? If no, what is missing?
+          Is $(V, \odot)$ a group? If no, what is missing?\pause
       \end{alertblock}
-      \pause
-
       \begin{block}{Conclusion}
         Group is just a fancy name for a set with a binary operation that behaves nicely.
       \end{block}
     \end{frame}
 
-    \subsection{Subgroup}
+    \subsection{Subgroups}
     \begin{frame}{Subgroup}
 
       \begin{alertblock}{Question}
-          Suppose $(\mathbb{G}, \oplus)$ is a group. Is any subset $\mathbb{H} \subset \mathbb{G}$ a group?
+          Suppose $(\mathbb{G}, \oplus)$ is a group. Is any subset $\mathbb{H} \subset \mathbb{G}$ a group?\pause
       \end{alertblock}
-      \pause
 
       \begin{definition}
-          A \textbf{subgroup} is a subset $\mathbb{H} \subset \mathbb{G}$ that is a group with the same operation $\oplus$. We denote it as $\mathbb{H} \leq \mathbb{G}$.
+          A \textbf{subgroup} is a subset $\mathbb{H} \subset \mathbb{G}$ that is a group with the same operation $\oplus$. We denote it as $\mathbb{H} \leq \mathbb{G}$.\pause
       \end{definition}
-      \pause
 
       \begin{example}
-          Consider $(\mathbb{Z}, +)$. Then, although $\mathbb{N} \subset \mathbb{Z}$, it is not a subgroup, as it does not have inverses.
+          Consider $(\mathbb{Z}, +)$. Then, although $\mathbb{N} \subset \mathbb{Z}$, it is not a subgroup, as it does not have inverses.\pause
       \end{example}
-      \pause
 
       \begin{example}
           Consider $(\mathbb{Z}, +)$. Then, $3\mathbb{Z} = \{3k: k \in \mathbb{Z}\} \subset \mathbb{Z}$ is a subgroup.
@@ -439,16 +471,14 @@
 
   \begin{frame}{Questions}
     \begin{alertblock}{Question \#1}
-      Does any group have at least one subgroup?
+      Does any group have at least one subgroup?\pause
     \end{alertblock}
-    \pause
 
-    \textbf{Answer.} Yes, take $\mathbb{H} = \{e\} \leq \mathbb{G}$.
+    \textbf{Answer.} Yes, take $\mathbb{H} = \{e\} \leq \mathbb{G}$.\pause
 
     \begin{alertblock}{Question \#2*}
-      Let $\mathsf{GL}(\mathbb{R},2)$ be a mutliplicative group of invertable matrices, while $\mathsf{SL}(\mathbb{R},2)$ be a multiplicative group of matrices with determinant 1. Is $\mathsf{SL}(\mathbb{R},2) \leq \mathsf{GL}(\mathbb{R},2)$?
+      Let $\mathsf{GL}(\mathbb{R},2)$ be a mutliplicative group of invertable matrices, while $\mathsf{SL}(\mathbb{R},2)$ be a multiplicative group of matrices with determinant 1. Is $\mathsf{SL}(\mathbb{R},2) \leq \mathsf{GL}(\mathbb{R},2)$?\pause
     \end{alertblock}
-    \pause
 
     \textbf{Answer.} Yes. For $A = \begin{bmatrix}
       a & b \\
@@ -456,6 +486,44 @@
     \end{bmatrix} \in \mathsf{SL}(\mathbb{R},2)$ the inverse is $A^{-1} = \begin{bmatrix}
       d & -b \\ -c & a
     \end{bmatrix}$. Also, $\det (AB) = \det A \cdot \det B$, so the product of two matrices with determinant 1 has determinant 1, so the operation in closed.
+  \end{frame}
+
+  \subsection{Cyclic Groups}
+
+  \begin{frame}{Cyclic Subgroup.}
+    \begin{definition}
+      Given a group $\mathbb{G}$ and $g \in \mathbb{G}$ the cyclic subgroup generated by $g$ is
+      \begin{equation*}
+          \langle g \rangle = \{g^n: n \in \mathbb{Z}\} = \{\dots,g^{-3}, g^{-2}, g^{-1}, e, g, g^2, g^3, \dots\}.
+      \end{equation*}
+    \end{definition}
+    \pause
+
+    \begin{example}
+        Consider the group of integers modulo $12$, denoted by $\mathbb{Z}_{12}$. Consider $2 \in \mathbb{Z}_{12}$, the subgroup generated by $2$ is then
+        \begin{equation*}
+            \langle 2 \rangle = \{2,4,6,8,10, 0\}
+        \end{equation*}
+    \end{example}
+
+    \pause
+    \begin{definition}
+      We say that a group $\mathbb{G}$ is \textbf{cyclic} if there exists an element $g \in \mathbb{G}$ such that $\mathbb{G}$ is generated by $g$, that is, $\mathbb{G} = \langle g \rangle$.
+    \end{definition}
+  \end{frame}
+
+  \begin{frame}{Cyclic Subgroup Examples.}
+    \begin{example}
+      Take $\mathbb{Q}^{\times}$. One of the possible cyclic subgroups is $\mathbb{H}=\{2^n: n \in \mathbb{Z}\}$.\pause
+    \end{example}
+
+    \begin{alertblock}{Question \#1}
+      What is the generator of $\mathbb{H}$ in the example above?\pause
+    \end{alertblock}
+
+    \begin{alertblock}{Question \#2}
+      What is the generator of $7\mathbb{Z} = \{7k: k \in \mathbb{Z}\} = \{\dots,-14,-7,0,7,14,\dots\}$?
+    \end{alertblock}
   \end{frame}
 
   \subsection{Homomorphism and Isomorphism}
@@ -470,7 +538,7 @@
     \pause
 
     \begin{example}
-      Consider $(\mathbb{Z}, +)$ and $(\mathbb{R}_{>0}, \times)$. Then, the function $\phi: \mathbb{Z} \rightarrow \mathbb{R}_{>0}$ defined as $\phi(k) = 2^k$ is a homomorphism.
+      Consider $(\mathbb{Z}, +)$ and $(\mathbb{R}_{>0}, \times)$. Then, the function $\phi: \mathbb{Z} \rightarrow \mathbb{R}_{>0}$ defined as $\phi(k) = 2^k$ is a homomorphism.\pause
     \end{example}
 
     \textbf{Proof}. Take any $n,m \in \mathbb{Z}$ and consider $\phi(n+m)$:
@@ -488,19 +556,16 @@
 
   \begin{frame}{Homomorphism}
     \begin{definition}
-      \textbf{Isomorphism} is a bijective homomorphism.
+      \textbf{Isomorphism} is a bijective homomorphism.\pause
     \end{definition}
-    \pause
 
     \begin{definition}
-      Two groups $\mathbb{G}$ and $\mathbb{H}$ are \textbf{isomorphic} if there exists an isomorphism between them. We denote it as $\mathbb{G} \cong \mathbb{H}$.
+      Two groups $\mathbb{G}$ and $\mathbb{H}$ are \textbf{isomorphic} if there exists an isomorphism between them. We denote it as $\mathbb{G} \cong \mathbb{H}$.\pause
     \end{definition}
-    \pause
 
     \begin{example}
-     $\phi: k \mapsto 2^k$ from the previous example is a homomorphism between $(\mathbb{Z},+)$ and $(\mathbb{R}_{>0},\times)$, but not an isomorphism. Indeed, there is no $x \in \mathbb{Z}$ such that $2^x = 3 \in \mathbb{R}_{>0}$.
+     $\phi: k \mapsto 2^k$ from the previous example is a homomorphism between $(\mathbb{Z},+)$ and $(\mathbb{R}_{>0},\times)$, but not an isomorphism. Indeed, there is no $x \in \mathbb{Z}$ such that $2^x = 3 \in \mathbb{R}_{>0}$.\pause
     \end{example}
-    \pause
 
     \begin{alertblock}{Question}
       What can we do to make $\phi$ an isomorphism?
@@ -509,9 +574,8 @@
 
   \begin{frame}{Field}
     \begin{block}{Informal Definition}
-        \textbf{Field} $\mathbb{F}$ is a set equipped with appropriate \textbf{addition} and \textbf{multiplication} operations with the corresponding well-defined inverses, where you can perform the basic arithmetic.
+        \textbf{Field} $\mathbb{F}$ is a set equipped with appropriate \textbf{addition} and \textbf{multiplication} operations with the corresponding well-defined inverses, where you can perform the basic arithmetic.\pause
     \end{block}
-    \pause
     
       \begin{definition}
         A \textbf{field} is a set $\mathbb{F}$ with two operations $\oplus$ and $\odot$ such that:
@@ -525,14 +589,12 @@
 
     \begin{frame}{Field Examples}
       \begin{example}
-        The set of real numbers $(\mathbb{R}, +, \times)$ is obviously a field. So is $(\mathbb{Q}, +, \times)$.
+        The set of real numbers $(\mathbb{R}, +, \times)$ is obviously a field. So is $(\mathbb{Q}, +, \times)$.\pause
     \end{example}
-    \pause
 
     \begin{definition}
-      \textbf{Finite Field} is the set $\{0,\dots,p-1\}$ equipped with operations modulo $p$ is a field if $p$ is a prime number.
+      \textbf{Finite Field} is the set $\{0,\dots,p-1\}$ equipped with operations modulo $p$ is a field if $p$ is a prime number.\pause
     \end{definition}
-    \pause
 
     \begin{example}
       The set $\mathbb{F}_5 = \{0,1,2,3,4\}$ with operations modulo $5$ is a field. Operation examples:
@@ -574,9 +636,8 @@
             \item $q(x) = 1 + x^2 + x^3$.
             \item $r(x) = 2x^3$.
         \end{enumerate}
-        \pause
-    
-       If we were to evaluate these polynomials at $1 \in \mathbb{F}_3$, we would get:
+        
+        \pause If we were to evaluate these polynomials at $1 \in \mathbb{F}_3$, we would get:
         \begin{enumerate}
             \item $p(1) = 1 + 1 + 2 \cdot 1 \; \text{mod} \; 3 = 1$.
             \item $q(1) = 1 + 1 + 1 \; \text{mod} \; 3 = 0$.
@@ -587,15 +648,13 @@
 
     \begin{frame}{More about polynomials}
       \begin{definition}
-          The \textbf{degree} of a polynomial $p(x) = c_0+c_1x+c_2x^2+\dots$ is the largest $k \in \mathbb{Z}_{\geq 0}$ such that $c_k \neq 0$. We denote the degree of a polynomial as $\deg p$. We also denote by $\mathbb{F}^{(\leq m)}[x]$ a set of polynomials of degree at most $m$.
+          The \textbf{degree} of a polynomial $p(x) = c_0+c_1x+c_2x^2+\dots$ is the largest $k \in \mathbb{Z}_{\geq 0}$ such that $c_k \neq 0$. We denote the degree of a polynomial as $\deg p$. We also denote by $\mathbb{F}^{(\leq m)}[x]$ a set of polynomials of degree at most $m$.\pause
       \end{definition}
-      \pause
       
       \begin{example}
-          The degree of the polynomial $p(x) = 1 + 2x + 3x^2$ is $2$, so $p(x) \in \mathbb{F}_3^{(\leq 2)}[x]$.
+          The degree of the polynomial $p(x) = 1 + 2x + 3x^2$ is $2$, so $p(x) \in \mathbb{F}_3^{(\leq 2)}[x]$.\pause
       \end{example}
-      \pause
-
+      
       \begin{theorem}
           For any two polynomials $p,q \in \mathbb{F}[x]$ and $n = \deg p, m = \deg q$, the following two statements are true:
           \begin{enumerate}
@@ -607,14 +666,12 @@
     \subsection{Roots and Divisibility}
     \begin{frame}{Roots of Polynomials}
       \begin{definition}
-          Let $p(x) \in \mathbb{F}[x]$ be a polynomial of degree $\deg p \geq 1$. A field element $x_0 \in \mathbb{F}$ is called a root of $p(x)$ if $p(x_0) = 0$.
+          Let $p(x) \in \mathbb{F}[x]$ be a polynomial of degree $\deg p \geq 1$. A field element $x_0 \in \mathbb{F}$ is called a root of $p(x)$ if $p(x_0) = 0$.\pause
       \end{definition}
-      \pause
       
       \begin{example}
-          Consider the polynomial $p(x) = 1 + x + x^2 \in \mathbb{F}_3[x]$. Then, $x_0=1$ is a root of $p(x)$ since $p(x_0) = 1 + 1 + 1 \; \text{mod} \; 3 = 0$.
+          Consider the polynomial $p(x) = 1 + x + x^2 \in \mathbb{F}_3[x]$. Then, $x_0=1$ is a root of $p(x)$ since $p(x_0) = 1 + 1 + 1 \; \text{mod} \; 3 = 0$.\pause
       \end{example}
-      \pause
 
       \begin{theorem}
         Let $p(x) \in \mathbb{F}[x], \deg p \geq 1$. Then, $x_0 \in \mathbb{F}$ is a root of $p(x)$ if and only if there exists a polynomial $q(x)$ (with $\deg q = n-1$) such that
@@ -631,7 +688,7 @@
         \end{equation*}
     \end{theorem}
     \pause
-
+    
     \begin{example}
         Consider $f(x) = x^3+2$ and $g(x) = x+1$ over $\mathbb{R}$. Then, we can write $f(x) = (x^2-x+1)g(x) + 1$, so the remainder of the division is $r \equiv 1$. Typically, we denote this as:
         \begin{equation*}
@@ -644,14 +701,12 @@
 
     \begin{frame}{Polynomial Divisibility}
       \begin{definition}
-        A polynomial $f(x) \in \mathbb{F}[x]$ is called \textbf{divisible} by $g(x) \in \mathbb{F}[x]$ (or, $g$ \textbf{divides} $f$, written as $g \mid f$) if there exists a polynomial $h(x) \in \mathbb{F}[x]$ such that $f=gh$.
+        A polynomial $f(x) \in \mathbb{F}[x]$ is called \textbf{divisible} by $g(x) \in \mathbb{F}[x]$ (or, $g$ \textbf{divides} $f$, written as $g \mid f$) if there exists a polynomial $h(x) \in \mathbb{F}[x]$ such that $f=gh$.\pause
     \end{definition}
-    \pause
-
+    
     \begin{theorem}
-        If $x_0 \in \mathbb{F}$ is a root of $p(x) \in \mathbb{F}[x]$, then $(x-x_0) \mid p(x)$.
+        If $x_0 \in \mathbb{F}$ is a root of $p(x) \in \mathbb{F}[x]$, then $(x-x_0) \mid p(x)$.\pause
     \end{theorem}
-    \pause
     
     \begin{definition}
         A polynomial $f(x) \in \mathbb{F}[x]$ is said to be \textbf{irreducible} in $\mathbb{F}$ if there are no polynomials $g,h \in \mathbb{F}[x]$ both of degree more than $1$ such that $f = gh$.
@@ -660,10 +715,9 @@
 
     \begin{frame}{Polynomial Divisibility}
       \begin{example}
-        A polynomial $f(x) = x^2+16$ is irreducible in $\mathbb{R}$. Also $f(x) = x^2-2$ is irreducible over $\mathbb{Q}$, yet it is reducible over $\mathbb{R}$: $f(x) = (x-\sqrt{2})(x+\sqrt{2})$. 
+        A polynomial $f(x) = x^2+16$ is irreducible in $\mathbb{R}$. Also $f(x) = x^2-2$ is irreducible over $\mathbb{Q}$, yet it is reducible over $\mathbb{R}$: $f(x) = (x-\sqrt{2})(x+\sqrt{2})$.\pause
     \end{example}
-    \pause
-
+    
     \begin{example}
         There are no polynomials over complex numbers $\mathbb{C}$ with degree more than $2$ that are irreducible. This follows from the \textit{fundamental theorem of algebra}. For example, $x^2+16 = (x-4i)(x+4i)$.
     \end{example}
@@ -671,11 +725,10 @@
     \subsection{Interpolation}
     \begin{frame}{Interpolation}
       \begin{alertblock}{Question}
-        How can we define the polynomial?
+        How can we define the polynomial?\pause
       \end{alertblock}
 
       The most obvious way is to specify coefficients $(c_0,c_1,\dots,c_n)$. Can we do it in a different way?
-      \pause
 
       \begin{theorem}
         Given $n+1$ distinct points $(x_0,y_0),\dots,(x_n,y_n)$, there exists a unique polynomial $p(x)$ of degree at most $n$ such that $p(x_i) = y_i$ for all $i=0,\dots,n$.
@@ -720,10 +773,9 @@
     \subsection{Interpolation Applications: Shamir Secret Sharing}
     \begin{frame}{Application: Shamir Secret Sharing}
       \begin{alertblock}{Motivation}    
-        How to share a secret $\alpha$ among $n$ people in such a way that any $t$ of them can reconstruct the secret, but any $t-1$ cannot?
+        How to share a secret $\alpha$ among $n$ people in such a way that any $t$ of them can reconstruct the secret, but any $t-1$ cannot?\pause
       \end{alertblock}  
 
-      \pause
       \begin{definition}
         \textbf{Secret Sharing} scheme is a pair of efficient algorithms $(\mathsf{Gen}, \mathsf{Comb})$ which work as follows:
         \begin{itemize}
@@ -740,8 +792,8 @@
             \mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}}) = \alpha.
         \end{equation}
       \end{block}
-
       \pause
+
       \begin{definition}
         Now, \textbf{Shamir's protocol} works as follows: $F=\mathbb{F}_q$ and
         \begin{itemize}
