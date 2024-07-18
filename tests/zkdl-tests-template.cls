@@ -37,7 +37,7 @@
 \RequirePackage[nameinlink]{cleveref} % nameinlink ensures that the entire element is clickable in the pdf, not just the number
 
 % --- Linter settings ---
-\RequirePackage{listings, listings-rust}
+\RequirePackage{listings}
 
 %% Code Block Settings
 \RequirePackage{listings}
