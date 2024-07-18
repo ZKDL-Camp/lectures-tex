@@ -329,7 +329,7 @@ The natural question to ask is whether $\mathbb{H}$ is a group itself. Yes, but 
 \end{definition}
 
 \begin{example}
-    Of course, not every subset of $\mathbb{G}$ is a subgroup. Take $(\mathbb{Z}, +)$. If we cut, say, $3$ out of $\mathbb{Z}$ (so we get $\mathbb{H} = \mathbb{Z} \setminus \{3\}$), then $\mathbb{H}$ is not a subgroup of $\mathbb{Z}$ since an element $-3$ does not have an inverse in $\mathbb{H}$.
+    Of course, not every subset of $\mathbb{G}$ is a subgroup. Take $(\mathbb{Z}, +)$. If we cut, say, $3$ out of $\mathbb{Z}$ (so we get $\mathbb{H} = \mathbb{Z} \setminus \{3\}$), then $\mathbb{H}$ is not a subgroup of $\mathbb{Z}$ since an element $-3$ does not have an inverse in $\mathbb{H}$. Moreover, it is not closed: take $1,2 \in \mathbb{H}$. In this case, $1+2 = 3 \notin \mathbb{H}$.
 \end{example}
 
 \begin{example}
@@ -491,34 +491,50 @@ Interestingly though, it is very difficult to come up with some more complicated
 \subsubsection{Finite Fields}
 Recall: we do not like reals, we want to operate with integers! But notice that $(\mathbb{Z},+,\times)$ does not form a field since division is not closed. For that reason, fixate some integer $p$ and consider the set $\mathbb{Z}_p := \{0,1,2,\dots,p-2,p-1\}$. Now, we will define operations as follows:
 
-\textbf{Addition.} To add $a,b \in \mathbb{F}_p$, add them as usual to get $c \gets a+b$. However, this way, operation is not closed, since $c$ might be easily greater than $p-1$ (e.g., for $a=b=p-2$). To fix this, take $c' \in \mathbb{F}_p$ such that $c \equiv c' \pmod{p}$ (or, written more concisely, $c' = (a+b) \;\text{mod} \; p$). 
+\textbf{Addition.} To add $a,b \in \mathbb{Z}_p$, add them as usual to get $c \gets a+b$. However, this way, operation is not closed, since $c$ might be easily greater than $p-1$ (e.g., for $a=b=p-2$). To fix this, take $c' \in \mathbb{Z}_p$ such that $c \equiv c' \pmod{p}$ (or, written more concisely, $c' = (a+b) \;\text{mod} \; p$). 
 
 \begin{example}
-    Take $p=5$. Then, $3+4 = 2$ in $\mathbb{F}_5$ since $c=3+4=7$ and $7 \equiv 2 = c' \pmod{5}$.
+    Take $p=5$. Then, $3+4 = 2$ in $\mathbb{Z}_5$ since $c=3+4=7$ and $7 \equiv 2 = c' \pmod{5}$.
 \end{example}
 
-\textbf{Multiplication and subtraction.} The algorithm is the same. Find $c \gets ab$ or $c \gets a-b$, respectively, and find $c' \in \mathbb{F}_p$ such that $c' \equiv c \pmod{p}$.
+\textbf{Multiplication and subtraction.} The algorithm is the same. Find $c \gets ab$ or $c \gets a-b$, respectively, and find $c' \in \mathbb{Z}_p$ such that $c' \equiv c \pmod{p}$.
 
 \begin{example}
     Again, suppose $p=5$. Then, $3 \cdot 4 = 2$ in $\mathbb{F}_5$ since $c=3 \cdot 4 = 12$ and $12 \equiv 2 = c' \pmod{5}$. Similarly, $3-4 = 4$ in $\mathbb{F}_5$ since $c=3-4=-1$ and $-1 \equiv 4 = c' \pmod{5}$.
 \end{example}
 
-\textbf{Inversion.} Inversion is a bit more tricky. Recall that $(\mathbb{F}_p \setminus \{0\}, \times)$ must be an abelian group, meaning that for each $a \in \mathbb{F}_p$ there should be some $x \in \mathbb{F}_p$ such that $ax = 1$ (multiplication in a sense of definition above). In other words, we need to solve the modular equation:
+\textbf{Inversion.} Inversion is a bit more tricky. Recall that $(\mathbb{Z}_p \setminus \{0\}, \times)$ must be an abelian group, meaning that for each $a \in \mathbb{Z}_p$ there should be some $x \in \mathbb{Z}_p$ such that $ax = 1$ (multiplication in a sense of definition above). In other words, we need to solve the modular equation:
 \begin{equation}
     ax \equiv 1 \pmod{p}.
 \end{equation}
 
-Note that there is no guarantee that for any $a \in \mathbb{F}_p \setminus \{0\}$ we might find such $x$. For example, take $p=10$ and $a=2$. Then, $2x \equiv 1 \pmod{10}$ has no solution. 
+Note that there is no guarantee that for any $a \in \mathbb{Z}_p \setminus \{0\}$ we might find such $x$. For example, take $p=10$ and $a=2$. Then, $2x \equiv 1 \pmod{10}$ has no solution. 
 
-The only way to guarantee that for any $a \in \mathbb{F}_p \setminus \{0\}$ we might find such $x$ is to take $p$ to be a prime number. This is the reason why we call such fields \textbf{prime fields}.
+The only way to guarantee that for any $a \in \mathbb{Z}_p \setminus \{0\}$ we might find such $x$ is to take $p$ to be a prime number. This is the reason why we call such fields \textbf{prime fields} (or, in many cases, one calls them \textbf{finite fields}).
 
-So finally, with all the definitions, we can define the prime field.
+So finally, with all the definitions, we can define the finite field.
 
 \begin{definition}
-    A \textbf{prime field} is a set with prime number $p$ of elements $\{0,1,\dots,p-2,p-1\}$, in which operations are defined ``modulo $p$'' (see details above). 
+    A \textbf{finite field} (or \textit{prime field}) is a set with prime number $p$ of elements $\{0,1,\dots,p-2,p-1\}$, in which operations are defined ``modulo $p$'' (see details above). 
 
     Typically, finite fields are denoted as $\mathbb{F}_p$ or $\text{GF}(p)$.
 \end{definition}
+
+Finite fields is the core object in cryptography. Instead of real numbers or pure integers, we will almost always use finite fields.
+
+\begin{remark}
+    In many cases, one might encounter both $\mathbb{F}_p$ and $\mathbb{Z}_p$ notations. The difference is the following: when one refers to $\mathbb{Z}_p$, it is typically assumed that the operations are performed in the ring\footnote{We have not defined as of now what ring is, but, roughly speaking, this is a field without multiplicative inverses} of integers modulo $p$ (meaning, we need only addition, subtraction, and multiplication in the protocol), while division is of little interest. When one refers to $\mathbb{F}_p$, it is typically assumed that we need full arithmetic (including division) for the procool.
+\end{remark}
+
+\begin{example}
+    Consider $9, 14 \in \mathbb{F}_{17}$. Some examples of calculations:
+    \begin{enumerate}
+        \item $9+14 = 6$.
+        \item $9-14 = 12$.
+        \item $9 \times 14 = 7$.
+        \item $14^{-1} = 11$ since $14 \cdot 11 = 154 \equiv 1 \pmod{17}$.
+    \end{enumerate}
+\end{example}
 
 
 \subsection{Polynomials}
@@ -543,6 +559,10 @@ Notice that for now we did not specify what are $c_i$'s. We are interested in th
     \begin{equation}
         \mathbb{F}[x] = \left\{p(x) = \sum_{k=0}^{n} c_k x^k: c_k \in \mathbb{F}, \; k = 0,\dots,n\right\}.
     \end{equation}
+\end{definition}
+
+\begin{definition}
+    Evaluation of a polynomial $p(x) \in \mathbb{F}[x]$ at point $x_0 \in \mathbb{F}$ is simply finding the value of $p(x_0) \in \mathbb{F}$.
 \end{definition}
 
 \begin{example}
