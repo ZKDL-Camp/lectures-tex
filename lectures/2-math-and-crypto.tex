@@ -6,28 +6,114 @@
 
 In many cases, technical papers include the analysis on the key question: ``How secure is this cryptographic algorithm?'' or rather ``Why this cryptographic algorithm is secure?''. In this section, we will shortly describe the notation and typical construction for justifying the security of cryptographic algorithms.
 
-Typically, the cryptographic security is defined in a form of a game between the adversary (who we call $\mathcal{A}$) and the challenger (who we call $\mathcal{C}$). The adversary is trying to break the security of the cryptographic algorithm using arbitrary (but still efficient) protocol, while the challenger is following a simple, fixed protocol. The game is played in a form of a challenge, where the adversary is given some information and is asked to perform some task. The security of the cryptographic algorithm is defined based on the probability of the adversary to win the game.
+Typically, the cryptographic security is defined in a form of a game between the adversary (who we call $\mathcal{A}$) and the challenger (who we call $\mathcal{C}h$). The adversary is trying to break the security of the cryptographic algorithm using arbitrary (but still efficient) protocol, while the challenger is following a simple, fixed protocol. The game is played in a form of a challenge, where the adversary is given some information and is asked to perform some task. The security of the cryptographic algorithm is defined based on the probability of the adversary to win the game.
 
 \subsubsection{Cipher Semantic Security}
-Let us get into specifics. Suppose that we want to specify that the encryption scheme is secure. Recall that cipher $\mathcal{E}$ over the space $(\mathcal{K}, \mathcal{M}, \mathcal{C})$ (here, $\mathcal{K}$ is the space containing all possible keys, $\mathcal{M}$ -- all possible messages and $\mathcal{C}$ -- all possible ciphers) consists of two algorithms:
+Let us get into specifics. Suppose that we want to specify that the encryption scheme is secure. Recall that cipher $\mathcal{E} = (E,D)$ over the space $(\mathcal{K}, \mathcal{M}, \mathcal{C})$ (here, $\mathcal{K}$ is the space containing all possible keys, $\mathcal{M}$ -- all possible messages and $\mathcal{C}$ -- all possible ciphers) consists of two efficiently computable methods:
 \begin{itemize}
     \item $E: \mathcal{K} \times \mathcal{M} \to \mathcal{C}$ -- encryption method, that based on the provided message $m \in \mathcal{M}$ and key $k \in \mathcal{K}$ outputs the cipher $c = E(k,m) \in \mathcal{C}$.
     \item $D: \mathcal{K} \times \mathcal{C} \to \mathcal{M}$ -- decryption method, that based on the provided cipher $c \in \mathcal{C}$ and key $k \in \mathcal{K}$ outputs the message $m = D(k,c) \in \mathcal{M}$.
 \end{itemize}
 
-Now let us play the following game between adversary $\mathcal{A}$ and challenger $\mathcal{C}$:
+Of course, we require the \textbf{correctness}:
+\begin{equation}
+    (\forall k \in \mathcal{K}) \, (\forall m \in \mathcal{M}): \{D(k,E(k,m)) = m\}
+\end{equation}
+
+Now let us play the following game between adversary $\mathcal{A}$ and challenger $\mathcal{C}h$:
 \begin{enumerate}
     \item $\mathcal{A}$ picks any two messages $m_0,m_1 \in \mathcal{M}$ on his choice.
-    \item $\mathcal{C}$ picks a random key $k \xleftarrow{R} \mathcal{K}$ and random bit $b \xleftarrow{R} \{0,1\}$ and sends the cipher $c = E(k,m_b)$ to $\mathcal{A}$.
+    \item $\mathcal{C}h$ picks a random key $k \xleftarrow{R} \mathcal{K}$ and random bit $b \xleftarrow{R} \{0,1\}$ and sends the cipher $c = E(k,m_b)$ to $\mathcal{A}$.
     \item $\mathcal{A}$ is trying to guess the bit $b$ by using the cipher $c$.
     \item $\mathcal{A}$ outputs the guess $\hat{b}$.
 \end{enumerate}
 
+\begin{figure}
+    \centering
+    \begin{tikzpicture}
+        \node[inner sep=0pt, align=center] (challenger) {\includegraphics[width=0.75cm]{lectures/images/lecture_2/challenger.png}\\Challenger $\mathcal{C}h$};
+        \node[inner sep=0pt, align=center, right=5cm of challenger] (adversary) {\includegraphics[width=0.75cm]{lectures/images/lecture_2/demon.png}\\Adversary $\mathcal{A}$};
+
+        \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]challenger.south) -- ([yshift=-9cm]challenger.south);
+        \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]adversary.south) -- ([yshift=-9cm]adversary.south);
+
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-1.5cm]adversary.south) coordinate (l2)--(l2-|challenger) node[midway, above=2mm, fill=white]{Send $m_1, m_2 \in \mathcal{M}, |m_1| = |m_2|$};
+
+        \node[align=center,fill=white!5,thick,below=2.5cm of challenger](challenger-actions){
+        \noindent\rule{3.5cm}{0.8pt}\\
+        $b \xleftarrow{R} \{0,1\}$ \\
+        $k \xleftarrow{R} \mathcal{K}$ \\
+        $c \gets E(k,m_b)$ \\
+        \noindent\rule{3.5cm}{0.8pt}};
+
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-6cm]challenger.south) coordinate (l2)--(l2-|adversary) node[midway, above=2mm, fill=white]{Send cipher $c$};
+
+        \node[align=center,fill=white!5,thick,below=7cm of adversary](adversary-guess){
+        \noindent\rule{3.5cm}{0.8pt}\\
+        Guess bit $\hat{b} \in \{0,1\}$\\
+        \noindent\rule{3.5cm}{0.8pt}};
+    \end{tikzpicture}
+
+    \caption{The game between the adversary $\mathcal{A}$ and the challenger $\mathcal{C}h$ for defining the semantic security.}
+\end{figure}
+
 Now, what should happen if our encryption scheme is secure? The adversary should not be able to guess the bit $b$ with a probability significantly higher than $1/2$ (a random guess). Formally, define the 
 \textbf{advantage} of the adversary $\mathcal{A}$ as:
 \begin{equation}
-    \text{SSAdv}[\mathcal{A}] := \left| \Pr[\hat{b} = b] - \frac{1}{2} \right|
+    \text{SSAdv}[\mathcal{E}, \mathcal{A}] := \left| \Pr[\hat{b} = b] - \frac{1}{2} \right|
 \end{equation}
+
+We say that the encryption scheme is \textbf{semantically secure}\footnote{This version of definition is called a \textbf{bit-guessing} version.} if for any efficient adversary $\mathcal{A}$ the advantage $\text{SSAdv}[\mathcal{A}]$ is negligible. In other words, the adversary cannot guess the bit $b$ with a probability significantly higher than $1/2$.
+
+Now, what negligible means? Let us give the formal definition!
+
+\begin{definition}
+    A function $f: \mathbb{N} \to \mathbb{R}$ is called \textbf{negligible} if for all $c \in \mathbb{R}_{>0}$ there exists $n_c \in \mathbb{N}$ such that for any $n \geq n_c$ we have $|f(n)| < 1/n^c$.
+\end{definition}
+
+The alternative definition, which is problably easier to interpret, is the following.
+
+\begin{theorem}
+    A function $f: \mathbb{N} \to \mathbb{R}$ is \textbf{negligible} if and only if for any $c \in \mathbb{R}_{>0}$, we have
+    \begin{equation}
+        \lim_{n \to \infty} f(n)n^c = 0
+    \end{equation}
+\end{theorem}
+
+\begin{example}
+    The function $f(n) = 2^{-n}$ is negligible since for any $c \in \mathbb{R}_{>0}$ we have
+    \begin{equation}
+        \lim_{n \to \infty} 2^{-n}n^c = 0
+    \end{equation}
+
+    The function $g(n) = \frac{1}{n!}$ is also negligible for similar reasons.
+\end{example}
+
+\begin{example}
+    The function $h(n) = \frac{1}{n}$ is not negligible since for $c = 1$ we have
+    \begin{equation}
+        \lim_{n \to \infty} \frac{1}{n}n = 1 \neq 0
+    \end{equation}
+\end{example}
+
+Well, that is weird. For some reason we are considering a function the depends on some natural number $n$, but what is this number?
+
+Typically, when defining the security of the cryptographic algorithm, we are considering the security parameter $\lambda$ (e.g., the length of the key). The function is negligible if the probability of the adversary to break the security of the cryptographic algorithm is decreasing with the increasing of the security parameter $\lambda$. Moreover, we require that the probability of the adversary to break the security of the cryptographic algorithm is decreasing faster than any polynomial function of the security parameter $\lambda$.
+
+So all in all, we can define the semantic security as follows.
+
+\begin{definition}
+    The encryption scheme $\mathcal{E}$ with a security paramter $\lambda \in \mathbb{N}$ is \textbf{semantically secure} if for any efficient adversary $\mathcal{A}$ we have:
+    \begin{equation}
+        \text{Pr}\begin{bmatrix}[c|c]
+            & m_1, m_2 \gets \mathcal{A} \\
+            & k \xleftarrow{R} \mathcal{K} \\
+            b = \hat{b} & b \xleftarrow{R} \{0,1\} \\
+            & c \gets E(k,m_b) \\
+            & \hat{b} \gets \mathcal{A}(c)
+        \end{bmatrix} < \text{negl}(\lambda)
+    \end{equation}
+\end{definition}
 
 \subsection{Basic Number Theory}
 

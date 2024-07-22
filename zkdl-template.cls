@@ -29,12 +29,33 @@
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[a4paper, top=1.0in,bottom=1.0in, left=0.8in, right=0.8in, footskip=0.4in, includefoot]{geometry}
 \RequirePackage[most]{tcolorbox}
-\RequirePackage{tikz,tikz-3dplot,tikz-cd,tkz-tab,tkz-euclide,pgf,pgfplots}
-\pgfplotsset{compat=newest}
+%\pgfplotsset{compat=newest}
 \RequirePackage{multicol}
 \RequirePackage[bottom,multiple]{footmisc} % ensures footnotes are at the bottom of the page, and separates footnotes by a comma if they are adjacent
 \RequirePackage{hyperref}
 \RequirePackage[nameinlink]{cleveref} % nameinlink ensures that the entire element is clickable in the pdf, not just the number
+
+% --- Tikz settings ---
+\RequirePackage{tikz,tikz-3dplot,tikz-cd,tkz-tab,tkz-euclide,pgf,pgfplots}
+% \RequirePackage{tikz}
+% \RequirePackage{tikzscale}
+% \RequirePackage{filecontents}
+% \RequirePackage{pgfplots}
+% \usepgfplotslibrary{external}
+% \usetikzlibrary{arrows}
+% \usetikzlibrary{arrows.meta}
+% \usetikzlibrary{positioning}
+% \usetikzlibrary{backgrounds}
+% \usepgfplotslibrary{fillbetween}
+% \RequirePackage{lmodern, tikzpeople}
+% \usetikzlibrary{positioning, shapes.multipart}
+% \tikzexternalize
+
+% --- Matrix magical command
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+\hskip -\arraycolsep
+\let\@ifnextchar\new@ifnextchar
+\array{#1}}
 
 % --- Linter settings ---
 \RequirePackage{listings, listings-rust}
