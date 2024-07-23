@@ -37,7 +37,7 @@ Now let us play the following game between adversary $\mathcal{A}$ and challenge
         \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]challenger.south) -- ([yshift=-9cm]challenger.south);
         \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]adversary.south) -- ([yshift=-9cm]adversary.south);
 
-        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-1.5cm]adversary.south) coordinate (l2)--(l2-|challenger) node[midway, above=2mm, fill=white]{Send $m_1, m_2 \in \mathcal{M}, |m_1| = |m_2|$};
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-1.5cm]adversary.south) coordinate (l2)--(l2-|challenger) node[midway, above=2mm, fill=white]{Send $m_0, m_1 \in \mathcal{M}, |m_0| = |m_1|$};
 
         \node[align=center,fill=white!5,thick,below=2.5cm of challenger](challenger-actions){
         \noindent\rule{3.5cm}{0.8pt}\\
@@ -106,12 +106,14 @@ So all in all, we can define the semantic security as follows.
     The encryption scheme $\mathcal{E}$ with a security paramter $\lambda \in \mathbb{N}$ is \textbf{semantically secure} if for any efficient adversary $\mathcal{A}$ we have:
     \begin{equation}
         \left|\text{Pr}\begin{bmatrix}[c|c]
-            & m_1, m_2 \gets \mathcal{A}, \; k \xleftarrow{R} \mathcal{K}, \; b \xleftarrow{R} \{0,1\} \\
+            & m_0, m_1 \gets \mathcal{A}, \; k \xleftarrow{R} \mathcal{K}, \; b \xleftarrow{R} \{0,1\} \\
             b = \hat{b} & c \gets E(k,m_b) \\
             &\hat{b} \gets \mathcal{A}(c)
         \end{bmatrix} - \frac{1}{2}\right| < \text{negl}(\lambda)
     \end{equation}
 \end{definition}
+
+Do not be afraid of such complex notation, it is quite simple. Notation $\text{Pr}[A \mid B]$ means ``the probability of $A$, given that $B$ occurred''. So our inner probability is read as ``the probability that the guessed bit $\hat{b}$ equals $b$ given the setup on the right''. Then, on the right we define the setup: first we generate two messages $m_0,m_1 \in \mathcal{M}$, then we choose a random bit $b$ and a key $k$, cipher the message $m_b$, send it to the adversary and the adversary, based on provided cipher, gives $\hat{b}$ as an output. We then claim that the probability of the adversary to guess the bit $b$ is close to $1/2$.
 
 Let us see some more examples of how to define the security of certain crypographic objects.
 
