@@ -17,7 +17,7 @@
 \setbeamercolor{alerted text}{fg=purple} % Making alerted text non-red
 
 % Tikz
-\usepackage{tikz}
+\usepackage{tikz,tikz-3dplot,tikz-cd,tkz-tab,tkz-euclide,pgf,pgfplots}
 \usetikzlibrary{matrix,positioning,fit,backgrounds,intersections}
 
 % -- Cross signs --
@@ -32,7 +32,7 @@
 
 \title[Mathematics II]{\textbf{Mathematics for Cryptography II: Security Analysis, Polynomials, Number Theory}}
 \author{Distributed Lab}
-\date{July 18, 2024}
+\date{July 25, 2024}
 \titlegraphic{
     \includegraphics[width=\textwidth]{images/banner_wide.png}
 }
@@ -68,7 +68,7 @@
             \includegraphics[width=0.8\textwidth]{images/lecture_2/bulletproof.png}
             \caption{This is not that hard as it seems. Figure from ``\textit{Bulletproofs: Short Proofs for Confidential Transactions and More}''}
             \label{fig:wuuttt}
-          \end{figure}
+        \end{figure}
     \end{frame}
 
     \section{Quick Recap}
@@ -76,12 +76,199 @@
     \begin{frame}{Quick Recap}
         \begin{enumerate}
             \item We know how to read formal statements, like 
-            \begin{equation}
+            \begin{equation*}
                 (\forall n \in \mathbb{N}) \, (\exists k \in \mathbb{Z}): \{n=2k+1 \vee n = 2k\}
-            \end{equation}
+            \end{equation*}
             \item Group $\mathbb{G}$ is a set with a binary operation that satisfies certain rules. In this lecture, we will use the \textbf{multiplicative} notation: for example, $g^{\alpha}$ means $g$ multiplied by itself $\alpha$ times.
             \item Probability of event $E$ is denoted by $\text{Pr}[E]$ -- we will need it further.
         \end{enumerate}
+    \end{frame}
+
+    \section{Security Analysis}
+
+    \subsection{Cipher Definition}
+
+    \begin{frame}{Introducing the Cipher: a bit of Formalism}
+        We will consider an example of a cipher to demonstrate the notion of security.
+
+        Let us introduce three sets:
+        \begin{itemize}
+            \item $\mathcal{K}$ -- a set of all possible keys.
+            \item $\mathcal{M}$ -- a set of all possible messages. For example, $\mathcal{M} = \{0,1\}^n$ -- all binary strings of length $n$.
+            \item $\mathcal{C}$ -- a set of all possible ciphertexts.
+        \end{itemize}
+
+        The cipher is defined over a tuple $(\mathcal{K}, \mathcal{M}, \mathcal{C})$.
+
+        \begin{block}{Tiny Note}
+            Cryptography is a very formalized field, but everything considered is well-known to you.
+        \end{block}
+    \end{frame}
+
+    \begin{frame}{Introducing the Cipher}
+        \begin{definition}
+            Cipher scheme $\mathcal{E} = (E,D)$ over the space $(\mathcal{K}, \mathcal{M}, \mathcal{C})$ consists of two efficiently computable methods:
+            \begin{itemize}
+                \item $E: \mathcal{K} \times \mathcal{M} \to \mathcal{C}$ -- encryption method, that based on the provided message $m \in \mathcal{M}$ and key $k \in \mathcal{K}$ outputs the cipher $c = E(k,m) \in \mathcal{C}$.
+                \item $D: \mathcal{K} \times \mathcal{C} \to \mathcal{M}$ -- decryption method, that based on the provided cipher $c \in \mathcal{C}$ and key $k \in \mathcal{K}$ outputs the message $m = D(k,c) \in \mathcal{M}$.
+            \end{itemize}
+        \end{definition}
+
+        We require the \textbf{correctness}:
+        \begin{equation*}
+            \forall k \in \mathcal{K}, \forall m \in \mathcal{M}: D(k,E(k,m)) = m.
+        \end{equation*}
+
+        \begin{alertblock}{Question}
+            What else cipher must have to be practical?
+        \end{alertblock}
+    \end{frame}
+
+    \begin{frame}{Defining Security}
+        Typically, the security is defined as a game between the adversary ($\mathcal{A}$) and the challenger ($\mathcal{C}h$).
+
+        \begin{figure}
+            \includegraphics[width=0.6\textwidth]{images/lecture_2/interaction.pdf}
+            \caption{Challenger $\mathcal{C}h$ follows a straightforward protocol, while the adversary $\mathcal{A}$ might take any strategy to win the game.}
+            \label{fig:wuuttt}
+        \end{figure}
+    \end{frame}
+
+    \subsection{Bit Guessing Game}
+    \begin{frame}{Semantic Security: Bit Guessing Game}
+        \begin{figure}
+            \centering
+            \begin{tikzpicture}[thick,scale=0.8, every node/.style={scale=0.8}]
+                \node[inner sep=0pt, align=center] (challenger) {\includegraphics[width=0.75cm]{../lectures/images/lecture_2/challenger.png}\\Challenger $\mathcal{C}h$};
+                \node[inner sep=0pt, align=center, right=5cm of challenger] (adversary) {\includegraphics[width=0.75cm]{../lectures/images/lecture_2/demon.png}\\Adversary $\mathcal{A}$};
+        
+                \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]challenger.south) -- ([yshift=-7cm]challenger.south);
+                \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]adversary.south) -- ([yshift=-7cm]adversary.south);
+        
+                \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-1.5cm]adversary.south) coordinate (l2)--(l2-|challenger) node[midway, above=2mm, fill=white]{Send $m_0, m_1 \in \mathcal{M}, |m_0| = |m_1|$};
+        
+                \node[align=center,fill=white!5,thick,below=2.5cm of challenger](challenger-actions){
+                \noindent\rule{3.5cm}{0.8pt}\\
+                $b \xleftarrow{R} \{0,1\}$ \\
+                $k \xleftarrow{R} \mathcal{K}$ \\
+                $c \gets E(k,m_b)$ \\
+                \noindent\rule{3.5cm}{0.8pt}};
+        
+                \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-6cm]challenger.south) coordinate (l2)--(l2-|adversary) node[midway, above=2mm, fill=white]{Send cipher $c$};
+        
+                \node[align=center,fill=white!5,thick,below=5cm of adversary](adversary-guess){
+                \noindent\rule{3.5cm}{0.8pt}\\
+                Guess bit $\hat{b} \in \{0,1\}$\\
+                \noindent\rule{3.5cm}{0.8pt}};
+            \end{tikzpicture}
+        \end{figure}
+    \end{frame}
+
+    \begin{frame}{Semantic Security: Bit Guessing Game}
+
+        \begin{alertblock}{Question}
+            Suppose our cipher is perfect. What is the probability that the adversary guesses the bit $b$ correctly? (that is, $b = \hat{b}$)
+        \end{alertblock}
+
+        \begin{definition}
+            \textbf{Advantage in the Cipher Big Guessing Game} of the adversary $\mathcal{A}$ given cipher $\mathcal{E}$ is defined as:
+            \begin{equation*}
+                \text{SS}\mathsf{adv}[\mathcal{E}, \mathcal{A}] := \left| \Pr[\hat{b} = b] - \frac{1}{2} \right|
+            \end{equation*}
+        \end{definition}
+
+        \begin{definition}
+            The cipher $\mathcal{E}$ is called \textbf{semantically secure} if for any adversary $\mathcal{A}$ the advantage $\text{SS}\mathsf{adv}[\mathcal{E}, \mathcal{A}]$ is \textbf{negligible}.
+        \end{definition}
+
+        But what does it mean to be \textbf{negligible}?
+    
+    \end{frame}
+
+    \subsection{Neglibility}
+
+    \begin{frame}{Neglibility}
+        \textbf{In practice}, neglibible means below $2^{-128}$ (called $128$ bits of security).
+
+        In theory, however\ldots
+
+        \begin{definition}
+            \textbf{Security parameter}, denoted by $\lambda \in \mathbb{N}$, is just a parameterization of the security level, represented as a positive integer. 
+        \end{definition}
+
+        \begin{example}
+            The security of the group of points on the elliptic curve is defined by the number of bits in the order of the group. So if $|\mathbb{G}|$ is $256$ bits long, then $\lambda = 256$.
+        \end{example}
+    \end{frame}
+
+    \begin{frame}{Neglible Functions}
+        Now, the probability of advesary winning the game depends on $\lambda$ and we want this dependence to decrease rapidly.
+
+        \begin{definition}
+            A function $f: \mathbb{N} \to \mathbb{R}$ is called \textbf{negligible} if for all $c \in \mathbb{R}_{>0}$ there exists $n_c \in \mathbb{N}$ such that for any $n \geq n_c$ we have $|f(n)| < 1/n^c$.
+        \end{definition}
+        
+        The alternative definition, which is problably easier to interpret, is the following.
+        
+        \begin{theorem}
+            A function $f: \mathbb{N} \to \mathbb{R}$ is \textbf{negligible} if and only if for any $c \in \mathbb{R}_{>0}$, we have
+            \begin{equation*}
+                \lim_{n \to \infty} f(n)n^c = 0
+            \end{equation*}
+        \end{theorem}
+    \end{frame}
+
+    \begin{frame}{Neglible Functions Examples}
+        \begin{example}
+            The function $f(\lambda) = 2^{-\lambda}$ is negligible since for any $c \in \mathbb{R}_{>0}$ we have $\lim_{\lambda \to \infty} 2^{-\lambda}\lambda^c = 0$.
+        
+            The function $g(\lambda) = \frac{1}{\lambda!}$ is also negligible for similar reasons.
+        \end{example}
+        
+        \begin{example}
+            The function $h(\lambda) = \frac{1}{\lambda}$ is not negligible since for $c = 1$ we have
+            \begin{equation*}
+                \lim_{\lambda \to \infty} \frac{1}{\lambda} \times \lambda = 1 \neq 0
+            \end{equation*}
+        \end{example}
+
+        \begin{alertblock}{Question}
+            Is the function $u(\lambda) = \lambda^{-10000}$ negligible?
+        \end{alertblock}
+    \end{frame}
+
+    \subsection{Other Examples}
+    \begin{frame}{Discrete Logarithm Problem}
+        \begin{definition}
+            Assume that $\mathbb{G}$ is a cyclic group of prime order $r$ generated by $g \in \mathbb{G}$. Define the following game:
+            \begin{enumerate}
+                \item Both challenger $\mathcal{C}h$ and adversary $\mathcal{A}$ take a description $\mathbb{G}$ as an input: order $r$ and generator $g \in \mathbb{G}$.
+                \item $\mathcal{C}h$ computes $\alpha \xleftarrow{R} \mathbb{Z}_r, u \gets g^{\alpha}$ and sends $u \in \mathbb{G}$ to $\mathcal{A}$.
+                \item The adversary $\mathcal{A}$ outputs $\hat{\alpha} \in \mathbb{Z}_r$.
+            \end{enumerate}
+        
+            We define $\mathcal{A}$'s \textbf{advantage in solving the discrete logarithm problem in $\mathbb{G}$}, denoted as $\text{DL}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as the probability that $\hat{\alpha} = \alpha$.
+        \end{definition}
+        
+        \begin{definition}
+            The \textbf{Discrete Logarithm Assumption} holds in the group $\mathbb{G}$ if for any efficient adversary $\mathcal{A}$ the advantage $\text{DL}\mathsf{adv}[\mathcal{A},\mathbb{G}] \leq \text{negl}(\lambda)$.
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}{Diffie-Hellman Assumption}
+        \begin{definition}
+            Let $\mathbb{G}$ be a cyclic group of prime order $r$ generated by $g \in \mathbb{G}$. Define the following game:
+            \begin{enumerate}
+                \item $\mathcal{C}h$ computes $\alpha, \beta \xleftarrow{R} \mathbb{Z}_r, u \gets g^{\alpha}, v \gets g^{\beta}, w \gets g^{\alpha\beta}$ and sends $u,v \in \mathbb{G}$ to $\mathcal{A}$.
+                \item The adversary $\mathcal{A}$ outputs $\hat{w} \in \mathbb{G}$.
+            \end{enumerate}
+        
+            We define $\mathcal{A}$'s \textbf{advantage in solving the computational Diffie-Hellman problem in $\mathbb{G}$}, denoted as $\text{CDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as the probability that $\hat{w} = w$.
+        \end{definition}
+        
+        \begin{definition}
+            The \textbf{Computational Diffie-Hellman Assumption} holds in the group $\mathbb{G}$ if for any efficient adversary $\mathcal{A}$ the advantage $\text{CDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$ is negligible.
+        \end{definition}
     \end{frame}
 
     \section{Polynomials}
