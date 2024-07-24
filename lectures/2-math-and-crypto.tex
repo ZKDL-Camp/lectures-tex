@@ -236,6 +236,25 @@ def is_prime(n, k):
 Miller-Rabin primality test, is a more advanced form of Fermat primality test. The main difference is it is not vulnerable to \textit{Carmichael numbers},
 which makes it much better to use in practice.
 
+\subsubsection{Modular inverse}
+
+Modular multiplicative inverse of an integer $a$ is an integer $b$ such that $a \cdot b \equiv 1 \pmod{m}$. 
+In prime fields it is commonly used as a division operation.
+
+One of the ways to compute the modular inverse is by using Euler`s theorem:
+
+$a^{\phi(m)} \equiv 1 \pmod (m)$, where $\phi$ is Euler's totient function. 
+
+For prime numbers, where $\phi(m) = m-1$:
+
+$a^{m-2} \equiv a^{-1} \pmod (m)$.
+
+\begin{lstlisting}[language=Python]
+    a_inverse = powmod(a, m-2, m) # where powmod(base, power, modulus)
+\end{lstlisting}
+
+
+
 \subsubsection{Reed-Solomon codes}
 
 Reed-Solomon codes allows to restore lost or corrupted data, implement threshold secret sharing and is used in some ZK protocols.
