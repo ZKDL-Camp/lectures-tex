@@ -198,7 +198,7 @@ An algorithm is impractical when dealing with such large numbers.
 
 \subsubsection{Probabilistic prime tests}
 
-A primality test is probabilistic if it outputs $\mathsf{True}$ when the number is a prime and $\mathsf{False}$ when the input is composite with probability less than 1. Such test is often called a pseudoprimality test.
+A primality test is probabilistic if it outputs $\mathtt{True}$ when the number is a prime and $\mathtt{False}$ when the input is composite with probability less than 1. Such test is often called a pseudoprimality test.
 Fermat Primality and Miller-Rabin Primality Tests are examples of probabilistic primality test. Both of them use the idea of \textbf{Fermat's Little Theorem}:
 
 \begin{theorem}
@@ -260,14 +260,14 @@ Greatest common divisor (GCD) of two or more integers, which are not all zero, i
 \begin{example}
     $gcd(8, 12) = 4$, 
     $gcd(3, 15) = 3$, 
-    $gcd(15, 10) = 5$, 
+    $gcd(15, 10) = 5$.
 \end{example}
 
 Computing $GCD$ using Euclid's algorithm. 
 The is based on the fact that, given two positive integers $a$ and $b$ such that $a > b$, 
 the common divisors of $a$ and $b$ are the same as the common divisors of $a - b$ and $b$. 
 It can be observed, that it can be further optimized, by using $a mod b$, instead of $a - b$. 
-For example, $gcd(26, 8) = gcd(18, 8) = gcd(10, 8) = gcd(2, 8)$ can be optimized to $gcd(26, 8) = gcd(26 mod 8, 8) => gcd(2, 8)$
+For example, $gcd(26, 8) = gcd(18, 8) = gcd(10, 8) = gcd(2, 8)$ can be optimized to $gcd(26, 8) = gcd(26 \pmod{8}, 8) => gcd(2, 8)$
 Algorithm can be implemented using recursion. Base of the recursion is $gcd(a, 0) = a$.
 
 \begin{lstlisting}[]
@@ -283,7 +283,7 @@ Provided algorithm work with $O(log(N))$ asymptotic complexity.
 \subsubsection{Reed-Solomon codes}
 
 Reed-Solomon codes allows to restore lost or corrupted data, implement threshold secret sharing and is used in some ZK protocols.
-Given a vector of data $V$ a polynom $P$ is constructed using Lagrange interpolation.
+Given a vector of data $V$ a polynomial $P$ is constructed using Lagrange interpolation.
 Polynomial with degree $n$ can be uniquely defined using $(n+1)$ unique points. Defining more points on the same polynomial add a redundancy,
 which can be used to restore the polynomial even if some points are missing.
 Common choices for a set of evaluation points include ${0, 1, 2, ..., n - 1}$.
@@ -295,19 +295,19 @@ $n-k/2$ erroneous symbols, i.e., it can correct half as many errors as there are
 \subsubsection{Schwartz-Zippel Lemma}
 
 \begin{lemma}
-Let $\F_p$ be a field. Let $f(x_1, x_2, ..., x_n)$ be a polynomial of total degree $d$. Suppose that $f$ is not the zero polynomial. Let $S$ be
-a finite subset of $\F_p$. Let $r_1, r_2, ... r_n$ be chosen at random uniformly and independently from $S$. Then the probability that 
+Let $\mathbb{F}$ be a field. Let $f(x_1, x_2, ..., x_n)$ be a polynomial of total degree $d$. Suppose that $f$ is not the zero polynomial. Let $S$ be
+a finite subset of $\mathbb{F}$. Let $r_1, r_2, ... r_n$ be chosen at random uniformly and independently from $S$. Then the probability that 
 $f(r_1, r_2, ..., r_n) = 0$ is $\le \frac{d}{|S|}$.
 \end{lemma}
 
 \begin{example}
 Let $F = \F_3$, $f(x) = x^2 - 5x + 6$, $S = F$, $r \xleftarrow{R} \mathbb{F}_3$.
 
-Schwartz-Zippel says that the probability that probability that $f(r) = 0$ is $\le \frac{2}{3}$.
+Schwartz-Zippel lemma says that the probability that $f(r) = 0$ is $\le \frac{2}{3}$.
 \end{example}
 
 Given two polynomials $P, Q$ with  degree $d$ in a field $\F_p$, for $r \xleftarrow{R} \mathbb{F}_3$: $\Pr[P(r) == Q(r)] \le \frac{d}{p}$.
-For large fields, where  $\frac{d}{p}$ is negligble, this property allows to succintly check equality of polinimials.
+For large fields, where  $\frac{d}{p}$ is negligible, this property allows to succinctly check the equality of polynomials.
 
 
 \end{document}
