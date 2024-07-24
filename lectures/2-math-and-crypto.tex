@@ -279,6 +279,18 @@ Algorithm can be implemented using recursion. Base of the recursion is $gcd(a, 0
 
 Provided algorithm work with $O(log(N))$ asymptotic complexity.
 
+\subsubsection{Least common multiple}
+
+Least common multiple (LCM) of two integers $a$ and $b$, is the smallest positive integer that is divisible by both $a$ and $b$.
+
+The least common multiple can be computed from the greatest common divisor with the formula:
+$lcm(a, b) = \frac{|ab|}{gcd(a,b)}$
+
+\begin{lstlisting}[]
+    int lcm(a, b):
+     return a * (b / gcd(a, b))
+ \end{lstlisting}
+
 
 \subsubsection{Reed-Solomon codes}
 
