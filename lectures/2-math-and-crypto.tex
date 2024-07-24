@@ -236,4 +236,18 @@ def is_prime(n, k):
 Miller-Rabin primality test, is a more advanced form of Fermat primality test. The main difference is it is not vulnerable to \textit{Carmichael numbers},
 which makes it much better to use in practice.
 
+\subsubsection{Reed-Solomon codes}
+
+Reed-Solomon codes allows to restore lost or corrupted data, implement threshold secret sharing and is used in some ZK protocols.
+Given a vector of data $V$ a polynom $P$ is constructed using Lagrange interpolation.
+Polynomial with degree $n$ can be uniquely defined using $(n+1)$ unique points. Defining more points on the same polynomial add a redundancy,
+which can be used to restore the polynomial even if some points are missing.
+Common choices for a set of evaluation points include ${0, 1, 2, ..., n - 1}$.
+
+The error-correcting ability of a Reed-Solomon code is $n-k$, the measure of redundancy in the block. 
+If the locations of the error symbols are not known in advance, then a Reed-Solomon code can correct up to
+$n-k/2$ erroneous symbols, i.e., it can correct half as many errors as there are redundant symbols added to the block.
+
+
+
 \end{document}
