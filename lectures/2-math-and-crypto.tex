@@ -168,13 +168,13 @@ knowing that the probability of the adversary to break the Diffie-Hellman assump
 
 \subsubsection{Primes}
 
-Primes are often used when doing almost any cryptographic computation. A prime number is a natural number ($\mathbb{Z}^{+}$) that is not a product
-of two smaller natural number. In other words, the prime number is divisible only by itself and 1. First primes look like this: 2, 3, 5, 7, 11...
+Primes are often used when doing almost any cryptographic computation. A prime number is a natural number ($\mathbb{N}$) that is not a product
+of two smaller natural number. In other words, the prime number is divisible only by itself and 1. The first primes are: 2, 3, 5, 7, 11...
 
 \subsubsection{Deterministic prime tests}
 
-A primality test is deterministic if it outputs $\mathsf{True}$ when the number is a prime and $\mathsf{False}$ when the input is composite with probability 1.
-An example of a deterministic prime test is $\mathsf{Trial\_Division\_Test}$. Here is an example implementation in Rust: 
+A primality test is deterministic if it outputs $\mathtt{True}$ when the number is a prime and $\mathtt{False}$ when the input is composite with probability 1.
+An example of a deterministic prime test is $\mathtt{Trial\_Division\_Test}$. Here is an example implementation in Rust: 
 
 \begin{lstlisting}[language=Rust]
     fn is_prime(n: u32) -> bool {
@@ -243,16 +243,41 @@ In prime fields it is commonly used as a division operation.
 
 One of the ways to compute the modular inverse is by using Euler`s theorem:
 
-$a^{\phi(m)} \equiv 1 \pmod (m)$, where $\phi$ is Euler's totient function. 
+$a^{\phi(m)} \equiv 1 \pmod{m}$, where $\phi$ is Euler's totient function. 
 
 For prime numbers, where $\phi(m) = m-1$:
 
-$a^{m-2} \equiv a^{-1} \pmod (m)$.
+$a^{m-2} \equiv a^{-1} \pmod{m}$.
 
 \begin{lstlisting}[language=Python]
     a_inverse = powmod(a, m-2, m) # where powmod(base, power, modulus)
 \end{lstlisting}
 
+\subsubsection{Greatest Common Divisor}
+
+Greatest common divisor (GCD) of two or more integers, which are not all zero, is the largest positive integer that divides each of the integers. 
+
+\begin{example}
+    $gcd(8, 12) = 4$, 
+    $gcd(3, 15) = 3$, 
+    $gcd(15, 10) = 5$, 
+\end{example}
+
+Computing $GCD$ using Euclid's algorithm. 
+The is based on the fact that, given two positive integers $a$ and $b$ such that $a > b$, 
+the common divisors of $a$ and $b$ are the same as the common divisors of $a - b$ and $b$. 
+It can be observed, that it can be further optimized, by using $a mod b$, instead of $a - b$. 
+For example, $gcd(26, 8) = gcd(18, 8) = gcd(10, 8) = gcd(2, 8)$ can be optimized to $gcd(26, 8) = gcd(26 mod 8, 8) => gcd(2, 8)$
+Algorithm can be implemented using recursion. Base of the recursion is $gcd(a, 0) = a$.
+
+\begin{lstlisting}[]
+   int gcd(a, b):
+    if (b == 0):
+        return a
+    return gcd(b, a % b)
+\end{lstlisting}
+
+Provided algorithm work with $O(log(N))$ asymptotic complexity.
 
 
 \subsubsection{Reed-Solomon codes}
