@@ -248,6 +248,22 @@ The error-correcting ability of a Reed-Solomon code is $n-k$, the measure of red
 If the locations of the error symbols are not known in advance, then a Reed-Solomon code can correct up to
 $n-k/2$ erroneous symbols, i.e., it can correct half as many errors as there are redundant symbols added to the block.
 
+\subsubsection{Schwartz-Zippel Lemma}
+
+\begin{lemma}
+Let $\F_p$ be a field. Let $f(x_1, x_2, ..., x_n)$ be a polynomial of total degree $d$. Suppose that $f$ is not the zero polynomial. Let $S$ be
+a finite subset of $\F_p$. Let $r_1, r_2, ... r_n$ be chosen at random uniformly and independently from $S$. Then the probability that 
+$f(r_1, r_2, ..., r_n) = 0$ is $\le \frac{d}{|S|}$.
+\end{lemma}
+
+\begin{example}
+Let $F = \F_3$, $f(x) = x^2 - 5x + 6$, $S = F$, $r \xleftarrow{R} \mathbb{F}_3$.
+
+Schwartz-Zippel says that the probability that probability that $f(r) = 0$ is $\le \frac{2}{3}$.
+\end{example}
+
+Given two polynomials $P, Q$ with  degree $d$ in a field $\F_p$, for $r \xleftarrow{R} \mathbb{F}_3$: $\Pr[P(r) == Q(r)] \le \frac{d}{p}$.
+For large fields, where  $\frac{d}{p}$ is negligble, this property allows to succintly check equality of polinimials.
 
 
 \end{document}
