@@ -1,0 +1,65 @@
+\documentclass{zkdl-tests-template}
+
+\title{\huge\sffamily\bfseries Lecture \#2 Exercises}
+\author{\Large\sffamily Distributed Lab}
+\date{\sffamily July 25, 2024}
+\titlepic{\includegraphics[width=0.15\textwidth]{../lectures/images/logo.png}}
+
+\begin{document}
+
+\pagestyle{fancy}
+
+\maketitle
+
+\textbf{Exercise 1.} Suppose that for the given cipher with a security parameter $\lambda$, the adversary $\mathcal{A}$ can deduce the least significant bit of the plaintext from the ciphertext. Recall that the advantage 
+of a bit-guessing game is defined as $\text{SS}\mathsf{Adv}[\mathcal{A}] = \left|\Pr[b=\hat{b}] - \frac{1}{2}\right|$, where $b$ is the randomly chosen bit of a challenger, while 
+$\hat{b}$ is the adversary's guess. What is the maximal advantage of $\mathcal{A}$ in this case?
+
+\textbf{Hint:} The adversary can choose which messages to send to challenger to further distinguish the plaintexts.
+
+\begin{enumerate}[a)]
+    \item $1$
+    \item $\frac{1}{2}$
+    \item $\frac{1}{4}$
+    \item $0$
+    \item Negligible value ($\text{negl}(\lambda)$).
+\end{enumerate}
+
+\textbf{Exercise 2.} Consider the cipher $\mathcal{E} = (E,D)$ with encryption function $E: \mathcal{K} \times \mathcal{M} \to \mathcal{C}$ over the message space $\mathcal{M}$, ciphertext space $\mathcal{C}$, and key space $\mathcal{K}$. We want to define the security
+that, based on the cipher, the adversary $\mathcal{A}$ cannot restore the message (\textit{security against message recovery}). For that reason, we define the following game:
+\begin{enumerate}
+    \item Challenger chooses random $m \xleftarrow{R} \mathcal{M}, k \xleftarrow{R} \mathcal{K}$.
+    \item Challenger computes the ciphertext $c \gets E(k,m)$ and sends to $\mathcal{A}$.
+    \item Adversary outputs $\hat{m}$, and wins if $\hat{m} = m$.
+\end{enumerate}
+
+We say that the cipher $\mathcal{E}$ is secure against message recovery if the \textbf{message recovery advantage}, denoted as $\text{MR}\textsf{adv}[\mathcal{A}, \mathcal{E}]$ is negligible. Which of the following statements is a valid interpretation of the message recovery advantage?
+\begin{enumerate}[a)]
+    \item $\text{MR}\textsf{adv}[\mathcal{A},\mathcal{E}] := \left|\text{Pr}[m=\hat{m}] - \frac{1}{2}\right|$
+    \item $\text{MR}\textsf{adv}[\mathcal{A},\mathcal{E}] := \left|\text{Pr}[m=\hat{m}] - 1\right|$.
+    \item $\text{MR}\textsf{adv}[\mathcal{A},\mathcal{E}] := \text{Pr}[m=\hat{m}]$
+    \item $\text{MR}\textsf{adv}[\mathcal{A},\mathcal{E}] := \left|\text{Pr}[m=\hat{m}] - \frac{1}{|\mathcal{M}|}\right|$
+\end{enumerate}
+
+\textbf{Exercise 3.} Suppose that $f$ and $g$ are negligible functions. Which of the following functions is not neccessarily negligible?
+\begin{enumerate}[a)]
+    \item $f + g$
+    \item $f \times g$
+    \item $f - g$
+    \item $f/g$
+    \item $h(\lambda) := \begin{cases}
+        1/f(\lambda) & \text{if } 0 < \lambda < 100000 \\
+        g(\lambda) & \text{if } \lambda \geq 100000
+    \end{cases}$
+\end{enumerate}
+
+\textbf{Exercise 4.} Suppose that $f \in \mathbb{F}_p[x]$ is a $d$-degree polynomial with $d$ \textbf{distinct} roots in $\mathbb{F}_p$. What is the probability that, when evaluating $f$ at $n$ random points, the polynomial will be zero at all of them?
+
+\begin{enumerate}[a)]
+    \item Exactly $(d/p)^n$.
+    \item Strictly less that $(d/p)^n$.
+    \item Exactly $nd/p$.
+    \item Exactly $d/np$.
+\end{enumerate}
+
+\end{document}

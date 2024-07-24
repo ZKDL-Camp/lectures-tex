@@ -36,20 +36,15 @@
 \RequirePackage[nameinlink]{cleveref} % nameinlink ensures that the entire element is clickable in the pdf, not just the number
 
 % --- Tikz settings ---
-\RequirePackage{tikz,tikz-3dplot,tikz-cd,tkz-tab,tkz-euclide,pgf,pgfplots}
-% \RequirePackage{tikz}
-% \RequirePackage{tikzscale}
-% \RequirePackage{filecontents}
-% \RequirePackage{pgfplots}
-% \usepgfplotslibrary{external}
-% \usetikzlibrary{arrows}
-% \usetikzlibrary{arrows.meta}
-% \usetikzlibrary{positioning}
-% \usetikzlibrary{backgrounds}
-% \usepgfplotslibrary{fillbetween}
-% \RequirePackage{lmodern, tikzpeople}
-% \usetikzlibrary{positioning, shapes.multipart}
-% \tikzexternalize
+\RequirePackage {
+    tikz,
+    tikz-3dplot,
+    tikz-cd,
+    tkz-tab,
+    tkz-euclide,
+    pgf,
+    pgfplots
+}
 
 % --- Matrix magical command
 \renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
