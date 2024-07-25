@@ -545,7 +545,7 @@
           \centering
           \includegraphics[width=0.5\textwidth]{images/lecture_2/reed-solomon-1.png}
           \caption{Polynomial with degree $n$ can be uniquely defined using $(n+1)$ unique points. Defining more points on the same polynomial adds a redundancy, which can be used to restore the polynomial even if some points are missing.}
-          \label{fig:shamir}
+          \label{fig:reed-1}
         \end{figure}
     \end{frame}
 
@@ -558,7 +558,37 @@
           \centering
           \includegraphics[width=0.5\textwidth]{images/lecture_2/reed-solomon-2.png}
           \caption{Polynomial with degree $n$ can be uniquely defined using $(n+1)$ unique points. Defining more points on the same polynomial adds a redundancy, which can be used to restore the polynomial even if some points are missing.}
-          \label{fig:shamir}
+          \label{fig:reed-2}
+        \end{figure}
+    \end{frame}
+
+
+    \begin{frame}{Schwartz-Zippel Lemma}
+        \begin{definition}
+        Let $\mathbb{F}$ be a field. Let $f(x_1, x_2, ..., x_n)$ be a polynomial of total degree $d$. Suppose that $f$ is not the zero polynomial. Let $S$ be
+        a finite subset of $\mathbb{F}$. Let $r_1, r_2, ... r_n$ be chosen at random uniformly and independently from $S$. Then the probability that 
+        $f(r_1, r_2, ..., r_n) = 0$ is $\le \frac{d}{|S|}$.
+        \end{definition}
+  
+        \begin{figure}
+          \centering
+          \includegraphics[width=0.5\textwidth]{images/lecture_2/Schwartz-Zippel-1.png}
+          \caption{Schwartz-Zippel Lemma. Polynomial}
+          \label{fig:schwartz-1}
+        \end{figure}
+    \end{frame}
+
+    \begin{frame}{Schwartz-Zippel Lemma}
+        \begin{definition}
+            Let $F = \mathbb{F}_3$, $f(x) = x^2 - 5x + 6$, $S = F$, $r \xleftarrow{R} \mathbb{F}_3$.
+            Schwartz-Zippel lemma says that the probability that $f(r) = 0$ is $\le \frac{2}{3}$.
+        \end{definition}
+  
+        \begin{figure}
+          \centering
+          \includegraphics[width=0.5\textwidth]{images/lecture_2/Schwartz-Zippel-2.png}
+          \caption{Schwartz-Zippel Lemma. Polynomial}
+          \label{fig:schwartz-2}
         \end{figure}
     \end{frame}
   
