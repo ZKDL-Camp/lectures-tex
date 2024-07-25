@@ -685,7 +685,39 @@ For example, $gcd(26, 8) = gcd(18, 8) = gcd(10, 8) = gcd(2, 8)$ can be optimized
         
     \end{frame}
 
+    \begin{frame}{Least Common Multiple}
+    
+        Least common multiple (LCM) of two integers $a$ and $b$, is the smallest positive integer that is divisible by both $a$ and $b$.
 
+    The least common multiple can be computed from the greatest common divisor with the formula:
+
+    $lcm(a, b) = \frac{|ab|}{gcd(a,b)}$
+
+
+    \includegraphics[width=0.7\textwidth]{images/lecture_2/lcm.png}
+
+    \end{frame}
+
+    \begin{frame}{Modular inverse}
+    
+    Modular multiplicative inverse of an integer $a$ is an integer $b$ such that $a \cdot b \equiv 1 \pmod{m}$. 
+    
+    \vspace{15px}
+
+    One of the ways to compute the modular inverse is by using Euler`s theorem:
+    
+    $a^{\phi(m)} \equiv 1 \pmod{m}$, where $\phi$ is Euler's totient function. 
+    
+    \vspace{15px}
+
+    For prime numbers, where $\phi(m) = m-1$:
+    
+    $a^{m-2} \equiv a^{-1} \pmod{m}$.
+
+
+    \includegraphics[width=0.7\textwidth]{images/lecture_2/inverse.png}
+
+    \end{frame}
 
 
     \begin{frame}{}
