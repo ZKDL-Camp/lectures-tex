@@ -591,6 +591,18 @@
           \label{fig:schwartz-2}
         \end{figure}
     \end{frame}
+
+    \begin{frame}{Schwartz-Zippel Lemma}
+        Given two polynomials $P, Q$ with  degree $d$ in a field $\mathbb{F}_p$, for $r \xleftarrow{R} \mathbb{F}_3$: $\Pr[P(r) == Q(r)] \le \frac{d}{p}$.
+        For large fields, where  $\frac{d}{p}$ is negligible, this property allows to succinctly check the equality of polynomials.
+
+    \begin{proof}
+        Let $H(x) := P(x) - Q(x)$. Than for each $P(x) = Q(x) \rightarrow H(x) = 0$. Applying Schwartz-Zippel lemma, the probability of $H(x) = 0$ for $x \xleftarrow{R} \mathbb{F} $ is $\le \frac{d}{|S|}$.
+    \end{proof}
+        
+    \end{frame}
+
+    
   
     \begin{frame}{}
         \centering \Large
