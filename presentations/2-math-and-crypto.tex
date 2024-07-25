@@ -635,7 +635,7 @@
         Athough, false positives are possible. 
         
         \vspace{15px}
-        
+
         For example, consider $n = 15$ and $a = 4$.
         
         $4^{15-1} \equiv 1 \pmod{15}$, but $n = 15 = 3 \cdot 5$ is composite. 
@@ -644,6 +644,49 @@
         Solution: $a$ is picked many times.
         The probability that a composite number is mistakenly called prime for $k$ iterations is $2^{-k}$ = $\dfrac{1}{2^k}$.
     \end{frame}
+
+    \begin{frame}{Probabilistic prime tests}
+        There exists a problem with such an algorithm in the form of \textbf{Carmichael numbers}, which are numbers that are Fermat pseudoprime to all bases.
+        Asymptotic complexity $O(\log^3{n})$.
+
+        \includegraphics[width=0.7\textwidth]{images/lecture_2/prime-test-prob.png}
+    \end{frame}
+
+
+    \begin{frame}{Greatest Common Divisor}
+        Greatest common divisor (GCD) of two or more integers, which are not all zero, is the largest positive integer that divides each of the integers. 
+
+        \begin{example}
+            $gcd(8, 12) = 4$, 
+            $gcd(3, 15) = 3$, 
+            $gcd(15, 10) = 5$.
+        \end{example}
+
+    \end{frame}
+
+    \begin{frame}{Computing $GCD$ using Euclid's algorithm. }
+        
+The is based on the fact that, given two positive integers $a$ and $b$ such that $a > b$, 
+the common divisors of $a$ and $b$ are the same as the common divisors of $a - b$ and $b$. 
+
+It can be observed, that it can be further optimized, by using $a \pmod{b}$, instead of $a - b$. 
+
+For example, $gcd(26, 8) = gcd(18, 8) = gcd(10, 8) = gcd(2, 8)$ can be optimized to $gcd(26, 8) = gcd(26 \pmod{8}, 8) => gcd(2, 8)$
+
+
+    \end{frame}
+
+    \begin{frame}{Computing $GCD$ using Euclid's algorithm. }
+        
+        \includegraphics[width=0.7\textwidth]{images/lecture_2/gcd.png}
+
+        Algorithm can be implemented using recursion. Base of the recursion is $gcd(a, 0) = a$.
+        Provided algorithm work with $O(log(N))$ asymptotic complexity.
+        
+    \end{frame}
+
+
+
 
     \begin{frame}{}
         \centering \Large
