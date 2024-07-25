@@ -547,7 +547,7 @@
           \centering
           \includegraphics[width=0.5\textwidth]{images/lecture_2/reed-solomon-1.png}
           \caption{Polynomial with degree $n$ can be uniquely defined using $(n+1)$ unique points. Defining more points on the same polynomial adds a redundancy, which can be used to restore the polynomial even if some points are missing.}
-          \label{fig:shamir}
+          \label{fig:reed-1}
         \end{figure}
     \end{frame}
 
@@ -560,10 +560,165 @@
           \centering
           \includegraphics[width=0.5\textwidth]{images/lecture_2/reed-solomon-2.png}
           \caption{Polynomial with degree $n$ can be uniquely defined using $(n+1)$ unique points. Defining more points on the same polynomial adds a redundancy, which can be used to restore the polynomial even if some points are missing.}
-          \label{fig:shamir}
+          \label{fig:reed-2}
         \end{figure}
     \end{frame}
+
+
+    \begin{frame}{Schwartz-Zippel Lemma}
+        \begin{definition}
+        Let $\mathbb{F}$ be a field. Let $f(x_1, x_2, ..., x_n)$ be a polynomial of total degree $d$. Suppose that $f$ is not the zero polynomial. Let $S$ be
+        a finite subset of $\mathbb{F}$. Let $r_1, r_2, ... r_n$ be chosen at random uniformly and independently from $S$. Then the probability that 
+        $f(r_1, r_2, ..., r_n) = 0$ is $\le \frac{d}{|S|}$.
+        \end{definition}
   
+        \begin{figure}
+          \centering
+          \includegraphics[width=0.5\textwidth]{images/lecture_2/Schwartz-Zippel-1.png}
+          \caption{Schwartz-Zippel Lemma. Polynomial}
+          \label{fig:schwartz-1}
+        \end{figure}
+    \end{frame}
+
+    \begin{frame}{Schwartz-Zippel Lemma}
+        \begin{definition}
+            Let $F = \mathbb{F}_3$, $f(x) = x^2 - 5x + 6$, $S = F$, $r \xleftarrow{R} \mathbb{F}_3$.
+            Schwartz-Zippel lemma says that the probability that $f(r) = 0$ is $\le \frac{2}{3}$.
+        \end{definition}
+  
+        \begin{figure}
+          \centering
+          \includegraphics[width=0.5\textwidth]{images/lecture_2/Schwartz-Zippel-2.png}
+          \caption{Schwartz-Zippel Lemma. Polynomial}
+          \label{fig:schwartz-2}
+        \end{figure}
+    \end{frame}
+
+    \begin{frame}{Schwartz-Zippel Lemma}
+        Given two polynomials $P, Q$ with  degree $d$ in a field $\mathbb{F}_p$, for $r \xleftarrow{R} \mathbb{F}_3$: $\Pr[P(r) == Q(r)] \le \frac{d}{p}$.
+        For large fields, where  $\frac{d}{p}$ is negligible, this property allows to succinctly check the equality of polynomials.
+
+    \begin{proof}
+        Let $H(x) := P(x) - Q(x)$. Than for each $P(x) = Q(x) \rightarrow H(x) = 0$. Applying Schwartz-Zippel lemma, the probability of $H(x) = 0$ for $x \xleftarrow{R} \mathbb{F} $ is $\le \frac{d}{|S|}$.
+    \end{proof}
+        
+    \end{frame}
+
+    \section{Basic Number Theory}
+
+    \begin{frame}{Primes}
+        Primes are often used when doing almost any cryptographic computation. A prime number is a natural number ($\mathbb{N}$) that is not a product
+        of two smaller natural number. In other words, the prime number is divisible only by itself and 1. The first primes are: 2, 3, 5, 7, 11...
+        
+    \end{frame}
+
+    \begin{frame}{Deterministic prime tests}
+        A primality test is deterministic if it outputs $\mathtt{True}$ when the number is a prime and $\mathtt{False}$ when the input is composite with probability 1.
+        Here is an example implementation in Rust: 
+
+        \centering
+        \includegraphics[width=0.8\textwidth]{images/lecture_2/prime-test-det.png}
+    \end{frame}
+
+
+    \begin{frame}{Probabilistic prime tests}
+        A primality test is probabilistic if it outputs $\mathtt{True}$ when the number is a prime and $\mathtt{False}$ when the input is composite with probability less than 1.
+        Fermat Primality and Miller-Rabin Primality Tests are examples of probabilistic primality test. 
+
+        \begin{theorem}
+            Let $p$ be a prime number and $a$ be an integer not divisible by $p$. Then $a ^ {p-1} - 1$ is always divisible by $p$:  $a^{p-1} \equiv 1 \pmod{p}$
+        \end{theorem}
+    \end{frame}
+
+    \begin{frame}{Probabilistic prime tests}
+        The key idea behind the Fermat Primality Test is that if for some $a$ not divisible by $n$ we have $a^{n-1} \not\equiv 1 \pmod{n}$ then $n$ is definitely NOT prime.
+        Athough, false positives are possible. 
+        
+        \vspace{15px}
+
+        For example, consider $n = 15$ and $a = 4$.
+        
+        $4^{15-1} \equiv 1 \pmod{15}$, but $n = 15 = 3 \cdot 5$ is composite. 
+        
+        \vspace{15px}
+        Solution: $a$ is picked many times.
+        The probability that a composite number is mistakenly called prime for $k$ iterations is $2^{-k}$ = $\dfrac{1}{2^k}$.
+    \end{frame}
+
+    \begin{frame}{Probabilistic prime tests}
+        There exists a problem with such an algorithm in the form of \textbf{Carmichael numbers}, which are numbers that are Fermat pseudoprime to all bases.
+        Asymptotic complexity $O(\log^3{n})$.
+
+        \includegraphics[width=0.7\textwidth]{images/lecture_2/prime-test-prob.png}
+    \end{frame}
+
+
+    \begin{frame}{Greatest Common Divisor}
+        Greatest common divisor (GCD) of two or more integers, which are not all zero, is the largest positive integer that divides each of the integers. 
+
+        \begin{example}
+            $gcd(8, 12) = 4$, 
+            $gcd(3, 15) = 3$, 
+            $gcd(15, 10) = 5$.
+        \end{example}
+
+    \end{frame}
+
+    \begin{frame}{Computing $GCD$ using Euclid's algorithm. }
+        
+The is based on the fact that, given two positive integers $a$ and $b$ such that $a > b$, 
+the common divisors of $a$ and $b$ are the same as the common divisors of $a - b$ and $b$. 
+
+It can be observed, that it can be further optimized, by using $a \pmod{b}$, instead of $a - b$. 
+
+For example, $gcd(26, 8) = gcd(18, 8) = gcd(10, 8) = gcd(2, 8)$ can be optimized to $gcd(26, 8) = gcd(26 \pmod{8}, 8) => gcd(2, 8)$
+
+
+    \end{frame}
+
+    \begin{frame}{Computing $GCD$ using Euclid's algorithm. }
+        
+        \includegraphics[width=0.7\textwidth]{images/lecture_2/gcd.png}
+
+        Algorithm can be implemented using recursion. Base of the recursion is $gcd(a, 0) = a$.
+        Provided algorithm work with $O(log(N))$ asymptotic complexity.
+        
+    \end{frame}
+
+    \begin{frame}{Least Common Multiple}
+    
+        Least common multiple (LCM) of two integers $a$ and $b$, is the smallest positive integer that is divisible by both $a$ and $b$.
+
+    The least common multiple can be computed from the greatest common divisor with the formula:
+
+    $lcm(a, b) = \frac{|ab|}{gcd(a,b)}$
+
+
+    \includegraphics[width=0.7\textwidth]{images/lecture_2/lcm.png}
+
+    \end{frame}
+
+    \begin{frame}{Modular inverse}
+    
+    Modular multiplicative inverse of an integer $a$ is an integer $b$ such that $a \cdot b \equiv 1 \pmod{m}$. 
+    
+    \vspace{15px}
+
+    One of the ways to compute the modular inverse is by using Euler`s theorem:
+    
+    $a^{\phi(m)} \equiv 1 \pmod{m}$, where $\phi$ is Euler's totient function. 
+    
+    \vspace{15px}
+
+    For prime numbers, where $\phi(m) = m-1$:
+    
+    $a^{m-2} \equiv a^{-1} \pmod{m}$.
+
+
+    \includegraphics[width=0.7\textwidth]{images/lecture_2/inverse.png}
+
+    \end{frame}
+
     \begin{frame}{}
         \centering \Large
         \emph{Thanks for your attention!}
