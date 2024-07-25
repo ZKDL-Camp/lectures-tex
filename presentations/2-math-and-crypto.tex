@@ -482,6 +482,21 @@
         \label{fig:shamir}
       \end{figure}
     \end{frame}
+
+    \begin{frame}{Reed-Solomon Codes}
+        \begin{definition}
+            \begin{itemize}
+                \item Reed-Solomon codes is an error-correcting algorithm based on polynomials. It allows to restore lost or corrupted data, implement threshold secret sharing and it is used in some ZK protocols.
+            \end{itemize}
+          \end{definition}
+  
+        \begin{figure}
+          \centering
+          \includegraphics[width=0.5\textwidth]{images/lecture_2/reed-solomon.png}
+          \caption{Polynomial with degree $n$ can be uniquely defined using $(n+1)$ unique points. Defining more points on the same polynomial adds a redundancy, which can be used to restore the polynomial even if some points are missing.}
+          \label{fig:shamir}
+        \end{figure}
+    \end{frame}
   
     \begin{frame}{}
         \centering \Large
