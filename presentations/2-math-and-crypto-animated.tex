@@ -64,7 +64,7 @@
     \begin{frame}{What will we learn today?}
         \begin{itemize}
             \item How to define the security formally.
-            \item How to read\ldots This\ldots
+            \item How to read\ldots This\ldots\pause
         \end{itemize}
         \begin{figure}
             \includegraphics[width=0.8\textwidth]{images/lecture_2/bulletproof.png}
@@ -81,7 +81,7 @@
             \begin{equation*}
                 (\forall n \in \mathbb{N}) \, (\exists k \in \mathbb{Z}): \{n=2k+1 \vee n = 2k\}
             \end{equation*}
-            \item Group $\mathbb{G}$ is a set with a binary operation that satisfies certain rules. In this lecture, we will use the \textbf{multiplicative} notation: for example, $g^{\alpha}$ means $g$ multiplied by itself $\alpha$ times.
+            \item \pause Group $\mathbb{G}$ is a set with a binary operation that satisfies certain rules. In this lecture, we will use the \textbf{multiplicative} notation: for example, $g^{\alpha}$ means $g$ multiplied by itself $\alpha$ times.\pause
             \item Probability of event $E$ is denoted by $\text{Pr}[E]$ -- we will need it further.
         \end{enumerate}
     \end{frame}
@@ -95,12 +95,12 @@
 
         Let us introduce three sets:
         \begin{itemize}
-            \item $\mathcal{K}$ -- a set of all possible keys.
-            \item $\mathcal{M}$ -- a set of all possible messages. For example, $\mathcal{M} = \{0,1\}^n$ -- all binary strings of length $n$.
-            \item $\mathcal{C}$ -- a set of all possible ciphertexts.
+            \item $\mathcal{K}$ -- a set of all possible keys.\pause
+            \item $\mathcal{M}$ -- a set of all possible messages. For example, $\mathcal{M} = \{0,1\}^n$ -- all binary strings of length $n$.\pause
+            \item $\mathcal{C}$ -- a set of all possible ciphertexts.\pause
         \end{itemize}
 
-        The cipher is defined over a tuple $(\mathcal{K}, \mathcal{M}, \mathcal{C})$.
+        The cipher is defined over a tuple $(\mathcal{K}, \mathcal{M}, \mathcal{C})$.\pause
 
         \begin{block}{Tiny Note}
             Cryptography is a very formalized field, but everything considered is well-known to you.
@@ -111,8 +111,8 @@
         \begin{definition}
             Cipher scheme $\mathcal{E} = (E,D)$ over the space $(\mathcal{K}, \mathcal{M}, \mathcal{C})$ consists of two efficiently computable methods:
             \begin{itemize}
-                \item $E: \mathcal{K} \times \mathcal{M} \to \mathcal{C}$ -- encryption method, that based on the provided message $m \in \mathcal{M}$ and key $k \in \mathcal{K}$ outputs the cipher $c = E(k,m) \in \mathcal{C}$.
-                \item $D: \mathcal{K} \times \mathcal{C} \to \mathcal{M}$ -- decryption method, that based on the provided cipher $c \in \mathcal{C}$ and key $k \in \mathcal{K}$ outputs the message $m = D(k,c) \in \mathcal{M}$.
+                \item $E: \mathcal{K} \times \mathcal{M} \to \mathcal{C}$ -- encryption method, that based on the provided message $m \in \mathcal{M}$ and key $k \in \mathcal{K}$ outputs the cipher $c = E(k,m) \in \mathcal{C}$.\pause
+                \item $D: \mathcal{K} \times \mathcal{C} \to \mathcal{M}$ -- decryption method, that based on the provided cipher $c \in \mathcal{C}$ and key $k \in \mathcal{K}$ outputs the message $m = D(k,c) \in \mathcal{M}$.\pause
             \end{itemize}
         \end{definition}
 
@@ -121,7 +121,7 @@
             \forall k \in \mathcal{K}, \forall m \in \mathcal{M}: D(k,E(k,m)) = m.
         \end{equation*}
 
-        \begin{alertblock}{Question}
+        \pause\begin{alertblock}{Question}
             What else cipher must have to be practical?
         \end{alertblock}
     \end{frame}
@@ -169,7 +169,7 @@
     \begin{frame}{Semantic Security: Bit Guessing Game}
 
         \begin{alertblock}{Question \#1}
-            Suppose our cipher is perfect. What is the probability that the adversary guesses the bit $b$ correctly? (that is, $b = \hat{b}$)
+            Suppose our cipher is perfect. What is the probability that the adversary guesses the bit $b$ correctly? (that is, $b = \hat{b}$)\pause
         \end{alertblock}
 
         \begin{definition}
@@ -179,22 +179,22 @@
             \end{equation*}
         \end{definition}
 
-        \begin{definition}
+        \pause\begin{definition}
             The cipher $\mathcal{E}$ is called \textbf{semantically secure} if for any adversary $\mathcal{A}$ the advantage $\text{SS}\mathsf{adv}[\mathcal{E}, \mathcal{A}]$ is \textbf{negligible}.
         \end{definition}
     \end{frame}
 
     \begin{frame}{Advantage}
         \begin{alertblock}{Question \#2}
-            If adversary can guess the bit with probability $0.000000001$, is the cipher semantically secure?
+            If adversary can guess the bit with probability $0.000000001$, is the cipher semantically secure?\pause
         \end{alertblock}
 
         \begin{alertblock}{Question \#3}
-            If adversary has the advantage $0.0001$, is the cipher semantically secure?
+            If adversary has the advantage $0.0001$, is the cipher semantically secure?\pause
         \end{alertblock}
 
         \begin{block}{Note}
-            Advantage is just a measure of how many information is leaked to the adversary. The smaller the advantage, the better the cryptographic system. Formally, we want advantage to be \textbf{negligible}.
+            Advantage is just a measure of how many information is leaked to the adversary. The smaller the advantage, the better the cryptographic system. Formally, we want advantage to be \textbf{negligible}.\pause
         \end{block}
 
         But what does it mean to be \textbf{negligible}?
@@ -206,10 +206,10 @@
     \begin{frame}{Neglibility}
         \textbf{In practice}, neglibible means below $2^{-128}$ (called $128$ bits of security).
 
-        In theory, however\ldots
+        In theory, however\ldots\pause
 
         \begin{definition}
-            \textbf{Security parameter}, denoted by $\lambda \in \mathbb{N}$, is just a variable that measures the input size of some computational program.
+            \textbf{Security parameter}, denoted by $\lambda \in \mathbb{N}$, is just a variable that measures the input size of some computational program.\pause
         \end{definition}
 
         \begin{example}
@@ -221,7 +221,7 @@
         Now, the probability of advesary winning the game depends on $\lambda$ and we want this dependence to decrease rapidly.
 
         \begin{definition}
-            A function $f: \mathbb{N} \to \mathbb{R}$ is called \textbf{negligible} if for all $c \in \mathbb{R}_{>0}$ there exists $n_c \in \mathbb{N}$ such that for any $n \geq n_c$ we have $|f(n)| < 1/n^c$.
+            A function $f: \mathbb{N} \to \mathbb{R}$ is called \textbf{negligible} if for all $c \in \mathbb{R}_{>0}$ there exists $n_c \in \mathbb{N}$ such that for any $n \geq n_c$ we have $|f(n)| < 1/n^c$.\pause
         \end{definition}
         
         The alternative definition, which is problably easier to interpret, is the following.
@@ -236,9 +236,9 @@
 
     \begin{frame}{Neglible Functions Examples}
         \begin{example}
-            The function $f(\lambda) = 2^{-\lambda}$ is negligible since for any $c \in \mathbb{R}_{>0}$ we have $\lim_{\lambda \to \infty} 2^{-\lambda}\lambda^c = 0$.
+            The function $f(\lambda) = 2^{-\lambda}$ is negligible since for any $c \in \mathbb{R}_{>0}$ we have $\lim_{\lambda \to \infty} 2^{-\lambda}\lambda^c = 0$.\pause
         
-            The function $g(\lambda) = \frac{1}{\lambda!}$ is also negligible for similar reasons.
+            The function $g(\lambda) = \frac{1}{\lambda!}$ is also negligible for similar reasons.\pause
         \end{example}
         
         \begin{example}
@@ -248,7 +248,7 @@
             \end{equation*}
         \end{example}
 
-        \begin{alertblock}{Question}
+        \pause\begin{alertblock}{Question}
             Is the function $u(\lambda) = \lambda^{-10000}$ negligible?
         \end{alertblock}
     \end{frame}
@@ -258,12 +258,12 @@
         \begin{definition}
             Assume that $\mathbb{G}$ is a cyclic group of prime order $r$ generated by $g \in \mathbb{G}$. Define the following game:
             \begin{enumerate}
-                \item Both challenger $\mathcal{C}h$ and adversary $\mathcal{A}$ take a description $\mathbb{G}$ as an input: order $r$ and generator $g \in \mathbb{G}$.
-                \item $\mathcal{C}h$ computes $\alpha \xleftarrow{R} \mathbb{Z}_r, u \gets g^{\alpha}$ and sends $u \in \mathbb{G}$ to $\mathcal{A}$.
-                \item The adversary $\mathcal{A}$ outputs $\hat{\alpha} \in \mathbb{Z}_r$.
+                \item Both challenger $\mathcal{C}h$ and adversary $\mathcal{A}$ take a description $\mathbb{G}$ as an input: order $r$ and generator $g \in \mathbb{G}$.\pause
+                \item $\mathcal{C}h$ computes $\alpha \xleftarrow{R} \mathbb{Z}_r, u \gets g^{\alpha}$ and sends $u \in \mathbb{G}$ to $\mathcal{A}$.\pause
+                \item The adversary $\mathcal{A}$ outputs $\hat{\alpha} \in \mathbb{Z}_r$.\pause
             \end{enumerate}
         
-            We define $\mathcal{A}$'s \textbf{advantage in solving the discrete logarithm problem in $\mathbb{G}$}, denoted as $\text{DL}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as the probability that $\hat{\alpha} = \alpha$.
+            We define $\mathcal{A}$'s \textbf{advantage in solving the discrete logarithm problem in $\mathbb{G}$}, denoted as $\text{DL}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as the probability that $\hat{\alpha} = \alpha$.\pause
         \end{definition}
         
         \begin{definition}
@@ -275,11 +275,11 @@
         \begin{definition}
             Let $\mathbb{G}$ be a cyclic group of prime order $r$ generated by $g \in \mathbb{G}$. Define the following game:
             \begin{enumerate}
-                \item $\mathcal{C}h$ computes $\alpha, \beta \xleftarrow{R} \mathbb{Z}_r, u \gets g^{\alpha}, v \gets g^{\beta}, w \gets g^{\alpha\beta}$ and sends $u,v \in \mathbb{G}$ to $\mathcal{A}$.
-                \item The adversary $\mathcal{A}$ outputs $\hat{w} \in \mathbb{G}$.
+                \item $\mathcal{C}h$ computes $\alpha, \beta \xleftarrow{R} \mathbb{Z}_r, u \gets g^{\alpha}, v \gets g^{\beta}, w \gets g^{\alpha\beta}$ and sends $u,v \in \mathbb{G}$ to $\mathcal{A}$.\pause
+                \item The adversary $\mathcal{A}$ outputs $\hat{w} \in \mathbb{G}$.\pause
             \end{enumerate}
         
-            We define $\mathcal{A}$'s \textbf{advantage in solving the computational Diffie-Hellman problem in $\mathbb{G}$}, denoted as $\text{CDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as the probability that $\hat{w} = w$.
+            We define $\mathcal{A}$'s \textbf{advantage in solving the computational Diffie-Hellman problem in $\mathbb{G}$}, denoted as $\text{CDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as the probability that $\hat{w} = w$.\pause
         \end{definition}
         
         \begin{definition}
@@ -291,8 +291,8 @@
         \begin{definition}
             Let $\mathbb{G}$ be a cyclic group of prime order $r$ generated by $g \in \mathbb{G}$. Define the following game:
             \begin{enumerate}
-                \item $\mathcal{C}h$ computes $\alpha, \beta,\gamma \xleftarrow{R} \mathbb{Z}_r, u \gets g^{\alpha}, v \gets g^{\beta}, w_0 \gets g^{\alpha\beta}, w_1 \gets g^{\gamma}$. Then, $\mathcal{C}h$ flips a coin $b \xleftarrow{R} \{0,1\}$ and sends $(u,v,w_b)$ to $\mathcal{A}$.
-                \item The adversary $\mathcal{A}$ outputs the predicted bit $\hat{b} \in \{0,1\}$.
+                \item $\mathcal{C}h$ computes $\alpha, \beta,\gamma \xleftarrow{R} \mathbb{Z}_r, u \gets g^{\alpha}, v \gets g^{\beta}, w_0 \gets g^{\alpha\beta}, w_1 \gets g^{\gamma}$. Then, $\mathcal{C}h$ flips a coin $b \xleftarrow{R} \{0,1\}$ and sends $(u,v,w_b)$ to $\mathcal{A}$.\pause
+                \item The adversary $\mathcal{A}$ outputs the predicted bit $\hat{b} \in \{0,1\}$.\pause
             \end{enumerate}
         
             We define $\mathcal{A}$'s \textbf{advantage in solving the Decisional Diffie-Hellman problem in $\mathbb{G}$}, denoted as $\text{DDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as
@@ -307,7 +307,7 @@
     \begin{frame}{Even-ordered Cyclic Group}
         \begin{theorem}
             Suppose that $\mathbb{G}$ is a cyclic group of an even order. Then, the Decision
-            Diffie-Hellman Assumption does not hold in $\mathbb{G}$. In fact, there is an efficient adversary $\mathcal{A}$ with an advantage $1/4$.
+            Diffie-Hellman Assumption does not hold in $\mathbb{G}$. In fact, there is an efficient adversary $\mathcal{A}$ with an advantage $1/4$.\pause
         \end{theorem}
 
         \textbf{Idea of proof.} We first prove the following statement:
@@ -316,12 +316,12 @@
             Based on $u = g^{\alpha} \in \mathbb{G}$, it is possible to determine the parity of $\alpha$.
         \end{lemma}
 
-        \textbf{Lemma proof.} Notice that if $\alpha=2\alpha'$, then
+        \pause\textbf{Lemma proof.} Notice that if $\alpha=2\alpha'$, then
         \begin{equation*}
-            u^n = g^{\alpha n} = g^{2\alpha' n} = (g^{2n})^{\alpha'} = 1^{\alpha'} = 1
+            u^n = g^{\alpha n} =\pause g^{2\alpha' n} =\pause (g^{2n})^{\alpha'} =\pause 1^{\alpha'} = 1
         \end{equation*}
 
-        Therefore, if $u = g^{\alpha}, v = g^{\beta}, w = g^{\gamma}$, adversary knows the parity of $\alpha, \beta, \gamma$. He then checks if parity of $\alpha\beta$ equals parity of $\gamma$.
+        \pause Therefore, if $u = g^{\alpha}, v = g^{\beta}, w = g^{\gamma}$, adversary knows the parity of $\alpha, \beta, \gamma$. He then checks if parity of $\alpha\beta$ equals parity of $\gamma$.
     \end{frame}
 
     \section{Polynomials}
@@ -334,7 +334,7 @@
         \begin{equation*}
             p(x) = c_0 + c_1 x + c_2 x^2 + \cdots + c_n x^n = \sum_{k=0}^{n} c_k x^k,
         \end{equation*}
-        where $c_0, c_1, \dots, c_n$ are coefficients of the polynomial.
+        where $c_0, c_1, \dots, c_n$ are coefficients of the polynomial.\pause
     \end{definition}
     
     \begin{definition}
@@ -354,7 +354,7 @@
             \item $r(x) = 2x^3$.
         \end{enumerate}
     
-       If we were to evaluate these polynomials at $1 \in \mathbb{F}_3$, we would get:
+       \pause If we were to evaluate these polynomials at $1 \in \mathbb{F}_3$, we would get:
         \begin{enumerate}
             \item $p(1) = 1 + 1 + 2 \cdot 1 \; \text{mod} \; 3 = 1$.
             \item $q(1) = 1 + 1 + 1 \; \text{mod} \; 3 = 0$.
@@ -368,11 +368,11 @@
           The \textbf{degree} of a polynomial $p(x) = c_0+c_1x+c_2x^2+\dots$ is the largest $k \in \mathbb{Z}_{\geq 0}$ such that $c_k \neq 0$. We denote the degree of a polynomial as $\deg p$. We also denote by $\mathbb{F}^{(\leq m)}[x]$ a set of polynomials of degree at most $m$.
       \end{definition}
       
-      \begin{example}
+      \pause\begin{example}
           The degree of the polynomial $p(x) = 1 + 2x + 3x^2$ is $2$, so $p(x) \in \mathbb{F}_3^{(\leq 2)}[x]$.
       \end{example}
       
-      \begin{theorem}
+      \pause\begin{theorem}
           For any two polynomials $p,q \in \mathbb{F}[x]$ and $n = \deg p, m = \deg q$, the following two statements are true:
           \begin{enumerate}
               \item $\deg (pq) = n + m$.
@@ -386,11 +386,11 @@
           Let $p(x) \in \mathbb{F}[x]$ be a polynomial of degree $\deg p \geq 1$. A field element $x_0 \in \mathbb{F}$ is called a root of $p(x)$ if $p(x_0) = 0$.
       \end{definition}
       
-      \begin{example}
+      \pause\begin{example}
           Consider the polynomial $p(x) = 1 + x + x^2 \in \mathbb{F}_3[x]$. Then, $x_0=1$ is a root of $p(x)$ since $p(x_0) = 1 + 1 + 1 \; \text{mod} \; 3 = 0$.
       \end{example}
 
-      \begin{theorem}
+      \pause\begin{theorem}
         Let $p(x) \in \mathbb{F}[x], \deg p \geq 1$. Then, $x_0 \in \mathbb{F}$ is a root of $p(x)$ if and only if there exists a polynomial $q(x)$ (with $\deg q = n-1$) such that
         \begin{equation*}
             p(x) = (x-x_0)q(x)
@@ -405,8 +405,8 @@
         \end{equation*}
     \end{theorem}
     
-    \begin{example}
-        Consider $f(x) = x^3+2$ and $g(x) = x+1$ over $\mathbb{R}$. Then, we can write $f(x) = (x^2-x+1)g(x) + 1$, so the remainder of the division is $r \equiv 1$. Typically, we denote this as:
+    \pause\begin{example}
+        Consider $f(x) = x^3+2$ and $g(x) = x+1$ over $\mathbb{R}$. Then, we can write $f(x) = (x^2-x+1)g(x) + 1$, so the remainder of the division is $r \equiv 1$. \pause Typically, we denote this as:
         \begin{equation*}
             f \, \text{div} \, g = x^2-x+1, \quad f \, \text{mod} \, g = 1.
         \end{equation*}
@@ -418,24 +418,24 @@
     \begin{frame}{Polynomial Divisibility}
       \begin{definition}
         A polynomial $f(x) \in \mathbb{F}[x]$ is called \textbf{divisible} by $g(x) \in \mathbb{F}[x]$ (or, $g$ \textbf{divides} $f$, written as $g \mid f$) if there exists a polynomial $h(x) \in \mathbb{F}[x]$ such that $f=gh$.
-    \end{definition}
+        \end{definition}
     
-    \begin{theorem}
+    \pause\begin{theorem}
         If $x_0 \in \mathbb{F}$ is a root of $p(x) \in \mathbb{F}[x]$, then $(x-x_0) \mid p(x)$.
     \end{theorem}
     
-    \begin{definition}
-        A polynomial $f(x) \in \mathbb{F}[x]$ is said to be \textbf{irreducible} in $\mathbb{F}$ if there are no polynomials $g,h \in \mathbb{F}[x]$ both of degree more than $1$ such that $f = gh$.
+    \pause\begin{definition}
+        A polynomial $f(x) \in \mathbb{F}[x]$ is said to be \textbf{irreducible} in $\mathbb{F}$ if there are no polynomials $g,h \in \mathbb{F}[x]$ both of degree $\geq 1$ such that $f = gh$.
     \end{definition}
     \end{frame}
 
     \begin{frame}{Polynomial Divisibility}
       \begin{example}
         A polynomial $f(x) = x^2+16$ is irreducible in $\mathbb{R}$. Also $f(x) = x^2-2$ is irreducible over $\mathbb{Q}$, yet it is reducible over $\mathbb{R}$: $f(x) = (x-\sqrt{2})(x+\sqrt{2})$. 
-    \end{example}
+        \end{example}
     
-    \begin{example}
-        There are no polynomials over complex numbers $\mathbb{C}$ with degree more than $2$ that are irreducible. This follows from the \textit{fundamental theorem of algebra}. For example, $x^2+16 = (x-4i)(x+4i)$.
+    \pause\begin{example}
+        There are no polynomials over complex numbers $\mathbb{C}$ with degree more than $1$ that are irreducible. This follows from the \textit{fundamental theorem of algebra}. For example, $x^2+16 = (x-4i)(x+4i)$.
     \end{example}
     \end{frame}
     \subsection{Interpolation}
@@ -446,7 +446,7 @@
 
       The most obvious way is to specify coefficients $(c_0,c_1,\dots,c_n)$. Can we do it in a different way?
 
-      \begin{theorem}
+      \pause\begin{theorem}
         Given $n+1$ distinct points $(x_0,y_0),\dots,(x_n,y_n)$, there exists a unique polynomial $p(x)$ of degree at most $n$ such that $p(x_i) = y_i$ for all $i=0,\dots,n$.
       \end{theorem}
     \end{frame}
@@ -489,13 +489,13 @@
     \subsection{Interpolation Applications: Shamir Secret Sharing}
     \begin{frame}{Application: Shamir Secret Sharing}
       \begin{alertblock}{Motivation}    
-        How to share a secret $\alpha$ among $n$ people in such a way that any $t$ of them can reconstruct the secret, but any $t-1$ cannot?
+        How to share a secret $\alpha$ among $n$ people in such a way that any $t$ of them can reconstruct the secret, but any $t-1$ cannot?\pause
       \end{alertblock}  
 
       \begin{definition}
-        \textbf{Secret Sharing} scheme is a pair of efficient algorithms $(\mathsf{Gen}, \mathsf{Comb})$ which work as follows:
+        \textbf{Secret Sharing} scheme is a pair of efficient algorithms $(\mathsf{Gen}, \mathsf{Comb})$ which work as follows:\pause
         \begin{itemize}
-            \item $\mathsf{Gen}(\alpha, t, n)$: probabilistic sharing algorithm that yields $n$ shards $(\alpha_1,\dots,\alpha_t)$ for which $t$ shards are needed to reconstruct the secret $\alpha$.
+            \item $\mathsf{Gen}(\alpha, t, n)$: probabilistic sharing algorithm that yields $n$ shards $(\alpha_1,\dots,\alpha_t)$ for which $t$ shards are needed to reconstruct the secret $\alpha$.\pause
             \item $\mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}})$: deterministic reconstruction algorithm that reconstructs the secret $\alpha$ from the shards $\mathcal{I} \subset \{1,\dots,n\}$ of size $t$.
         \end{itemize}
     \end{definition}
@@ -509,7 +509,7 @@
         \end{equation}
       \end{block}
 
-      \begin{definition}
+      \pause\begin{definition}
         Now, \textbf{Shamir's protocol} works as follows: $F=\mathbb{F}_q$ and
         \begin{itemize}
             \item $\mathsf{Gen}(\alpha, k, n)$: choose random $k_1,\dots,k_{t-1} \xleftarrow[]{R} \mathbb{F}_q$ and define the polynomial
@@ -547,7 +547,7 @@
           \centering
           \includegraphics[width=0.5\textwidth]{images/lecture_2/reed-solomon-1.png}
           \caption{Polynomial with degree $n$ can be uniquely defined using $(n+1)$ unique points. Defining more points on the same polynomial adds a redundancy, which can be used to restore the polynomial even if some points are missing.}
-          \label{fig:reed-1}
+          \label{fig:shamir}
         \end{figure}
     \end{frame}
 
@@ -560,51 +560,9 @@
           \centering
           \includegraphics[width=0.5\textwidth]{images/lecture_2/reed-solomon-2.png}
           \caption{Polynomial with degree $n$ can be uniquely defined using $(n+1)$ unique points. Defining more points on the same polynomial adds a redundancy, which can be used to restore the polynomial even if some points are missing.}
-          \label{fig:reed-2}
+          \label{fig:shamir}
         \end{figure}
     \end{frame}
-
-
-    \begin{frame}{Schwartz-Zippel Lemma}
-        \begin{definition}
-        Let $\mathbb{F}$ be a field. Let $f(x_1, x_2, ..., x_n)$ be a polynomial of total degree $d$. Suppose that $f$ is not the zero polynomial. Let $S$ be
-        a finite subset of $\mathbb{F}$. Let $r_1, r_2, ... r_n$ be chosen at random uniformly and independently from $S$. Then the probability that 
-        $f(r_1, r_2, ..., r_n) = 0$ is $\le \frac{d}{|S|}$.
-        \end{definition}
-  
-        \begin{figure}
-          \centering
-          \includegraphics[width=0.5\textwidth]{images/lecture_2/Schwartz-Zippel-1.png}
-          \caption{Schwartz-Zippel Lemma. Polynomial}
-          \label{fig:schwartz-1}
-        \end{figure}
-    \end{frame}
-
-    \begin{frame}{Schwartz-Zippel Lemma}
-        \begin{definition}
-            Let $F = \mathbb{F}_3$, $f(x) = x^2 - 5x + 6$, $S = F$, $r \xleftarrow{R} \mathbb{F}_3$.
-            Schwartz-Zippel lemma says that the probability that $f(r) = 0$ is $\le \frac{2}{3}$.
-        \end{definition}
-  
-        \begin{figure}
-          \centering
-          \includegraphics[width=0.5\textwidth]{images/lecture_2/Schwartz-Zippel-2.png}
-          \caption{Schwartz-Zippel Lemma. Polynomial}
-          \label{fig:schwartz-2}
-        \end{figure}
-    \end{frame}
-
-    \begin{frame}{Schwartz-Zippel Lemma}
-        Given two polynomials $P, Q$ with  degree $d$ in a field $\mathbb{F}_p$, for $r \xleftarrow{R} \mathbb{F}_3$: $\Pr[P(r) == Q(r)] \le \frac{d}{p}$.
-        For large fields, where  $\frac{d}{p}$ is negligible, this property allows to succinctly check the equality of polynomials.
-
-    \begin{proof}
-        Let $H(x) := P(x) - Q(x)$. Than for each $P(x) = Q(x) \rightarrow H(x) = 0$. Applying Schwartz-Zippel lemma, the probability of $H(x) = 0$ for $x \xleftarrow{R} \mathbb{F} $ is $\le \frac{d}{|S|}$.
-    \end{proof}
-        
-    \end{frame}
-
-    
   
     \begin{frame}{}
         \centering \Large
