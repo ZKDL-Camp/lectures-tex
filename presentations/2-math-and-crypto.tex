@@ -604,8 +604,47 @@
         
     \end{frame}
 
-    
-  
+    \section{Basic Number Theory}
+
+    \begin{frame}{Primes}
+        Primes are often used when doing almost any cryptographic computation. A prime number is a natural number ($\mathbb{N}$) that is not a product
+        of two smaller natural number. In other words, the prime number is divisible only by itself and 1. The first primes are: 2, 3, 5, 7, 11...
+        
+    \end{frame}
+
+    \begin{frame}{Deterministic prime tests}
+        A primality test is deterministic if it outputs $\mathtt{True}$ when the number is a prime and $\mathtt{False}$ when the input is composite with probability 1.
+        Here is an example implementation in Rust: 
+
+        \centering
+        \includegraphics[width=0.8\textwidth]{images/lecture_2/prime-test-det.png}
+    \end{frame}
+
+
+    \begin{frame}{Probabilistic prime tests}
+        A primality test is probabilistic if it outputs $\mathtt{True}$ when the number is a prime and $\mathtt{False}$ when the input is composite with probability less than 1.
+        Fermat Primality and Miller-Rabin Primality Tests are examples of probabilistic primality test. 
+
+        \begin{theorem}
+            Let $p$ be a prime number and $a$ be an integer not divisible by $p$. Then $a ^ {p-1} - 1$ is always divisible by $p$:  $a^{p-1} \equiv 1 \pmod{p}$
+        \end{theorem}
+    \end{frame}
+
+    \begin{frame}{Probabilistic prime tests}
+        The key idea behind the Fermat Primality Test is that if for some $a$ not divisible by $n$ we have $a^{n-1} \not\equiv 1 \pmod{n}$ then $n$ is definitely NOT prime.
+        Athough, false positives are possible. 
+        
+        \vspace{15px}
+        
+        For example, consider $n = 15$ and $a = 4$.
+        
+        $4^{15-1} \equiv 1 \pmod{15}$, but $n = 15 = 3 \cdot 5$ is composite. 
+        
+        \vspace{15px}
+        Solution: $a$ is picked many times.
+        The probability that a composite number is mistakenly called prime for $k$ iterations is $2^{-k}$ = $\dfrac{1}{2^k}$.
+    \end{frame}
+
     \begin{frame}{}
         \centering \Large
         \emph{Thanks for your attention!}
