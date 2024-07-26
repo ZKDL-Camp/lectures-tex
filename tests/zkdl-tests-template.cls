@@ -77,6 +77,12 @@
 \renewcommand{\headrulewidth}{1.25pt}
 \renewcommand{\footrulewidth}{1.25pt}
 
+% --- Matrix magical command
+\renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
+\hskip -\arraycolsep
+\let\@ifnextchar\new@ifnextchar
+\array{#1}}
+
 % --- Shortcuts ---
 \newcommand{\ep}{\varepsilon}
 \newcommand{\vp}{\varphi}
