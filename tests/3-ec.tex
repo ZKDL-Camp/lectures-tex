@@ -1,0 +1,56 @@
+\documentclass{zkdl-tests-template}
+
+\title{\huge\sffamily\bfseries Lecture \#3 Exercises}
+\author{\Large\sffamily Distributed Lab}
+\date{\sffamily August 1, 2024}
+\titlepic{\includegraphics[width=0.15\textwidth]{../lectures/images/logo.png}}
+
+\begin{document}
+
+\pagestyle{fancy}
+
+\maketitle
+
+\textbf{Exercise 1.} Oleksandr decided to build $\mathbb{F}_{49}$ as $\mathbb{F}_7[i]/(i^2+1)$. Compute $(3+i)(4+i)$. 
+
+As a result, you would get $a+bi$. Write down $a+b$ as an answer.
+
+\textbf{Exercise 2.} Suppose we build an extension $\mathbb{F}_{p^3} := \mathbb{F}_p[v] / (v^3+1)$. For which of the following values $p$ such construction would not be valid? (you can assume that listed numbers are primes)
+\begin{enumerate}[a)]
+    \item $8431$.
+    \item $9173$.
+    \item $9419$.
+    \item $6947$.
+\end{enumerate}
+
+\textbf{Exercise 3.} This question demonstrates the concept of so-called \textit{tower of extensions}. Suppose we want to build an extension field $\mathbb{F}_{p^4}$. 
+Of course, we can find some irreducible polynomial $\mu(X)$ of degree $4$ over $\mathbb{F}_p$ and build $\mathbb{F}_p[w]/(\mu(X))$. However, we can also build it as $\mathbb{F}_{p^2}[u]/(\nu(u))$ where $\nu(u)$ is an irreducible polynomial of degree $2$ over $\mathbb{F}_{p^2}$.
+
+Suppose $p=5$. We can set $\mathbb{F}_{5^2} = \mathbb{F}_{5}[j] / ()$
+
+\textbf{Exercise 3.} Suppose that elliptic curve is defined as $E/\mathbb{F}_{7}: y^2=x^3+b$. Suppose $(2,3)$ lies on the curve. What is the value of $b$?
+
+\textbf{Exercise 4.} Consider an elliptic curve $E$ over $\mathbb{F}_{167^2}$. Denote by $r$ the order of the group of points on $E$ (that is, $r=|E|$). Which of the following \textbf{can} be the value of $r$?
+\begin{enumerate}[a)]
+    \item $167^2 - 5$
+    \item $167^2-1000$
+    \item $167^2+5 \cdot 167$
+    \item $170^2$
+    \item $160^2$
+\end{enumerate}
+
+\textbf{Exercise 5.} Suppose that for some elliptic curve $E$ the order is $|E| = qr$ where both $q$ and $r$ are prime numbers. Among listed, what is the most optimal complexity of algorithm to solve the discrete logarithm problem on $E$?
+\begin{enumerate}[a)]
+    \item $O(qr)$
+    \item $O(\sqrt{qr})$
+    \item $O(\sqrt{\max\{q,r\}})$
+    \item $O(\sqrt{\min\{q,r\}})$
+    \item $O(\max\{q,r\})$
+\end{enumerate}
+
+\textbf{Exercise 6.} Sum of which of the following pairs of points on the elliptic curve $E/\mathbb{F}_{11}$ is equal to the point at infinity $\mathcal{O}$?
+\begin{enumerate}[a)]
+    \item 
+\end{enumerate}
+
+\end{document}
