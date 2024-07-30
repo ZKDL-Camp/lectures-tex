@@ -46,7 +46,7 @@ Despite just a simplicity of the definition, the field extensions are a very pow
         (a+b\sqrt{2}) + (c+d\sqrt{2})i = a + b\sqrt{2} + ci + d\sqrt{2}i
     \end{equation}
 
-    Showing that this is a field is a bit more tedious, but still straightforward. Suppose we take $\alpha+i\beta \in \mathbb{Q}(\sqrt{2}, i)$ with $\alpha,\beta \in \mathbb{Q}(\sqrt{2})$. Then:
+    Showing that this is a field is a bit more tedious, but still straightforward. Suppose we take $\alpha+\beta i \in \mathbb{Q}(\sqrt{2}, i)$ with $\alpha,\beta \in \mathbb{Q}(\sqrt{2})$. Then:
     \begin{equation}
         \frac{1}{\alpha+\beta i} = \frac{\alpha-\beta i}{\alpha^2+\beta^2} = \frac{\alpha}{\alpha^2+\beta^2} - \frac{\beta}{\alpha^2+\beta^2}i
     \end{equation}
@@ -59,7 +59,7 @@ Despite just a simplicity of the definition, the field extensions are a very pow
 \end{remark}
 
 \begin{remark}
-    One might have defined $\mathbb{Q}(\sqrt{2}, i) = \{x+\sqrt{2}y: x,y \in \mathbb{C}\}$ instead. Indeed, $\mathbb{Q}(\sqrt{2})(i) = \mathbb{Q}(i)(\sqrt{2}) = \mathbb{Q}(\sqrt{2}, i)$.
+    One might have defined $\mathbb{Q}(\sqrt{2}, i) = \{x+\sqrt{2}y: x,y \in \mathbb{Q}(i)\}$ instead. Indeed, $\mathbb{Q}(\sqrt{2})(i) = \mathbb{Q}(i)(\sqrt{2}) = \mathbb{Q}(\sqrt{2}, i)$.
 \end{remark}
 
 \subsubsection{Polynomial Quotient Ring}
@@ -77,7 +77,7 @@ Now, could we have picked another polynomial, say, $q(x) = x^2+4$? Sure! As long
     \end{equation}
 \end{example}
 
-We shifted to the polynomial consideration for a reason: now, instead of considering the complex number $\mathbb{C}$ as ``some'' tuple of real numbers $(c_0,c_1)$, now let us view it as a polynomial\footnote{Here, we use $X$ to represent the polynomial variable to avoid confusion with the notation $x+iy$.} $c_0+c_1X$ modulo polynomial $X^2+1$. 
+We shifted to the polynomial consideration for a reason: now, instead of considering the complex number $\mathbb{C}$ as ``some'' tuple of real numbers $(c_0,c_1)$, now let us view it as a polynomial\footnote{Here, we use $X$ to represent the polynomial variable to avoid confusion with the notation $x+yi$.} $c_0+c_1X$ modulo polynomial $X^2+1$. 
 
 \begin{example}
 Indeed, take, for example, $p_1(X) := 1+2X$ and $p_2(X) := 2+3X$. Addition is performed as we are used to:
