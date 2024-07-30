@@ -11,11 +11,15 @@
 *.cb
 *.cb2
 .*.lb
+*.DS_Store
 
 ## Intermediate documents:
 *.dvi
 *.xdv
 *-converted-to.*
+
+*-temp.*
+*.sage.py
 
 ## Bibliography auxiliary files (bibtex/biblatex/biber):
 *.bbl
