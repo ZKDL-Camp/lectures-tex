@@ -426,4 +426,24 @@ We say that the cipher $\mathcal{E}$ is secure against message recovery if the \
     \item Exactly $d/np$.
 \end{enumerate}
 
+\textbf{Exercise 5-6.} To demonstrate the idea of Reed-Solomon codes, consider the toy construction. Suppose that our message is a tuple of two elements $a,b \in \mathbb{F}_{13}$. Consider function $f: \mathbb{F}_{13} \to \mathbb{F}_{13}$, defined as $f(x) = ax+b$, and define the encoding of the message $(a,b)$ as $(a,b) \mapsto (f(0),f(1),f(2),f(3))$. 
+
+\textbf{Question 5.} Suppose that you received the encoded message $(3,5,6,9)$. Which number from the encoded message is corrupted?
+\begin{enumerate}[a)]
+    \item First element ($3$).
+    \item Second element ($5$).
+    \item Third element ($6$).
+    \item Fourth element ($9$).
+    \item The message is not corrupted.
+\end{enumerate}
+
+\textbf{Question 6.} Consider the previous question. Suppose that the original message was $(a,b)$. Find the value of $a \times b$ (in $\mathbb{F}_{13}$).
+\begin{enumerate}[a)]
+    \item $4$
+    \item $6$
+    \item $12$
+    \item $2$
+    \item $1$
+\end{enumerate}
+
 \end{document}
