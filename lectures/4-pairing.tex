@@ -1,0 +1,271 @@
+\documentclass[../lecture-notes.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Relations}
+
+Before dvelving into the projective coordinates and further zero-knowledge topics, let us first discuss the concept of relations, which will be intensively used from now on. Now, what is a relation? The definition is incredibly concise.
+
+\begin{definition}
+    Let $\mathcal{X},\mathcal{Y}$ be some sets. Then, $\mathcal{R}$ is a \textbf{relation} if 
+    \begin{equation}
+        \mathcal{R} \subset \mathcal{X} \times \mathcal{Y} = \{(x,y): x \in \mathcal{X}, y \in \mathcal{Y}\}
+    \end{equation}
+\end{definition}
+
+Interpretation is approximately the following: suppose we have sets $\mathcal{X}$ and $\mathcal{Y}$. Then, relation $\mathcal{R}$ gives a set of pairs $(x,y)$, telling that $x \in \mathcal{X}$ and $y \in \mathcal{Y}$ are \textit{related}.
+
+\begin{example}
+    Let $\mathcal{X} = \{\text{Oleksandr}, \text{Phat}, \text{Anton}\}$ and $\mathcal{Y} = \{\text{Backend}, \text{Frontend}, \text{Research}\}$. Define the following relation of ``person $x$ works in field $y$'':
+    \begin{equation}
+        \mathcal{R} = \{(\text{Oleksandr}, \text{Research}), (\text{Phat}, \text{Frontend}), (\text{Anton}, \text{Backend})\}
+    \end{equation}
+    Obviously, $\mathcal{R} \subset \mathcal{X} \times \mathcal{Y}$, so $\mathcal{R}$ is a relation.
+\end{example}
+
+\begin{remark}
+    There are many ways to express that $(x,y) \in \mathcal{R}$. Most common are $x \mathcal{R} y$ and $x \sim y$. Also, sometimes, one might encounter relation definition as a boolean function $\mathcal{R}: \mathcal{X} \times \mathcal{Y} \to \{0,1\}$, where $\mathcal{R}(x,y)$ is $1$ if $(x,y)$ is in the relation, and $0$ otherwise.
+
+    Further, we will use notation $x \sim y$ to denote that $(x,y) \in \mathcal{R}$.
+\end{remark}
+
+\begin{example}
+    Let $E$ be a cyclic group of points on the Elliptic Curve of order $r \geq 2$ with a generator $\langle G \rangle = E$. Let $\mathcal{X} = \mathbb{Z}_r$ and $\mathcal{Y} = E$. Define a relation $\mathcal{R} \subset \mathcal{X} \times \mathcal{Y}$ by:
+    \begin{equation}
+        \mathcal{R} = \{(\alpha, P) \in \mathbb{Z}_r \times E: [\alpha]G = P\}
+    \end{equation}
+    Essentially, such a relation is a set of secret keys $\alpha$ and corresponding public keys $P$. In this case, for example, $0\mathcal{R}\mathcal{O}$ and $1\mathcal{R}G$ or $0 \sim \mathcal{O}$ and $1 \sim G$.
+\end{example}
+
+\begin{remark}
+    When we say that $\sim$ is a relation on a set $\mathcal{X}$, we mean that $\sim$ is a relation $\mathcal{R}$ on the following Cartesian product: $\mathcal{R} \subset \mathcal{X} \times \mathcal{X}$.
+\end{remark}
+
+Now, let us formally define the term \textbf{equivalence relation}.
+
+\begin{definition}
+    Let $\mathcal{X}$ be a set. A relation $\sim$ on $\mathcal{X}$ is called an \textbf{equivalence relation} if it satisfies the following properties:
+    \begin{enumerate}
+        \item \textbf{Reflexivity:} $x \sim x$ for all $x \in \mathcal{X}$.
+        \item \textbf{Symmetry:} If $x \sim y$, then $y \sim x$ for all $x,y \in \mathcal{X}$.
+        \item \textbf{Transitivity:} If $x \sim y$ and $y \sim z$, then $x \sim z$ for all $x,y,z \in \mathcal{X}$.
+    \end{enumerate}
+\end{definition}
+
+\begin{example}
+    Let $\mathcal{X}$ be the set of all people. Define a relation $\sim$ on $\mathcal{X}$ by $x \sim y$ if $x,y \in \mathcal{X}$ have the same birthday. 
+    Then $\sim$ is an equivalence relation on $\mathcal{X}$. Let us demonstrate that:
+    \begin{enumerate}
+        \item \textbf{Reflexivity:} $x \sim x$ since $x$ has the same birthday as $x$.
+        \item \textbf{Symmetry:} If $x \sim y$, then $y \sim x$ since $x$ has the same birthday as $y$.
+        \item \textbf{Transitivity:} If $x \sim y$ and $y \sim z$, then $x \sim z$ since $x$ has the same birthday as $y$ and $y$ has the same birthday as $z$.
+    \end{enumerate}
+\end{example}
+
+\begin{example}
+    Suppose $\mathcal{X} = \mathbb{Z}$ and $n$ is some fixed integer. Let $a \sim b$ mean that $a \equiv b \pmod{n}$. It is easy to verify that $\sim$ is an equivalence relation:
+    \begin{enumerate}
+        \item \textbf{Reflexivity:} $a \equiv a \pmod{n}$, so $a \sim a$.
+        \item \textbf{Symmetry:} If $a \equiv b \pmod{n}$, then $b \equiv a \pmod{n}$, so $b \sim a$.
+        \item \textbf{Transitivity:} If $a \equiv b \pmod{n}$ and $b \equiv c \pmod{n}$, then $a \equiv c \pmod{n}$. It is not that obvious, so we can prove it: from the first equality we have $\exists q \in \mathbb{Z}: a-b = nq$. From the second, $\exists r \in \mathbb{Z}: b-c = nr$. Adding both we get $(a-b)+(b-c) = n(r+q)$ or, equivalently, $a-c = n(r+q)$, meaning $a \equiv c \pmod{n}$.
+    \end{enumerate}
+\end{example}
+
+The example below is less obvious with a bit more difficult proof, which we will skip. Yet, it is quite curious, so here it is.
+
+\begin{example}
+    Let $\mathcal{G}$ be the set of all possible groups. Define a relation $\sim$ on $\mathcal{G}$ by $\mathbb{G} \sim \mathbb{H}$ if $\mathbb{G} \cong \mathbb{H}$ (in other words, $\mathbb{G}$ and $\mathbb{H}$ are isomorphic). Then $\sim$ is an equivalence relation.
+\end{example}
+
+Now, suppose I give you a set $\mathcal{X}$ with some equivalence relation $\sim$ (say, $\mathcal{X} = \mathbb{Z}$ and $a \equiv b \pmod{n}$). Notice that you can find some subset $\mathcal{X}' \subset \mathcal{X}$ in which all elements are equivalent (and any other element from $\mathcal{X} \setminus \mathcal{X}'$ is not). In the case of modulo relation above, $\mathcal{X}'$ could be the set of all integers that are congruent to $1$ modulo $n$, so $\mathcal{X}' = \{\dots,-n+1,1,n+1,2n+1,\dots\}$. This way, we can partition the set $\mathcal{X}$ into disjoint subsets, where all elements in each subset are equivalent. Such subsets are called \textbf{equivalence classes}. Now, let us give a formal definition.
+
+\begin{definition}
+    Let $\mathcal{X}$ be a set and $\sim$ be an equivalence relation on $\mathcal{X}$. For any $x \in \mathcal{X}$, the \textbf{equivalence class} of $x$ is the set
+    \begin{equation}
+        [x] = \{y \in \mathcal{X}: x \sim y\}
+    \end{equation}
+    The \textbf{set of all equivalence classes} is denoted by $\mathcal{X}/\text{$\sim$}$ (or, if the relation $\mathcal{R}$ is given explicitly, then $\mathcal{X}/\mathcal{R}$), which is read as ``$\mathcal{X}$ modulo relation $\sim$''.
+\end{definition}
+
+\begin{example}
+    Let $\mathcal{X} = \mathbb{Z}$ and $n$ be some fixed integer. Define $\sim$ on $\mathcal{X}$ by $x \sim y$ if $x \equiv y \pmod{n}$. Then the equivalence class of $x$ is the set
+    \begin{equation}
+        [x] = \{y \in \mathbb{Z}: x \equiv y \pmod{n}\}
+    \end{equation}
+    For example, $[0] = \{\ldots,-2n,-n,0,n,2n,\ldots\}$ while $[1] = \{\ldots,-2n+1,-n+1,1,n+1,2n+1,\ldots\}$. Note that a set $\{[0]\}$
+\end{example}
+
+Now, as we have said before, a set of all equivalence classes form a partition of the set $\mathcal{X}$. This means that any element $x \in \mathcal{X}$ belongs to exactly one equivalence class. This is a very important property, which we will use in the next section. Formally, we have the following lemma.
+\begin{lemma}
+    Let $\mathcal{X}$ be a set and $\sim$ be an equivalence relation on $\mathcal{X}$. Then,
+    \begin{enumerate}
+        \item For each $x \in \mathcal{X}, x \in [x]$ (quite obvious, follows from reflexivity).
+        \item For each $x,y \in \mathcal{X}$, $x \sim y$ if and only if $[x] = [y]$.
+        \item For each $x,y \in \mathcal{X}$, either $[x]=[y]$ or $[x] \cap [y] = \emptyset$.
+    \end{enumerate}
+\end{lemma}
+
+\begin{example}
+    Let $n \in \mathbb{N}$ and, again, $\mathcal{X} = \mathbb{Z}$ with a ``modulo $n$'' equivalence relation $\mathcal{R}_n$. Define the equivalence class of $x$ by $[x]_n = \{y \in \mathbb{Z}: x \equiv y \pmod{n}\}$. Then, 
+    \begin{equation}
+        \mathbb{Z}/\mathcal{R}_n = \{[0]_n, [1]_n, [2]_n, \dots, [n-2]_n, [n-1]_n\}
+    \end{equation}
+    forms a partition of $\mathbb{Z}$, that is 
+    \begin{equation}
+        \bigcup_{i=0}^{n-1} [i]_n = \mathbb{Z},
+    \end{equation}
+    and for all $i,j \in \{0,1,\dots,n-1\}$, if $i \neq j$, then $[i]_n \cap [j]_n = \emptyset$. Commonly, we denote the set of all equivalence classes as $\mathbb{Z}/n\mathbb{Z}$ or, as we got used to, $\mathbb{Z}_n$. Moreover, we can naturally define the addition as:
+    \begin{equation}
+        [x]_n + [y]_n = [x+y]_n
+    \end{equation}
+    Then, the set $(\mathbb{Z}/n\mathbb{Z},+)$ with the defined addition is a group.
+\end{example}
+
+The primary reason we considered equivalence relations is that we will define the projective space as a set of equivalence classes. Besides this, when defining proofs of knowledge, argument of knowledge and zero-knowledge protocols, we will use the concept of relations and equivalence relations intensively.
+
+\subsection{Elliptic Curve in Projective Coordinates}
+\subsubsection{Projective Space}
+
+Recall that we defined the elliptic curve as 
+\begin{equation}    
+    E(\overline{\mathbb{F}}_p) := \{(x,y) \in \mathbb{A}^2(\overline{\mathbb{F}}_p): y^2 = x^3+ax+b\} \cup \{\mathcal{O}\}
+\end{equation}
+
+The above definition is the definition of the elliptic curve in \textit{the affine space}. However, notice that in this case 
+we need to append a somewhat artificial point $\mathcal{O}$ to the curve. This is done to make the curve a group since without 
+this point it is unclear how to define addition of two, say, negative points on the curve (since the resultant vertical line
+does not intersect the curve at any other point). The way to unify all the points $E/\overline{\mathbb{F}}_p$ with this 
+magical point at infinity $\mathcal{O}$ is to use the \textbf{projective space}.
+
+Essentially, instead of working with points in affine $n$-space (in our case, with two-dimensional points $\mathbb{A}^2(\mathbb{K})$), we work with lines that pass through the origin in 
+$(n+1)$-dimensional space (in our case, 3-dimensional space $\mathbb{A}^3(\mathbb{K})$). We say that two points from this $(n+1)$-dimensional space are \textbf{equivalent} if they lie on the same line that passes through the origin (we will show the illustration a bit later). 
+
+It seems strange that we need to work with 3-dimensional space to describe 2-dimensional points, but this is the way to unify all the points on the curve. Because, in this case, the point at infinity is represented by a set of points on the line that passes through the origin and is parallel to the
+$y$-axis. We will get to understanding how to interpret that. Moreover, by defining operations on the projective space, we can make the operations on the curve more efficient.
+
+Now, to the formal definition.
+
+\begin{definition}
+    \textbf{Projective coordinate}, denoted as $\mathbb{P}^2(\mathbb{K})$ (or sometimes simply $\mathbb{K}\mathbb{P}^2$) is a triple of elements $(X:Y:Z)$ from $\mathbb{A}^3(\overline{\mathbb{K}}) \setminus \{0\}$ modulo the equivalence relation\footnote{Although we specify the definition for $n=2$, the definition can be generalized to any $\mathbb{P}^n(\overline{\mathbb{K}})$.}:
+    \begin{equation}
+        (X_1:Y_1:Z_1) \sim (X_2:Y_2:Z_2) \;\; \text{iff} \;\; \exists \lambda \in \overline{\mathbb{K}}: (X_1:Y_1:Z_1) = (\lambda X_2: \lambda Y_2: \lambda Z_2)
+    \end{equation}
+\end{definition}
+
+This definition on itself might be a bit too abstract, so let us consider the concrete example for projective space $\mathbb{P}^2(\mathbb{R})$.
+
+\begin{example}
+    Consider the projective space $\mathbb{P}^2(\mathbb{R})$. Then, two points $(x_1,y_1,z_1),(x_2,y_2,z_2) \in \mathbb{R}^3$ are equivalent if there exists $\lambda \in \mathbb{R}$ such that $(x_1,y_1,z_1) = (\lambda x_2, \lambda y_2, \lambda z_2)$. For example, $(1,2,3) \sim (2,4,6)$ since $(1,2,3) = 0.5(2,4,6)$.
+\end{example}
+
+\begin{example}
+    Now, how to geometrically interpret $\mathbb{P}^2(\mathbb{R})$? Consider the Figure below.
+
+    \begin{center}
+        \begin{tabular}{cc}
+            \centering\includegraphics[trim={100 100 100 200}, width=0.45\linewidth, clip]{images/lecture_4/line_1_view_1.pdf} &
+            \centering\includegraphics[trim={100 100 100 200}, width=0.45\linewidth, clip]{images/lecture_4/line_1_view_2.pdf}
+        \end{tabular}
+        \scriptsize{\textbf{Illustration:} Geometric interpretation of $\mathbb{P}^2(\mathbb{R})$, the same scene from different perspectives. The \textcolor{red}{\textbf{red}} line is represented by equation $(2t,3t,t)$, \textcolor{blue}{\textbf{blue}} line by $(-2t,3t,3t)$, and \textcolor{green!60!black}{\textbf{green}} line is represented by $(t,-2t,5t)$ for parameter $t \in \mathbb{R}$.}
+    \end{center}
+
+    Here, the figure demonstrates three equivalence classes, being a set of points on the \textcolor{red}{\textbf{red}}, \textcolor{blue}{\textbf{blue}}, and \textcolor{green!60!black}{\textbf{green}} lines (except for the origin). 
+    
+    The reason why geometrically the set of equivalence classes lie on the same line that passes through the origin is following: suppose we have a point $\vec{v}_0 = (x_0,y_0,z_0) \in \mathbb{R}^3$, represented as a vector. Then, the set of all points that are equivalent to $(x_0,y_0,z_0)$ is the set of all points $(\lambda x_0, \lambda y_0, \lambda z_0) = \lambda\vec{v}_0$ for $\lambda \in \mathbb{R}\setminus \{0\}$. So $\vec{v}_0$ is the representative of equivalence class $[\vec{v_0}] = \{\lambda\vec{v}_0: \lambda \in \mathbb{R},\lambda \neq 0\}$. Now notice, that this is a parametric equation of a line that passes through the origin and the point $\vec{v}_0$: notice that for $\lambda=0$ (if we assume that expression is also defined for zero $\lambda$) we have the origin $\vec{0}$, while for $\lambda=1$ we have the point $\vec{v}_0$. Then, any other values of $\lambda$ in-between $[0,1]$ or outside define the set of points lying on the same line.
+\end{example}
+
+Now, projective coordinates are not that useful unless we can come back to the affine space. This is done by defining the map $\phi: \mathbb{P}^2(\overline{\mathbb{K}}) \to \mathbb{A}^2(\overline{\mathbb{K}})$ as follows: $\phi: (X:Y:Z) \mapsto \left(X/Z, Y/Z\right)$. If, in turn, we want to go from the affine space to the projective space, we can define the map $\psi: \mathbb{A}^2(\overline{\mathbb{K}}) \to \mathbb{P}^2(\overline{\mathbb{K}})$ as follows: $\psi: (x,y) \mapsto (x:y:1)$. Geometrically, map $\phi$ means that we take a point $(X:Y:Z)$ and project it onto the plane $Z=1$.
+
+\begin{example}
+    Again, consider three lines from the previous example. Now, we additionally draw a plane $\pi: z=1$ in our 3-dimensional space (see Illustration below).
+
+    \begin{center}
+        \includegraphics[trim={100 100 100 200}, width=0.45\linewidth, clip]{images/lecture_4/line_2.pdf}
+        
+        \scriptsize{\textbf{Illustration:} Geometric interpretation of converting projective form to the affine form.}
+    \end{center}
+
+    By using the map $(X:Y:Z) \mapsto (X/Z,Y/Z)$, all points on the line get mapped to the itersection of the line with the plane $\pi: z=1$. This way, for example, points on the \textcolor{red}{\textbf{red line}} $\ell_{\text{red}}$ get mapped to the point $A'=(2,3,1)$, corresponding to $(2,3)$ in affine coordinates. So, for example, point $(6,9,3) \in \ell_{\text{red}}$, lying on the same line, gets mapped to $(6/3,9/3) = (2,3)$.
+
+    Similarly, all \textcolor{blue}{\textbf{blue line}} points get mapped to the point $B'=(-2/3,1,1)$, while all \textcolor{green!60!black}{\textbf{green line}} points get mapped to the point $C'=(0.2,-0.4,1)$\footnote{One can verify that based on the equations provided from the previous example}.
+\end{example}
+
+\subsubsection{Elliptic Curve Equation in Projective Form}
+
+Now, quite an interesting question is following: how to represent (basically, rewrite) the ``affine'' elliptic curve equation\footnote{Further, we will use notation $E_{\mathbb{A}}$ to represent the elliptic curve equation in the affine form, and $E_{\mathbb{P}}$ to represent the elliptic curve in the projective form.}
+\begin{equation}
+    E_{\mathbb{A}}(\overline{\mathbb{F}}_p): y^2 = x^3 + ax + b, \; a,b \in \overline{\mathbb{F}}_p
+\end{equation}
+in the projective form? Since currently, we defined the curve as the 2D curve, but now we are working in 3D space! The answer is following: recall that if $(X:Y:Z) \in \mathbb{P}^2(\overline{\mathbb{F}}_p)$ lies on the curve, so does the point $(X/Z,Y/Z)$. The condition on the latter point to lie on $E_{\mathbb{A}}(\overline{\mathbb{F}}_p)$ is following:
+\begin{equation}
+    \left(\frac{Y}{Z}\right)^2 = \left(\frac{X}{Z}\right)^3 + a\cdot \frac{X}{Z} + b
+\end{equation}
+
+But now multiply both sides by $Z^3$ to get rid of the fractions:
+\begin{equation}
+    E_{\mathbb{P}}(\overline{\mathbb{F}}_p): Y^2Z = X^3 + aXZ^2 + bZ^3
+\end{equation}
+
+This is an equation of the elliptic curve in \textbf{projective form}. 
+
+Now, one of the motivations to work with the projective form was to unify affine points $E_{\mathbb{A}}/\overline{\mathbb{F}}_p$ and the point at infinity $\mathcal{O}$, which acted as an identity element in the group $E_{\mathbb{A}}(\overline{\mathbb{F}}_p)$. So how do we encode the point at infinity in the projective form?
+
+Well, notice the following observation: all points $(0:\lambda:0)$ always lie on the curve $E_{\mathbb{P}}(\overline{\mathbb{F}}_p)$. Moreover, the map from the projective form to the affine form is ill-defined for such points, since we would need to divide by zero. So, we can naturally make the points $(0:\lambda:0)$ to be the set of points at infinity. This way, we can define the point at infinity as $\mathcal{O} = (0:1:0)$.
+
+Finally, let us summarize what we have observed so far.
+
+\begin{definition}
+    The \textbf{homogenous projective form of the elliptic curve} $E_{\mathbb{P}}(\overline{\mathbb{F}}_p)$ is defined as the set of all points $(X:Y:Z) \in \mathbb{P}^2(\overline{\mathbb{F}}_p)$ in the projective space that satisfy the equation
+    \begin{equation}
+        E_{\mathbb{P}}(\overline{\mathbb{F}}_p): Y^2Z = X^3 + aXZ^2 + bZ^3, \;\; a,b \in \overline{\mathbb{F}}_p,
+    \end{equation}
+    where the point at infinity is encoded as $\mathcal{O} = (0:1:0)$.
+\end{definition}
+
+\begin{example}
+    Consider the BN254 curve $y^2 = x^3 + 3$ over reals $\mathbb{R}$. Its projective form is given by the equation $Y^2Z = X^3 + 3XZ^2$, which gives a surface, depicted below.
+    \begin{center}
+        \includegraphics[trim={275 100 225 100}, width=0.35\linewidth, clip]{images/lecture_4/projective_ec.pdf}
+        
+        \scriptsize{\textbf{Illustration:} BN254 Curve Elliptic Curve in Projective Form over $\mathbb{R}$. In \textcolor{black!80}{\textbf{gray}} is the surface, while \textcolor{red}{\textbf{red}} points are the points on the affine curve (lying on the plane $\pi: z=1$).}
+    \end{center}
+
+    Points $P'\approx (0:2.165:1.25)$ and $P'' \approx (0:1.3:0.75)$ in projective form both lie on the curve and get mapped to the same point $P \approx (0,1.732)$ in affine coordinates.
+\end{example}
+
+\subsubsection{General Projective Coordinates}
+Hold on, but why did we use the term \textit{homogenous}? The reason why is because we defined equivalence as follows: $(X:Y:Z) \sim (\lambda X: \lambda Y: \lambda Z)$ for some $\lambda \in \overline{\mathbb{K}}$, called \textbf{homogenous coordinates}. However, this is not the only way to define equivalence. Consider a more general form of equivalence relation:
+\begin{equation}
+    (X:Y:Z) \sim (X':Y':Z') \;\; \text{iff} \;\; \exists \lambda \in \overline{\mathbb{K}}: (X,Y,Z) = (\lambda^n X', \lambda^m Y', \lambda Z')
+\end{equation}
+
+In this case, to come back to the affine form, we need to use the map $\phi: (X:Y:Z) \mapsto (X/Z^n, Y/Z^m)$. 
+\begin{example}
+    The case $n=2,m=3$ is called the \textbf{Jacobian Projective Coordinates}. An Elliptic Curve equation might be then rewritten as: 
+    \begin{equation}
+        Y^2 = X^3 + aXZ^4 + bZ^6
+    \end{equation}
+    The reason why we might want to use such coordinates is that they can be more efficient in some operations, such as point addition. However, we will not delve into this topic much further.
+\end{example}
+
+\begin{example}
+    Consider the BN254 curve $y^2 = x^3 + 3$ over reals $\mathbb{R}$, again. Its \textit{Jacobian projective form} is given by the equation $Y^2 = X^3 + 3XZ^4$, which gives a surface, depicted below.
+    \begin{center}
+        \includegraphics[trim={275 140 225 100}, width=0.35\linewidth, clip]{images/lecture_4/projective_ec_jacobian.pdf}
+        
+        \scriptsize{\textbf{Illustration:} BN254 Curve Elliptic Curve in Jacobian Projective Form over $\mathbb{R}$. In \textcolor{black!80}{\textbf{gray}} is the surface, while \textcolor{red}{\textbf{red}} points are the points on the affine curve (lying on the plane $\pi: z=1$).}
+    \end{center}
+
+    Notice that now, under the map $(X:Y:Z) \mapsto (X/Z^2,Y/Z^3)$, points in the same equivalence class (in $\mathbb{R}^3$) do not lie on the same line, but rather on the same \textit{curve}. Namely, equivalence class has a form $[(x_0,y_0,z_0)] = \{t^2x_0,t^3y_0,tz_0: t \in \mathbb{R} \setminus \{0\}\}$.
+\end{example}
+
+\subsubsection{Fast Addition}
+
+Let us come back to the affine case and assume that the underlying field is the prime field $\mathbb{F}_p$. Recall that for adding two points $P=(x_P,y_P)$ and $Q=(x_Q,y_Q)$ to get $R=(x_R,y_R) \gets P \oplus Q$ one used the following formulas (there is no need to understand the derivation fully, just take it as a fact):
+\begin{equation}
+    x_R \gets \left(\frac{y_Q-y_P}{x_Q-x_P}\right)^2 - x_P - x_Q, \;\;\; y_R \gets \left(\frac{y_Q-y_P}{x_Q-x_P}\right)(x_P-x_R) - y_P
+\end{equation}
+
+Denote by $\mathsf{M}$ the cost of multiplication, by $\mathsf{S}$ the cost of squaring, and by $\mathsf{I}$ the cost of inverse operation in $\mathbb{F}_p$. Then, the cost of additing two points using above formula is $2\mathsf{M} + \mathsf{S} + \mathsf{I}$.
+
+\end{document}
