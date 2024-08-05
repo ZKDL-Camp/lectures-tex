@@ -10,14 +10,14 @@ Let's first discuss what zk-SNARK is.
     \textbf{zk-SNARK} – Zero-Knowledge Succinct Non-interactive ARgument of Knowledge.
 \end{definition}
 
-But what do terms like "argument of knowledge," "succinct," "non-interactive," and 
-"zero-knowledge" mean in this context?
+But what do terms like ``argument of knowledge``, ``succinct``, ``non-interactive``, and 
+``zero-knowledge`` mean in this context?
 
 \begin{itemize}
     \item \textbf{Argument of Knowledge} - a proof that the prover know data that resolves a certain
     problem, and this knowledge can be verified.
     \item \textbf{Succinct} - the proof size is relatively small and does not depend on the size of 
-    the data or statement.
+    the data or statement. This will be explained with examples later.
     \item \textbf{Non-interactive} - to produce the proof, the prover does not need any interaction
     with the verifier.
     \item \textbf{Zero-Knowledge} - the verifier learns nothing about the data used to produce the
@@ -82,9 +82,9 @@ language? Additionally, we need to do this in a way that is succinct and allows 
 something about it.
 
 The \textbf{Arithmetic circuits} can help us. Similar to boolean circuits, they have gates and 
-wires, but instead of the operations $AND$, $OR$, and $NOT$, only multiplication and addition are 
-allowed. Additionally, arithmetic circuits manipulate numbers directly, which are often elements of
-a prime field.
+wires, but instead of the operations $\mathsf{AND}$, $\mathsf{OR}$, and $\mathsf{NOT}$, only 
+multiplication and addition are allowed. Additionally, arithmetic circuits manipulate numbers 
+directly, which are often elements of a prime field.
 
 % --- Writing diagrams ---
 
@@ -197,7 +197,7 @@ a prime field.
 
 % --- Finish Writing diagrams ---
 
-The \textit{AND Gate Truth Table~\ref{tab:and-truth-table}} shows us the results we receive if 
+The \textit{AND Gate Truth \Cref{tab:and-truth-table}} shows us the results we receive if 
 particular values are supplied to the gate. The main point here is that with this table, we can 
 verify the validity of logical statements. Boolean circuits receive an input vector of $\{0, 1\}$ 
 and resolve to true (1) or false (0); basically, they determine if the input values satisfy the 
@@ -211,7 +211,7 @@ circuits.
 
 Very simple program with a multiplication.
 
-\begin{lstlisting}[numbers=none]
+\begin{lstlisting}[language=C,numbers=none]
     return a * b
 \end{lstlisting}
 
@@ -221,15 +221,15 @@ This can be represented as a circuit with only one gate:
     r = a \times b
 \end{equation}
 
-The witness vector (solution vector) is $w = \{r, a, b\}$, for example: $\{6, 2, 3\}$. We 
+The witness vector (solution vector) is $w = (r, a, b)$, for example: $(6, 2, 3)$. We 
 assume that the $a$ and $b$ are input values. 
 
-We can think of the "=" in the gate as an assertion, meaning that if $a \times b$ does not equal
+We can think of the ``=`` in the gate as an assertion, meaning that if $a \times b$ does not equal
 $r$, the assertion fails, and the input values don't resolve the circuit.
 
 How can we translate an if statement?
 
-\begin{lstlisting}[numbers=none]
+\begin{lstlisting}[language=C,numbers=none]
     if (a) {
         return b * c
     } else {
@@ -245,7 +245,7 @@ $\text{true} := 1$ and $\text{false} := 0$, we can transform it as follows:
     r = a \times (b \times c) + (1 - a) \times (b + c)
 \end{equation}
 
-$w = \{r, a , b, c\}$: $\{6, 1, 2, 3\}$, $\{5, 0, 2, 3\}$. \\
+Where the witness vector is: $w = (r, a , b, c)$: $(6, 1, 2, 3)$, $(5, 0, 2, 3)$.
 
 But, we need to verify all the intermediate steps. This can be achieved by transforming the above
 equation using the simplest terms (the gates), ensuring the correctness of each step in the program: 
@@ -261,7 +261,7 @@ equation using the simplest terms (the gates), ensuring the correctness of each 
     \end{aligned}
 \end{equation}
 
-$w = \{r, r_1, r_2, r_3, r_4, r_5, a , b, c\}$: $\{6, 6, 5, 0, 6, 0, 1, 2, 3\}$ \\
+With witness vector: $w = (r, r_1, r_2, r_3, r_4, r_5, a , b, c)$: $(6, 6, 5, 0, 6, 0, 1, 2, 3)$.
 
 \subsection{Rank-1 Constraint System}
 
