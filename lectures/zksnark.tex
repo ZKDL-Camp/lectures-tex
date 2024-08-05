@@ -1,0 +1,271 @@
+\documentclass[../lecture-notes.tex]{subfiles}
+
+\begin{document}
+
+\subsection{What the zk-SNARK is?}
+
+Let's first discuss what zk-SNARK is.
+
+\begin{definition}
+    \textbf{zk-SNARK} – Zero-Knowledge Succinct Non-interactive ARgument of Knowledge.
+\end{definition}
+
+But what do terms like "argument of knowledge," "succinct," "non-interactive," and 
+"zero-knowledge" mean in this context?
+
+\begin{itemize}
+    \item \textbf{Argument of Knowledge} - a proof that the prover know data that resolves a certain
+    problem, and this knowledge can be verified.
+    \item \textbf{Succinct} - the proof size is relatively small and does not depend on the size of 
+    the data or statement.
+    \item \textbf{Non-interactive} - to produce the proof, the prover does not need any interaction
+    with the verifier.
+    \item \textbf{Zero-Knowledge} - the verifier learns nothing about the data used to produce the
+    proof, despite knowing that this data resolves the given problem and that the prover possesses it.
+\end{itemize}
+
+From the above, you may also find the presence of two parties:
+
+\begin{itemize}
+    \item \textbf{Prover} - the party who knows the data that can resolve the given problem.
+    \item \textbf{Verifier} - the party that wants to verify the given proof.
+\end{itemize}
+
+In essence, zk-SNARKs allow one party to prove to another that they know a value without revealing 
+any information about the value itself, and do so with a proof that is both small and quick to 
+verify. This makes zk-SNARKs a powerful tool for maintaining privacy and efficiency in various 
+cryptographic applications.
+
+This is pretty wide defined and maybe not so obvious if you don't have any background, so let's take
+a look at the example.
+
+\begin{example}
+    
+    Imagine you're part of a treasure hunt, and you've found a hidden treasure chest. You want to 
+    prove to the treasure hunt organizer that you know where the chest is hidden without revealing
+    its location. Here's how zk-SNARKs can be used in this context: \\
+
+    \textbf{The problem}: you have found a hidden treasure chest (the secret data), and you want to
+    prove to the organizer (the verifier) that you know its location without actually revealing 
+    where it is. \\
+
+    \textbf{How zk-SNARKs Help}:
+
+    \begin{itemize}
+        \item Argument of Knowledge: You create a proof that demonstrates you know the exact
+        location of the treasure chest. This proof convinces the organizer that you have this 
+        knowledge.
+        \item Succinct: The proof you provide is very small and concise. It doesn't matter how
+        large the treasure map is or how many steps it took you to find the chest, the proof remains
+        compact and easy to check.
+        \item Non-interactive: You don't need to have a back-and-forth conversation with the 
+        organizer to create this proof. You prepare it once. The organizer can verify it without 
+        needing to ask you any questions.
+        \item Zero-Knowledge: The proof doesn't reveal any information about the actual location of
+        the treasure chest. The organizer knows you found it, but they don't learn anything about 
+        where it is hidden. \\
+    \end{itemize}
+
+    Here you can think of zk-SNARK as a golden coin from the chest where the pirates' sign is 
+    engraved, so the organizer can be sure you've found the treasure.
+
+\end{example}
+
+But the problems that we want to solve are in a slightly different format. We can't bring a coin to
+the verifier. Our goal is to prove that we've executed a specific program on a set of data that 
+resolves a specific challenge or gives us a particular result.
+
+\subsection{Arithmetic Circuits}
+The cryptographic tools we've learned in the previous sections work with numbers or certain 
+primitives above them, so the first question is: how do we convert a program into mathematical 
+language? Additionally, we need to do this in a way that is succinct and allows us to prove 
+something about it.
+
+The \textbf{Arithmetic circuits} can help us. Similar to boolean circuits, they have gates and 
+wires, but instead of the operations $AND$, $OR$, and $NOT$, only multiplication and addition are 
+allowed. Additionally, arithmetic circuits manipulate numbers directly, which are often elements of
+a prime field.
+
+% --- Writing diagrams ---
+
+% Define circle styles and colors
+\colorlet{circle edge}{green!50!black}
+\colorlet{circle area}{green!20}
+\colorlet{gate edge}{blue!50!black}
+\colorlet{gate area}{blue!20}
+
+\tikzset{
+    var/.style={circle, draw=circle edge, fill=circle area, thick, minimum size=1cm, text centered},
+    gate/.style={circle, draw=gate edge, fill=gate area, thick, minimum size=1cm, text centered, 
+        font=\itshape},
+    arrow/.style={-Stealth, thick}
+}
+
+\begin{figure}[h!]
+    \centering
+    \vspace*{1em}
+    
+    \begin{minipage}{0.46\textwidth}
+        \centering
+        % Boolean AND and OR gates
+        \begin{tabular}{cc}
+            \begin{tikzpicture}
+                % Nodes
+                \node[var] (a) at (0, -1.5) {$a$};
+                \node[var] (b) at (2, -1.5) {$b$};
+                \node[gate] (and) at (1, 0) {and};
+                \node[var] (c) at (1, 1.5) {$c$};
+
+                % Arrows
+                \draw[arrow] (a) -- (and);
+                \draw[arrow] (b) -- (and);
+                \draw[arrow, blue] (and) -- (c);
+            \end{tikzpicture}
+            &
+            \begin{tikzpicture}
+                % Nodes
+                \node[var] (a) at (0, -1.5) {$a$};
+                \node[var] (b) at (2, -1.5) {$b$};
+                \node[gate] (or) at (1, 0) {or};
+                \node[var] (c) at (1, 1.5) {$c$};
+
+                % Arrows
+                \draw[arrow] (a) -- (or);
+                \draw[arrow] (b) -- (or);
+                \draw[arrow, blue] (or) -- (c);
+            \end{tikzpicture}
+        \end{tabular}
+        \caption{Boolean AND and OR Gates}
+    \end{minipage}
+    \hspace{0.05\textwidth} % Space between figures
+    \begin{minipage}{0.46\textwidth}
+        \centering
+        % Addition and Multiplication gates
+        \begin{tabular}{cc}
+            \begin{tikzpicture}
+                % Nodes
+                \node[var] (a) at (0, -1.5) {$a$};
+                \node[var] (b) at (2, -1.5) {$b$};
+                \node[gate] (add) at (1, 0) {$+$};
+                \node[var] (c) at (1, 1.5) {$c$};
+
+                % Arrows
+                \draw[arrow] (a) -- (add);
+                \draw[arrow] (b) -- (add);
+                \draw[arrow, blue] (add) -- (c);
+            \end{tikzpicture}
+            &
+            \begin{tikzpicture}
+                % Nodes
+                \node[var] (a) at (0, -1.5) {$a$};
+                \node[var] (b) at (2, -1.5) {$b$};
+                \node[gate] (mul) at (1, 0) {$\times$};
+                \node[var] (c) at (1, 1.5) {$c$};
+
+                % Arrows
+                \draw[arrow] (a) -- (mul);
+                \draw[arrow] (b) -- (mul);
+                \draw[arrow, blue] (mul) -- (c);
+            \end{tikzpicture}
+        \end{tabular}
+        \caption{Addition and Multiplication Gates}
+    \end{minipage}
+
+    \vspace*{1em}
+\end{figure}
+
+\begin{wraptable}{r}{0.4\textwidth}
+    \centering
+    \vspace{-1em}
+    \begin{tabular}{|c|c|c|}
+        \hline
+        \textbf{A} & \textbf{B} & \textbf{A AND B} \\
+        \hline
+        0 & 0 & 0 \\
+        \hline
+        0 & 1 & 0 \\
+        \hline
+        1 & 0 & 0 \\
+        \hline
+        1 & 1 & 1 \\
+        \hline
+    \end{tabular}
+    \caption{AND Gate Truth Table}
+    \label{tab:and-truth-table}
+    \vspace{1em}
+\end{wraptable}
+
+% --- Finish Writing diagrams ---
+
+The \textit{AND Gate Truth Table~\ref{tab:and-truth-table}} shows us the results we receive if 
+particular values are supplied to the gate. The main point here is that with this table, we can 
+verify the validity of logical statements. Boolean circuits receive an input vector of $\{0, 1\}$ 
+and resolve to true (1) or false (0); basically, they determine if the input values satisfy the 
+statement.
+
+We can do the same with \textbf{arithmetic circuits} to verify computations without excessive 
+verbosity because of binary arithmetic.
+
+Let's take a look at some examples of programs and how can we translate them to the arithmetic
+circuits.
+
+Very simple program with a multiplication.
+
+\begin{lstlisting}[numbers=none]
+    return a * b
+\end{lstlisting}
+
+This can be represented as a circuit with only one gate:
+
+\begin{equation}
+    r = a \times b
+\end{equation}
+
+The witness vector (solution vector) is $w = \{r, a, b\}$, for example: $\{6, 2, 3\}$. We 
+assume that the $a$ and $b$ are input values. 
+
+We can think of the "=" in the gate as an assertion, meaning that if $a \times b$ does not equal
+$r$, the assertion fails, and the input values don't resolve the circuit.
+
+How can we translate an if statement?
+
+\begin{lstlisting}[numbers=none]
+    if (a) {
+        return b * c
+    } else {
+        return b + c
+    }
+\end{lstlisting}
+
+We can express this logic in mathematical terms as follows: "If $a$ is true, compute 
+$b \times c$; otherwise, compute $b + c$." Only numerical expressions are allowed. Knowing that
+$\text{true} := 1$ and $\text{false} := 0$, we can transform it as follows:
+
+\begin{equation}
+    r = a \times (b \times c) + (1 - a) \times (b + c)
+\end{equation}
+
+$w = \{r, a , b, c\}$: $\{6, 1, 2, 3\}$, $\{5, 0, 2, 3\}$. \\
+
+But, we need to verify all the intermediate steps. This can be achieved by transforming the above
+equation using the simplest terms (the gates), ensuring the correctness of each step in the program: 
+
+\begin{equation}
+    \begin{aligned}
+        r_1 = b \times c \\
+        r_2 = b + c \\
+        r_3 = 1 - a \\
+        r_4 = a \times r_1 \\
+        r_5 = r_3 \times r_2 \\
+        r = r_4 + r_5 \\
+    \end{aligned}
+\end{equation}
+
+$w = \{r, r_1, r_2, r_3, r_4, r_5, a , b, c\}$: $\{6, 6, 5, 0, 6, 0, 1, 2, 3\}$ \\
+
+\subsection{Rank-1 Constraint System}
+
+For the ZK proof we need just a little bit different format - \textbf{Rank-1 Constrain System}.
+Where the simpliest term is \textbf{constraint}.
+
+\end{document}
