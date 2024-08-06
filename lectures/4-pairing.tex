@@ -266,6 +266,56 @@ Let us come back to the affine case and assume that the underlying field is the 
     x_R \gets \left(\frac{y_Q-y_P}{x_Q-x_P}\right)^2 - x_P - x_Q, \;\;\; y_R \gets \left(\frac{y_Q-y_P}{x_Q-x_P}\right)(x_P-x_R) - y_P
 \end{equation}
 
-Denote by $\mathsf{M}$ the cost of multiplication, by $\mathsf{S}$ the cost of squaring, and by $\mathsf{I}$ the cost of inverse operation in $\mathbb{F}_p$. Then, the cost of additing two points using above formula is $2\mathsf{M} + \mathsf{S} + \mathsf{I}$.
+Denote by $\textcolor{blue}{\mathsf{M}}$ the cost of multiplication, by $\textcolor{green!60!black}{\mathsf{S}}$ the cost of squaring, and by $\textcolor{red}{\mathsf{I}}$ the cost of inverse operation in $\mathbb{F}_p$. Note that we do not count addition/inverse costs as they are significantly lower than operations listed. Then, the cost of additing two points using above formula is $2\textcolor{blue}{\mathsf{M}} + 1\textcolor{green!60!black}{\mathsf{S}} + 1\textcolor{red}{\mathsf{I}}$. Indeed, our computation can proceed as follows:
+\begin{enumerate}
+    \item Calculate $t_1 \gets (x_Q-x_P)^{-1}$, costing $1\textcolor{red}{\mathsf{I}}$.
+    \item Calculate $\lambda \gets (y_Q-y_P)t_1$, costing $1\textcolor{blue}{\mathsf{M}}$.
+    \item Calculate $t_2 \gets \lambda^2$, costing $1\textcolor{green!60!black}{\mathsf{S}}$.
+    \item Calculate $x_R \gets t_2 - x_P - x_Q$, costing almost nothing.
+    \item Calculate $y_R \gets \lambda (x_P-x_R) - y_P$, costing $1\textcolor{blue}{\mathsf{M}}$.
+\end{enumerate}
+
+Well, there are just 4 operations in total, so what can go wrong? The problem is that we need to calculate the inverse of $(x_Q-x_P)$, which is a very, very costly operation. In fact, typically $1\textcolor{red}{\mathsf{I}} \gg 20\textcolor{blue}{\mathsf{M}}$ or even worse, the ratio might reach $80$ in certain cases.
+
+Now imagine we want to add 4 points, say $P_1 \oplus P_2 \oplus P_3 \oplus P_4$: this costs $6\textcolor{blue}{\mathsf{M}} + 3\textcolor{green!60!black}{\mathsf{S}} + 3\textcolor{red}{\mathsf{I}}$. Now we have 3 inverses, which is a lot. Finally, if we are to add much larger number of points (for example, when finding the scalar product), this gets even worse. 
+
+Projective coordinates is a way to solve this problem. The idea is to represent points in the projective form $(X:Y:Z)$, so when adding two numbers in projective form, you still get a point in a form $(X:Y:Z)$. Then, after conducting a series of additions, you can convert the point back to the affine form. 
+
+Bug why adding two points, say, $(X_P:Y_P:Z_P)$ and $(X_Q:Y_Q:Z_Q)$, in the projective form is more efficient? We will not derive the formulas, but trust us that they have the following form:
+\begin{equation}
+    \begin{aligned}
+        X_R = (X_PZ_Q - X_QZ_P)(Z_PZ_Q(Y_PZ_Q-Y_QZ_P)^2 - (X_PZ_Q-X_QZ_P)^2(X_PZ_Q+X_QZ_P)); \\
+        Y_R = Z_PZ_Q(X_QY_P - X_PY_Q)(X_PZ_Q-X_QZ_P)^2 - (Y_PZ_Q-Y_QZ_P)((Y_PZ_Q-Y_QZ_P)^2Z_PZ_Q\\-(X_PZ_Q+X_QZ_P)(X_PZ_Q-X_QZ_P)^2); \\
+        Z_R = Z_PZ_Q(X_PZ_Q - X_QZ_P)^3.
+    \end{aligned}
+\end{equation}
+
+Do not be afraid, you do not need to understand how this formula is derived. But notice that despite the very scary look, there is no inversions involved! Moreover, this formula can be calculated in only $12\textcolor{blue}{\mathsf{M}}+2\textcolor{green!60!black}{\mathsf{S}}$! So all in all, this is much more effective than $2\textcolor{blue}{\mathsf{M}} + 1\textcolor{green!60!black}{\mathsf{S}} + 1\textcolor{red}{\mathsf{I}}$.
+
+The only inversion which is unavoidable in the projective form is the inversion of $Z$ since after all additions (and doublings) have been made, we need to use map $(X:Y:Z) \mapsto (X/Z,Y/Z)$ to return back to the affine form. However, this inversion is done only once at the end of the computation, so it is not that costly.
+
+\begin{proposition}
+    To conclude, typically, when working with elliptic curves, one uses the following strategy:
+    \begin{enumerate}
+        \item Convert affine points to projective form using the map $(x,y) \mapsto (x,y,1)$.
+        \item Perform all operations in the projective form, which do not involve inversions.
+        \item Convert the result back to the affine form using the map $(X:Y:Z) \mapsto (X/Z,Y/Z)$.
+    \end{enumerate}
+
+    This is illustrated in the Figure below.
+    \begin{center}
+        \includegraphics[width=0.8\linewidth]{images/lecture_4/strategy.pdf}
+        
+        \scriptsize{\textbf{Illustration:} General strategy when performing operations over Elliptic Curves.}
+    \end{center}
+\end{proposition}
+
+\subsubsection{Fast Scalar Multiplication}
+
+\subsection{Elliptic Curve Pairing}
+
+\subsubsection{Definition}
+
+\subsubsection{Case Study: BLS Signature}
 
 \end{document}
