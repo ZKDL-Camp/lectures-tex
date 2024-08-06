@@ -310,12 +310,201 @@ The only inversion which is unavoidable in the projective form is the inversion 
     \end{center}
 \end{proposition}
 
-\subsubsection{Fast Scalar Multiplication}
+\subsubsection{Scalar Multiplication Basic Implementation}
+
+Now, the question is: how do we implement the scalar multiplication $[k]P$ for the given scalar $k \in \mathbb{Z}_r$ and point $P \in E(\overline{\mathbb{F}}_q)$? 
+
+First idea: let us simply add $P$ to itself $k$ times. Well, the complexity would be $O(k)$ in this case, which is even harder than solving the discrete logarithm problem (recall that the discrete logarithm problem has a complexity of $O(\sqrt{k})$). Yikes.
+
+So there should be a better way. In this section we will limit ourselves to the double-and-add method, but the curious reader can look up the NAF (Non-Adjacent Form) method, windowed methods, GLV scalar decomposition and many other methods, which we are not going to cover in this course.
+
+The idea of the double-and-add method is following: we represent the $N$-bit scalar $k$ in binary form, say $k = (k_{N-1},k_{N-2},\dots,k_0)_2$, then we calculate $P, [2]P, [4]P, [8]P, \dots, [2^{N-1}]P$ (which is simply applying the doubling multple times) and then add the corresponding points (corresponding to positions where $k_i=1$) to get the result. Formally, we specify the \Cref{alg:double_and_add}.
+
+\begin{algorithm}
+    \caption{Double-and-add method for scalar multiplication}\label{alg:double_and_add}
+    \Input{$P \in E(\mathbb{F}_q)$ and $k \in \mathbb{Z}_{r}$}
+    \Output{Result of scalar multiplication $[k]P \in E(\mathbb{F}_q)$}
+    
+    Decompose $k$ to the binary form: $(k_0,k_1,\dots,k_{N-1})$
+    
+    $R \gets \mathcal{O}$
+    
+    $T \gets P$
+    
+    \For{$i \in \{0,\dots,N-1\}$}{
+        \If{$k_i = 1$}{
+            $R \gets R \oplus T$
+        }
+    
+        $T \gets [2]T$
+    }
+    
+    \Return{Point $R$}
+\end{algorithm}    
+
+Good news: now we have a complexity of $O(N)=O(\log k)$, which is way much better that a linear one. In fact, many more optimized methods have the same assymptotic complexity (meaning, a logarithmic one), so it turns out that 
+we cannot do much better than that. However, the main advantages of other, more optimized methods is that we can avoid making too many additions (here, in the worst case, we have to make $N$ additions), which is a costly operation (and more expensive than doubling).
+
+Moreover, here we can use projective coordinates to make the addition and doubling operation more efficient! After all, typically the number of operations is even more than $300$, so making $300$ inversions in affine form is not an option.
 
 \subsection{Elliptic Curve Pairing}
 
+Pairing is the core object used in threshold signatures, zk-SNARKs constructions, and other cryptographic applications. 
+
+Consider the \textit{Decisional Diffie-Hellman problem} which we considered in \Cref{section:math-crypto-2} (based on $g^{\alpha},g^{\beta}$ and $g^{\gamma}$, decide whether $\gamma = \alpha\beta$). Turns out that for curves where the so-called \textit{embedding degree}\footnote{We will mention what that is is later, but still this term is quite hard to define.} is small enough, this problem is easy to solve. This might sound 
+like a quite bad thing, but it turns out that although some information about the discrete logarithm is leaked, it is not enough to break the security of the system (basically, solve the \textit{Computational Diffie-Hellman problem}). 
+Pairings is the exact object that allows us to solve the Decisional Diffie-Hellman problem.
+
+However, a more interesting use-case which we are going to use in SNARKs is that pairings allows us to check \textbf{quadratic conditions} on scalars using their corresponding elliptic curve representation. For example, just given $u=g^{\alpha},v=g^{\beta}$ we can check whether $\alpha\beta+5=0$ (which is impossible to check without having a pairing). 
+
+So what is pairing?
+
 \subsubsection{Definition}
 
+\begin{definition}
+    \textbf{Pairing} is a bilinear, non-degenerate, efficiently computable map $e: \textcolor{red}{\mathbb{G}_1} \times \textcolor{blue}{\mathbb{G}_2} \to \textcolor{ForestGreen}{\mathbb{G}_T}$, where $\textcolor{red}{\mathbb{G}_1},\textcolor{blue}{\mathbb{G}_2}$ are two groups (typically, elliptic curve groups) and $\textcolor{ForestGreen}{\mathbb{G}_T}$ is a target group (typically, a set of scalars). Let us decipher the definition:
+    \begin{itemize}
+        \item \textbf{Bilinearity} means essentially the following:
+        \begin{equation*}
+            e([a]\textcolor{red}{P},[b]\textcolor{blue}{Q}) = e([ab]\textcolor{red}{P},\textcolor{blue}{Q}) = e(\textcolor{red}{P},[ab]\textcolor{blue}{Q}) = e(\textcolor{red}{P},\textcolor{blue}{Q})^{ab}.        
+        \end{equation*}
+        \item \textbf{Non-degeneracy} means that $e(G_1,G_2) \neq 1$ (where $G_1,G_2$ are generators of $\textcolor{red}{\mathbb{G}_1},\textcolor{blue}{\mathbb{G}_2}$, respectively). This property basically says that the pairing is not trivial.
+        \item \textbf{Efficient computability} means that the pairing can be computed in a reasonable time.
+    \end{itemize}
+
+    The definition is illustrated in \Cref{fig:ecpairing}.
+\end{definition}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.75\textwidth]{images/lecture_4/pairing.png}
+    \caption{Pairing illustration. It does not matter what we do first: (a) compute $[a]P$ and $[b]Q$ and then compute $e([a]P,[b]Q)$ or (b) first calculate $e(P,Q)$ and then transform it to $e(P,Q)^{ab}$. \scriptsize{Figure taken from ``Pairings in R1CS'' talk by Youssef El Housni}}
+    \label{fig:ecpairing}
+\end{figure}
+
+\begin{example}
+    Suppose $\mathbb{G}_1=\mathbb{G}_2=\mathbb{G}_T=\mathbb{Z}_r$ are scalars. Then, the map $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$, defined as:
+    \begin{equation}
+        e(x,y)= 2^{xy}
+    \end{equation}
+    is pairing. Indeed, it is bilinear. For example, $e(ax,by) = 2^{abxy} = (2^{xy})^{ab} = e(x,y)^{ab}$ or $e(ax,by)=2^{abxy}=2^{(x)(aby)}=e(x,aby)$. Moreover, it is non-degenerate, since $e(1,1)=2 \neq 1$. And finally, it is obviously efficiently computable.
+
+    However, this is a quite trivial example since working over integers is typically not secure. For example, the discrete logarithm over $\mathbb{Z}_r$ can be solved in subexponential time. For that reason, we want to build pairings over elliptic curves.
+\end{example}
+
+\begin{example}
+    \textbf{Pairing for BN254.} For BN254 (with equation $y^2=x^3+3$), the pairing function $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ is defined over the following groups:
+    \begin{itemize}
+        \item $\textcolor{red}{\mathbb{G}_1}$ --- points on the regular curve $E(\mathbb{F}_p)$.
+        \item $\textcolor{blue}{\mathbb{G}_2}$ --- $r$-torsion points on the twisted curve $E'(\mathbb{F}_{p^2})$ over the field extension $\mathbb{F}_{p^2}$ (with equation $y^2 = x^3+\frac{3}{\xi}$ for $\xi=9+u \in \mathbb{F}_{p^2}$).
+        \item $\textcolor{ForestGreen}{\mathbb{G}_T}$ --- $r$th roots of unity $\Omega_r \subset \mathbb{F}_{p^{12}}^{\times}$.
+    \end{itemize}
+
+    Well, this one is quite intense and even understanding the input and output parameters is quite hard. So let us decipher some components:
+    \begin{itemize}
+        \item \textbf{$r$-torsion subgroup on the curve $E(\mathbb{F}_{p^m})$} is simply a set of points, which multiplied by $r$ give the point at infinity (that is, $[r]P=\mathcal{O}$). Formally, $E(\mathbb{F}_{p^m})[r] = \{P \in E(\mathbb{F}_{p^m}): [r]P = \mathcal{O}\}$. Of course, for the curve $E(\mathbb{F}_p)$, the $r$-torsion subgroup is simply the whole curve, but that is generally not the case for the twisted curve over the extension field.
+        \item \textbf{$r$th roots of unity} is a set of elements $\Omega_r = \{z \in \mathbb{F}_{p^{12}}^{\times}: z^r=1\}$. This is a group under multiplication, and it has exactly $r$ elements.
+    \end{itemize}
+\end{example}
+
+\begin{remark}
+    One might a reasonable question: where does this $12$ come from? The answer is following: the so-called \textbf{embedding degree} of BN254 curve is $k=12$. This number is the key to understanding why we are working over such large extensions when calculating the pairing. The formal description is quite hard, but the intuition is following: the embedding degree is the smallest number $k$ such that all the $r$th roots of unity lie inside the extended field $\mathbb{F}_{p^k}$. If $k$ was smaller, the output of pairing would contain less that $r$ points and some points would be missing, which would make the pairing more trivial. For that reason, we need to have $\Omega_r \subset \mathbb{F}_{p^k}$.
+\end{remark}
+
+\begin{definition}
+    The following conditions are equivalent \textbf{definitions} of an embedding degree of an elliptic curve $E(\overline{\mathbb{F}}_p)$:
+    \begin{itemize}
+        \item $k$ is the smallest positive integer such that $r \mid (p^k-1)$.
+        \item $k$ is the smallest positive integer such that $\mathbb{F}_{p^k}$ contains all of the $r$-th roots of unity in $\overline{\mathbb{F}}_p$, that is $\Omega_r \subset \mathbb{F}_{p^k}$.
+        \item $k$ is the smallest positive integer such that $E(\overline{\mathbb{F}}_p)[r] \subset E(\mathbb{F}_{p^k})$
+    \end{itemize}
+\end{definition}
+
+Pretty obvious observation: lower embedding degree is better, since it allows us to work over smaller fields. But usually, this embedding degree is quite large and we need to craft elliptic curves specifically to have a small embedding degree. For example, a pretty famous curve \texttt{secp256k1} has an embedding degree
+\begin{equation*}
+    k = \mathsf{0x2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa74727a26728c1ab49ff8651778090ae0},
+\end{equation*}
+which is 254-bit long. For that reason, it is natural to define the term \textit{pairing-friendly elliptic curve}.
+\begin{definition}
+    An elliptic curve is called \textbf{pairing-friendly} if it has a relatively small embedding degree $k$ (typically, $k \leq 16$).
+\end{definition}
+
+\begin{remark}
+    One might ask why usually, when dealing with pairings, we do not get to work with field extensions that much (most likely, if you were to write \texttt{groth16} from scratch using some mathematical libraries, you will not need to work with $\mathbb{F}_{p^{12}}$ arithmetic specifically). The reason is that typically, libraries implement the following abstraction: given a set of points $\{(P_i,Q_i)\}_{i=1}^n \subset \mathbb{G}_1^n \times \mathbb{G}_2^n$, the function checks whether
+    \begin{equation}
+        \prod_{i=1}^n e(P_i,Q_i) = 1
+    \end{equation}
+    Note that in this case, we do not need to work with $\mathbb{F}_{p^{12}}$ arithmetic, but rather checking the equality in the target group $\mathbb{G}_T$. 
+
+    \textbf{Interesting fact:} this condition is specified in the \texttt{ecpairing} precompile standard used in Ethereum.
+\end{remark}
+
 \subsubsection{Case Study: BLS Signature}
+
+One of the most elegant applications of pairings is the BLS Signature scheme. Compared to ECDSA or other signature schemes, BLS can be formulated in three lines.
+
+Suppose we have pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ (with generators $G_1,G_2$, respectively), and a hash function $\mathsf{H}$, mapping message space $\mathcal{M}$ to $\mathbb{G}_1$.
+\begin{definition}
+    \textbf{BLS Signature Scheme} consists of the following algorithms:
+    \begin{itemize}
+        \item $\mathsf{Gen}(1^{\lambda})$: Key generation. $\mathsf{sk} \xleftarrow[]{R} \mathbb{Z}_q, \mathsf{pk} \gets [\mathsf{sk}] G_2 \in \mathbb{G}_2$.
+        \item $\mathsf{Sign}(\mathsf{sk},m)$. Signature is $\sigma \gets [\mathsf{sk}] \mathsf{H}(m) \in \mathbb{G}_1$.
+        \item $\mathsf{Verify}(\mathsf{pk},m,\sigma)$. Check whether $e(\mathsf{H}(m), \mathsf{pk}) = e(\sigma, G_2)$.
+    \end{itemize}
+\end{definition}
+        
+Let us check the correctness:
+\begin{equation}
+    e(\sigma,G_2) = e(\textcolor{blue}{[\mathsf{sk}]}\mathsf{H}(m),G_2) = e(\mathsf{H}(m), \textcolor{blue}{[\mathsf{sk}]}G_2) = e(\mathsf{H}(m), \mathsf{pk})
+\end{equation}
+
+As we see, the verification equation holds. 
+    
+\begin{remark}
+    $\mathbb{G}_1$ and $\mathbb{G}_2$ might be switched: public keys might live instead in $\mathbb{G}_1$ while signatures in $\mathbb{G}_2$.        
+\end{remark}
+
+This scheme is also quite famous for its aggregation properties, which we are not going to consider today.
+
+\subsubsection{Case Study: Verifying Quadratic Equations}
+
+\begin{example}
+    Suppose Alice wants to convince Bob that he knows such $\alpha,\beta$ such that $\alpha + \beta = 2$, but she does not want to reveal $\alpha,\beta$. She can do the following trick:
+    \begin{enumerate}
+        \item Alice computes $P \gets [\alpha]G, Q \gets [\beta]G$ --- points on the curve.
+        \item Alice sends $(P,Q)$ to Bob.
+        \item Bob verifies whether $P+Q = [2]G$.
+    \end{enumerate}
+    
+    It is easy to verify the correctness of the scheme: suppose Alice is honest and she sends the correct values of $\alpha,\beta$, satisfying $\alpha+\beta=2$. Then, $P+Q = [\alpha]G + [\beta]G = [\alpha+\beta]G = [2]G$. Moreover, Bob cannot learn $\alpha,\beta$ since the computational discrete logarithm problem is hard.        
+\end{example}
+
+\begin{example}
+    Well, now suppose I make the problem just a bit more complicated: Alice wants to convince that she knows $\alpha,\beta$ such that $\alpha\beta=2$. And it turns out that elliptic curve points on their own are not enough to verify this. However, using pairings, we can do the following trick: assume we have a pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$, where $\mathbb{G}_1$ is generated by $G_1$ and $\mathbb{G}_2$ is generated by $G_2$. Then, Alice can do the following:
+    \begin{enumerate}
+        \item Alice computes $P \gets [\alpha]G_1, Q \gets [\beta]G_2$ --- points on the curve.
+        \item Alice sends $(P,Q) \in \mathbb{G}_1 \times \mathbb{G}_2$ to Bob.
+        \item Bob checks whether: $e(P,Q) = e(G_1,G_2)^{2}$.
+    \end{enumerate}
+\end{example}
+\begin{remark}
+    The last verification can be also rewritten as $e(P,Q)e(G_1,G_2)^{-2}=1$, which is more frequently used in practice.
+\end{remark}
+
+\begin{example}
+    Finally, let us prove something more interesting. Like, based on $(x_1,x_2)$, whether
+    \begin{equation}
+        x_1^2 + x_1x_2 = x_2
+    \end{equation}
+    Alice can calculate $P_1 \gets [x_1]G_1 \in \mathbb{G}_1, P_2 \gets [x_1]G_2 \in \mathbb{G}_2, Q \gets [x_2]G_2 \in \mathbb{G}_2$. Then, the condition can be verified by checking whether
+    \begin{equation}
+        e(P_1,P_2+Q)e(G_1,-Q) = 1
+    \end{equation}
+    Let us see the correctness of this equation:
+    \begin{gather}
+        e(P_1,P_2+Q)e(G_1,-Q) = e([x_1]G_1,[x_1+x_2]G_2)e(G_1,[x_2]G_2)^{-1} \nonumber \\= e(G_1,G_2)^{x_1(x_1+x_2)}e(G_1,G_2)^{-x_2} = e(G_1,G_2)^{x_1^2+x_1x_2-x_2}
+    \end{gather}
+    Now, if this is $1$, then $x_1^2+x_1x_2=x_2$, which was exactly what we wanted to prove.
+\end{example}
 
 \end{document}
