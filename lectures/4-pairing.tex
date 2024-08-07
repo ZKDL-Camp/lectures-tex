@@ -4,7 +4,7 @@
 
 \subsection{Relations}
 
-Before dvelving into the projective coordinates and further zero-knowledge topics, let us first discuss the concept of relations, which will be intensively used from now on. Now, what is a relation? The definition is incredibly concise.
+Before delving into the projective coordinates and further zero-knowledge topics, let us first discuss the concept of relations, which will be intensively used from now on. Now, what is a relation? The definition is incredibly concise.
 
 \begin{definition}
     Let $\mathcal{X},\mathcal{Y}$ be some sets. Then, $\mathcal{R}$ is a \textbf{relation} if 
@@ -39,6 +39,18 @@ Interpretation is approximately the following: suppose we have sets $\mathcal{X}
 
 \begin{remark}
     When we say that $\sim$ is a relation on a set $\mathcal{X}$, we mean that $\sim$ is a relation $\mathcal{R}$ on the following Cartesian product: $\mathcal{R} \subset \mathcal{X} \times \mathcal{X}$.
+\end{remark}
+
+\begin{remark}
+    The provided example is relevant in most cases (ecdsa, eddsa, schnorr signatures etc.). But for some algorithms, the relation between secret key $\alpha$ and public key $P$ can be defined as:
+    \begin{equation}
+        \mathcal{R} = \{(\alpha, P) \in \mathbb{Z}_r \times E: -[\alpha]G = P\}
+    \end{equation} 
+    for DSTU 4145 standard or even:
+    \begin{equation}
+        \mathcal{R} = \{(\alpha, P) \in \mathbb{Z}_r \times E: [\alpha]^{-1}G = P\}
+    \end{equation}
+    for twisted ElGamal algorithm.
 \end{remark}
 
 Now, let us formally define the term \textbf{equivalence relation}.
