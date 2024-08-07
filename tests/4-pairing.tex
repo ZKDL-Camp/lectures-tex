@@ -20,7 +20,7 @@
     \item $(a_1,a_2,a_3)\sim (b_1,b_2,b_3)$ iff $a_3=b_3$, $\mathcal{X} = \mathbb{R}^3$.
 \end{enumerate}
 
-\textbf{Exercise 2.} Suppose that over $\mathbb{R}$ we define the following equivalence relation: $a \sim b$ iff $a-b \in \mathbb{Z}$ ($a,b \in \mathbb{R}$). What is the equivalence class of $1.4$?
+\textbf{Exercise 2.} Suppose that over $\mathbb{R}$ we define the following equivalence relation: $a \sim b$ iff $a-b \in \mathbb{Z}$ ($a,b \in \mathbb{R}$). What is the equivalence class of $1.4$ (that is, $[1.4]_{\sim}$)?
 \begin{enumerate}[a)]
     \item A set of all real numbers.
     \item A set of all integers.
@@ -61,11 +61,11 @@
 \end{equation*}
 for the given scalars $a,b,c,d \in \mathbb{F}_p$?
 \begin{enumerate}[a)]
-    \item $0$.
     \item $1$.
     \item $2$.
     \item $3$.
     \item $4$.
+    \item $5$.
 \end{enumerate}
 
 \textbf{Exercise 7.} Given pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ with $G_1$ --- generator of $\mathbb{G}_1$ and $G_2 \in \mathbb{G}_2$ --- generator of $\mathbb{G}_2$, which of the following is \textbf{not} equal to $e([3]G_1, [5]G_2)$?
@@ -76,5 +76,14 @@ for the given scalars $a,b,c,d \in \mathbb{F}_p$?
     \item $e([3]G_1,G_2)e(G_1,[12]G_2)$.
     \item $e(G_1, G_2)^{15}$.
 \end{enumerate} 
+
+\textbf{Exercise 8.} \textit{Unit Circle Proof.} Suppose Alice wants to convince Bob that she knows a point on the unit circle $x^2+y^2=1$. Suppose pairing is given by $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ and Alice computes $P \gets [x]G_1 \in \mathbb{G}_1, Q \gets [y]G_2 \in \mathbb{G}_2$. She then proceeds to sending $(P,Q)$ to Bob. Which of the following checks should Bob perform to verify that Alice indeed knows a point on the unit circle?
+\begin{enumerate}[a)]
+    \item Check if $e(P,Q)e(Q,P)=1$.
+    \item Check if $e([2]P,[2]Q) = e(G_1,G_2)$.
+    \item Check if $e([2]P,Q)e(Q,[2]P) = 1$.
+    \item Check if $e(P,P)+e(Q,Q) = 1$.
+    \item Check if $e(P,P)e(Q,Q)=e(G_1,G_2)$.
+\end{enumerate}
 
 \end{document}
