@@ -293,7 +293,7 @@ Now imagine we want to add 4 points, say $P_1 \oplus P_2 \oplus P_3 \oplus P_4$:
 
 Projective coordinates is a way to solve this problem. The idea is to represent points in the projective form $(X:Y:Z)$, so when adding two numbers in projective form, you still get a point in a form $(X:Y:Z)$. Then, after conducting a series of additions, you can convert the point back to the affine form. 
 
-Bug why adding two points, say, $(X_P:Y_P:Z_P)$ and $(X_Q:Y_Q:Z_Q)$, in the projective form is more efficient? We will not derive the formulas, but trust us that they have the following form:
+But why adding two points, say, $(X_P:Y_P:Z_P)$ and $(X_Q:Y_Q:Z_Q)$, in the projective form is more efficient? We will not derive the formulas, but trust us that they have the following form:
 \begin{equation}
     \begin{aligned}
         X_R = (X_PZ_Q - X_QZ_P)(Z_PZ_Q(Y_PZ_Q-Y_QZ_P)^2 - (X_PZ_Q-X_QZ_P)^2(X_PZ_Q+X_QZ_P)); \\
@@ -424,7 +424,7 @@ So what is pairing?
 \end{remark}
 
 \begin{definition}
-    The following conditions are equivalent \textbf{definitions} of an embedding degree $k$ of an elliptic curve $E(\overline{\mathbb{F}}_p)$:
+    The following conditions are equivalent \textbf{definitions} of an embedding degree of an elliptic curve $E(\overline{\mathbb{F}}_p)$:
     \begin{itemize}
         \item $k$ is the smallest positive integer such that $r \mid (p^k-1)$.
         \item $k$ is the smallest positive integer such that $\mathbb{F}_{p^k}$ contains all of the $r$-th roots of unity in $\overline{\mathbb{F}}_p$, that is $\Omega_r \subset \mathbb{F}_{p^k}$.
@@ -432,7 +432,7 @@ So what is pairing?
     \end{itemize}
 \end{definition}
 
-Pretty obvious observation: lower embedding degree is faster to work with, since it allows us to work over smaller fields. But usually, this embedding degree is quite large and we need to craft elliptic curves specifically to have a small embedding degree. For example, a pretty famous curve \texttt{secp256k1} has an embedding degree
+Pretty obvious observation: lower embedding degree is better, since it allows us to work over smaller fields. But usually, this embedding degree is quite large and we need to craft elliptic curves specifically to have a small embedding degree. For example, a pretty famous curve \texttt{secp256k1} has an embedding degree
 \begin{equation*}
     k = \mathsf{0x2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa74727a26728c1ab49ff8651778090ae0},
 \end{equation*}
@@ -587,13 +587,13 @@ for the given scalars $a,b,c,d \in \mathbb{F}_p$?
     \item $e(G_1, G_2)^{15}$.
 \end{enumerate} 
 
-\textbf{Exercise 8.} \textit{Unit Circle Proof.} Suppose Alice wants to convince Bob that she knows a point on the unit circle $x^2+y^2=1$. Suppose we are given a symmetric pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ for $\mathbb{G}_1=\mathbb{G}_2=\langle G \rangle$ and Alice computes $P \gets [x]G, Q \gets [y]G$. She then proceeds to sending $(P,Q)$ to Bob. Which of the following checks should Bob perform to verify that Alice indeed knows a point on the unit circle?
+\textbf{Exercise 8.} \textit{Unit Circle Proof.} Suppose Alice wants to convince Bob that she knows a point on the unit circle $x^2+y^2=1$. Suppose pairing is given by $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ and Alice computes $P \gets [x]G_1 \in \mathbb{G}_1, Q \gets [y]G_2 \in \mathbb{G}_2$. She then proceeds to sending $(P,Q)$ to Bob. Which of the following checks should Bob perform to verify that Alice indeed knows a point on the unit circle?
 \begin{enumerate}[(A)]
     \item Check if $e(P,Q)e(Q,P)=1$.
-    \item Check if $e([2]P,[2]Q) = e(G,G)$.
+    \item Check if $e([2]P,[2]Q) = e(G_1,G_2)$.
     \item Check if $e([2]P,Q)e(Q,[2]P) = 1$.
     \item Check if $e(P,P)+e(Q,Q) = 1$.
-    \item Check if $e(P,P)e(Q,Q)=e(G,G)$.
+    \item Check if $e(P,P)e(Q,Q)=e(G_1,G_2)$.
 \end{enumerate}
 
 \end{document}
