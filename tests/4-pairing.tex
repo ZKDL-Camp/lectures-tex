@@ -77,13 +77,13 @@ for the given scalars $a,b,c,d \in \mathbb{F}_p$?
     \item $e(G_1, G_2)^{15}$.
 \end{enumerate} 
 
-\textbf{Exercise 8.} \textit{Unit Circle Proof.} Suppose Alice wants to convince Bob that she knows a point on the unit circle $x^2+y^2=1$. Suppose pairing is given by $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ and Alice computes $P \gets [x]G_1 \in \mathbb{G}_1, Q \gets [y]G_2 \in \mathbb{G}_2$. She then proceeds to sending $(P,Q)$ to Bob. Which of the following checks should Bob perform to verify that Alice indeed knows a point on the unit circle?
+\textbf{Exercise 8*.} \textit{Unit Circle Proof.} Suppose Alice wants to convince Bob that she knows a point on the unit circle $x^2+y^2=1$. Suppose we are given a symmetric pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ for $\mathbb{G}_1=\mathbb{G}_2=\langle G \rangle$ and Alice computes $P \gets [x]G, Q \gets [y]G$. She then proceeds to sending $(P,Q)$ to Bob. Which of the following checks should Bob perform to verify that Alice indeed knows a point on the unit circle?
 \begin{enumerate}[(A)]
     \item Check if $e(P,Q)e(Q,P)=1$.
-    \item Check if $e([2]P,[2]Q) = e(G_1,G_2)$.
+    \item Check if $e([2]P,[2]Q) = e(G,G)$.
     \item Check if $e([2]P,Q)e(Q,[2]P) = 1$.
     \item Check if $e(P,P)+e(Q,Q) = 1$.
-    \item Check if $e(P,P)e(Q,Q)=e(G_1,G_2)$.
+    \item Check if $e(P,P)e(Q,Q)=e(G,G)$.
 \end{enumerate}
 
 \end{document}
