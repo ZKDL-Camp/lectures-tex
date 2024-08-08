@@ -44,11 +44,11 @@ Interpretation is approximately the following: suppose we have sets $\mathcal{X}
 \begin{remark}
     The provided example is relevant in most cases (ecdsa, eddsa, schnorr signatures etc.). But for some algorithms, the relation between secret key $\alpha$ and public key $P$ can be defined as:
     \begin{equation}
-        \mathcal{R} = \{(\alpha, P) \in \mathbb{Z}_r \times E: -[\alpha]G = P\}
+        \mathcal{R} = \{(\alpha, P) \in \mathbb{Z}_r \times E: \ominus[\alpha]G = P\}
     \end{equation} 
     for DSTU 4145 standard or even:
     \begin{equation}
-        \mathcal{R} = \{(\alpha, P) \in \mathbb{Z}_r \times E: [\alpha]^{-1}G = P\}
+        \mathcal{R} = \{(\alpha, P) \in \mathbb{Z}_r \times E: [\alpha^{-1}]G = P\}
     \end{equation}
     for twisted ElGamal algorithm.
 \end{remark}
@@ -104,7 +104,7 @@ Now, suppose I give you a set $\mathcal{X}$ with some equivalence relation $\sim
     \begin{equation}
         [x] = \{y \in \mathbb{Z}: x \equiv y \pmod{n}\}
     \end{equation}
-    For example, $[0] = \{\ldots,-2n,-n,0,n,2n,\ldots\}$ while $[1] = \{\ldots,-2n+1,-n+1,1,n+1,2n+1,\ldots\}$. Note that a set $\{[0]\}$
+    For example, $[0] = \{\ldots,-2n,-n,0,n,2n,\ldots\}$ while $[1] = \{\ldots,-2n+1,-n+1,1,n+1,2n+1,\ldots\}$.
 \end{example}
 
 Now, as we have said before, a set of all equivalence classes form a partition of the set $\mathcal{X}$. This means that any element $x \in \mathcal{X}$ belongs to exactly one equivalence class. This is a very important property, which we will use in the next section. Formally, we have the following lemma.
