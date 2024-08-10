@@ -36,8 +36,8 @@ any information about the value itself, and do so with a proof that is both smal
 verify. This makes zk-SNARKs a powerful tool for maintaining privacy and efficiency in various 
 cryptographic applications.
 
-This is pretty wide defined and maybe not so obvious if you don't have any background, so let's take
-a look at the example.
+This is pretty wide defined and maybe not so obvious if you don't have any background. Let's take a
+look at the example.
 
 \begin{example}
     
@@ -216,10 +216,7 @@ Very simple program with a multiplication.
 \end{lstlisting}
 
 This can be represented as a circuit with only one gate:
-
-\begin{equation}
-    r = a \times b
-\end{equation}
+\[ r = a \times b \]
 
 The witness vector (solution vector) is $w = (r, a, b)$, for example: $(6, 2, 3)$. We 
 assume that the $a$ and $b$ are input values. 
@@ -240,32 +237,172 @@ How can we translate an if statement?
 We can express this logic in mathematical terms as follows: "If $a$ is true, compute 
 $b \times c$; otherwise, compute $b + c$." Only numerical expressions are allowed. Knowing that
 $\text{true} := 1$ and $\text{false} := 0$, we can transform it as follows:
-
-\begin{equation}
-    r = a \times (b \times c) + (1 - a) \times (b + c)
-\end{equation}
-
-Where the witness vector is: $w = (r, a , b, c)$: $(6, 1, 2, 3)$, $(5, 0, 2, 3)$.
+\[ r = a \times (b \times c) + (1 - a) \times (b + c) \]
+Where the witness vector is: $w = (r, a , b, c)$: $(6, 1, 2, 3)$, $(5, 0, 2, 3)$.\\
 
 But, we need to verify all the intermediate steps. This can be achieved by transforming the above
 equation using the simplest terms (the gates), ensuring the correctness of each step in the program: 
 
-\begin{equation}
+\begin{equation*}
     \begin{aligned}
-        r_1 = b \times c \\
-        r_2 = b + c \\
-        r_3 = 1 - a \\
-        r_4 = a \times r_1 \\
-        r_5 = r_3 \times r_2 \\
-        r = r_4 + r_5 \\
+        r_1 &= b \times c \\
+        r_2 &= b + c \\
+        r_3 &= 1 - a \\
+        r_4 &= a \times r_1 \\
+        r_5 &= r_3 \times r_2 \\
+        r &= r_4 + r_5 \\
     \end{aligned}
-\end{equation}
+\end{equation*}
 
 With witness vector: $w = (r, r_1, r_2, r_3, r_4, r_5, a , b, c)$: $(6, 6, 5, 0, 6, 0, 1, 2, 3)$.
 
 \subsection{Rank-1 Constraint System}
 
-For the ZK proof we need just a little bit different format - \textbf{Rank-1 Constrain System}.
-Where the simpliest term is \textbf{constraint}.
+Almost any program written in high-level programming language can be translated (compiled) into
+arithmetic circuits, that are really powerfull tool. But for the ZK proof we need slightly different
+format of it - \textbf{Rank-1 Constrain System}, where the simpliest term is \textbf{constraint}. 
+This offers a more flexible and general way to describe these parts.
+    
+\begin{definition}
+    Let $\mathbb{V}$ be a vector space over the field $\mathbb{F}$. An \textbf{inner product} 
+    on $\mathbb{V}$ is a function:
+    \[ \<\cdot, \cdot \>: \mathbb{V} \times \mathbb{V} \rightarrow \mathbb{F} \]
+    defined for $u, v \in \mathbb{V}$ as a linear combination:
+    \[ \< u, v \> = \sum_{i=1}^{n} u_i v_i \]
+    With next properties:
+    \begin{itemize}
+        \item Symmetry: $\forall u, v \in \mathbb{V}: \< u, v \> = \overline{\< v, u \>}$
+        \item Linearity in the first argument: $\forall u, v, w \in \mathbb{V}, \forall a \in 
+        \mathbb{F}: \< au + v, w \> = a \< u, w \> + \< v, w \>$
+        \item Positivity: $\forall u \in \mathbb{V}: \< u, u \> \geq 0$ and 
+        $\< u, u \> = 0 \Leftrightarrow u = 0$
+    \end{itemize}
+\end{definition}
+
+
+\begin{example}
+    Let $u, v$ are vectors over the real number $\mathbb{R}$, where
+    \[u = (1, 2, 3), v = (2, 4, 3)\], then:
+    $\<u, v\> = \sum_{i=1}^{3}u_iv_i = 2*1 + 2*4 + 3*3 = 2 + 8 + 9 = 19$
+\end{example}
+
+With knowledge of the inner product of two vectors, we can now formulate a definition of the 
+constraint in the context of an R1CS.
+
+\begin{definition}
+    Each \textbf{constraint} in the Rank-1 Constraint System must be in the form:
+    \[ \<a, w\> \times \<b, w\> = \<c, w\> \]
+    Where $\mathbf{w}$ is a vector containing all the \textit{input}, \textit{output}, and 
+    \textit{intermediate} variables involved in the computation. The vectors $\mathbf{a}$, 
+    $\mathbf{b}$, and $\mathbf{c}$ are vectors of coefficients corresponding to these variables, 
+    and they define the relationship between the linear combinations of $\mathbf{w}$ on the 
+    left-hand side and the right-hand side of the equation.
+\end{definition}
+
+\begin{example}
+    Let's get back to our example from the previous chapter about the arithmetic circuits.
+    \[ r = x_1 \times x_2 \]
+    The constraint is:
+    \[(a_1w_1 + a_2w_2 + a_3w_3)(b_1w_1 + b_2w_2 + b_3w_3) = c_1w_1 + c_2w_2 + c_3w_3\]
+    Coefficients and witness vectors are:
+    $w = (r, x_1, x_2), a = (0, 1, 0), b = (0, 0, 1), c = (1, 0, 0)$. Therefore:
+    \[ (0w_1 + 1w_2 + 0w_3)(0w_1 + 0w_2 + 1w_3) = (1w_1 + 0w_2 + 0w_3) \]
+    \[ w_2 \times w_3 = w_1 \]
+    \[ x_1 \times x_2 = r \]
+\end{example}
+
+
+\begin{example}
+    And a more complex example. Remember that we want to verify each computational step.
+
+    \begin{lstlisting}[language=C,numbers=none]
+    if (x1) {
+        return x2 * x3
+    } else {
+        return x2 + x3
+    }
+    \end{lstlisting}
+
+    We know that it can be expressed as:
+    \[ r = x_1 \times (x_2 \times x_3) + (1 - x_1) \times (x_2 + x_3) \]
+
+    However, one important consideration was overlooked. If $x_1$ is neither $0$ nor $1$, it implies
+    that something else is being computed instead of the desired program. Since we need to add a
+    restriction for $x_1$: $x_1 \times (1 - x_1) = 0$, this effectively checks that $x_1$ is binary.
+
+    The next constraints can be build:
+    \begin{align*}
+        x_1 \times x_1 &= x_1 \quad \text{(binary check)} \tag{1} \\
+        x_2 \times x_3 &= mult \tag{2} \\
+        x_1 \times mult &= selectMult \tag{3} \\
+        (1 - x_1) \times (x_2 + x_3) &= r - selectMult \tag{4}
+    \end{align*}
+
+    For every constraint we need the coefficients vectors $a_i$, $b_i$, $c_i$, but all of them have
+    the same witness vector $w$.
+
+    The interesting thing is where to take a constant from. In our case, it's just 1 in the (4) 
+    constraint. The solution is straightforward: by placing 1 in the witness vector, we can then 
+    obtain any desired value by multiplying it by an appropriate coefficient which is $-1$ in our
+    case.
+
+    The witness vector:
+    \[ w = (1, r, x_1, x_2, x_3, mult, selectMult) \]
+    The coefficients vectors:
+    \begin{align*}
+        a_1 &= (0, 0, 1, 0, 0, 0, 0) & \quad b_1 &= (0, 0, 1, 0, 0, 0, 0) & \quad c_1 &= (0, 0, 1, 0, 0, 0, 0) \\
+        a_2 &= (0, 0, 0, 1, 0, 0, 0) & \quad b_2 &= (0, 0, 0, 0, 1, 0, 0) & \quad c_2 &= (0, 0, 0, 0, 0, 1, 0) \\
+        a_3 &= (0, 0, 1, 0, 0, 0, 0) & \quad b_3 &= (0, 0, 0, 0, 0, 1, 0) & \quad c_3 &= (0, 0, 0, 0, 0, 0, 1) \\
+        a_4 &= (1, 0, -1, 0, 0, 0, 0) & \quad b_4 &= (0, 0, 0, 1, 1, 0, 0) & \quad c_4 &= (0, 1, 0, 0, 0, 0, -1)
+    \end{align*}
+
+    Now, let's use specific values to compute an example:
+    \[ x_1 = 1, \quad x_2 = 3, \quad x_3 = 4 \]
+
+    We get:
+    \[ \text{mult} = x_2 \times x_3 = 3 \times 4 = 12 \]
+    \[ \text{selectMult} = x_1 \times \text{mult} = 1 \times 12 = 12 \]
+    \[ r = x_1 \times (x_2 \times x_3) + (1 - x_1) \times (x_2 + x_3) \]
+    \[ r = 1 \times (3 \times 4) + (1 - 1) \times (3 + 4) = 12 \]
+
+    Verifying the constraints:
+    \begin{enumerate}
+        \item \( x_1 \times x_1 = x_1 \quad (1 \times 1 = 1) \)
+        \item \( x_2 \times x_3 = \text{mult} \quad (3 \times 4 = 12) \)
+        \item \( x_1 \times \text{mult} = \text{selectMult} \quad (1 \times 12 = 12) \)
+        \item \( (1 - x_1) \times (x_2 + x_3) = r - \text{selectMult} \quad (0 \times 7 = 12 - 12) \)
+    \end{enumerate}
+
+    The witness vector with these values:
+    \[ w = (1, 12, 1, 3, 4, 12, 12) \]
+\end{example}
+
+Each constraint enforces that the product of the linear combinations defined by $a$ and $b$ must
+equal the linear combination defined by $c$. Collectively, these constraints describe the 
+computation by ensuring that every step, from inputs through intermediates to outputs, satisfies 
+the defined relationships, thus encoding the entire computational process in the form of a system
+of rank-1 quadratic equations.
+
+The last unresolved question is where the ``rank-1`` comes from.
+
+\begin{lemma}
+    Suppose there is a constraint $\langle a, w \rangle \times \langle b, w \rangle = \langle c, w \rangle$ with coefficient vectors
+    $a$, $b$, $c$ and witness vector $w$. Then it can be expressed in the form:
+    \[ w^T A w + c^T w = 0 \]
+    Where $A$ is the outer product of vectors $a$, $b$ (denoted as $a \otimes b$), consequently 
+    a \textbf{rank-1} matrix.
+\end{lemma}
+
+\textbf{Lemma proof.} Suppose there is a constraint $\langle a, w \rangle \times \langle b, w \rangle = \langle c, w \rangle$. Where
+vectors $a$, $b$, $c$, and $w$ have length $n$. Let's expand the inner products: 
+\[ \sum_{i=1}^{n} a_i w_i \times \sum_{j=1}^{n} b_j w_j = \sum_{k=1}^{n} c_k w_k \]
+
+Combine the products into a double sum on the left side:
+\[ \sum_{i=1}^{n} \sum_{j=1}^{n} a_i b_j w_i w_j = w^T (a \otimes b) w = w^T A w \]
+
+Thus, the constraint can be written as:
+\[ w^T A w + c^T w = 0 \]
+
+So, the rank-1 means the rank of the coefficients matrix $A$ in one of the constraint formats.
 
 \end{document}
