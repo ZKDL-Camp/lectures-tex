@@ -40,7 +40,6 @@ This is pretty wide defined and maybe not so obvious if you don't have any backg
 look at the example.
 
 \begin{example}
-    
     Imagine you're part of a treasure hunt, and you've found a hidden treasure chest. You want to 
     prove to the treasure hunt organizer that you know where the chest is hidden without revealing
     its location. Here's how zk-SNARKs can be used in this context: \\
@@ -68,7 +67,6 @@ look at the example.
 
     Here you can think of zk-SNARK as a golden coin from the chest where the pirates' sign is 
     engraved, so the organizer can be sure you've found the treasure.
-
 \end{example}
 
 But the problems that we want to solve are in a slightly different format. We can't bring a coin to
@@ -260,30 +258,33 @@ With witness vector: $w = (r, r_1, r_2, r_3, r_4, r_5, a , b, c)$: $(6, 6, 5, 0,
 
 Almost any program written in high-level programming language can be translated (compiled) into
 arithmetic circuits, that are really powerfull tool. But for the ZK proof we need slightly different
-format of it - \textbf{Rank-1 Constrain System}, where the simpliest term is \textbf{constraint}. 
+format of it - \textbf{Rank-1 Constraint System}, where the simpliest term is \textbf{constraint}. 
 This offers a more flexible and general way to describe these parts.
     
 \begin{definition}
     Let $\mathbb{V}$ be a vector space over the field $\mathbb{F}$. An \textbf{inner product} 
     on $\mathbb{V}$ is a function:
-    \[ \<\cdot, \cdot \>: \mathbb{V} \times \mathbb{V} \rightarrow \mathbb{F} \]
+    \[ \langle \cdot, \cdot \rangle: \mathbb{V} \times \mathbb{V} \rightarrow \mathbb{F} \]
     defined for $u, v \in \mathbb{V}$ as a linear combination:
-    \[ \< u, v \> = \sum_{i=1}^{n} u_i v_i \]
-    With next properties:
+    \[ \langle u, v \rangle = \sum_{i=1}^{n} u_i v_i \]
+    With the following properties $\forall c \in \mathbb{F}, \forall u, v, w \in \mathbb{V}$:
     \begin{itemize}
-        \item Symmetry: $\forall u, v \in \mathbb{V}: \< u, v \> = \overline{\< v, u \>}$
-        \item Linearity in the first argument: $\forall u, v, w \in \mathbb{V}, \forall a \in 
-        \mathbb{F}: \< au + v, w \> = a \< u, w \> + \< v, w \>$
-        \item Positivity: $\forall u \in \mathbb{V}: \< u, u \> \geq 0$ and 
-        $\< u, u \> = 0 \Leftrightarrow u = 0$
+        \item Symmetry: $\langle u, v \rangle = \langle v, u \rangle$
+        \item Linearity in the first argument: $\langle cu + v, w \rangle = c \langle u, w \rangle + \langle v, w \rangle$
+        \item Positivity: $\langle u, u \rangle \geq 0$ and $\langle u, u \rangle = 0 \Leftrightarrow u = 0$
     \end{itemize}
 \end{definition}
 
 
 \begin{example}
     Let $u, v$ are vectors over the real number $\mathbb{R}$, where
-    \[u = (1, 2, 3), v = (2, 4, 3)\], then:
-    $\<u, v\> = \sum_{i=1}^{3}u_iv_i = 2*1 + 2*4 + 3*3 = 2 + 8 + 9 = 19$
+    \begin{equation*}
+        u = (1, 2, 3), \quad v = (2, 4, 3)
+    \end{equation*}
+    Then: 
+    \begin{equation*}
+        \langle u, v\rangle = \sum_{i=1}^{3}u_iv_i = 2 \cdot 1 + 2 \cdot 4 + 3 \cdot 3 = 2 + 8 + 9 = 19
+    \end{equation*}
 \end{example}
 
 With knowledge of the inner product of two vectors, we can now formulate a definition of the 
@@ -291,11 +292,13 @@ constraint in the context of an R1CS.
 
 \begin{definition}
     Each \textbf{constraint} in the Rank-1 Constraint System must be in the form:
-    \[ \<a, w\> \times \<b, w\> = \<c, w\> \]
-    Where $\mathbf{w}$ is a vector containing all the \textit{input}, \textit{output}, and 
-    \textit{intermediate} variables involved in the computation. The vectors $\mathbf{a}$, 
-    $\mathbf{b}$, and $\mathbf{c}$ are vectors of coefficients corresponding to these variables, 
-    and they define the relationship between the linear combinations of $\mathbf{w}$ on the 
+    \begin{equation*}
+        \langle a, w\rangle \times \langle b, w\rangle = \langle c, w\rangle
+    \end{equation*}
+    Where $w$ is a vector containing all the \textit{input}, \textit{output}, and 
+    \textit{intermediate} variables involved in the computation. The vectors $a$, 
+    $b$, and $c$ are vectors of coefficients corresponding to these variables, 
+    and they define the relationship between the linear combinations of $w$ on the 
     left-hand side and the right-hand side of the equation.
 \end{definition}
 
@@ -311,6 +314,9 @@ constraint in the context of an R1CS.
     \[ x_1 \times x_2 = r \]
 \end{example}
 
+The interesting thing is where to take a constants from. The solution is straightforward: by placing
+1 in the witness vector, so we can obtain any desired value by multiplying it by an appropriate 
+coefficient.
 
 \begin{example}
     And a more complex example. Remember that we want to verify each computational step.
@@ -333,21 +339,14 @@ constraint in the context of an R1CS.
     The next constraints can be build:
     \begin{align*}
         x_1 \times x_1 &= x_1 \quad \text{(binary check)} \tag{1} \\
-        x_2 \times x_3 &= mult \tag{2} \\
-        x_1 \times mult &= selectMult \tag{3} \\
-        (1 - x_1) \times (x_2 + x_3) &= r - selectMult \tag{4}
+        x_2 \times x_3 &= \mathsf{mult} \tag{2} \\
+        x_1 \times \mathsf{mult} &= \mathsf{selectMult} \tag{3} \\
+        (1 - x_1) \times (x_2 + x_3) &= r - \mathsf{selectMult} \tag{4}
     \end{align*}
 
     For every constraint we need the coefficients vectors $a_i$, $b_i$, $c_i$, but all of them have
     the same witness vector $w$.
-
-    The interesting thing is where to take a constant from. In our case, it's just 1 in the (4) 
-    constraint. The solution is straightforward: by placing 1 in the witness vector, we can then 
-    obtain any desired value by multiplying it by an appropriate coefficient which is $-1$ in our
-    case.
-
-    The witness vector:
-    \[ w = (1, r, x_1, x_2, x_3, mult, selectMult) \]
+    \[ w = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult}) \]
     The coefficients vectors:
     \begin{align*}
         a_1 &= (0, 0, 1, 0, 0, 0, 0) & \quad b_1 &= (0, 0, 1, 0, 0, 0, 0) & \quad c_1 &= (0, 0, 1, 0, 0, 0, 0) \\
@@ -356,25 +355,17 @@ constraint in the context of an R1CS.
         a_4 &= (1, 0, -1, 0, 0, 0, 0) & \quad b_4 &= (0, 0, 0, 1, 1, 0, 0) & \quad c_4 &= (0, 1, 0, 0, 0, 0, -1)
     \end{align*}
 
-    Now, let's use specific values to compute an example:
+    Now, let's use specific values to compute an example. Using the arithmetic in a large finite
+    field $\mathbb{F}_p$.
     \[ x_1 = 1, \quad x_2 = 3, \quad x_3 = 4 \]
-
-    We get:
-    \[ \text{mult} = x_2 \times x_3 = 3 \times 4 = 12 \]
-    \[ \text{selectMult} = x_1 \times \text{mult} = 1 \times 12 = 12 \]
-    \[ r = x_1 \times (x_2 \times x_3) + (1 - x_1) \times (x_2 + x_3) \]
-    \[ r = 1 \times (3 \times 4) + (1 - 1) \times (3 + 4) = 12 \]
 
     Verifying the constraints:
     \begin{enumerate}
         \item \( x_1 \times x_1 = x_1 \quad (1 \times 1 = 1) \)
-        \item \( x_2 \times x_3 = \text{mult} \quad (3 \times 4 = 12) \)
-        \item \( x_1 \times \text{mult} = \text{selectMult} \quad (1 \times 12 = 12) \)
-        \item \( (1 - x_1) \times (x_2 + x_3) = r - \text{selectMult} \quad (0 \times 7 = 12 - 12) \)
+        \item \( x_2 \times x_3 = \mathsf{mult} \quad (3 \times 4 = 12) \)
+        \item \( x_1 \times \mathsf{mult} = \mathsf{selectMult} \quad (1 \times 12 = 12) \)
+        \item \( (1 - x_1) \times (x_2 + x_3) = r - \mathsf{selectMult} \quad (0 \times 7 = 12 - 12) \)
     \end{enumerate}
-
-    The witness vector with these values:
-    \[ w = (1, 12, 1, 3, 4, 12, 12) \]
 \end{example}
 
 Each constraint enforces that the product of the linear combinations defined by $a$ and $b$ must
@@ -385,16 +376,42 @@ of rank-1 quadratic equations.
 
 The last unresolved question is where the ``rank-1`` comes from.
 
+To understand this, we need the knowledge of the outer product and its properties.
+
+\begin{definition}
+    Given two vectors $u \in \mathbb{F}^n$, $v \in \mathbb{F}^m$ the \textbf{outer product} is a
+    the matrix whose entries are all products of an element in the first vector with an element 
+    in the second vector:
+    \begin{equation*}
+        u \otimes v = \begin{pmatrix}
+            u_1 v_1 & u_1 v_2 & \cdots & u_1 v_n \\
+            u_2 v_1 & u_2 v_2 & \cdots & u_2 v_n \\
+            \vdots & \vdots & \ddots & \vdots \\
+            u_m v_1 & u_m v_2 & \cdots & u_m v_n
+        \end{pmatrix}
+    \end{equation*}
+    With the following properties $\forall (c, u, v, w) \in \mathbb{F} \times \mathbb{F}^n \times \mathbb{F}^m \times \mathbb{F}^p$:
+    \begin{itemize}
+        \item Transpose: $(u \otimes v) = (v \otimes u)^{\textsf{T}}$
+        \item Distributivity: $u \otimes (v + w) = u \otimes v + u \otimes w$
+        \item Scalar Multiplication: $c(v \otimes u) = (cv) \otimes u = v \otimes (cu)$
+        \item Rank: the outer product $u \otimes v$ is a rank-1 matrix if $u$ and $v$ are non-zero
+        vectors
+    \end{itemize}
+\end{definition}
+
 \begin{lemma}
-    Suppose there is a constraint $\<a, w\> \times \<b, w\> = \< c, w \>$ with coefficient vectors
-    $a$, $b$, $c$ and witness vector $w$. Then it can be expressed in the form:
+    Suppose there is a constraint $\langle a, w\rangle \times b, w\rangle = \langle c, w \rangle$ 
+    with coefficient vectors $a$, $b$, $c$ and witness vector $w$. Then it can be expressed in the 
+    form:
     \[ w^T A w + c^T w = 0 \]
     Where $A$ is the outer product of vectors $a$, $b$ (denoted as $a \otimes b$), consequently 
     a \textbf{rank-1} matrix.
 \end{lemma}
 
-\textbf{Lemma proof.} Suppose there is a constraint $\<a, w\> \times \<b, w\> = \<c, w\>$. Where
-vectors $a$, $b$, $c$, and $w$ have length $n$. Let's expand the inner products: 
+\textbf{Lemma proof.} Suppose there is a constraint $\langle a, w\rangle \times \langle b, w\rangle
+= \langle c, w\rangle$. Where vectors $a, b, c, w \in \mathbb{F}^n $. Let's expand the inner
+products: 
 \[ \sum_{i=1}^{n} a_i w_i \times \sum_{j=1}^{n} b_j w_j = \sum_{k=1}^{n} c_k w_k \]
 
 Combine the products into a double sum on the left side:
@@ -404,5 +421,12 @@ Thus, the constraint can be written as:
 \[ w^T A w + c^T w = 0 \]
 
 So, the rank-1 means the rank of the coefficients matrix $A$ in one of the constraint formats.
+
+\subsection{Quadratic Arithmetic Program}
+
+The Rank-1 Constraint System is not succinct. The number of constraints directly depends
+on the problem being solved. In practical scenarios, this can require tens or even hundreds of
+thousands of constraints, sometimes even millions. The Quadratic Arithmetic Program (QAP) can 
+address this issue.
 
 \end{document}
