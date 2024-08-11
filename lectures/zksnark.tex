@@ -400,6 +400,31 @@ To understand this, we need the knowledge of the outer product and its propertie
     \end{itemize}
 \end{definition}
 
+\begin{example}
+    Let $u, v$ are vectors over the real number $\mathbb{R}$, where
+    \begin{equation*}
+        u = (1, 2, 3), \quad v = (2, 4, 3)
+    \end{equation*}
+    Then: 
+    \begin{equation*}
+        u \otimes v = \begin{pmatrix}
+            1 \cdot 2 & 1 \cdot 4 & 1 \cdot 3 \\
+            2 \cdot 2 & 2 \cdot 4 & 2 \cdot 3 \\
+            3 \cdot 2 & 3 \cdot 4 & 3 \cdot 3
+        \end{pmatrix} = \begin{pmatrix}
+            2 & 4 & 3 \\
+            4 & 8 & 6 \\
+            6 & 12 & 9
+        \end{pmatrix}
+    \end{equation*}
+    Additionally, as we can see the rows number 2 and 3 in the result matrix can be represented
+    as a linear combination of the first row, specifically by multiplying it by 2 and 3, 
+    respectively. The same property applies to the columns. This demonstrates the property of the
+    outer product, that the resulting matrix has a rank of 1.
+\end{example}
+
+Using the outer product we can express the constraint in another form.
+
 \begin{lemma}
     Suppose there is a constraint $\langle a, w\rangle \times b, w\rangle = \langle c, w \rangle$ 
     with coefficient vectors $a$, $b$, $c$ and witness vector $w$. Then it can be expressed in the 
