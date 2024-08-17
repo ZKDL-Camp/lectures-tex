@@ -34,9 +34,9 @@ Recall that \textbf{relation} $\mathcal{R}$ is just a subset of $\mathcal{X} \ti
     \end{equation*}
 \end{definition}
 
-Now, what is the purpose of introducing relations and languages? The answer is simple: suppose we have a prover $\mathcal{P}$ and verifier $\mathcal{V}$. The prover wants to convince the verifier that a statement $x \in \mathcal{X}$ is true, that is $x \in \mathcal{L}_{\mathcal{R}}$. However, the verifier does not trust the prover and wants to be sure that the statement is indeed true. This is where the notion of a \emph{proof} comes into play. Moreover, typically while proving the statement, the prover does not want to reveal any information about the \emph{witness} $y \in \mathcal{Y}$. 
+Now, what is the purpose of introducing relations and languages? The idea is that relation is a natural way to formalize the notion of a statement and witness. Namely, we denote the elements of $\mathcal{X}$ as statements and the elements of $\mathcal{Y}$ as witnesses.
 
-Further, we denote by $w \in \mathcal{W}$ the witness for the statement $x \in \mathcal{L}_{\mathcal{R}}$. Oftentimes, one might also encounter notation $\phi$ to denote the statement, but we will stick to $x$ for simplicity.
+Further, we denote by $w$ the witness for the statement $x \in \mathcal{L}_{\mathcal{R}}$. Oftentimes, one might also encounter notation $\phi$ to denote the statement, but we will stick to $x$ for simplicity.
 
 \begin{example}
     Suppose we want to prove the following claim: number $n \in \mathbb{N}$ is the product of two large prime numbers $(p,q) \in \mathbb{N} \times \mathbb{N}$. Here, the relation is the following:
@@ -53,12 +53,12 @@ Further, we denote by $w \in \mathcal{W}$ the witness for the statement $x \in \
 \end{example}
 
 \begin{example}
-    Another example of claim we want to prove is the following: number $y \in \mathbb{Z}_N^*$ is a quadratic residue modulo $N$, meaning there exists some $x \in \mathbb{Z}_N^*$ such that $y \equiv x^2 \pmod{N}$. The relation in this case is:
+    Another example of claim we want to prove is the following: number $x \in \mathbb{Z}_N^{\times}$\footnote{By $\mathbb{Z}_N^{\times}$ we denote the multiplicative group of integers modulo $N$. In other words, this is a set of integers $\{x \in \mathbb{Z}_N: \gcd \{x, N\} = 1\}$.} is a \textbf{quadratic residue} modulo $N$, meaning there exists some $w \in \mathbb{Z}_N^{\times}$ such that $x \equiv w^2 \pmod{N}$ (naturally, $w$ is called a \textit{square root} of $x$). The relation in this case is:
     \begin{equation*}
-        \mathcal{R} = \{ (x, y) \in (\mathbb{Z}_N^*)^2: y \equiv x^2 \pmod{N} \}
+        \mathcal{R} = \{ (x, w) \in (\mathbb{Z}_N^{\times})^2: x \equiv w^2 \pmod{N} \}
     \end{equation*}
 
-    In this case, $\mathcal{L}_{\mathcal{R}} = \{y \in \mathbb{Z}_N^*: \exists x \in \mathbb{Z}_N^* \; \text{such that} \; y \equiv x^2 \pmod{N}\}$. Here, our \textit{square root of $y$ modulo $N$}, that is $x$, is the witness for the statement $y \in \mathcal{L}_{\mathcal{R}}$. For example, for $N=7$ we have $4 \in \mathcal{L}_{\mathcal{R}}$ since $5$ is a valid witness: $5^2 \equiv 4 \pmod{7}$, while $3 \not\in \mathcal{L}_{\mathcal{R}}$ since there is no valid witness for $3$.
+    In this case, $\mathcal{L}_{\mathcal{R}} = \{x \in \mathbb{Z}_N^{\times}: \exists w \in \mathbb{Z}_N^{\times} \; \text{such that} \; x \equiv w^2 \pmod{N}\}$. Here, our square root of $x$ modulo $N$, that is $w$, is the witness for the statement $x \in \mathcal{L}_{\mathcal{R}}$. For example, for $N=7$ we have $4 \in \mathcal{L}_{\mathcal{R}}$ since $5$ is a valid witness: $5^2 \equiv 4 \pmod{7}$, while $3 \not\in \mathcal{L}_{\mathcal{R}}$ since there is no valid witness for $3$.
 \end{example}
 
 
@@ -67,12 +67,12 @@ However, we want to limit ourselves to languages that has reasonably efficient v
 \begin{definition}[NP Language]
     A language $\mathcal{L}_{\mathcal{R}}$ belongs to the NP class if there exists a polynomial-time verifier $\mathcal{V}$ such that the following two properties hold:
     \begin{itemize}
-        \item \textbf{Completeness:} If $x \in \mathcal{L}_{\mathcal{R}}$, then there is a witness $w \in \mathcal{W}$ such that $\mathcal{V}(x, w) = 1$ with $|w| = \mathsf{poly}(|x|)$. Essentially, it states that true claims have \textit{short}\footnote{``Short'' is a pretty relative term which would further differ based on the context. Here, we assume that the proof is ``short'' if it can be computed in polynomial time. However, in practice, we will want to make the proofs even shorter: see SNARKs and STARKs.} proofs.
-        \item \textbf{Soundness:} If $x \not\in \mathcal{L}_{\mathcal{R}}$, then for any $w \in \mathcal{W}$ it holds that $\mathcal{V}(x, w) = 0$. Essentially, it states that false claims have no proofs.
+        \item \textbf{Completeness:} If $x \in \mathcal{L}_{\mathcal{R}}$, then there is a witness $w$ such that $\mathcal{V}(x, w) = 1$ with $|w| = \mathsf{poly}(|x|)$. Essentially, it states that true claims have \textit{short}\footnote{``Short'' is a pretty relative term which would further differ based on the context. Here, we assume that the proof is ``short'' if it can be computed in polynomial time. However, in practice, we will want to make the proofs even shorter: see SNARKs and STARKs.} proofs.
+        \item \textbf{Soundness:} If $x \not\in \mathcal{L}_{\mathcal{R}}$, then for any $w$ it holds that $\mathcal{V}(x, w) = 0$. Essentially, it states that false claims have no proofs.
     \end{itemize}
 \end{definition}
 
-However, this construction on its own is not helpful to us. In particular, without having any randomness and no interaction, building practical proving systems is very hard. Therefore, we need some more ingredients!
+However, this construction on its own is not helpful to us. In particular, without having any randomness and no interaction, building practical proving systems is very hard. Therefore, we need some more ingredients to make proving NP statements easier.
 
 \subsection{Interactive Probabilistic Proofs}
 
@@ -88,22 +88,22 @@ As mentioned above, we will bring two more ingredients to the table: \textbf{ran
 
 Now, one of the drastic changes is the following: if $x \not\in \mathcal{L}_{\mathcal{R}}$, then the verifier $\mathcal{V}$ should reject the claim with overwhelming\footnote{Some technicality: as you know from the Lecture 2, the value $\varepsilon = \mathsf{negl}(\lambda)$ is called negligible since it is very close to $0$. In turn, the value $1-\varepsilon$ is called \textit{overwhelming} since it is close to $1$.} probability (in contrast to strict probability of $1$). Let us consider the concrete example.
 
-\subsubsection{Example: Quadratic Residue Test}
+\subsubsection{Example: Quadratic Residue Test}\label{section:quadratic_residue_test}
 
-Again, suppose for relation $\mathcal{R} = \{(x,y) \in (\mathbb{Z}_N^*)^2: y \equiv x^2 \pmod{n}\}$ and corresponding language $\mathcal{L}_{\mathcal{R}} = \{y \in \mathbb{Z}_N^*: \exists x \in \mathbb{Z}_N^* \; \text{such that} \; y \equiv x^2 \pmod{n}\}$ the prover $\mathcal{P}$ wants to convince the verifier that the given $y$ is in language $\mathcal{L}_{\mathcal{R}}$. Again, sending $x$ is not an option, as we want to avoid revealing the witness. So how can we proceed? The idea is that the prover $\mathcal{P}$ should prove that he \textit{could} prove it if he felt like it. 
+Again, suppose for relation $\mathcal{R} = \{(x,w) \in (\mathbb{Z}_N^{\times})^2: x \equiv w^2 \pmod{N}\}$ and corresponding language $\mathcal{L}_{\mathcal{R}} = \{x \in \mathbb{Z}_N^{\times}: \exists w \in \mathbb{Z}_N^{\times} \; \text{such that} \; x \equiv w^2 \pmod{N}\}$ the prover $\mathcal{P}$ wants to convince the verifier that the given $x$ is in language $\mathcal{L}_{\mathcal{R}}$. Again, sending $w$ is not an option, as we want to avoid revealing the witness. So how can we proceed? The idea is that the prover $\mathcal{P}$ should prove that he \textit{could} prove it if he felt like it. 
 
-So here how it goes. The prover $\mathcal{P}$ can first sample a random $r \xleftarrow{R} \mathbb{Z}_N^*$, calculate $s \gets r^2 \pmod{n}$ and say to the verifier $\mathcal{V}$: 
+So here how it goes. The prover $\mathcal{P}$ can first sample a random $r \xleftarrow{R} \mathbb{Z}_N^{\times}$, calculate $a \gets r^2 \pmod{N}$ and say to the verifier $\mathcal{V}$: 
 \begin{itemize}
-    \item Hey, I could give you the square roots of both $s$ and $sy$ and that would convince you that the statement is true! But in this case, you would know $x$\footnote{If verifier gets both $r$ and $rx$, he can divide the latter by former and get $x$}.
-    \item So instead of providing both values simultaneously, you will choose which one you want to see: either $r$ or $ry$. This way, after a couple of such rounds, you will not learn $x$ but you will be convinced that I know it.
+    \item Hey, I could give you the square roots of both $a$ and $ax \pmod{N}$ and that would convince you that the statement is true! But in this case, you would know $w$\footnote{If verifier gets both $r$ and $rw \pmod{N}$, he can divide the latter by former and get $w$}.
+    \item So instead of providing both values simultaneously, you will choose which one you want to see: either $r$ or $r\times w\pmod{N}$. This way, after a couple of such rounds, you will not learn $w$ but you will be convinced that I know it.
 \end{itemize}
 
 That being said, formally the interaction between prover $\mathcal{P}$ and verifier $\mathcal{V}$ can be described as follows:
 \begin{enumerate}
-    \item $\mathcal{P}$ samples $r \xleftarrow{R} \mathbb{Z}_N^*$ and sends $s \gets r^2 \pmod{n}$ to $\mathcal{V}$.
+    \item $\mathcal{P}$ samples $r \xleftarrow{R} \mathbb{Z}_N^{\times}$ and sends $a \gets r^2 \pmod{N}$ to $\mathcal{V}$.
     \item $\mathcal{V}$ sends a random bit $b \xleftarrow{R} \{0,1\}$ to $\mathcal{P}$.
-    \item If $b=1$, the prover sends $z \gets r$, otherwise, if $b=0$, he sends $z \gets rx \pmod{n}$.
-    \item The verifier checks whether $z^2 \equiv sy^{1-b} \pmod{n}$.
+    \item If $b=0$, the prover sends $z \gets r$, otherwise, if $b=1$, he sends $z \gets rw \pmod{N}$.
+    \item The verifier checks whether $z^2 \equiv a\times x^{b} \pmod{N}$.
     \item Repeat the process for $\lambda \in \mathbb{N}$ rounds.
 \end{enumerate}
 
@@ -118,11 +118,11 @@ That being said, formally the interaction between prover $\mathcal{P}$ and verif
 
         \node[align=center,fill=white!5,thick,below=0.5cm of prover](prover-setup){
         \noindent\rule{3.5cm}{0.8pt}\\
-        $r \xleftarrow{R} \mathbb{Z}_N^*$ \\
-        $s \gets r^2 \pmod{N}$ \\
+        $r \xleftarrow{R} \mathbb{Z}_N^{\times}$ \\
+        $a \gets r^2 \pmod{N}$ \\
         \noindent\rule{3.5cm}{0.8pt}};
 
-        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-3.25cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=2mm, fill=white]{Send $s$};
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-3.25cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=2mm, fill=white]{Send $a$};
 
         \node[align=center,fill=white!5,thick,below=4cm of verifier](verifier-choice){
         \noindent\rule{3.5cm}{0.8pt}\\
@@ -134,15 +134,15 @@ That being said, formally the interaction between prover $\mathcal{P}$ and verif
 
         \node[align=center,fill=white!5,thick,below=7.5cm of prover](prover-setup){
         \noindent\rule{3.5cm}{0.8pt}\\
-        If $b=1$, send $z \gets r$ \\
-        If $b=0$, send $z \gets xr \pmod{N}$ \\
+        If $b=0$, send $z \gets r$ \\
+        If $b=1$, send $z \gets w \times r \pmod{N}$ \\
         \noindent\rule{3.5cm}{0.8pt}};
 
         \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-10cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=2mm, fill=white]{Send $z$};
 
         \node[align=center,fill=white!5,thick,below=10.5cm of verifier](verifier-choice){
         \noindent\rule{3.5cm}{0.8pt}\\
-        Verify $z^2 \equiv sy^{1-b} \pmod{N}$ \\
+        Verify $z^2 \equiv a \times x^{b} \pmod{N}$ \\
         \noindent\rule{3.5cm}{0.8pt}};
     \end{tikzpicture}
 
@@ -151,17 +151,17 @@ That being said, formally the interaction between prover $\mathcal{P}$ and verif
 
 Now, let us show that the provided protocol is indeed \textbf{complete} and \textbf{sound}.
 
-\textbf{Completeness.} Suppose the verifier chose $b=1$ and thus the prover sent $r$. The check would be $r^2 \equiv sy^{1-1} \pmod{N}$ which is equivalent to $r^2 \equiv s \pmod{N}$. This obviously holds. 
+\textbf{Completeness.} Suppose the verifier chose $b=0$ and thus the prover has sent $z=r$. The check would be $r^2 \equiv a\times x^{0} \pmod{N}$ which is equivalent to $r^2 \equiv a \pmod{N}$. This obviously holds. 
 
-If, in turn, the verifier chose $b=0$ and the prover sent $rx$, the check would be $(rx)^2 \equiv sy^{1-0} \pmod{N}$ which is equivalent to $r^2x^2 \equiv sy \pmod{N}$. Since $s = r^2 \pmod{N}$ and $y = x^2 \pmod{N}$, this check also obviously holds.
+If, in turn, the verifier chose $b=1$ and the prover sent $rw$, the check would be $(rw)^2 \equiv ax^{1-0} \pmod{N}$ which is equivalent to $r^2w^2 \equiv ax \pmod{N}$. Since $a = r^2 \pmod{N}$ and $x = w^2 \pmod{N}$, this check also obviously holds.
 
-\textbf{Soundness.} Here, we need to prove that for any dishonest prover who does not know $x$, the verifier will reject the claim with overwhelming probability. One can show the following fact.
+\textbf{Soundness.} Here, we need to prove that for any dishonest prover who does not know $w$, the verifier will reject the claim with overwhelming probability. One can show the following, which we are not going to prove (yet, this is quite easy to show):
 
 \begin{proposition}
-    If $y \not\in \mathcal{L}_{\mathcal{R}}$, then for any prover $\mathcal{P}$, the verifier $\mathcal{V}$ will reject the claim with probability at least $1/2$.
+    If $x \not\in \mathcal{L}_{\mathcal{R}}$, then for any prover $\mathcal{P}$, the verifier $\mathcal{V}$ will reject the claim with probability at least $1/2$.
 \end{proposition}
 
-By making $\lambda$ rounds, the probability of rejection is $\left(\frac{1}{2}\right)^{\lambda} = \mathsf{negl}(\lambda)$ and therefore the verifier can be convinced that $y \in \mathcal{L}_{\mathcal{R}}$ with overwhelming probability of $1-2^{-\lambda}$.
+By making $\lambda$ rounds, the probability of rejection is $\left(\frac{1}{2}\right)^{\lambda} = \mathsf{negl}(\lambda)$ and therefore the verifier can be convinced that $x \in \mathcal{L}_{\mathcal{R}}$ with overwhelming probability of $1-2^{-\lambda}$.
 
 To denote the interaction between algorithms $\mathcal{P}$ and $\mathcal{V}$ on the statement $x$, we use notation $\langle \mathcal{P}, \mathcal{V} \rangle(x)$. Finally, now we are ready to define the notion of an \textbf{interactive proof system}.
 
@@ -183,24 +183,187 @@ To denote the interaction between algorithms $\mathcal{P}$ and $\mathcal{V}$ on 
     \end{equation*}
 \end{definition}
 
-\subsection{Schnorr's Identification Protocol}
+\subsection{Zero-Knowledge}
 
-One very useful protocol for demonstration purposes is Schnorr's identification protocol. It is a simple and elegant protocol that allows one party to prove to another party that it knows a discrete logarithm of a given element. 
+Turns out that defining the zero-knowledge to even such a simplistic interactive proof system is not that easy. Informally, we give the following definition.
 
-Suppose $\mathbb{G}$ is a cyclic group of prime order $q$ with generator $g \in \mathbb{G}$. Suppose prover $\mathcal{P}$ has a secret key $\alpha \in \mathbb{Z}_q$ and the corresponding public key $u = g^{\alpha} \in \mathbb{G}$ and he wants to convince the verifier $\mathcal{V}$ that he knows $\alpha$ corresponding to the public key $u$. 
+\begin{definition}
+    An interactive proof system $(\mathcal{P}, \mathcal{V})$ is called \textbf{zero-knowledge} if for any polynomial-time verifier $\mathcal{V}^*$ and any $x \in \mathcal{L}_{\mathcal{R}}$, the interaction $\langle \mathcal{P}, \mathcal{V}^* \rangle(x)$ gives nothing new about the witness $w$.
+\end{definition}
 
-Well, the easiest way how to proceed is simply giving $\alpha$ to $\mathcal{V}$, but this is obviously not what we want. Instead, the Schnorr protocol allows $\mathcal{P}$ to prove the knowledge of $\alpha$ without revealing it. 
+\begin{definition}
+    The pair of algorithms $(\mathcal{P}, \mathcal{V})$ is called a \textbf{zero-knowledge interactive protocol} if it is \textit{complete}, \textit{sound}, and \textit{zero-knowledge}.
+\end{definition}
 
-Let us finally describe the protocol. The schnorr identification protocol $\Pi_{\text{Schnorr}} = (\mathsf{Gen}, \mathcal{P}, \mathcal{V})$ with a generation function $\mathsf{Gen}$ and prover $\mathcal{P}$ and verifier $\mathcal{V}$ is defined as follows:
-\begin{itemize}
-    \item $\mathsf{Gen}(1^{\lambda})$: As with most public-key cryptosystems, we take $\alpha \xleftarrow{R} \mathbb{Z}_q$ and $u \gets g^{\alpha}$. We output the \textit{verification key} as $\mathsf{vk} := u$, and the \textit{secret key} as $\mathsf{sk} := \alpha$.
-    \item The protocol between $(\mathcal{P},\mathcal{V})$ is run as follows:
-    \begin{itemize}
-        \item $\mathcal{P}$ computes $\alpha_T \gets \mathbb{Z}_q, u_T \gets g^{\alpha_T}$ and sends $u_T$ to $\mathcal{V}$.
-        \item $\mathcal{V}$ sends a random challenge $c \xleftarrow{R} \mathbb{Z}_q$ to $\mathcal{P}$.
-        \item $\mathcal{P}$ computes $\alpha_C \gets \alpha_T + \alpha c \in \mathbb{Z}_q$ and sends $\alpha_C$ to $\mathcal{V}$.
-        \item $\mathcal{V}$ accepts if $g^{\alpha_C} = u_T \cdot u^c$, otherwise it rejects.
-    \end{itemize}
-\end{itemize}
+Basically, the specified interaction is a \textbf{proof}! The prover $\mathcal{P}$ can convince the verifier $\mathcal{V}$ that the statement is true without revealing the witness -- that is what we need (quite of).
+
+\begin{remark}
+    The above definition is very informal and, for the most part, complete for the purposes of this course. If you do not want to dive into the formalities, you can skip the next part of this section. However, if you are curious about some technicalities, feel free to continue reading.
+\end{remark}
+
+\subsubsection{The Verifier's View}
+Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended with the successful verification. What has $\mathcal{V}$ learned? Well, first things first, he has learned that the statement is true, that is $x \in \mathcal{L}_{\mathcal{R}}$. However, he has also learned something more: he has learned the transcript of the interaction, that is the sequence of messages between $\mathcal{P}$ and $\mathcal{V}$.
+
+\begin{definition}
+    Interaction between $\mathcal{P}$ and $\mathcal{V}$ consists of verifier's queries $(q_1,q_2,\dots)$, prover's responses $(m_1,m_2,\dots)$, and $\mathcal{V}$'s random coins $(r_1,r_2,\dots)$. The view of the verifier $\mathcal{V}$, denoted as $\mathsf{view}_{\mathcal{V}}(\mathcal{P},\mathcal{V})[x]$, is a random variable $(q_1,m_1,r_1,q_2,m_2,r_2,\dots)$ that is determined by the random coins of $\mathcal{V}$ and the messages of $\mathcal{P}$ after the interaction with the statement $x$.
+\end{definition}
+
+\begin{example}
+    Suppose that for the aforementioned protocol with $N=3 \times 2^{30} + 1$, the conversation between the prover $\mathcal{P}$, who wants to convince that $1286091780 \in \mathcal{L}_R$, and $\mathcal{V}$ is the following:
+    \begin{enumerate}
+        \item During the first round, $\mathcal{P}$ sends $672192003$ to $\mathcal{V}$.
+        \item $\mathcal{V}$ sends $b=0$ to $\mathcal{P}$.
+        \item $\mathcal{P}$ sends $2606437826$ to $\mathcal{V}$.
+        \item $\mathcal{V}$ verifies that indeed $2606437826^2 \equiv 672192003 \pmod{N}$.
+        \item During the second round, $\mathcal{P}$ sends $2619047580$ to $\mathcal{V}$.
+        \item $\mathcal{V}$ chooses $b=1$ and sends to $\mathcal{P}$.
+        \item $\mathcal{P}$ sends $1768388249$ to $\mathcal{V}$.
+        \item $\mathcal{V}$ verifies that indeed $1768388249^2 \equiv 2619047580 \times 1286091780 \pmod{N}$.
+        \item Conversation ends.
+    \end{enumerate}
+
+    The view of the verifier $\mathcal{V}$ is the following: 
+    \begin{equation*}
+        \mathsf{view}_{\mathcal{V}}(\mathcal{V}, \mathcal{P})[1286091780] = (672192003, 0, 2606437826, 2619047580, 1, 1768388249)
+    \end{equation*}
+
+    Essentially, the view that you currently has witnessed is the same as one that $\mathcal{V}$ has seen. After this interaction, you have not learned anything about the witness $w$ that prover $\mathcal{P}$ knows and which we, as of now, has not revealed to you.
+
+    In fact, you can verify by yourself, that the witness was $w = 3042517305$ and two randomnesses were $r_1 = 2606437826$ and $r_2 = 3023142760$.
+
+    One final note that is essential for the further discussion: variable $\mathsf{view}_{\mathcal{V}}(\mathcal{P}, \mathcal{V})[x]$ is a random variable. For example, for our particular case, both bits could be $0$ or both bits could be $1$. 
+\end{example}
+
+\subsubsection{The Simulation Paradigm}
+
+The key idea is the following: $\mathsf{view}_{\mathcal{V}}(\mathcal{V}, \mathcal{P})[x]$ gives nothing new to the verifier $\mathcal{V}$ about the witness $w$. But it gives nothing new, if he could have \textit{simulated} this view on his own, without even running the interaction. In other words, the ``simulated'' and ``real'' views should be \textit{computationally-indistinguishable}. But let us define the computational indistinguishability first.
+
+\begin{definition}[Computational Indistinguishability]
+    Given two random distributions $D_0$ and $D_1$, define the following challenger-adversary game:
+    \begin{enumerate}
+        \item The challenger randomly samples $x_0 \xleftarrow{R} D_0, x_1 \xleftarrow{R} D_1$ and a bit $b \xleftarrow{R} \{0,1\}$.
+        \item The challenger sends $(x_0, x_1, b)$ to the adversary.
+        \item The adversary $\mathcal{A}$ outputs a bit $\hat{b}$.
+    \end{enumerate}
+
+    We define the advantage of the adversary $\mathcal{A}$ in distinguishing $D_0$ and $D_1$ as 
+    \begin{equation*}
+        \text{Ind}\textsf{adv}[\mathcal{A}, D_0, D_1] = \left|\text{Pr}[b = \hat{b}] - \frac{1}{2}\right|
+    \end{equation*}
+
+    Distributions $D_0$ and $D_1$ are called \textbf{computationally indistinguishable}, denoted as $D_0 \approx D_1$, if for any polynomial-time adversary $\mathcal{A}$ and polynomial number of rounds in the game, the advantage $\text{Ind}\textsf{adv}[\mathcal{A}, D_0, D_1]$ is negligible.
+\end{definition}
+
+Finally, we are ready to define the \textbf{zero-knowledge}.
+
+\begin{definition}[Zero-Knowledge]
+    An interactive protocol $(\mathcal{P}, \mathcal{V})$ is \textbf{zero-knowledge} for a language $\mathcal{L}_{\mathcal{R}}$ if for every poly-time verifier $\mathcal{V}^*$ there exists a poly-time simulator $\mathsf{Sim}$ such that for any valid statement $x \in \mathcal{L}_{\mathcal{R}}$:
+    \begin{equation*}
+        \mathsf{view}_{\mathcal{V}^*}(\mathcal{P}, \mathcal{V}^*)[x] \approx \mathsf{Sim}(x)
+    \end{equation*}
+\end{definition}
+
+\subsection{Proof of Knowledge}
+
+Now, the main issue with the above definition is that \textit{we have proven the statement correctness, but we have not proven that the prover \textbf{knows} the witness}. These are completely two different things. Let us demonstrate why.
+
+\begin{example}
+    Suppose that the prover $\mathcal{P}$ wants to convince the verifier that he knows the discrete logarithm of a given point $P \in E(\mathbb{F}_p)$ on a cyclic elliptic curve $E(\mathbb{F}_p)$ of order $r$. This corresponds to the relation and the corresponding language:
+    \begin{align*}
+        \mathcal{R} = \{(P, \alpha) \in E(\mathbb{F}_p) \times \mathbb{Z}_r: P = [\alpha] G\}, \\ \mathcal{L}_{\mathcal{R}} = \{P \in E(\mathbb{F}_p): \exists \alpha \in \mathbb{Z}_r \; \text{such that} \; P = [\alpha] G\}
+    \end{align*}
+
+    But here is the catch: actually, $\mathcal{L}_{\mathcal{R}} = E(\mathbb{F}_p)$ since any point $P$ has a witness $\alpha$ such that $P = [\alpha] G$ (recall that the curve is cyclic)! So proving that $P \in \mathcal{L}_{\mathcal{R}}$ is completely useless! Rather, we want to prove that the prover knows $\alpha$, not the fact that the point has a discrete logarithm.
+\end{example}
+
+That is why instead of \textbf{proof}, we need a \textbf{proof of knowledge}. This leads to even another weird paradigm used for the rigorous definition: the \textbf{extractor}. Basically, the knowledge of witness means that we can \textit{extract} the witness while interacting with the prover. Yet, the \textit{extractor} can do more than the verifier: he can call the prover however he wants and he can also rewind the prover (for example, run some pieces multiple times). This sometimes is referred to as ``extractor $\mathcal{E}$ uses $\mathcal{P}$ as an oracle''. 
+
+Now, let us move to the formal definition.
+
+\begin{definition}[Proof of Knowledge]
+    The interactive protocol $(\mathcal{P}, \mathcal{V})$ is a \textbf{proof of knowledge} for $\mathcal{L}_{\mathcal{R}}$ if exists a poly-time extractor algorithm $\mathcal{E}$ such that for any valid statement $x \in \mathcal{L}_{\mathcal{R}}$, in expected poly-time $\mathcal{E}^{\mathcal{P}}(x)$ outputs $w$ such that $(x,w) \in \mathcal{R}$.
+\end{definition}
+
+\begin{lemma}
+    The protocol from \Cref{section:quadratic_residue_test} is a proof of knowledge for the language $\mathcal{L}_{\mathcal{R}}$. 
+\end{lemma}
+
+\textbf{Proof.} Let us define the extractor $\mathcal{E}$ for the statement $x$ as follows:
+\begin{enumerate}
+    \item Run the prover to receive $a \equiv r^2 \pmod{N}$ ($r$ is chosen randomly from $\mathbb{Z}_N^*$).
+    \item Set verifier's message to $b=0$ to get $z_1 \gets r$.
+    \item \textbf{Rewind} and set verifier's message to $b=1$ to get $z_2 \gets rw \pmod{N}$.
+    \item Output $z_2/z_1 \pmod{N}$
+\end{enumerate}
+
+The extractor $\mathcal{E}$ will always output $w$ if $x \in \mathcal{L}_{\mathcal{R}}$. $\hfill\Box$
+
+\begin{remark}
+    Note that extractor is given much more than the verifier: he can call the prover multiple times and he can also rewind the prover. This is the main difference between the verifier and the extractor.    
+\end{remark}
+
+\subsection{Fiat-Shamir Heuristic}
+
+\subsubsection{Random Oracle}
+
+In cryptography, one frequently encounters the term \textit{cryptographic oracle}. In this section, we are not going to dive into the technical details of what that is, yet it is useful to have a general understanding of what it is.
+
+\begin{definition}[Cryptographic Oracle]
+    Informally, \textit{cryptographic oracle} is simply a function $\mathcal{O}$ that gives in $O(1)$ an answer to some typically very hard problem.     
+\end{definition}
+
+\begin{example}
+    Consider the Computational Diffie-Hellman (CDH) problem on the cyclic elliptic curve $E(\mathbb{F}_p)$ of prime order $r$ with a generator $G$. Recall that such problem consists in computing $[\alpha\beta]G$ given $[\alpha]G$ and $[\beta]G$ where $\alpha,\beta \in \mathbb{Z}_r$. 
+
+    Typically, it is believed that the Diffie-Hellman problem is hard (meaning, for any adversary strategy the probability of solving the problem is negligible). However, we \textit{could} assume that such problem can be solved in $O(1)$ by a cryptographic oracle $\mathcal{O}_{\text{CDH}}: ([\alpha]G,[\beta]G) \mapsto [\alpha\beta]G$. This way, we can rigorously prove the security of some cryptographic protocols \textit{even} if the Diffie-Hellman problem is suddenly solved. 
+\end{example}
+
+One of the most popular cryptographic oracles is the \textbf{random oracle} $\mathcal{O}_{\text{R}}$. Let us define how the random oracle works.
+
+Suppose someone is inputting $x$ to the random oracle $\mathcal{O}_{\text{R}}$. The oracle $\mathcal{O}_{\text{R}}$ does the following:
+\begin{enumerate}
+    \item If $x$ has been queried before, the oracle returns the same value as it returned before.
+    \item If $x$ has not been queried before, the oracle returns a randomly uniformly sampled value from the output space.
+\end{enumerate}
+
+\begin{remark}
+    Of course, the sudden appearance of the random oracle is not a magic trick. In practice, the random oracle is typically implemented as a hash function. Of course, formally, the hash function is not a random oracle, yet it is a very good approximation and it is reasonable to assume that the hash function behaves like a random oracle.
+\end{remark}
+
+\subsubsection{Fiat-Shamir Transformation}
+
+Now, the main issue with the interactive proofs is that they are\ldots Well, \textit{interactive}. Ideally, we simply want to accumulate a proof $\pi$, publish it (say, in blockchain) so that anyone (essentially, being the verifier) could check its validity. So we need some tools to make \textit{some} interactive protocols non-interactive. This is, of course, not always possible, but there are some ways to achieve this.
+
+While different protocols use different ways to achieve this, one of the most popular methods (which, in particular, is used in STARKs) is the \textbf{Fiat-Shamir heuristic}. The idea is the following: instead of verifier sending the challenges, we can replace them with the random oracle applied to all the previous messages. 
+
+Here how it goes. Suppose we have an interactive protocol $(\mathcal{P}, \mathcal{V})$ for the statement $x$. As previously defined, the interaction between $\mathcal{P}$ and $\mathcal{V}$ consists of prover's messages $(m_1,m_2,\dots)$, verifier's queries $(q_1,q_2,\dots)$, and verifier's random coins $(r_1,r_2,\dots)$. In case all the queries are random coins, such interactive protocol is called \textbf{public-coin protocol}. However, as it turns out, when all the verifier's queries are simply uniformly sampled random values, it is an overkill to use the interactive protocol. Instead, suppose at some point the verifier got messages $m_1,m_2,\dots,m_k$ from the prover. Then, instead of verifier sampling some random value $r_k$, we can simply use the random oracle $\mathcal{O}_{\text{R}}$ as follows: $r_k \gets \mathcal{O}_{\text{R}}(m_1,m_2,\dots,m_k)$. Practically, instead of random oracle $\mathcal{O}_{\text{R}}$ we use the hash function $H$, and use:
+\begin{equation*}
+    r_k \gets H(x \parallel m_1 \parallel m_2 \parallel \dots \parallel m_k)
+\end{equation*} 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/lecture_6/fiat-shamir.pdf}
+    \caption{The Fiat-Shamir transformation illustration. Figure is based on the illustration from ``Anatomy of a STARK'' (\url{https://aszepieniec.github.io/stark-anatomy/basic-tools})}
+    \label{fig:fiat-shamir}
+\end{figure}
+
+The process is illustrated in \Cref{fig:fiat-shamir}. The Fiat-Shamir looks as follows:
+\begin{enumerate}
+    \item First, the prover $\mathcal{P}$ ``sends'' the first message $m_1$ to the verifier $\mathcal{V}$. Here, ``sending'' is not an actual sending, but rather its simulation.
+    \item If we had an interactive protocol, the verifier $\mathcal{V}$ would send the random challenge $r_1$ to the prover $\mathcal{P}$. Instead, we use the random oracle $\mathcal{O}_{\text{R}}$ to get $r_1 \gets \mathcal{O}_{\text{R}}(x,m_1)$.
+    \item Then, using this challenge, prover does his part in the protocol, and sends the next message $m_2$. 
+    \item Again, if we had an interactive protocol, the verifier would send the next challenge $r_2$ to the prover. Instead, we use the random oracle $\mathcal{O}_{\text{R}}$ to get $r_2 \gets \mathcal{O}_{\text{R}}(x,m_1,m_2)$, which gets ``sent'' to the prover.
+    \item The process continues until the protocol is finished.
+\end{enumerate}
+
+Note that the whole process can be done by a prover with no interaction with the ``verifier''. In this case, one of the ways to represent the proof $\pi$ is to publish the transcript of the interaction (that is, all the messages sent by the prover and challenges computed using the random oracle). This is exactly what is done in STARKs.
+
+The reason why such transformation works is that the random oracle $\mathcal{O}_{\text{R}}$ is a \textit{random} function. Therefore, the challenges $r_1,r_2,\dots$ are \textit{random} values, and the prover cannot predict them (for example, by fabricating messages to have some specific output). That being said, the following theorem holds (which, of course, we are not going to prove since the proof is complicated).
+
+\begin{theorem}
+    Suppose that $(\mathcal{P},\mathcal{V})$ is a public-coin interactive argument of knowledge for some language $\mathcal{L}_{\mathcal{R}}$ with a negligible soundness error. Then, the Fiat-Shamir transformation of $(\mathcal{P}^{\mathcal{O}_{\text{R}}},\mathcal{V}^{\mathcal{O}_{\text{R}}})$ is a non-interactive argument for $\mathcal{L}_{\mathcal{R}}$ with negligible soundness error in the random oracle model $\mathcal{O}_{\text{R}}$.
+\end{theorem}
+
 
 \end{document}
