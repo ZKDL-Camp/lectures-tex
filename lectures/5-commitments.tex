@@ -25,7 +25,7 @@ At the same time, your friend cannot access the letter since they do not have th
 \begin{definition}[Commitment Scheme]
     
     Commitment Scheme $\Pi_{\text{commitment}}$ is a tuple of three algorithms: $\Pi_{\text{commitment}} = (\mathsf{Setup}, \mathsf{Commit}, \mathsf{Verify})$.
-     
+
     \begin{enumerate}
 
         \item \textit{Setup:}  prover and verifier agree on common parameters before the commitment process begins;
@@ -57,6 +57,7 @@ At the same time, your friend cannot access the letter since they do not have th
         We say that the commitment scheme $\Pi_{\text{commitment}}$ is \textit{hiding} if for any adversary, the aforementioned advantage is negligible.
         
         \item \textit{Binding: } prover could not find another message $m_1$ and open the commitment $c$ without revealing the commited message $m$.
+
     \end{enumerate}
 \end{definition}
 
@@ -65,21 +66,30 @@ At the same time, your friend cannot access the letter since they do not have th
 As the name implies, we are using a cryptographic hash function \(H\) in such scheme.
 
 \begin{enumerate}
-    \item Prover selects a message $m$ which he wants to commit:
-        $m \leftarrow \mathbb{Z}$
+    \item Prover selects a message $m$ from a message space $M$ which he wants to commit to:
+        $m \leftarrow \mathbb{M}$
 
-    \item Prover samples random value $r$ (usually called blinding factor) from $\mathbb{Z}$:
-        $r \xleftarrow{R} \mathbb{Z}$
+    \item Prover samples random value $r$ from a challange space $C$ (usually called blinding factor) from $\mathbb{Z}$:
+        $r \xleftarrow{R} \mathbb{C}$
     
     \item Both values will be concatenated and hashed with the hash function $H$ to produce the commitment:
         $c = H(m || r)$
 
 \end{enumerate}
 
-Commitment should be shared with a verifier. During the verification stage, prover reveals $(m, r)$ to the verifier. 
+Commitment should be shared with a verifier. During the verification stage, prover reveals $(m, r)$ to the \textit{Verifier}. 
 To check the commitment, verifier computes: $c_1 = H(m || r)$.
 
 If $c_1 = c$, prover has revealed the correct pair $(m, r)$.
+
+It should be noted that a cryptographic hash function aims to provide collision resistance, 
+meaning that any potential input value maps to one and only one output.
+Because the \textit{Verifier} knows the hash funcation digest $c$ before the \textit{Prover} reveals $m$ and $r$, 
+the \textit{Prover} would need to find a collision $H(m' || r') = H(m || r)$ to be able to convince the \textit{Verifier}
+that $m'$ value was committed.
+
+The probability of a collision in a cryptographically secure hash function is negligible, which means the \textit{Prover}
+won't be able to convince the \textit{Verifier} that the commitment was done to another value.
 
 \subsubsection{Pedersen commitments}
 
