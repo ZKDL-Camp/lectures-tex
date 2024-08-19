@@ -59,11 +59,30 @@ If $c_1 = c$, prover has revealed the correct pair $(m, r)$.
 \subsubsection{Pedersen commitments}
 
 Pedersen commitments allow us to represent arbitrarily large vectors with a single elliptic curve point, while optionally hiding any information about the vector. Pedersen commitment uses a public group $\mathbb{G}$ of order $q$ and two random public generators $G$ and $U$: $U = uG$. Secret parameter $u$ should be hidden, otherwise the $\textit{Binding}$ property of the commitment scheme will be violated.
-EC point $U$ is chosen randomly using "Nothing-up-my-sleeve" to assure no one knows the discrete logorithm of a selected point.
+EC point $U$ is chosen randomly using "Nothing-up-my-sleeve" to assure no one knows the discrete logarithm of a selected point.
+
 Pedersen commitment scheme algorithm:
 \begin{enumerate}
-    \item 
+    \item Prover and Verifier agrees on $G$ and $U$ points
+    \item Prover selects a value $m$ to commit and a blinder factor $r$:
+            $m \leftarrow \mathbb{Z}$,
+            $r \xleftarrow{R} \mathbb{Z}$
+    \item Prover generates a commitment and sends it to the Verifier:
+            $c = mG + rU$
 \end{enumerate}
+
+During the verification stage, prover reveals $(m, r)$ to the verifier. 
+To check the commitment, verifier computes: $c_1 = mG + rU$.
+
+If $c_1 = c$, prover has revealed the correct pair $(m, r)$.
+
+In case the discrete logarithm of $U$ is leaked, the \textit{binding} property can be violated by the \textit{Prover}:
+
+$c = mG + rU = m \cdot G + r*u \cdot G = (m + r*u) \cdot G$
+
+For example, $(m + u, r - 1)$ will have the same commitment value:
+
+$(m+u + (r-1)*u) \cdot G = (m + u - u + r*u) \cdot G = (m + r*u) \cdot G$ 
 
 
 \subsubsection{Vector commitments}
