@@ -16,11 +16,12 @@ In this scenario, you have made a commitment to the cat inside the box.
 You cannot change the content of the box, as it is in your friend's possession. 
 At the same time, your friend cannot access the letter since they do not have the key to unlock the box.
 
-\begin{center}
-    \centering\includegraphics[width=0.5\linewidth, clip]{images/lecture_5/CommitmentExample.png}
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.5\linewidth, clip]{images/lecture_5/CommitmentExample.png}
 
-    \scriptsize{\textbf{Illustration:} Commitment scheme}
-\end{center}
+    \caption{Commitment scheme}
+\end{figure}
 
 \begin{definition}[Commitment Scheme]
     
@@ -125,13 +126,20 @@ If $c_1 = c$, prover has revealed the correct pair $(m, r)$.
 \begin{remark}
     In case the discrete logarithm of $U$ is leaked, the \textit{binding} property can be violated by the \textit{Prover}:
 
-    $c = [m]G + [r]U = [m] G + [r \cdot u]G = [m + r \cdot u] G$
-    
+    \begin{center}
+        $c = [m]G + [r]U = [m] G + [r \cdot u]G = [m + r \cdot u] G$
+    \end{center}
+
     For example, $(m + u, r - 1)$ will have the same commitment value:
 
-    $[m+u + (r-1) \cdot u] G = [m + u - u + r \cdot u] G = [m + r \cdot u] G$ 
+    \begin{center}
+        $[m+u + (r-1) \cdot u] G = [m + u - u + r \cdot u] G = [m + r \cdot u] G$     
+    \end{center}
+    
         
 \end{remark}
+
+\vspace{0.5 cm}
 
 \textbf{Commitment aggregation}
 
@@ -177,22 +185,22 @@ Prover can later open the commitment by revealing the vector $(m_1, m_2 \ldots m
 
 A naive approach for a vector commitment would be hash the whole vector. More sophisticated scheme uses divide-and-conquer approach by building a binary tree out of vector elements.
 
-\begin{center}
+\begin{figure}[H]
     \centering\includegraphics[width=0.9\linewidth, clip]{images/lecture_5/MerkleTree.png}
 
-    \scriptsize{\textbf{Illustration:} Merkle Tree structure}
-\end{center}
+    \caption{Merkle Tree structure}
+\end{figure}
 
 A Merkle Tree is a data structure to efficiently and securely verify the commiments to a vector of data. It is a binary tree where each leaf node represents a hash of a data block, and each non-leaf node is a hash of its child nodes' concatenated hashes. The top node, called the root hash or Merkle root, uniquely represents the entire data set. By comparing this root with a known valid root, one can quickly verify the authenticity and integrity of the data without needing to examine the entire dataset. 
 
 To prove the inclusion of element into the tree, a corresponding Merkle Branch is used. On the example below, $M_1$ inclusion is proved, and 
 $(M_2, H(M_3 \parallel M_4), H(H(M_5 \parallel M_6) \parallel H(M_7 \parallel M_8)))$ is an inclusion branch vector.
 
-\begin{center}
+\begin{figure}[H]
     \centering\includegraphics[width=0.9\linewidth, clip]{images/lecture_5/MerkleTreeProof.png}
 
-    \scriptsize{\textbf{Illustration:} Merkle Tree structure}
-\end{center}
+    \caption{Merkle Tree inclusion proof branch}
+\end{figure}
 
 One of Merkle tree key advantages is that it allows for the selective disclosure of specific elements within the data set without revealing the rest. 
 
@@ -210,10 +218,9 @@ The commitment is generally succint, which means that it is much smaller than th
 
 The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
 
-\textit{Setup stage}
 
 \begin{enumerate}
-    \item One-time trusted setup. During trusted setup a set of elliptic curve points is generated. Let $G$ be a generator point of some pairing-friendly
+    \item One-time trusted setup stage. During trusted setup a set of elliptic curve points is generated. Let $G$ be a generator point of some pairing-friendly
     elliptic curve group $\mathbb{G}$, $s$ some random value in the order of the $G$ point and $d$ be the maximum degree of the polynomials we want to commit to.
 
     \begin{center}
@@ -221,7 +228,7 @@ The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
     \end{center}
 
     Parameter $s$ should be deleted after the ceremony. If it is revealed, the commitment scheme can be broken. This parameter is usually called the \textit{toxic waste}.
-
+    \item Commit to polynomial.
 \end{enumerate}
 
 \end{document}
