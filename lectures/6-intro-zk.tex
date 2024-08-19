@@ -12,7 +12,7 @@ Let us describe the typical setup. We have two parties: \textbf{prover} $\mathca
 \begin{itemize}
     \item \textbf{Zero-knowledge:} The prover wants to convince the verifier that the statement is true without revealing the witness. 
     \item \textbf{Argument of knowledge:} Moreover, typically we want to make sure that the verifier, besides the statement correctness, ensures that the prover \textbf{knows} such a witness related to the statement.
-    \item \textbf{Succinctness:} The proof should be short, ideally logarithmic in the size of the statement. This is crucial for practical applications, especially in the blockchain space where we cannot allow to publish long proofs on-chain.
+    \item \textbf{Succinctness:} The proof should be short, ideally logarithmic in the size of the statement. This is crucial for practical applications, especially in the blockchain space where we cannot allow to publish long proofs on-chain. Moreover, verification should be efficient as well.
 \end{itemize}
 
 \begin{example}
@@ -20,12 +20,12 @@ Let us describe the typical setup. We have two parties: \textbf{prover} $\mathca
     \begin{itemize}
         \item \textbf{Zero-knowledge:} The prover $\mathcal{P}$ does not want to reveal \textit{anything} about the pre-image $x$ to the verifier $\mathcal{V}$.
         \item \textbf{Argument of knowledge:} Given a string $y \in \{0,1\}^{\ell}$ it is not sufficient for a prover to merely state that $y$ has a pre-image. The prover $\mathcal{P}$ must demonstrate to a verifier $\mathcal{V}$ that he \textbf{knows} such a pre-image $x \in \{0,1\}^*$.
-        \item \textbf{Succinctness:} If the hash function takes $n$ operations to compute, the proof should be \textbf{much} shorter than $n$ operations. State-of-art solutions can provide proofs that are $O(\log n)$ is size!
+        \item \textbf{Succinctness:} If the hash function takes $n$ operations to compute, the proof should be \textbf{much} shorter than $n$ operations. State-of-art solutions can provide proofs that are $O((\log n)^c)$ (polylogarithmic) is size! Moreover, verification time of such proof is also typically polylogarithmic (or even $O(1)$ in some cases).
     \end{itemize}
 \end{example}
 
 \subsection{Relations and Languages}
-Recall that \textbf{relation} $\mathcal{R}$ is just a subset of $\mathcal{X} \times \mathcal{Y}$ for two arbitrary sets $\mathcal{X}$ and $\mathcal{Y}$. Now, we are going to intrduce the notion of a \emph{language of true statements} based on $\mathcal{R}$.
+Recall that \textbf{relation} $\mathcal{R}$ is just a subset of $\mathcal{X} \times \mathcal{Y}$ for two arbitrary sets $\mathcal{X}$ and $\mathcal{Y}$. Now, we are going to introduce the notion of a \emph{language of true statements} based on $\mathcal{R}$.
 
 \begin{definition}[Language of true statements]
     Let $\mathcal{R} \subseteq \mathcal{X} \times \mathcal{Y}$ be a relation. We say that a statement $x \in \mathcal{X}$ is a \textbf{true} statement if $(x,y) \in \mathcal{R}$ for some $y \in \mathcal{Y}$, otherwise the statement is called \textbf{false}. We define by $\mathcal{L}_{\mathcal{R}}$ (the language over relation $\mathcal{R}$) the set of all true statements, that is:
@@ -205,7 +205,7 @@ Basically, the specified interaction is a \textbf{proof}! The prover $\mathcal{P
 Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended with the successful verification. What has $\mathcal{V}$ learned? Well, first things first, he has learned that the statement is true, that is $x \in \mathcal{L}_{\mathcal{R}}$. However, he has also learned something more: he has learned the transcript of the interaction, that is the sequence of messages between $\mathcal{P}$ and $\mathcal{V}$.
 
 \begin{definition}
-    Interaction between $\mathcal{P}$ and $\mathcal{V}$ consists of verifier's queries $(q_1,q_2,\dots,q_{\ell})$, prover's responses $(m_1,m_2,\dots,m_{\ell})$, and $\mathcal{V}$'s random coins $(r_1,r_2,\dots,r_{\ell})$. The view of the verifier $\mathcal{V}$, denoted as $\mathsf{view}_{\mathcal{V}}(\mathcal{P},\mathcal{V})[x]$, is a random variable $(q_1,m_1,r_1,q_2,m_2,r_2,\dots,q_{\ell},m_{\ell},r_{\ell})$ that is determined by the random coins of $\mathcal{V}$ and the messages of $\mathcal{P}$ after the interaction with the statement $x$. See Figure below.
+    Interaction between $\mathcal{P}$ and $\mathcal{V}$ consists of prover's messages (e.g., commitments and responses) $(m_1,m_2,\dots,m_{\ell})$, verifier's queries $(q_1,q_2,\dots,q_{\ell})$, and $\mathcal{V}$'s random coins $(r_1,r_2,\dots,r_{\ell})$. The view of the verifier $\mathcal{V}$, denoted as $\mathsf{view}_{\mathcal{V}}(\mathcal{P},\mathcal{V})[x]$, is a random variable $(m_1,r_1,q_1,m_2,r_2,q_2,\dots,m_{\ell},r_{\ell},q_{\ell})$ that is determined by the random coins of $\mathcal{V}$ and the messages of $\mathcal{P}$ after the interaction with the statement $x$. See Figure below.
 \end{definition}
 
 \begin{figure}[H]
