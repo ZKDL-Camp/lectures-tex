@@ -8,6 +8,8 @@
     A cryptographic commitment scheme allows one party to commit to a chosen statement (such as a value, vector, or polynomial) without revealing the statement itself. The commitment can be revealed in full or in part at a later time, ensuring the integrity and secrecy of the original statement until the moment of disclosure.
 \end{definition}
 
+Before delving into the details, here is the intuition of cryptographic commitments.
+
 Imagine putting a letter into a box and locking it with your key. 
 You then give that box to your friend, who cannot open it without the key.
 In this scenario, you have made a commitment to the letter inside the box. 
@@ -155,5 +157,32 @@ $[M_2, H(M_3 || M_4), H(H(M_5 || M_6) || H(M_7 || M_8))]$ is an inclusion branch
 
 One of Merkle tree key advantages is that it allows for the selective disclosure of specific elements within the data set without revealing the rest. 
 
+\subsubsection{Polynomial commitment}
+
+Polynomial commitment can be used to prove that the commited polynomial satisfies certain properties (passes through a certain point $(x,y)$), without revealing what the polynomial is.
+The commitment is generally succint, which means that it is much smaller than the polynomial it represents.
+
+\vspace{0.5 cm}
+
+\textbf{The KZG polynomial commitment scheme}
+
+\vspace{0.5 cm}
+
+
+The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
+
+\textit{Setup stage}
+
+\begin{enumerate}
+    \item One-time trusted setup. During trusted setup a set of elliptic curve points is generated. Let $G$ be a generator point of some pairing-friendly
+    elliptic curve group $\mathbb{G}$, $s$ some random value in the order of the $G$ point and $d$ be the maximum degree of the polynomials we want to commit to.
+
+    \begin{center}
+        $s^0[G], s^1[G], ... s^d[G]$
+    \end{center}
+
+    Parameter $s$ should be deleted after the ceremony. If it is revealed, the commitment scheme can be broken. This parameter is usually called the \textit{toxic waste}.
+
+\end{enumerate}
 
 \end{document}
