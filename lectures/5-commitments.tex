@@ -10,10 +10,10 @@
 
 Before delving into the details, here is the intuition of cryptographic commitments.
 
-Imagine putting a letter into a box and locking it with your key. 
+Imagine putting a cat into a box and locking it with your key. 
 You then give that box to your friend, who cannot open it without the key.
-In this scenario, you have made a commitment to the letter inside the box. 
-You cannot change the content of the letter, as it is in your friend's possession. 
+In this scenario, you have made a commitment to the cat inside the box. 
+You cannot change the content of the box, as it is in your friend's possession. 
 At the same time, your friend cannot access the letter since they do not have the key to unlock the box.
 
 \begin{center}
@@ -22,20 +22,43 @@ At the same time, your friend cannot access the letter since they do not have th
     \scriptsize{\textbf{Illustration:} Commitment scheme}
 \end{center}
 
-Commitment scheme has 3 stages:
-\begin{enumerate}
-    \item \textit{Setup:}  prover and verifier agree on common parameters before the commitment process begins;
+\begin{definition}[Commitment Scheme]
+    
+    Commitment Scheme $\Pi_{\text{commitment}}$ is a tuple of three algorithms: $\Pi_{\text{commitment}} = (\mathsf{Setup}, \mathsf{Commit}, \mathsf{Verify})$.
+     
+    \begin{enumerate}
 
-    \item \textit{Commit:} prover selects a value and generates a commitment to this value. This commitment is then sent to the verifier;
+        \item \textit{Setup:}  prover and verifier agree on common parameters before the commitment process begins;
 
-    \item  \textit{Verify:} prover reveals the committed value and any necessary information to the verifier. 
-\end{enumerate}
+        \item \textit{Commit:} prover selects a value and generates a commitment to this value. This commitment is then sent to the verifier;
 
-Properties of commitments scheme:
-\begin{enumerate}
-    \item \textit{Hiding: } verifier should not learn any information about the message given only the commitment c;
-    \item \textit{Binding: } prover could not find another message $m_1$ and open the commitment $c$ without revealing the commited message $m$.
-\end{enumerate}
+        \item  \textit{Verify:} prover reveals the committed value and any necessary information to the verifier. 
+    \end{enumerate}
+\end{definition}
+
+\begin{definition}[Commitment Scheme]
+    Properties of a commitment scheme:
+    \begin{enumerate}
+        \item \textit{Hiding: } verifier should not learn any information about the message given only the commitment c. To put it formally we define a game:
+        \begin{enumerate}
+            \item Adversary chooses two messages $m_1,m_2$ and sends to the challenger.
+            \item Challenger chooses a random bit $b$, commits to both messages: 
+            
+                $c_1 \gets \mathsf{Commit}(pp, m_1), c_2 \gets \mathsf{Commit}(pp,m_2)$, and sends $c_b$ to the adversary.
+            \item Adversary guesses a bit $\hat{b}$.
+        \end{enumerate}
+        
+        The advantage of hiding of a PPT adversary $\mathcal{A}$ as 
+        
+        $$
+        \mathsf{HideAdv}[\mathcal{A}, \Pi_{\text{commitment}}] := \left| \text{Pr}[b=\hat{b}] - \frac{1}{2} \right|
+        $$
+        
+        We say that the commitment scheme $\Pi_{\text{commitment}}$ is \textit{hiding} if for any adversary, the aforementioned advantage is negligible.
+        
+        \item \textit{Binding: } prover could not find another message $m_1$ and open the commitment $c$ without revealing the commited message $m$.
+    \end{enumerate}
+\end{definition}
 
 \subsubsection{Hash-based commitments}
 
