@@ -76,13 +76,30 @@ To check the commitment, verifier computes: $c_1 = mG + rU$.
 
 If $c_1 = c$, prover has revealed the correct pair $(m, r)$.
 
-In case the discrete logarithm of $U$ is leaked, the \textit{binding} property can be violated by the \textit{Prover}:
+\begin{remark}
+    In case the discrete logarithm of $U$ is leaked, the \textit{binding} property can be violated by the \textit{Prover}:
 
-$c = mG + rU = m \cdot G + r*u \cdot G = (m + r*u) \cdot G$
+    $c = mG + rU = m \cdot G + r*u \cdot G = (m + r*u) \cdot G$
+    
+    For example, $(m + u, r - 1)$ will have the same commitment value:
 
-For example, $(m + u, r - 1)$ will have the same commitment value:
+    $(m+u + (r-1)*u) \cdot G = (m + u - u + r*u) \cdot G = (m + r*u) \cdot G$ 
+        
+\end{remark}
 
-$(m+u + (r-1)*u) \cdot G = (m + u - u + r*u) \cdot G = (m + r*u) \cdot G$ 
+\textbf{Additively homomorphic}
+
+Pedersen commitment have some advantages compared to hash-based commitments.
+Additively homomorphic property allows to accumulate multiple commitments into one.
+Consider two pairs: $(m_1, r_1), (m_2, r_2)$.
+
+$C_1 = m_1G + r_1U$,
+
+$C_2 = m_2G + r_2U$,
+
+$C_a = C_1 + C_2 = (m_1 + m_2)G + (r_1 + r_2)U$
+
+This works for any number of commitments, so we can encode as many points as we like in a single one.
 
 
 \subsubsection{Vector commitments}
