@@ -220,15 +220,36 @@ The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
 
 
 \begin{enumerate}
-    \item One-time trusted setup stage. During trusted setup a set of elliptic curve points is generated. Let $G$ be a generator point of some pairing-friendly
+    \item \textit{One-time ''Powers-of-tau'' trusted setup stage}. During trusted setup a set of elliptic curve points is generated. Let $G$ be a generator point of some pairing-friendly
     elliptic curve group $\mathbb{G}$, $s$ some random value in the order of the $G$ point and $d$ be the maximum degree of the polynomials we want to commit to.
 
     \begin{center}
-        $[s^0]G, [s^1]G, \ldots, [s^d]G$
+        $[\tau^0]G, [\tau^1]G, \ldots, [\tau^d]G$
     \end{center}
 
-    Parameter $s$ should be deleted after the ceremony. If it is revealed, the commitment scheme can be broken. This parameter is usually called the \textit{toxic waste}.
-    \item Commit to polynomial.
+    Parameter $\tau$ should be deleted after the ceremony. If it is revealed, the commitment scheme can be broken. This parameter is usually called the \textit{toxic waste}.
+    
+    \item \textit{Commit to polynomial}. Given the polynomial $p(x) = \sum_{i = 0}^{d} p_i x^i$, compute the commitment $c = [p(\tau)]G $ 
+    using the trusted setup. Although the committer cannot compute $[p(\tau)]G$ directly since the value of $\tau$ is unknown, he can
+    compute it using values $([\tau^0]G, [\tau^1]G, \ldots, [\tau^d]G)$.
+    
+    \item \textit{Prove an evaluation}. Given evaluation $p(x') = y$ compute proof $q(\tau)$,
+    
+    where $q(x) = \frac{p(x) - y}{x - x'}$.
+
+    Polynomial $q$ is called ``quotient polynomial`` and only exists if and only if $p(x') = y$. The existance of this quotient polynomial serves
+    as a proof of the evaluation.
+
+    \item \textit{Verify the proof}. Given a commitment $c = [p(\tau)]G$, an evaluation $p(x') = b$ and a proof $[q(\tau)G]$, we need to
+    ensure that $q(\tau) * (\tau - x') = p(\tau) - y$. This can be done using trusted setup without knowledge of $\tau$ using bilinear mapping:
+
+    \begin{center}
+        $e(q(\tau), [\tau]G_2 - [x']G_2) = e(c - [y]G_1, G_2)$
+    \end{center}
+    
+    Polynomial commiment schemes such as KZG are used in zero knowledge proof system to encode circuit constraints as a polynomial, 
+    so that verifier could check random points to ensure that the constraints are met.
+
 \end{enumerate}
 
 \end{document}
