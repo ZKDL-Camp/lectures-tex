@@ -83,13 +83,18 @@ To check the commitment, verifier computes: $c_1 = H(m || r)$.
 If $c_1 = c$, prover has revealed the correct pair $(m, r)$.
 
 It should be noted that a cryptographic hash function aims to provide collision resistance, 
-meaning that any potential input value maps to one and only one output.
+meaning that the probability two different messages will result in one output is negligible.
 Because the \textit{Verifier} knows the hash funcation digest $c$ before the \textit{Prover} reveals $m$ and $r$, 
 the \textit{Prover} would need to find a collision $H(m' || r') = H(m || r)$ to be able to convince the \textit{Verifier}
 that $m'$ value was committed.
 
 The probability of a collision in a cryptographically secure hash function is negligible, which means the \textit{Prover}
-won't be able to convince the \textit{Verifier} that the commitment was done to another value.
+won't be able to convince the \textit{Verifier} that the commitment was done to another value providing a binding property.
+
+A cryptographically secure hash function is a one-way funcation, which means that finding the hash preimage is almost as hard as bruteforcing
+all possibile input values. Given large challenge space, the probability of the \textit{Verifier} of finding such $(m, r)$ such that
+$H(m, r) = c$ is negligible, which ensures hiding property of the commitment scheme. 
+
 
 \subsubsection{Pedersen commitments}
 
