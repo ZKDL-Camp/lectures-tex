@@ -45,6 +45,9 @@
     pgf,
     pgfplots
 }
+\usetikzlibrary{positioning}
+\usetikzlibrary{backgrounds}
+\usetikzlibrary{tikzmark}
 
 % --- Matrix magical command
 \renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
