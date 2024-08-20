@@ -164,6 +164,61 @@
         \end{figure}
 
     \end{frame}
+
+    \subsection{Pedersen commitment}
+
+    \begin{frame}{Pedersen Commitment}
+
+        Pedersen commitments allow us to represent arbitrarily large vectors with a single elliptic curve point. 
+        Pedersen commitment uses a public group $\mathbb{G}$ of order $q$ and two random public generators
+        $G$ and $U$: $U = [u]G$. Secret parameter $u$ should be unknown to anyone, otherwise the $\textit{Binding}$ 
+        property of the commitment scheme will be violated.
+    
+        \begin{alertblock}{Note: Transparent random points generation}
+            User can pick the publicly known number (like $x$ coordinate of group generator $G$), calculate $x_i = H(x \parallel i)$
+            and corresponding $y_i$. Check whether $(x_i, y_i)$ is in the elliptic curve group. Repeat the process for sequential $i = 1, 2 \ldots$
+            until point $(x_i, y_i)$ is in the elliptic curve group.
+        \end{alertblock}    
+
+    \end{frame}
+
+    \begin{frame}{Pedersen Commitment}
+
+        \begin{definition}
+            Pedersen commitment scheme algorithm:
+            \begin{enumerate}
+                \item Prover and Verifier agrees on $G$ and $U$ points in a elliptic curve point group $\mathbb{G}$, $q$ is the order of the group.
+                \item Prover selects a value $m$ to commit and a blinder factor $r$:
+                        $m \leftarrow \mathbb{Z}_q$,
+                        $r \xleftarrow{R} \mathbb{Z}_q$
+                \item Prover generates a commitment and sends it to the Verifier:
+                        $\mathcal{C} \gets [m]G + [r]U$
+            \end{enumerate}
+        \end{definition}
+
+        During the opening stage, prover reveals $(m, r)$ to the verifier. 
+        
+        To check the commitment, verifier computes: $\mathcal{C}_1 = [m]G + [r]U$. 
+        
+        If $\mathcal{C}_1 = \mathcal{C}$, prover has revealed the correct pair $(m, r)$.
+
+    \end{frame}
+
+    \begin{frame}{Pedersen Commitment}
+
+            In case the discrete logarithm of $U$ is leaked, the \textit{binding} property can be violated by the \textit{Prover}:
+        
+            \begin{center}
+                $c = [m]G + [r]U = [m] G + [r \cdot u]G = [m + r \cdot u] G$
+            \end{center}
+        
+            For example, $(m + u, r - 1)$ will have the same commitment value:
+        
+            \begin{center}
+                $[m+u + (r-1) \cdot u] G = [m + u - u + r \cdot u] G = [m + r \cdot u] G$     
+            \end{center}
+            
+    \end{frame}
     
 	\begin{frame}{}
       \centering \Large
