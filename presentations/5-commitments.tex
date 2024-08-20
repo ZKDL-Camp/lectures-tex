@@ -135,6 +135,35 @@
 
     \end{frame}
 
+    \section{Vector Commitments}
+
+    \subsection{Merkle Tree based Vector Commitment}
+
+    \begin{frame}{Merkle Tree commitments}
+
+        A naive approach for a vector commitment would be hash the whole vector. 
+        More sophisticated scheme uses divide-and-conquer approach by building a binary tree out of vector elements.
+
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.75\textwidth]{images/lecture_5/MerkleTree.png}
+            \caption{Merkle Tree structure}
+        \end{figure}
+
+    \end{frame}
+
+    \begin{frame}{Merkle Tree Proof (MTP)}
+
+        To prove the inclusion of element into the tree, a corresponding Merkle Branch is used. It allows to perform selective
+        disclosure of the elements without revealing all of them at once.
+
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.75\textwidth]{images/lecture_5/MerkleTreeProof.png}
+            \caption{Merkle Tree inclusion proof branch}
+        \end{figure}
+
+    \end{frame}
     
 	\begin{frame}{}
       \centering \Large
