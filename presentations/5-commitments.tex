@@ -219,6 +219,47 @@
             \end{center}
             
     \end{frame}
+
+    \begin{frame}{Pedersen Commitment Aggregation}
+
+        Pedersen commitment have some advantages compared to hash-based commitments.
+        Additively homomorphic property allows to accumulate multiple commitments into one.
+        Consider two pairs: $(m_1, r_1), (m_2, r_2)$.
+        
+        \begin{center}
+            $\mathcal{C}_2 = [m_1]G + [r_1]U$,
+        
+            $\mathcal{C}_2 = [m_2]G + [r_2]U$,
+        
+            $\mathcal{C}_a = \mathcal{C}_1 + \mathcal{C}_2 = [m_1 + m_2]G + [r_1 + r_2]U$
+        \end{center}
+        
+        This works for any number of commitments, so we can encode as many points as we like in a single one.
+
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.4\textwidth]{images/lecture_5/Balances.png}
+        \end{figure}
+        
+\end{frame}
+
+    \begin{frame}{Pedersen Vector Commitment}
+
+        Suppose we have a set of random elliptic curve points $(G_1, \ldots ,G_n)$ of cyclic group $\mathbb{G}$ 
+(that nobody knows the discrete logarithm of), a vector $(m_1, m_2 \ldots m_n)$ and a random value $r$. We can do the following:
+
+\begin{center}
+    $ \mathcal{C} = m_1\cdot[G_1] + m_2 \cdot [G_2] \ldots + m_n \cdot [G_n] + r \cdot [Q]$ 
+\end{center}
+
+Since the \textit{Prover} does not know the discrete logarithm of the generators, so he can only reveal $(v_1, \ldots ,v_n)$ to produce $[C]$ later, they cannot produce another vector.
+
+Prover can later open the commitment by revealing the vector $(m_1, m_2 \ldots m_n)$ and a blinding term $r$.
+
+        
+\end{frame}
+
+
     
 	\begin{frame}{}
       \centering \Large
