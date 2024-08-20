@@ -10,10 +10,10 @@
 
 Before delving into the details, here is the intuition of cryptographic commitments.
 
-Imagine putting a cat into a box and locking it with your key. 
+Imagine putting a letter with some message into a box and locking it with your key. 
 You then give that box to your friend, who cannot open it without the key.
-In this scenario, you have made a commitment to the cat inside the box. 
-You cannot change the content of the box, as it is in your friend's possession. 
+In this scenario, you have made a commitment to the message inside the box. 
+You cannot change the content of the letter, as it is in your friend's possession. 
 At the same time, your friend cannot access the letter since they do not have the key to unlock the box.
 
 \begin{figure}[H]
@@ -40,12 +40,13 @@ At the same time, your friend cannot access the letter since they do not have th
 \begin{definition}[Commitment Scheme]
     Properties of a commitment scheme:
     \begin{enumerate}
-        \item \textit{Hiding: } verifier should not learn any information about the message given only the commitment c. To put it formally we define a game:
+        \item \textit{Hiding: } verifier should not learn any information about the message given only the commitment c. To put it formally, we define a game:
         \begin{enumerate}
             \item Adversary chooses two messages $m_1,m_2$ and sends to the challenger.
             \item Challenger chooses a random bit $b$, commits to both messages: 
             
-                $c_1 \gets \mathsf{Commit}(pp, m_1), c_2 \gets \mathsf{Commit}(pp,m_2)$, and sends $c_b$ to the adversary.
+                $\mathcal{c}_1 \gets \mathsf{Commit}(pp, m_1), \mathcal{c}_2 \gets \mathsf{Commit}(pp,m_2)$, 
+                    and sends $\mathcal{c}_b$ to the adversary.
             \item Adversary guesses a bit $\hat{b}$.
         \end{enumerate}
         
@@ -58,7 +59,18 @@ At the same time, your friend cannot access the letter since they do not have th
         We say that the commitment scheme $\Pi_{\text{commitment}}$ is \textit{hiding} if for any adversary, the aforementioned advantage is negligible.
         
         \item \textit{Binding: } prover could not find another message $m_1$ and open the commitment $c$ without revealing the commited message $m$.
+        To put it formally, we define a game:
+        \begin{enumerate}
+            \item Adversary chooses two distinct pairs $(m_1,r_1)$ and $(m_2, r_2)$ and sends to the challenger.
+            \item Challenger commits to both messages: 
+            
+                $\mathcal{C}_1 \gets \mathsf{Commit}(pp, m_1), \mathcal{C}_2 \gets \mathsf{Commit}(pp,m_2)$, and sends $\mathcal{C}_b$ to the adversary.
+            \item Adversary wins the game if $\mathcal{C}_1 = \mathcal{C}_2$.
+        \end{enumerate}
 
+
+        We say that the commitment scheme $\Pi_{\text{commitment}}$ is \textit{binding} if for any adversary, the probability of finding such pairs 
+            $(m_1, r_1)$ and $(m_2, r_2)$ is negligible.
     \end{enumerate}
 \end{definition}
 
@@ -78,7 +90,7 @@ As the name implies, we are using a cryptographic hash function \(H\) in such sc
 
 \end{enumerate}
 
-Commitment should be shared with a verifier. During the verification stage, prover reveals $(m, r)$ to the \textit{Verifier}. 
+Commitment should be shared with a verifier. During the opening stage, prover reveals $(m, r)$ to the \textit{Verifier}. 
 To check the commitment, verifier computes: $c_1 = H(m \parallel r)$.
 
 If $c_1 = c$, prover has revealed the correct pair $(m, r)$.
@@ -92,14 +104,14 @@ that $m'$ value was committed.
 However, due to the collision resistance, finding such $m'$ and $r'$ is computationally infeasible. Which means the \textit{Prover}
 won't be able to convince the \textit{Verifier} that the commitment was done to another value providing a \textit{binding} property.
 
-A cryptographically secure hash function is a one-way funcation, which means that finding the hash preimage is almost as hard as bruteforcing
+A cryptographically secure hash function is a one-way function, which means that finding the hash preimage is almost as hard as bruteforcing
 all possibile input values. Given large challenge space, the probability of the \textit{Verifier} of finding $(m, r)$ such that
 $H(m, r) = c$ is negligible, which ensures \textit{hiding} property of the commitment scheme. 
 
 
 \subsubsection{Pedersen commitments}
 
-Pedersen commitments allow us to represent arbitrarily large vectors with a single elliptic curve point, while optionally hiding any information about the vector. Pedersen commitment uses a public group $\mathbb{G}$ of order $q$ and two random public generators $G$ and $U$: $U = uG$. Secret parameter $u$ should be hidden, otherwise the $\textit{Binding}$ property of the commitment scheme will be violated.
+Pedersen commitments allow us to represent arbitrarily large vectors with a single elliptic curve point, while optionally hiding any information about the vector. Pedersen commitment uses a public group $\mathbb{G}$ of order $q$ and two random public generators $G$ and $U$: $U = [u]G$. Secret parameter $u$ should be unknown to anyone, otherwise the $\textit{Binding}$ property of the commitment scheme will be violated.
 EC point $U$ is chosen randomly using ``Nothing-up-my-sleeve`` to assure no one knows the discrete logarithm of a selected point.
 
 \begin{remark}
@@ -118,7 +130,7 @@ Pedersen commitment scheme algorithm:
             $c \gets [m]G + [r]U$
 \end{enumerate}
 
-During the verification stage, prover reveals $(m, r)$ to the verifier. 
+During the opening stage, prover reveals $(m, r)$ to the verifier. 
 To check the commitment, verifier computes: $c_1 = [m]G + [r]U$.
 
 If $c_1 = c$, prover has revealed the correct pair $(m, r)$.
@@ -148,14 +160,16 @@ Additively homomorphic property allows to accumulate multiple commitments into o
 Consider two pairs: $(m_1, r_1), (m_2, r_2)$.
 
 \begin{center}
-    $C_1 = m_1G + r_1U$,
+    $\mathcal{C}_2 = [m_1]G + [r_1]U$,
 
-    $C_2 = m_2G + r_2U$,
+    $\mathcal{C}_2 = [m_2]G + [r_2]U$,
 
-    $C_a = C_1 + C_2 = (m_1 + m_2)G + (r_1 + r_2)U$
+    $\mathcal{C}_a = \mathcal{C}_1 + \mathcal{C}_2 = [m_1 + m_2]G + [r_1 + r_2]U$
 \end{center}
 
 This works for any number of commitments, so we can encode as many points as we like in a single one.
+For example, if a set of balances is committed, the sum of any subset can be proven without revealing the exact value of each balance. 
+This is achieved by disclosing the sum of the balances and the corresponding sum of the blinding factors.
 
 \vspace{0.5 cm}
 
@@ -171,7 +185,7 @@ Suppose we have a set of random elliptic curve points $(G_1, \ldots ,G_n)$ of cy
 (that we do not know the discrete logarithm of), a vector $(m_1, m_2 \ldots m_n)$ and a random value $r$. We can do the following:
 
 \begin{center}
-    $ [C] = m_1\cdot[G_1] + m_2 \cdot [G_2] \ldots + m_n \cdot [G_n] + r \cdot [Q]$ 
+    $ \mathcal{C} = m_1\cdot[G_1] + m_2 \cdot [G_2] \ldots + m_n \cdot [G_n] + r \cdot [Q]$ 
 \end{center}
 
 Since the \textit{Prover} does not know the discrete logarithm of the generators, they don`t know the discrete logarithm of [C]. 
@@ -241,7 +255,7 @@ The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
     as a proof of the evaluation.
 
     \item \textit{Verify the proof}. Given a commitment $c = [p(\tau)]G$, an evaluation $p(x') = b$ and a proof $[q(\tau)G]$, we need to
-    ensure that $q(\tau) * (\tau - x') = p(\tau) - y$. This can be done using trusted setup without knowledge of $\tau$ using bilinear mapping:
+    ensure that $q(\tau) \cdot (\tau - x') = p(\tau) - y$. This can be done using trusted setup without knowledge of $\tau$ using bilinear mapping:
 
     \begin{center}
         $e(q(\tau), [\tau]G_2 - [x']G_2) = e(c - [y]G_1, G_2)$
