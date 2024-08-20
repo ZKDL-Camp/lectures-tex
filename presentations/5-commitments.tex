@@ -114,6 +114,27 @@
         \end{alertblock}    
     \end{frame}
 
+    \section{Hash-based Commitments}
+
+    \begin{frame}{Hash-based commitments}
+
+        As the name implies, we are using a cryptographic hash function \(H\) in such scheme.
+
+        \begin{definition}
+            \begin{enumerate}
+                \item Prover selects a message $m$ from a message space $M$ which he wants to commit to:
+                    $m \leftarrow \mathbb{M}$
+            
+                \item Prover samples random value $r$ from a challange space $C$ (usually called blinding factor) from $\mathbb{Z}$:
+                    $r \xleftarrow{R} \mathbb{C}$
+                
+                \item Both values will be concatenated and hashed with the hash function $H$ to produce the commitment:
+                    $\mathcal{C} = H(m \parallel r)$
+            \end{enumerate}
+        \end{definition}
+
+    \end{frame}
+
     
 	\begin{frame}{}
       \centering \Large
