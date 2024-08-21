@@ -96,15 +96,15 @@
     \begin{frame}{Commitment Scheme Properties}
         \begin{definition}
             \begin{enumerate}
-                \item \textit{Hiding: } verifier should not learn any additional information about the message given only the commitment $\mathcal{C}$.
+                \item \textit{Hiding: } verifier should not learn any additional information about the message given only the commitment $c$.
                 \begin{enumerate}
                     \item \textit{Perfect hiding}: adversary with any computation capability tries even forever cannot understand what you have hidden.
                     \item \textit{Computationally hiding}: we assume that the adversary have limited computational resources and cannot try forever to recover hidden value.
                 \end{enumerate}
                 
-                \item \textit{Binding: } prover could not find another message $m_1$ and open the commitment $\mathcal{C}$ without revealing the commited message $m$.
+                \item \textit{Binding: } prover could not find another message $m_1$ and open the commitment $c$ without revealing the commited message $m$.
                 \begin{enumerate}
-                    \item \textit{Perfect binding}: adversary with any computation capability tries even forever cannot find another $m_1$ that would result to the same $\mathcal{C}$.
+                    \item \textit{Perfect binding}: adversary with any computation capability tries even forever cannot find another $m_1$ that would result to the same $c$.
                     \item \textit{Computationally binding}: we assume that the adversary have limited computational resources and cannot try forever.
                 \end{enumerate}
             \end{enumerate}
@@ -122,14 +122,14 @@
 
         \begin{definition}
             \begin{enumerate}
-                \item Prover selects a message $m$ from a message space $M$ which he wants to commit to:
-                    $m \leftarrow \mathbb{M}$
+                \item Prover selects a message $m$ from a message space $\mathcal{M}$ which he wants to commit to:
+                    $m \leftarrow \mathcal{M}$
             
-                \item Prover samples random value $r$ from a challange space $C$ (usually called blinding factor) from $\mathbb{Z}$:
-                    $r \xleftarrow{R} \mathbb{C}$
+                \item Prover samples random value $r$ (usually called blinding factor) from a challange space $\mathcal{C} \subset \mathbb{Z}$:
+                    $r \xleftarrow{R} \mathcal{C}$
                 
                 \item Both values will be concatenated and hashed with the hash function $H$ to produce the commitment:
-                    $\mathcal{C} = H(m \parallel r)$
+                    $c = H(m \parallel r)$
             \end{enumerate}
         \end{definition}
 
@@ -192,15 +192,15 @@
                         $m \leftarrow \mathbb{Z}_q$,
                         $r \xleftarrow{R} \mathbb{Z}_q$
                 \item Prover generates a commitment and sends it to the Verifier:
-                        $\mathcal{C} \gets [m]G + [r]U$
+                        $c \gets [m]G + [r]U$
             \end{enumerate}
         \end{definition}
 
         During the opening stage, prover reveals $(m, r)$ to the verifier. 
         
-        To check the commitment, verifier computes: $\mathcal{C}_1 = [m]G + [r]U$. 
+        To check the commitment, verifier computes: $c_1 = [m]G + [r]U$. 
         
-        If $\mathcal{C}_1 = \mathcal{C}$, prover has revealed the correct pair $(m, r)$.
+        If $c_1 = c$, prover has revealed the correct pair $(m, r)$.
 
     \end{frame}
 
@@ -227,11 +227,11 @@
         Consider two pairs: $(m_1, r_1), (m_2, r_2)$.
         
         \begin{center}
-            $\mathcal{C}_2 = [m_1]G + [r_1]U$,
+            $c_2 = [m_1]G + [r_1]U$,
         
-            $\mathcal{C}_2 = [m_2]G + [r_2]U$,
+            $c_2 = [m_2]G + [r_2]U$,
         
-            $\mathcal{C}_a = \mathcal{C}_1 + \mathcal{C}_2 = [m_1 + m_2]G + [r_1 + r_2]U$
+            $c_a = c_1 + c_2 = [m_1 + m_2]G + [r_1 + r_2]U$
         \end{center}
         
         This works for any number of commitments, so we can encode as many points as we like in a single one.
@@ -246,18 +246,98 @@
     \begin{frame}{Pedersen Vector Commitment}
 
         Suppose we have a set of random elliptic curve points $(G_1, \ldots ,G_n)$ of cyclic group $\mathbb{G}$ 
-(that nobody knows the discrete logarithm of), a vector $(m_1, m_2 \ldots m_n)$ and a random value $r$. We can do the following:
+    (that nobody knows the discrete logarithm of), a vector $(m_1, m_2 \ldots m_n)$ and a random value $r$. We can do the following:
 
-\begin{center}
-    $ \mathcal{C} = m_1\cdot[G_1] + m_2 \cdot [G_2] \ldots + m_n \cdot [G_n] + r \cdot [Q]$ 
-\end{center}
+    \begin{center}
+        $ c = m_1\cdot[G_1] + m_2 \cdot [G_2] \ldots + m_n \cdot [G_n] + r \cdot [Q]$ 
+    \end{center}
 
-Since the \textit{Prover} does not know the discrete logarithm of the generators, so he can only reveal $(v_1, \ldots ,v_n)$ to produce $[C]$ later, they cannot produce another vector.
+    Since the \textit{Prover} does not know the discrete logarithm of the generators, so he can only reveal $(v_1, \ldots ,v_n)$ to produce $[C]$ later, they cannot produce another vector.
 
-Prover can later open the commitment by revealing the vector $(m_1, m_2 \ldots m_n)$ and a blinding term $r$.
+    Prover can later open the commitment by revealing the vector $(m_1, m_2 \ldots m_n)$ and a blinding term $r$.
 
+            
+    \end{frame}
+
+    \section{Polynomial commitment}
+
+    \begin{frame}{Polynomial Commitment}
+
+        \begin{definition}
+            Polynomial commitment can be used to prove that the commited polynomial satisfies certain properties 
+            (passes through a certain point $(x,y)$), without revealing what the polynomial is.
+            The commitment is generally succint, which means that it is much smaller than the polynomial it represents.        
+        \end{definition}
         
-\end{frame}
+
+    \end{frame}
+
+    \subsection{Kate-Zaverucha-Goldberg (KZG)}
+    
+    \begin{frame}{KZG Commitment. Simplified example}
+        Given the polynomial: $P(x) = x^3 - 15x^2 + 71x - 103$
+        
+        \vspace{0.5 cm}
+
+        Prove that $P(3) = 2$
+
+        \vspace{0.5 cm}
+         
+        $P(3) = 2 \rightarrow 3$ is a root of polynomial $P(x) - 2$
+
+        \vspace{0.5 cm}
+
+        Proof: $Q(x) = \dfrac{P(x) - 2}{x-3} = \dfrac{(x^3 - 15x^2 + 71x - 103) - 2}{x-3} = x^2 - 12x+ 35$
+
+        \vspace{0.5 cm}
+
+        Verify: $Q(x) \cdot (x-3) = P(x) - 2$
+    \end{frame}
+
+    \begin{frame}{KZG Commitment}
+    
+    The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
+
+        \textit{One-time ''Powers-of-tau'' trusted setup stage}. During trusted setup a set of elliptic curve points is generated. Let $G$ be a generator point of some pairing-friendly
+        elliptic curve group $\mathbb{G}$, $s$ some random value in the order of the $G$ point and $d$ be the maximum degree of the polynomials we want to commit to.
+
+        \begin{center}
+            $[\tau^0]G, [\tau^1]G, \ldots, [\tau^d]G$
+        \end{center}
+
+        Parameter $\tau$ should be deleted after the ceremony. If it is revealed, the commitment scheme can be broken. This parameter is usually called the \textit{toxic waste}.
+    \end{frame}
+
+    \begin{frame}{KZG Commitment}
+
+        \textit{Commit to polynomial}. Given the polynomial $p(x) = \sum_{i = 0}^{d} p_i x^i$, compute the commitment $c = [p(\tau)]G $ 
+        using the trusted setup. Although the committer cannot compute $[p(\tau)]G$ directly since the value of $\tau$ is unknown, he can
+        compute it using values $([\tau^0]G, [\tau^1]G, \ldots, [\tau^d]G)$.
+    \end{frame}
+    
+    \begin{frame}{KZGCommitment}
+    
+        \textit{Prove an evaluation}. Given evaluation $p(x_0) = y_0$ compute proof $q(\tau)$,
+    
+        where $q(x) = \frac{p(x) - y_0}{x - x_0}$.
+
+        Polynomial $q$ is called ``quotient polynomial`` and only exists if and only if $p(x_0) = y_0$. The existance of this quotient polynomial serves
+        as a proof of the evaluation.
+    \end{frame}
+
+    \begin{frame}{KZG Commitment}
+        \textit{Verify the proof}. Given a commitment $c = [p(\tau)]G$, an evaluation $p(x_0) = y_0$ and a proof $[q(\tau)G]$, we need to
+        ensure that $q(\tau) \cdot (\tau - x_0) = p(\tau) - y_0$. This can be done using trusted setup without knowledge of $\tau$ using bilinear mapping:
+
+        \begin{center}
+            $e(q(\tau), [\tau]G_2 - [x_0]G_2) = e(c - [y_0]G_1, G_2)$
+        \end{center}
+        
+        Polynomial commiment schemes such as KZG are used in zero knowledge proof system to encode circuit constraints as a polynomial, 
+        so that verifier could check random points to ensure that the constraints are met.
+    \end{frame}
+
+    
 
 
     
