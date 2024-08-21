@@ -216,6 +216,8 @@
         \textcolor{purple}{\textbf{Question:}} Is $x=1$ a true statement for $N=5$? What about $x=4$?
     \end{frame}
 
+    \subsection{P and NP Statements}
+
     \begin{frame}{NP Statements: Demonstration}
         Well\ldots We are simply going to send witness $w$ to the verifier $\mathcal{V}$ and he will check if the statement is true (meaning, whether $x \in \mathcal{L}_{\mathcal{R}}$).
 
@@ -258,7 +260,7 @@
 
     \section{Interactive Proofs}
 
-    \subsection{Interactive Proof System}
+    \subsection{Quadratic Residue Interactive Proof}
     \begin{frame}{Solution!}
         \begin{columns}
             % Description
@@ -344,7 +346,7 @@
         \end{block}
 
         \begin{lemma}
-            The protocol is \textbf{complete} and \textbf{sound}.
+            The aforementioned protocol is \textbf{complete} and \textbf{sound}.
         \end{lemma}
 
         \textbf{Completeness.} If $b=0$, then $z=r$ and thus $z^2=r^2=a$, check passes.
@@ -352,6 +354,7 @@
         If $b=1$, then $z=rw$ and thus $z^2=r^2w^2=ax$, check passes.
     \end{frame}
 
+    \subsection{Completeness and Soundness}
     \begin{frame}{Quadratic Residue Interactive Proof: Analysis}
         \textbf{Soundness.} The main reason why the protocol is sound is insribed in the theorem below.
 
@@ -389,6 +392,7 @@
         \end{definition}
     \end{frame}
 
+    \subsection{Zero-Knowledge and Honest-Verifier Zero-Knowledge}
     \begin{frame}{Zero-Knowledge Informal Definition}
         \begin{definition}
             An interactive proof system $(\mathcal{P}, \mathcal{V})$ is called \textbf{zero-knowledge} if for any polynomial-time verifier $\mathcal{V}^*$ and any $x \in \mathcal{L}_{\mathcal{R}}$, the interaction $\langle \mathcal{P}, \mathcal{V}^* \rangle(x)$ gives nothing new about the witness $w$.
@@ -402,6 +406,170 @@
             \centering
             \includegraphics[width=0.5\textwidth]{images/lecture_6/zk.pdf}
         \end{figure}
+    \end{frame}
+
+    \begin{frame}{Verifier's View}
+        \begin{alertblock}{Question \#1}
+            What has the verifier learned during the interaction?
+        \end{alertblock}
+
+        \begin{itemize}
+            \item First things first, he learned that the statement $x$ is true.
+            \item He also knows queries $(q_1,\dots,q_{\ell})$ and random coins $(r_1,\dots,r_{\ell})$ he tossed (since he is the one who has sent them).
+            \item Moreover, he knows the prover's messages $(m_1,m_2,\dots,m_{\ell})$.
+        \end{itemize}
+
+        \begin{definition}
+            All the conversation that verifier has witnessed is called \textbf{verifier's view} and is denoted as
+            \begin{equation*}
+                \mathsf{view}_{\mathcal{V}}(\mathcal{P}, \mathcal{V}) = (m_1,r_1,q_1,m_2,r_2,q_2,\dots,m_{\ell},r_{\ell},q_{\ell}).
+            \end{equation*} 
+        \end{definition}
+
+        \textcolor{purple}{\textbf{Fact:}} $\mathsf{view}_{\mathcal{V}}(\mathcal{P}, \mathcal{V})$ is a \textbf{random variable}.
+    \end{frame}
+
+    \begin{frame}{Verifier's View: Example}
+        \begin{example}
+            For QN test, set $N:=3 \times 2^{30} + 1$ (prime number), and $\mathcal{P}$ wants to convince that $1286091780 \in \mathcal{L}_R$. Conversation is the following:
+            \begin{enumerate}
+                \item During the first round, $\mathcal{P}$ sends $672192003$ to $\mathcal{V}$.
+                \item $\mathcal{V}$ sends $b=0$ to $\mathcal{P}$.
+                \item $\mathcal{P}$ sends $2606437826$ to $\mathcal{V}$.
+                \item $\mathcal{V}$ verifies that indeed $2606437826^2 \equiv 672192003 \pmod{N}$.
+                \item During the second round, $\mathcal{P}$ sends $2619047580$ to $\mathcal{V}$.
+                \item $\mathcal{V}$ chooses $b=1$ and sends to $\mathcal{P}$.
+                \item $\mathcal{P}$ sends $1768388249$ to $\mathcal{V}$.
+                \item $\mathcal{V}$ verifies that $1768388249^2 \equiv 2619047580 \times 1286091780 \pmod{N}$.
+                \item Conversation ends.
+            \end{enumerate}
+        \end{example}
+    \end{frame}
+            
+    \begin{frame}{Verifier's View: Example}
+        \begin{example}
+            The \textbf{view of the verifier} $\mathcal{V}$ is the following: 
+            \begin{align*}
+                \mathsf{view}_{\mathcal{V}}(\mathcal{V}, \mathcal{P})[1286091780] \\= (672192003, 0, 2606437826, 2619047580, 1, 1768388249)
+            \end{align*}
+            
+            \begin{itemize}
+                \item Essentially, this view is the same as you have witnessed.
+                \item You have not learned anything about $w$ that prover $\mathcal{P}$ knows.
+                \item The witness was $w = 3042517305$ and two randomnesses were $r_1 = 2606437826$ and $r_2 = 3023142760$.
+                \item This is a random variable: conversation could be different.
+            \end{itemize}
+        \end{example}
+    \end{frame}
+
+    \begin{frame}{Zero-Knowledge Formally: Simulation Paradigm}
+        \begin{alertblock}{Question \#2}
+            What does it mean that the protocol is zero-knowledge?
+        \end{alertblock}
+
+        \begin{itemize}
+            \item Protocol is zero-knowledge if, given the verifier's $\mathsf{view}_{\mathcal{V}}(\mathcal{P}, \mathcal{V})$, verifier cannot infer any information about the witness $w$.
+            \item What does it mean that verifier $\mathcal{V}$ learns nothing new? It means that this view could have been simulated by $\mathcal{V}$ \textit{without even running an interaction}.
+            \item Call the view after the real interaction as \textbf{real view}, while the view after the simulation as \textbf{simulated view}.
+        \end{itemize}
+
+        \begin{block}{Note}
+            Such idea of defining the zero-knowledge is called \textbf{simulation paradigm} and currently the most widely used way to prove zero-knowledge.
+        \end{block}
+    \end{frame}
+
+    \begin{frame}{Computational Indistinguishability}
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.8\textwidth]{images/lecture_6/cind.pdf}
+        \end{figure}
+
+        \begin{definition}[Informal Computational Indistinguisability]
+            $D_1$ and $D_2$ are \textbf{computationally indistinguishable} (denoted by $D_1 \approx D_2$) if for any PPT distinguisher $\mathcal{D}$, even after polynomial number $k$ of samples from $D_b$ (where $b \xleftarrow{R} \{0,1\}$), for prediction $\hat{b}$: $\text{Pr}[\hat{b} = b] < \frac{1}{2} + \mathsf{negl}(k)$.
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}{Zero-Knowledge Formally (Kind of)}
+        Finally, we are ready to define the \textbf{zero-knowledge}.
+
+        \begin{definition}[Honest-Verifier Zero-Knowledge (HVZK)]
+            An interactive protocol $(\mathcal{P}, \mathcal{V})$ is \textbf{honest-verifier zero-knowledge (HVZK)} for a language $\mathcal{L}_{\mathcal{R}}$ there exists a poly-time simulator $\mathsf{Sim}$ such that for any valid statement $x \in \mathcal{L}_{\mathcal{R}}$:
+            \begin{equation*}
+                \mathsf{view}_{\mathcal{V}}(\mathcal{P}, \mathcal{V})[x] \approx \mathsf{Sim}(x, \textcolor{gray}{1^{\lambda}})
+            \end{equation*}
+        \end{definition}
+
+        \begin{definition}[Zero-Knowledge (ZK)]
+            An interactive protocol $(\mathcal{P}, \mathcal{V})$ is \textbf{zero-knowledge (ZK)} for a language $\mathcal{L}_{\mathcal{R}}$ if \textit{for every poly-time verifier} $\mathcal{V}^*$ there \textit{exists a poly-time simulator} $\mathsf{Sim}$ such that for any valid statement $x \in \mathcal{L}_{\mathcal{R}}$:
+            \begin{equation*}
+                \mathsf{view}_{\mathcal{V}^*}(\mathcal{P}, \mathcal{V}^*)[x] \approx \mathsf{Sim}(x, \textcolor{gray}{1^{\lambda}})
+            \end{equation*}
+        \end{definition}
+    \end{frame}
+
+    \subsection{Proof of Knowledge}
+
+    \begin{frame}{Proof of Knowledge: Why?}
+        Now, the main issue with the above definition is that \textit{we have proven the statement correctness, but we have not proven that the prover \textbf{knows} the witness}. These are completely two distinct things!
+
+        \begin{example}
+            Consider the \textbf{discrete logarithm relation and language} for a cyclic group $E(\mathbb{F}_p)$ of order $r$:
+            \begin{align*}
+                \mathcal{R} = \{(P, \alpha) \in E(\mathbb{F}_p) \times \mathbb{Z}_r: P = [\alpha] G\}, \\ \mathcal{L}_{\mathcal{R}} = \{P \in E(\mathbb{F}_p): \exists \alpha \in \mathbb{Z}_r \; \text{such that} \; P = [\alpha] G\}
+            \end{align*}
+        \end{example}
+
+        \begin{alertblock}{Question}
+            What does it mean that $X \in \mathcal{L}_{\mathcal{R}}$?
+        \end{alertblock}
+
+        Turns out $\mathcal{L}_{\mathcal{R}} = E(\mathbb{F}_p)$, so the proof $X \in \mathcal{L}_{\mathcal{R}}$ itself is useless.
+    \end{frame}
+
+    \begin{frame}{Proof of Knowledge: Definition}
+        \begin{enumerate}
+            \item The knowledge of witness means that we can \textbf{extract} the witness while interacting with the prover.
+            \item Thus, there should be an algorithm called \textbf{extractor} $\mathcal{E}$ which can extract the witness $w$.
+            \item $\mathcal{E}$ is given more power than $\mathcal{V}$ (otherwise, if the protocol is zero-knowledge, we cannot extract $w$). $\mathcal{E}$ can \textbf{rewind} and \textbf{call} prover $\mathcal{P}$ multiple times.
+            \item Sometimes, this is referred to as ``extractor $\mathcal{E}$ uses $\mathcal{P}$ as an oracle''.
+        \end{enumerate}
+
+        \begin{definition}[Proof of Knowledge]
+            The interactive protocol $(\mathcal{P}, \mathcal{V})$ is a \textbf{proof of knowledge} for $\mathcal{L}_{\mathcal{R}}$ if exists a poly-time extractor algorithm $\mathcal{E}$ such that for any valid statement $x \in \mathcal{L}_{\mathcal{R}}$, in expected poly-time $\mathcal{E}^{\mathcal{P}}(x)$ outputs $w$ such that $(x,w) \in \mathcal{R}$.
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}{Proof of Knowledge: Example}
+        \begin{lemma}
+            The quadratic residue interactive protocol is a proof of knowledge.
+        \end{lemma}
+        
+        \textbf{Proof.} Let us define the extractor $\mathcal{E}$ for the statement $x$ as follows:
+        \begin{enumerate}
+            \item Run the prover to receive $a \equiv r^2 \pmod{N}$ ($r$ is chosen randomly from $\mathbb{Z}_N^*$).
+            \item Set verifier's message to $b=0$ to get $z_1 \gets r$.
+            \item \textbf{Rewind} and set verifier's message to $b=1$ to get $z_2 \gets rw \pmod{N}$.
+            \item Output $z_2/z_1 \pmod{N}$
+        \end{enumerate}
+        
+        The extractor $\mathcal{E}$ will always output $w$ if $x \in \mathcal{L}_{\mathcal{R}}$. $\hfill\Box$
+    \end{frame}
+
+    \section{Fiat-Shamir Heuristic}
+    \subsection{Cryptographic Oracles}
+    \begin{frame}
+        
+    \end{frame}
+    \subsection{Fiat-Shamir Transformation}
+    \begin{frame}{Fiat-Shamir Transformation}
+        \begin{block}{Statement}
+            \textbf{Any} interactive public-coin protocol can be converted into a non-interactive public-coin protocol with preserving completeness, soundness, and zero-knowledge.
+        \end{block}
+
+        One of such transformations is called \textbf{Fiat-Shamir heuristic}. Idea:
+        \begin{enumerate}
+            \item 
+        \end{enumerate}
     \end{frame}
 
 	\begin{frame}{}
