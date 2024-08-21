@@ -1,0 +1,114 @@
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+% -- Including some standard packages --
+\usepackage{graphicx}
+\usepackage{soul}
+\usepackage{hyperref}
+\usepackage{colortbl}
+\usepackage{dsfont}
+\usepackage{soul}
+
+% -- Choosing theme --
+
+\usetheme{Boadilla}
+\usecolortheme{spruce}
+\setbeamercolor{alerted text}{fg=purple} % Making alerted text non-red
+
+% Tikz
+\usepackage{tikz,tikz-3dplot,tikz-cd,tkz-tab,tkz-euclide,pgf,pgfplots}
+\usetikzlibrary{matrix,positioning,fit,backgrounds,intersections}
+
+% -- Cross signs --
+\usepackage{pifont} % http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\xopt}{\ding{48}}%
+
+% -- Custom commands --
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+\title[Cryptographic commitments]{\textbf{Cryptographic commitments}}
+\author{Distributed Lab}
+\date{August 8, 2024}
+\titlegraphic{
+    \includegraphics[width=\textwidth]{images/banner_wide.png}
+}
+
+\expandafter\def\expandafter\insertshorttitle\expandafter{%
+  \insertshorttitle\hfill%
+  \insertframenumber\,/\,\inserttotalframenumber}
+
+\AtBeginSection[]{
+  \begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+    \usebeamerfont{title}\insertsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
+\begin{document}
+    \frame {
+      \titlepage
+    }
+  
+    \begin{frame}{Plan}
+      \tableofcontents
+    \end{frame}
+
+    \section{Field Extensions}
+
+    \subsection{A bit of intuition}
+
+    \begin{frame}{$\mathbb{Q}$ vs $\mathbb{R}$}
+        \begin{alertblock}{Question \#1}
+            What is the difference between rational numbers $\mathbb{Q}$ and real numbers $\mathbb{R}$?
+        \end{alertblock}
+
+        \begin{definition}
+            \textbf{Rational numbers} $\mathbb{Q}$ are defined as the set $\{\frac{n}{m}: n \in \mathbb{Z}, m \in \mathbb{N}\}$.
+        \end{definition}
+
+        \begin{alertblock}{Question \#2}
+            Why cannot we say $m \in \mathbb{Z}$, similarly to $n$?
+        \end{alertblock}
+
+        \begin{theorem}
+            $\sqrt{2}$ is not a rational number. Neither is $\pi$ and $e$. But they are reals.
+        \end{theorem}
+
+        \begin{block}{Conclusion}
+            $\mathbb{R}$ is sort of ``an extended version of $\mathbb{Q}$''.
+        \end{block}
+    \end{frame}
+
+    \begin{frame}{What about $\mathbb{R}$?}
+        \begin{alertblock}{Rethorical Question}
+           Can we extend $\mathbb{R}$?
+        \end{alertblock}
+
+        Yes --- just use complex numbers $\mathbb{C}$!
+
+        \begin{definition}
+            Complex numbers $\mathbb{C}$ is defined as the set of $x+iy$ where $i^2=-1$.
+        \end{definition}
+
+        \begin{definition}
+            Complex numbers $\mathbb{C}$ are defined as the set of pairs $(x,y) \in \mathbb{R}^2$ where addition is defined as $(x_1,y_1)+(x_2,y_2)=(x_1+x_2,y_1+y_2)$, and the multiplication is:
+            \begin{equation*}
+                (x_1,y_1) \cdot (x_2,y_2) = (x_1x_2-y_1y_2,x_1y_2+x_2y_1).
+            \end{equation*}
+        \end{definition}
+    \end{frame}
+
+
+    \begin{frame}{}
+        \centering \Large
+        \emph{Thank you for your attention!}
+      \end{frame}
+\end{document}
