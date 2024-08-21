@@ -557,23 +557,87 @@
 
     \section{Fiat-Shamir Heuristic}
     \subsection{Cryptographic Oracles}
-    \begin{frame}
+    \begin{frame}{Cryptographic Oracle}
+        \begin{definition}[Cryptographic Oracle]
+            Informally, \textit{cryptographic oracle} is simply a function $\mathcal{O}$ that gives in $O(1)$ an answer to some typically very hard problem.     
+        \end{definition}
         
+        \begin{example}[CDH Problem]
+            Consider the \textbf{Computational Diffie-Hellman (CDH)} problem on the cyclic elliptic curve $E(\mathbb{F}_p)$ of prime order $r$ with a generator $G$. 
+            
+            \textbf{Hard Problem:} $[\alpha\beta]G$ given $[\alpha]G$ and $[\beta]G$ where $\alpha,\beta \in \mathbb{Z}_r$. 
+        
+            \textbf{Oracle:} However, we \textit{could} assume that such problem can be solved in $O(1)$ by a cryptographic oracle $\mathcal{O}_{\text{CDH}}: ([\alpha]G,[\beta]G) \mapsto [\alpha\beta]G$. 
+            
+            This way, we can rigorously prove the security of some cryptographic protocols \textit{even} if the Diffie-Hellman problem is suddenly solved. 
+        \end{example}
+    \end{frame}
+
+    \begin{frame}{Random Oracle (RO)}
+        One of the most popular cryptographic oracles is the \textbf{random oracle} $\mathcal{O}_{\text{R}}$. 
+
+        \begin{definition}[Informal definition of RO]
+            Suppose someone is inputting $x$ to the random oracle $\mathcal{O}_{\text{R}}: \mathcal{X} \to \mathcal{Y}$\footnote{Typically, RO works with a family of functions $f: \mathcal{X} \to \mathcal{Y}$, but we are not going too deep into the details.}. The oracle $\mathcal{O}_{\text{R}}$ does the following:
+            \begin{enumerate}
+                \item If $x$ has been queried before, the oracle returns the same value as it returned before.
+                \item If $x$ has not been queried before, the oracle returns a randomly uniformly sampled value from the output space $\mathcal{Y}$.
+            \end{enumerate}
+        \end{definition}
+
+        \begin{alertblock}{Question}
+            Which very well-known cryptographic object can ``serve'' as a random oracle?
+        \end{alertblock}
     \end{frame}
     \subsection{Fiat-Shamir Transformation}
     \begin{frame}{Fiat-Shamir Transformation}
         \begin{block}{Statement}
-            \textbf{Any} interactive public-coin protocol can be converted into a non-interactive public-coin protocol with preserving completeness, soundness, and zero-knowledge.
+            \textbf{Any} interactive public-coin protocol can be converted into a non-interactive public-coin protocol with preserving completeness, soundness, and zero-knowledge using the random oracle.
         \end{block}
 
         One of such transformations is called \textbf{Fiat-Shamir heuristic}. Idea:
         \begin{enumerate}
-            \item 
+            \item If all what $\mathcal{V}$ does is sending uniformly random values, this is an overkill.
+            \item Instead of $\mathcal{V}$ sending random values, prover should be able to generate it himself, but he should not know the randomness in advance.
+            \item Thus, we can replace the verifier's messages with the hash (random oracle) of all the previous conversation.
         \end{enumerate}
+    \end{frame}
+
+    \begin{frame}{Fiat-Shamir Heuristic Illustration}
+        \begin{figure}[H]
+            \centering
+            \begin{tikzpicture}[scale=0.70, transform shape]
+                % Blue zone
+                \node[very thick, draw=blue, fill=blue, fill opacity=0.1,minimum width=7cm, minimum height=7cm,dashed,on background layer](targetbox) at (2.25,-5.0) {};
+                \node(targetzonelabel)[left=0.6cm of targetbox,rotate=90,anchor=north,color=blue!90!black]{\textbf{Non-interactive part}};
+        
+                % Three participants
+                \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{images/lecture_6/prover.png}\\Prover $\mathcal{P}$};
+                \node[inner sep=0pt, align=center, right=1.5cm of prover] (hash) {\includegraphics[width=1.25cm]{images/lecture_6/random_oracle.png}\\Proof Stream\\ (with random oracle $\mathcal{O}_{\text{R}}$)};
+                \node[inner sep=0pt, align=center, right=7.5cm of prover] (verifier) {\includegraphics[width=1.25cm]{images/lecture_6/verifier.png}\\Verifier $\mathcal{V}$};
+                
+                % Dashed lines under participants
+                \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]prover.south) -- ([yshift=-8.75cm]prover.south);
+                \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]hash.south) -- ([yshift=-8.75cm]hash.south);
+                \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]verifier.south) -- ([yshift=-8.75cm]verifier.south);
+        
+                % Prover + Proof Stream
+                \draw[-{Stealth[length=3mm]},line width=0.4mm,color=blue!90!black] ([yshift=-1.5cm]prover.south) coordinate (l2)--(l2-|hash) node[midway, above=0mm,]{``Send'' $m_1$};
+                \draw[-{Stealth[length=3mm]},line width=0.4mm,color=blue!90!black] ([yshift=-2.25cm]hash.south) coordinate (l2)--(l2-|prover) node[midway, above=0mm]{$r_1 \gets \mathcal{O}_{\text{R}}(x,m_1)$};
+                \draw[-{Stealth[length=3mm]},line width=0.4mm,color=blue!90!black] ([yshift=-3.5cm]prover.south) coordinate (l2)--(l2-|hash) node[midway, above=0mm]{``Send'' $m_2$};
+                \draw[-{Stealth[length=3mm]},line width=0.4mm,color=blue!90!black] ([yshift=-4.25cm]hash.south) coordinate (l2)--(l2-|prover) node[midway, above=0mm]{$r_2 \gets \mathcal{O}_{\text{R}}(x,m_1,m_2)$};
+                \draw[-{Stealth[length=3mm]},line width=0.4mm,color=blue!90!black] ([yshift=-6cm]prover.south) coordinate (l2)--(l2-|hash) node[midway, above=0mm]{``Send'' $m_{\ell}$};
+                \draw[-{Stealth[length=3mm]},line width=0.4mm,color=blue!90!black] ([yshift=-6.75cm]hash.south) coordinate (l2)--(l2-|prover) node[midway, above=1mm]{$r_{\ell} \gets \mathcal{O}_{\text{R}}(x,m_1,\dots,m_{\ell})$};
+                
+                % Sending proof
+                \draw[-{Stealth[length=3mm]},line width=0.4mm,color=green!50!black] ([yshift=-8.5cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm, fill=white]{Send $\pi = (m_1,r_1,m_2,r_2,\dots,m_{\ell},r_{\ell})$};
+            \end{tikzpicture}
+        
+            \label{fig:fiat-shamir}
+        \end{figure}
     \end{frame}
 
 	\begin{frame}{}
       \centering \Large
-      \emph{Thanks for your attention!}
+      \textbf{Thank you for your attention!}
     \end{frame}
 \end{document}
