@@ -29,11 +29,11 @@ At the same time, your friend cannot access the letter since they do not have th
 
     \begin{enumerate}
 
-        \item $\mathsf{Setup}$ ($1^{\lambda}$): returns public parameter $\mathsf{pp}$ for both comitter and verifier;
+        \item $\mathsf{Setup} (1^{\lambda})$: returns public parameter $\mathsf{pp}$ for both comitter and verifier;
 
-        \item  $\mathsf{Commit}$ ($\mathsf{pp}, m$): returns a commitment $c$ to the message $m$ using public parameters $\mathsf{pp}$ and, optionally, a secret opening hint $r$;
+        \item  $\mathsf{Commit} (\mathsf{pp}, m)$: returns a commitment $c$ to the message $m$ using public parameters $\mathsf{pp}$ and, optionally, a secret opening hint $r$;
 
-        \item  $\mathsf{Open}$ ($\mathsf{pp}, c, m, r$): verifies the opening of the commitment $c$ to the message $m$ with an opening hint $r$. 
+        \item  $\mathsf{Open} (\mathsf{pp}, c, m, r)$: verifies the opening of the commitment $c$ to the message $m$ with an opening hint $r$. 
     \end{enumerate}
 \end{definition}
 
@@ -51,11 +51,9 @@ At the same time, your friend cannot access the letter since they do not have th
         \end{enumerate}
         
         We define the hiding advantage of a PPT adversary $\mathcal{A}$ as 
-        
-        $$
-        \mathsf{HideAdv}[\mathcal{A}, \Pi_{\text{commitment}}] := \left| \text{Pr}[b=\hat{b}] - \frac{1}{2} \right|
-        $$
-        
+        \begin{equation}
+            \mathsf{HideAdv}[\mathcal{A}, \Pi_{\text{commitment}}] := \left| \text{Pr}[b=\hat{b}] - \frac{1}{2} \right|
+        \end{equation}
         We say that the commitment scheme $\Pi_{\text{commitment}}$ is \textit{hiding} if for any adversary, the aforementioned advantage is negligible.
         
         \item \textit{Binding: } prover could not find another message $m_1$ and open the commitment $c$ without revealing the commited message $m$.
@@ -68,16 +66,12 @@ At the same time, your friend cannot access the letter since they do not have th
         
         Define the advantage in the binding game as:
         
-        $$
-        \mathsf{BindAdv}[\mathcal{A}, \Pi_{\text{commitment}}] = \text{Pr}[b_0 = b_1 \neq 0 \wedge m_0 \neq m_1]
-        $$
+        \begin{equation}
+            \mathsf{BindAdv}[\mathcal{A}, \Pi_{\text{commitment}}] = \text{Pr}[b_0 = b_1 \neq 0 \wedge m_0 \neq m_1]
+        \end{equation}
 
         We say that the commitment scheme is binding if for any adversary, such advantage is negligible.
 
-
-
-        We say that the commitment scheme $\Pi_{\text{commitment}}$ is \textit{binding} if for any adversary, the probability of finding such pairs 
-            $(m_1, r_1)$ and $(m_2, r_2)$ is negligible.
     \end{enumerate}
 \end{definition}
 
@@ -272,7 +266,7 @@ The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
     \begin{enumerate}
         \item If $p(x_0) = y_0$, we define $r(x) := p(x) - y_0$;
         \item $r(x)$ has $x_0$ as a root, as $r(x_0) = 0$ by the definition. 
-            That is why there exist $q(x)$, such that $r(x) = q(x)\cdot (x-x_0)$;
+            That is why there exists $q(x)$, such that $r(x) = q(x)\cdot (x-x_0)$;
         \item Hence, the expression $q(x) = \frac{p(x) - y_0}{x-x_0}$ is a polynomial.
     \end{enumerate}
     
@@ -280,7 +274,7 @@ The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
     as a proof of the evaluation. \textit{Prover} calculates proof $\pi = [q(\tau)]G$ and sends it to the \textit{Verifier}.
 
     \item \textit{Verify the proof}. Given a commitment $c = [p(\tau)]G$, an evaluation $p(x_0) = y_0$ and a proof $[q(\tau)]G$, we need to
-    ensure that $q(\tau) \cdot (\tau - x') = p(\tau) - y$. This can be done using trusted setup without knowledge of $\tau$ using bilinear mapping:
+    ensure that $q(\tau) \cdot (\tau - x_0) = p(\tau) - y_0$. This can be done using trusted setup without knowledge of $\tau$ using bilinear mapping:
 
     \begin{center}
         $e([q(\tau)]G_1, [\tau]G_2 - [x']G_2) = e([p(\tau)]G_1 - [y]G_1, G_2)$
