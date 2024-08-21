@@ -29,28 +29,28 @@ At the same time, your friend cannot access the letter since they do not have th
 
     \begin{enumerate}
 
-        \item Setup ($1^{\lambda}$): returns public parameter \textit{pp} for both comitter and verifier;
+        \item $\mathsf{Setup}$ ($1^{\lambda}$): returns public parameter $\mathsf{pp}$ for both comitter and verifier;
 
-        \item  Commit ($\mathsf{pp}, m$): returns a commitment $c$ to the message $m$ using public parameters \textit{pp} and, optionally, a secret opening hit $r$;
+        \item  $\mathsf{Commit}$ ($\mathsf{pp}, m$): returns a commitment $c$ to the message $m$ using public parameters $\mathsf{pp}$ and, optionally, a secret opening hint $r$;
 
-        \item  Open ($\mathsf{pp}, c, m, r$): verifies the opening of the commitment to the message $m$ with an opening hit $r$. 
+        \item  $\mathsf{Open}$ ($\mathsf{pp}, c, m, r$): verifies the opening of the commitment $c$ to the message $m$ with an opening hint $r$. 
     \end{enumerate}
 \end{definition}
 
 \begin{definition}[Commitment Scheme]
-    Properties of a commitment scheme:
+    Properties of commitment schemes:
     \begin{enumerate}
-        \item \textit{Hiding: } verifier should not learn any information about the message given only the commitment c. To put it formally, we define a game:
+        \item \textit{Hiding: } verifier should not learn any information about the message given only the commitment $c$. To put it formally, we define a game:
         \begin{enumerate}
             \item Adversary chooses two messages $m_1,m_2$ and sends to the challenger.
             \item Challenger chooses a random bit $b$, commits to both messages: 
             
-                $\mathcal{c}_1 \gets \mathsf{Commit}(pp, m_1), \mathcal{c}_2 \gets \mathsf{Commit}(pp,m_2)$, 
-                    and sends $\mathcal{c}_b$ to the adversary.
+                $c_1 \gets \mathsf{Commit}(pp, m_1), c_2 \gets \mathsf{Commit}(pp,m_2)$, 
+                    and sends $c_b$ to the adversary.
             \item Adversary guesses a bit $\hat{b}$.
         \end{enumerate}
         
-        The advantage of hiding of a PPT adversary $\mathcal{A}$ as 
+        We define the hiding advantage of a PPT adversary $\mathcal{A}$ as 
         
         $$
         \mathsf{HideAdv}[\mathcal{A}, \Pi_{\text{commitment}}] := \left| \text{Pr}[b=\hat{b}] - \frac{1}{2} \right|
@@ -60,13 +60,20 @@ At the same time, your friend cannot access the letter since they do not have th
         
         \item \textit{Binding: } prover could not find another message $m_1$ and open the commitment $c$ without revealing the commited message $m$.
         To put it formally, we define a game:
+        
         \begin{enumerate}
-            \item Adversary chooses two distinct pairs $(m_1,r_1)$ and $(m_2, r_2)$ and sends to the challenger.
-            \item Challenger commits to both messages: 
-            
-                $\mathcal{C}_1 \gets \mathsf{Commit}(pp, m_1), \mathcal{C}_2 \gets \mathsf{Commit}(pp,m_2)$, and sends $\mathcal{C}_b$ to the adversary.
-            \item Adversary wins the game if $\mathcal{C}_1 = \mathcal{C}_2$.
+            \item Adversary chooses five values: commitment $c$ and two distinct pairs $(m_0,r_0)$ and $(m_1,r_1)$.
+            \item Adversary computes $b_j \gets \mathsf{Open}(\mathsf{pp}, c, m_j, r_j)$. 
         \end{enumerate}
+        
+        Define the advantage in the binding game as:
+        
+        $$
+        \mathsf{BindAdv}[\mathcal{A}, \Pi_{\text{commitment}}] = \text{Pr}[b_0 = b_1 \neq 0 \wedge m_0 \neq m_1]
+        $$
+
+        We say that the commitment scheme is binding if for any adversary, such advantage is negligible.
+
 
 
         We say that the commitment scheme $\Pi_{\text{commitment}}$ is \textit{binding} if for any adversary, the probability of finding such pairs 
@@ -82,8 +89,8 @@ As the name implies, we are using a cryptographic hash function \(H\) in such sc
     \item Prover selects a message $m$ from a message space $M$ which he wants to commit to:
         $m \leftarrow \mathbb{M}$
 
-    \item Prover samples random value $r$ from a challange space $C$ (usually called blinding factor) from $\mathbb{Z}$:
-        $r \xleftarrow{R} \mathbb{C}$
+    \item Prover samples random value $r$ (usually called blinding factor) from a challange space $\mathcal{C} \subset \mathbb{Z}$:
+        $r \xleftarrow{R} \mathcal{C}$
     
     \item Both values will be concatenated and hashed with the hash function $H$ to produce the commitment:
         $c = H(m \parallel r)$
@@ -160,11 +167,11 @@ Additively homomorphic property allows to accumulate multiple commitments into o
 Consider two pairs: $(m_1, r_1), (m_2, r_2)$.
 
 \begin{center}
-    $\mathcal{C}_2 = [m_1]G + [r_1]U$,
+    $c_2 = [m_1]G + [r_1]U$,
 
-    $\mathcal{C}_2 = [m_2]G + [r_2]U$,
+    $c_2 = [m_2]G + [r_2]U$,
 
-    $\mathcal{C}_a = \mathcal{C}_1 + \mathcal{C}_2 = [m_1 + m_2]G + [r_1 + r_2]U$
+    $c_a = c_1 + c_2 = [m_1 + m_2]G + [r_1 + r_2]U$
 \end{center}
 
 This works for any number of commitments, so we can encode as many points as we like in a single one.
@@ -185,7 +192,7 @@ Suppose we have a set of random elliptic curve points $(G_1, \ldots ,G_n)$ of cy
 (that we do not know the discrete logarithm of), a vector $(m_1, m_2 \ldots m_n)$ and a random value $r$. We can do the following:
 
 \begin{center}
-    $ \mathcal{C} = m_1\cdot[G_1] + m_2 \cdot [G_2] \ldots + m_n \cdot [G_n] + r \cdot [Q]$ 
+    $ c = [m_1] G_1 + [m_2] G_2 \ldots + [m_n] G_n + [r] Q$ 
 \end{center}
 
 Since the \textit{Prover} does not know the discrete logarithm of the generators, they don`t know the discrete logarithm of [C]. 
@@ -220,7 +227,7 @@ One of Merkle tree key advantages is that it allows for the selective disclosure
 
 \subsubsection{Polynomial commitment}
 
-Polynomial commitment can be used to prove that the commited polynomial satisfies certain properties (passes through a certain point $(x,y)$), without revealing what the polynomial is.
+Polynomial commitment can be used to prove that the commited polynomial satisfies certain properties $P(x_1, x_2, \ldots, x_n) = y$, without revealing what the polynomial is.
 The commitment is generally succint, which means that it is much smaller than the polynomial it represents.
 
 \vspace{0.5 cm}
@@ -234,31 +241,41 @@ The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
 
 
 \begin{enumerate}
-    \item \textit{One-time ''Powers-of-tau'' trusted setup stage}. During trusted setup a set of elliptic curve points is generated. Let $G$ be a generator point of some pairing-friendly
-    elliptic curve group $\mathbb{G}$, $s$ some random value in the order of the $G$ point and $d$ be the maximum degree of the polynomials we want to commit to.
+    \item \textit{One-time ``Powers-of-tau`` trusted setup stage}. During trusted setup a set of elliptic curve points is generated. 
+    Let $G$ be a generator point of some pairing-friendly
+    elliptic curve group $\mathbb{G}$, $s$ some random value in the order of the $G$ point and $d$ be the maximum degree 
+    of the polynomials we want to commit to.
+    Public parameters of a trusted setup are calculated as:
 
     \begin{center}
         $[\tau^0]G, [\tau^1]G, \ldots, [\tau^d]G$
     \end{center}
 
-    Parameter $\tau$ should be deleted after the ceremony. If it is revealed, the commitment scheme can be broken. This parameter is usually called the \textit{toxic waste}.
+    Parameter $\tau$ should be deleted after the ceremony. If it is revealed, the \textit{binding} property of the commitment scheme can be broken. 
+    This parameter is usually called the \textit{toxic waste}.
     
     \item \textit{Commit to polynomial}. Given the polynomial $p(x) = \sum_{i = 0}^{d} p_i x^i$, compute the commitment $c = [p(\tau)]G $ 
-    using the trusted setup. Although the committer cannot compute $[p(\tau)]G$ directly since the value of $\tau$ is unknown, he can
-    compute it using values $([\tau^0]G, [\tau^1]G, \ldots, [\tau^d]G)$.
+    using the trusted setup. Although the committer cannot compute $p(\tau)$ directly since the value of $\tau$ is unknown, he can
+    compute it using values $([\tau^0]G, [\tau^1]G, \ldots, [\tau^d]G)$:
     
-    \item \textit{Prove an evaluation}. Given evaluation $p(x') = y$ compute proof $q(\tau)$,
+    \begin{center}
+       $ [p(\tau)]G = [\sum_{i=0}^{d} p_i \tau^i]G = \sum_{i=0}^{d}p_i[\tau^i]G$
+    \end{center}
     
-    where $q(x) = \frac{p(x) - y}{x - x'}$.
+    \item \textit{Prove an evaluation}. To prove that at some point $x_0$ polynomial equals $y_0$ ($p(x_0) = y_0$), compute polynomial
+    
+    \begin{center}
+        $q(x) = \frac{p(x) - y}{x - x'}$.
+    \end{center}
 
-    Polynomial $q$ is called ``quotient polynomial`` and only exists if and only if $p(x') = y$. The existance of this quotient polynomial serves
-    as a proof of the evaluation.
+    Polynomial $q(x)$ is called ``quotient polynomial`` and only exists if and only if $p(x_0) = y_0$. The existance of this quotient polynomial serves
+    as a proof of the evaluation. \textit{Prover} calculates proof $\pi = [q(\tau)]G$ and sends it to the \textit{Verifier}.
 
-    \item \textit{Verify the proof}. Given a commitment $c = [p(\tau)]G$, an evaluation $p(x') = b$ and a proof $[q(\tau)G]$, we need to
+    \item \textit{Verify the proof}. Given a commitment $c = [p(\tau)]G$, an evaluation $p(x_0) = y_0$ and a proof $[q(\tau)]G$, we need to
     ensure that $q(\tau) \cdot (\tau - x') = p(\tau) - y$. This can be done using trusted setup without knowledge of $\tau$ using bilinear mapping:
 
     \begin{center}
-        $e(q(\tau), [\tau]G_2 - [x']G_2) = e(c - [y]G_1, G_2)$
+        $e([q(\tau)]G_1, [\tau]G_2 - [x']G_2) = e([p(\tau)]G_1 - [y]G_1, G_2)$
     \end{center}
     
     Polynomial commiment schemes such as KZG are used in zero knowledge proof system to encode circuit constraints as a polynomial, 
