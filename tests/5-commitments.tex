@@ -11,28 +11,33 @@
 
 \maketitle
 
-\textbf{Exercise 1.} Denis decided to commit to the race results, but forgot to use the blinding factor.  
-    He used a hash-based commitment and SHA256 hash function. 
-    Set of race participant numbers: $(0x1, 0x3, 0x8, 0x15)$. Can you break the hiding property of the commitment? Select the participant number 
-    Denis made a commitment to, if 
+\textbf{Exercise 1.} Dmytro and Denis were watching a horse race. 
+    Confident in his ability to predict the outcome, Dmytro decided to commit to his prediction. 
+    However, in his haste, he forgot to use a blinding factor. 
+    Now, Dmytro is concerned that Denis might discover his prediction before the race ends, 
+    which would defeat the purpose of his commitment.
     
-    $\mathcal{C} = 0xbeead77994cf573341ec17b58bbf7eb34d2711c993c1d976b128b3188dc1829a$.
+    We define a dummy hash function $H(a) = (a \cdot 13 + 17) \pmod{41}$.
+    Dmytro used a \textit{hash-based commitment} and $H$ as a hash function. 
+    Set of race horse numbers is $(3, 5, 8, 15)$.
+    Help Denis to find out the horse number Dmytro have made a commitment to, 
+    if commitment equals $C = 39$.
+
 \begin{enumerate}[(A)]
-    \item $0x1$.
-    \item $0x3$.
-    \item $0x8$.
-    \item $0x15$.
+    \item $3$.
+    \item $5$.
+    \item $8$.
+    \item $15$.
 \end{enumerate}
 
 \textbf{Exercise 2.} Denis made a setup (points $G$ and $U$) for a Pedersen commitment scheme and commited values $(3, 7)$ to Dmytro
-by sending him $\mathcal{C} = [3]G + [7]U$. Dmytro did not verify the setup. It turns out that Denis knows the discrete logarithm of $U$ = $[6]G$. 
+by sending him $\mathcal{C} = [3]G + [7]U$. Dmytro did not verify the setup. turns out that Denis knows that $U$ = $[6]G$. 
 He wants to change the committed message
 to $15$. Which values $(m, r)$ should he send to Dmytro at the opening stage?
 \begin{enumerate}[(A)]
     \item $(15, 5)$
     \item $(15, 7)$
     \item $(15, 4)$
-    \item $(3, 7)$
     \item $(3, 5)$
 \end{enumerate}
 
@@ -51,8 +56,10 @@ Position defines how leaves should be hashed:
     \item branch: $[4, 17, 13]$, position: $[left, right, left]$
 \end{enumerate}
 
-\textbf{Exercise 4.} Given a polynomial $p(x) = x^3 - 10x^2 + 31x - 30$, you want to prove that $p(2) = 0$. 
-    Calculate a \textit{quotient} polynomial.
+\textbf{Exercise 4.} Given a polynomial $p(x) = x^3 - 10x^2 + 31x - 30$, Oleksandr wants to prove that $p(2)=0$. 
+To do that, according to the KZG commitment scheme, he constructs the quotient polynomial $q(x)$ and wants 
+to show that $q(\tau) \cdot (\tau - 2) = p(\tau)$. Assuming Oleksandr has conducted these steps correctly, 
+what value of $q(x)$ has Oleksandr calculated?
 
 \begin{enumerate}[(A)]
     \item $q(x) = 2x^2 + 4x - 6$
