@@ -83,11 +83,11 @@
 
             \begin{enumerate}
 
-                \item Setup ($1^{\lambda}$): returns public parameter \textit{pp} for both comitter and verifier;
-
-                \item  Commit ($\mathsf{pp}, m, r$): returns a commitment $c$ to the message $m$ using public parameters \textit{pp} and, optionally, a secret opening hit $r$;
-
-                \item  Open ($\mathsf{pp}, c, m, r$): verifies the opening of the commitment to the message $m$ with an opening hit $r$. 
+                \item $\mathsf{Setup} (1^{\lambda})$: returns public parameter $\mathsf{pp}$ for both comitter and verifier;
+        
+                \item  $\mathsf{Commit} (\mathsf{pp}, m)$: returns a commitment $c$ to the message $m$ using public parameters $\mathsf{pp}$ and, optionally, a secret opening hint $r$;
+        
+                \item  $\mathsf{Open} (\mathsf{pp}, c, m, r)$: verifies the opening of the commitment $c$ to the message $m$ with an opening hint $r$. 
             \end{enumerate}
         \end{definition}
 
