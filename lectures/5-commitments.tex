@@ -265,10 +265,18 @@ The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
     \item \textit{Prove an evaluation}. To prove that at some point $x_0$ polynomial equals $y_0$ ($p(x_0) = y_0$), compute polynomial
     
     \begin{center}
-        $q(x) = \frac{p(x) - y}{x - x'}$.
+        $q(x) = \frac{p(x) - y_0}{x - x_0}$.
     \end{center}
 
-    Polynomial $q(x)$ is called ``quotient polynomial`` and only exists if and only if $p(x_0) = y_0$. The existance of this quotient polynomial serves
+    Polynomial $q(x)$ is called ``quotient polynomial`` and only exists if and only if $p(x_0) = y_0$:
+    \begin{enumerate}
+        \item If $p(x_0) = y_0$, we define $r(x) := p(x) - y_0$;
+        \item $r(x)$ has $x_0$ as a root, as $r(x_0) = 0$ by the definition. 
+            That is why there exist $q(x)$, such that $r(x) = q(x)\cdot (x-x_0)$;
+        \item Hence, the expression $q(x) = \frac{p(x) - y_0}{x-x_0}$ is a polynomial.
+    \end{enumerate}
+    
+    The existance of this quotient polynomial serves
     as a proof of the evaluation. \textit{Prover} calculates proof $\pi = [q(\tau)]G$ and sends it to the \textit{Verifier}.
 
     \item \textit{Verify the proof}. Given a commitment $c = [p(\tau)]G$, an evaluation $p(x_0) = y_0$ and a proof $[q(\tau)]G$, we need to
