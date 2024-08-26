@@ -216,7 +216,7 @@ Very simple program with a multiplication.
 This can be represented as a circuit with only one gate:
 \[ r = a \times b \]
 
-The witness vector (solution vector) is $w = (r, a, b)$, for example: $(6, 2, 3)$. We 
+The witness vector (solution vector) is $\mathbf{w} = (r, a, b)$, for example: $(6, 2, 3)$. We 
 assume that the $a$ and $b$ are input values. 
 
 We can think of the ``=`` in the gate as an assertion, meaning that if $a \times b$ does not equal
@@ -236,7 +236,7 @@ We can express this logic in mathematical terms as follows: "If $a$ is true, com
 $b \times c$; otherwise, compute $b + c$." Only numerical expressions are allowed. Knowing that
 $\text{true} := 1$ and $\text{false} := 0$, we can transform it as follows:
 \[ r = a \times (b \times c) + (1 - a) \times (b + c) \]
-Where the witness vector is: $w = (r, a , b, c)$: $(6, 1, 2, 3)$, $(5, 0, 2, 3)$.\\
+Where the witness vector is: $\mathbf{w} = (r, a , b, c)$: $(6, 1, 2, 3)$, $(5, 0, 2, 3)$.\\
 
 But, we need to verify all the intermediate steps. This can be achieved by transforming the above
 equation using the simplest terms (the gates), ensuring the correctness of each step in the program: 
@@ -252,37 +252,44 @@ equation using the simplest terms (the gates), ensuring the correctness of each 
     \end{aligned}
 \end{equation*}
 
-With witness vector: $w = (r, r_1, r_2, r_3, r_4, r_5, a , b, c)$: $(6, 6, 5, 0, 6, 0, 1, 2, 3)$.
+With witness vector: $\mathbf{w} = (r, r_1, r_2, r_3, r_4, r_5, a , b, c)$: $(6, 6, 5, 0, 6, 0, 1, 2, 3)$.
 
 \subsection{Rank-1 Constraint System}
 
 Almost any program written in high-level programming language can be translated (compiled) into
 arithmetic circuits, that are really powerfull tool. But for the ZK proof we need slightly different
-format of it - \textbf{Rank-1 Constraint System}, where the simpliest term is \textbf{constraint}. 
+format of it -- \textbf{Rank-1 Constraint System}, where the simpliest term is \textbf{constraint}. 
 This offers a more flexible and general way to describe these parts.
     
 \begin{definition}
+    The inner product of a linear space $\mathbb{V}$ is any symmetric, linear in the first 
+    argument, and positive binary function from vector space to a set of scalars. \\
+    
     Let $\mathbb{V}$ be a vector space over the field $\mathbb{F}$. An \textbf{inner product} 
     on $\mathbb{V}$ is a function:
-    \[ \langle \cdot, \cdot \rangle: \mathbb{V} \times \mathbb{V} \rightarrow \mathbb{F} \]
-    defined for $u, v \in \mathbb{V}$ as a linear combination:
-    \[ \langle u, v \rangle = \sum_{i=1}^{n} u_i v_i \]
-    With the following properties $\forall c \in \mathbb{F}, \forall u, v, w \in \mathbb{V}$:
+    \begin{equation*}
+        \langle \cdot, \cdot \rangle: \mathbb{V} \times \mathbb{V} \rightarrow \mathbb{F}
+    \end{equation*}
+    defined for $\mathbf{u}, \mathbf{v} \in \mathbb{V}$ as follows:
+    \begin{equation*}
+        \langle \mathbf{u}, \mathbf{v} \rangle = \sum_{i=1}^{n} u_i v_i
+    \end{equation*}
+    With the basic properties are satisfied $\forall c \in \mathbb{F}, \forall u, v, w \in \mathbb{V}$:
     \begin{itemize}
-        \item Symmetry: $\langle u, v \rangle = \langle v, u \rangle$
-        \item Linearity in the first argument: $\langle cu + v, w \rangle = c \langle u, w \rangle + \langle v, w \rangle$
-        \item Positivity: $\langle u, u \rangle \geq 0$ and $\langle u, u \rangle = 0 \Leftrightarrow u = 0$
+        \item Symmetry: $\langle \mathbf{u}, \mathbf{v} \rangle = \langle \mathbf{v}, \mathbf{u} \rangle$
+        \item Linearity in the first argument: $\langle c\mathbf{u} + \mathbf{v}, \mathbf{w} \rangle = c \langle \mathbf{u}, \mathbf{w} \rangle + \langle \mathbf{v}, \mathbf{w} \rangle$
+        \item Positivity: $\langle \mathbf{u}, \mathbf{u} \rangle \geq 0$ and $\langle \mathbf{u}, \mathbf{u} \rangle = 0 \Leftrightarrow \mathbf{u} = 0$
     \end{itemize}
 \end{definition}
 
 \begin{example}
-    Let $u, v$ are vectors over the real number $\mathbb{R}$, where
+    Let $\mathbf{u}, \mathbf{v}$ are vectors over the real number $\mathbb{R}$, where
     \begin{equation*}
-        u = (1, 2, 3), \quad v = (2, 4, 3)
+        \mathbf{u} = (1, 2, 3), \quad \mathbf{v} = (2, 4, 3)
     \end{equation*}
     Then: 
     \begin{equation*}
-        \langle u, v\rangle = \sum_{i=1}^{3}u_iv_i = 2 \cdot 1 + 2 \cdot 4 + 3 \cdot 3 = 2 + 8 + 9 = 19
+        \langle \mathbf{u}, \mathbf{v}\rangle = \sum_{i=1}^{3}u_iv_i = 2 \cdot 1 + 2 \cdot 4 + 3 \cdot 3 = 2 + 8 + 9 = 19
     \end{equation*}
 \end{example}
 
@@ -292,12 +299,12 @@ constraint in the context of an R1CS.
 \begin{definition}
     Each \textbf{constraint} in the Rank-1 Constraint System must be in the form:
     \begin{equation*}
-        \langle a, w\rangle \times \langle b, w\rangle = \langle c, w\rangle
+        \langle \mathbf{a}, \mathbf{w}\rangle \times \langle \mathbf{b}, \mathbf{w}\rangle = \langle \mathbf{c}, \mathbf{w}\rangle
     \end{equation*}
-    Where $w$ is a vector containing all the \textit{input}, \textit{output}, and 
-    \textit{intermediate} variables involved in the computation. The vectors $a$, 
-    $b$, and $c$ are vectors of coefficients corresponding to these variables, 
-    and they define the relationship between the linear combinations of $w$ on the 
+    Where $\mathbf{w}$ is a vector containing all the \textit{input}, \textit{output}, and 
+    \textit{intermediate} variables involved in the computation. The vectors $\mathbf{a}$, 
+    $\mathbf{b}$, and $\mathbf{c}$ are vectors of coefficients corresponding to these variables, 
+    and they define the relationship between the linear combinations of $\mathbf{w}$ on the 
     left-hand side and the right-hand side of the equation.
 \end{definition}
 
@@ -307,7 +314,7 @@ constraint in the context of an R1CS.
     The constraint is:
     \[(a_1w_1 + a_2w_2 + a_3w_3)(b_1w_1 + b_2w_2 + b_3w_3) = c_1w_1 + c_2w_2 + c_3w_3\]
     Coefficients and witness vectors are:
-    $w = (r, x_1, x_2), a = (0, 1, 0), b = (0, 0, 1), c = (1, 0, 0)$. Therefore:
+    $\mathbf{w} = (r, x_1, x_2), \mathbf{a} = (0, 1, 0), \mathbf{b} = (0, 0, 1), \mathbf{c} = (1, 0, 0)$. Therefore:
     \[ (0w_1 + 1w_2 + 0w_3)(0w_1 + 0w_2 + 1w_3) = (1w_1 + 0w_2 + 0w_3) \]
     \[ w_2 \times w_3 = w_1 \]
     \[ x_1 \times x_2 = r \]
@@ -344,8 +351,8 @@ coefficient.
     \end{align*}
 
     For every constraint we need the coefficients vectors $a_i$, $b_i$, $c_i$, but all of them have
-    the same witness vector $w$.
-    \[ w = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult}) \]
+    the same witness vector $\mathbf{w}$.
+    \[ \mathbf{w} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult}) \]
     The coefficients vectors:
     \begin{align*}
         a_1 &= (0, 0, 1, 0, 0, 0, 0) & \quad b_1 &= (0, 0, 1, 0, 0, 0, 0) & \quad c_1 &= (0, 0, 1, 0, 0, 0, 0) \\
@@ -367,8 +374,8 @@ coefficient.
     \end{enumerate}
 \end{example}
 
-Each constraint enforces that the product of the linear combinations defined by $a$ and $b$ must
-equal the linear combination defined by $c$. Collectively, these constraints describe the 
+Each constraint enforces that the product of the linear combinations defined by $\mathbf{a}$ and $\mathbf{b}$ must
+equal the linear combination defined by $\mathbf{c}$. Collectively, these constraints describe the 
 computation by ensuring that every step, from inputs through intermediates to outputs, satisfies 
 the defined relationships, thus encoding the entire computational process in the form of a system
 of rank-1 quadratic equations.
@@ -378,35 +385,35 @@ The last unresolved question is where the ``rank-1`` comes from.
 To understand this, we need the knowledge of the outer product and its properties.
 
 \begin{definition}
-    Given two vectors $u \in \mathbb{F}^n$, $v \in \mathbb{F}^m$ the \textbf{outer product} is a
+    Given two vectors $\mathbf{u} \in \mathbb{F}^n$, $\mathbf{v} \in \mathbb{F}^m$ the \textbf{outer product} is a
     the matrix whose entries are all products of an element in the first vector with an element 
     in the second vector:
     \begin{equation*}
-        u \otimes v = \begin{pmatrix}
+        \mathbf{u} \otimes \mathbf{v} = \begin{pmatrix}
             u_1 v_1 & u_1 v_2 & \cdots & u_1 v_n \\
             u_2 v_1 & u_2 v_2 & \cdots & u_2 v_n \\
             \vdots & \vdots & \ddots & \vdots \\
             u_m v_1 & u_m v_2 & \cdots & u_m v_n
         \end{pmatrix}
     \end{equation*}
-    With the following properties $\forall (c, u, v, w) \in \mathbb{F} \times \mathbb{F}^n \times \mathbb{F}^m \times \mathbb{F}^p$:
+    With the following properties $\forall (c, \mathbf{u}, \mathbf{v}, \mathbf{w}) \in \mathbb{F} \times \mathbb{F}^n \times \mathbb{F}^m \times \mathbb{F}^p$:
     \begin{itemize}
-        \item Transpose: $(u \otimes v) = (v \otimes u)^{\textsf{T}}$
-        \item Distributivity: $u \otimes (v + w) = u \otimes v + u \otimes w$
-        \item Scalar Multiplication: $c(v \otimes u) = (cv) \otimes u = v \otimes (cu)$
-        \item Rank: the outer product $u \otimes v$ is a rank-1 matrix if $u$ and $v$ are non-zero
+        \item Transpose: $(\mathbf{u} \otimes \mathbf{v}) = (\mathbf{v} \otimes \mathbf{u})^{\textsf{T}}$
+        \item Distributivity: $\mathbf{u} \otimes (\mathbf{v} + \mathbf{w}) = \mathbf{u} \otimes \mathbf{v} + \mathbf{u} \otimes \mathbf{w}$
+        \item Scalar Multiplication: $c(\mathbf{v} \otimes \mathbf{u}) = (c\mathbf{v}) \otimes \mathbf{u} = \mathbf{v} \otimes (c\mathbf{u})$
+        \item Rank: the outer product $\mathbf{u} \otimes \mathbf{v}$ is a rank-1 matrix if $\mathbf{u}$ and $\mathbf{v}$ are non-zero
         vectors
     \end{itemize}
 \end{definition}
 
 \begin{example}
-    Let $u, v$ are vectors over the real number $\mathbb{R}$, where
+    Let $\mathbf{u}, \mathbf{v}$ are vectors over the real number $\mathbb{R}$, where
     \begin{equation*}
-        u = (1, 2, 3), \quad v = (2, 4, 3)
+        \mathbf{u} = (1, 2, 3), \quad \mathbf{v} = (2, 4, 3)
     \end{equation*}
     Then: 
     \begin{equation*}
-        u \otimes v = \begin{pmatrix}
+        \mathbf{u} \otimes \mathbf{v} = \begin{pmatrix}
             1 \cdot 2 & 1 \cdot 4 & 1 \cdot 3 \\
             2 \cdot 2 & 2 \cdot 4 & 2 \cdot 3 \\
             3 \cdot 2 & 3 \cdot 4 & 3 \cdot 3
@@ -425,16 +432,16 @@ To understand this, we need the knowledge of the outer product and its propertie
 Using the outer product we can express the constraint in another form.
 
 \begin{lemma}
-    Suppose there is a constraint $\langle a, w\rangle \times b, w\rangle = \langle c, w \rangle$ 
-    with coefficient vectors $a$, $b$, $c$ and witness vector $w$. Then it can be expressed in the 
+    Suppose there is a constraint $\langle \mathbf{a}, \mathbf{w}\rangle \times \mathbf{b}, \mathbf{w}\rangle = \langle \mathbf{c}, \mathbf{w} \rangle$ 
+    with coefficient vectors $\mathbf{a}$, $\mathbf{b}$, $\mathbf{c}$ and witness vector $\mathbf{w}$. Then it can be expressed in the 
     form:
-    \[ w^T A w + c^T w = 0 \]
-    Where $A$ is the outer product of vectors $a$, $b$ (denoted as $a \otimes b$), consequently 
+    \[ \mathbf{w}^T A \mathbf{w} + \mathbf{c}^T \mathbf{w} = 0 \]
+    Where $A$ is the outer product of vectors $\mathbf{a}$, $\mathbf{b}$ (denoted as $\mathbf{a} \otimes \mathbf{b}$), consequently 
     a \textbf{rank-1} matrix.
 \end{lemma}
 
-\textbf{Lemma proof.} Suppose there is a constraint $\langle a, w\rangle \times \langle b, w\rangle
-= \langle c, w\rangle$. Where vectors $a, b, c, w \in \mathbb{F}^n $. Let's expand the inner
+\textbf{Lemma proof.} Suppose there is a constraint $\langle \mathbf{a}, \mathbf{w}\rangle \times \langle \mathbf{b}, \mathbf{w}\rangle
+= \langle \mathbf{c}, \mathbf{w}\rangle$. Where vectors $\mathbf{a}, \mathbf{b}, \mathbf{c}, \mathbf{w} \in \mathbb{F}^n $. Let's expand the inner
 products: 
 \[ \sum_{i=1}^{n} a_i w_i \times \sum_{j=1}^{n} b_j w_j = \sum_{k=1}^{n} c_k w_k \]
 
@@ -442,14 +449,14 @@ Combine the products into a double sum on the left side:
 \[ \sum_{i=1}^{n} \sum_{j=1}^{n} a_i b_j w_i w_j = w^T (a \otimes b) w = w^T A w \]
 
 Thus, the constraint can be written as:
-\[ w^T A w + c^T w = 0 \]
+\[ \mathbf{w}^T A \mathbf{w} + \mathbf{c}^T \mathbf{w} = 0 \]
 
 So, the rank-1 means the rank of the coefficients matrix $A$ in one of the constraint formats.
 
 \subsection{Quadratic Arithmetic Program}
 
 While the Rank-1 Constraint System provides a powerful way to represent computations, it is not 
-succinct at all, since the number of constraints directly depends on the complexity of the problem
+succinct at all, since the number of constraints depends linearly on the complexity of the problem 
 being solved. In practical scenarios, this can require tens or even hundreds of thousands of 
 constraints, sometimes even millions. The Quadratic Arithmetic Program (QAP) can address this issue.
 
@@ -459,17 +466,21 @@ constraints, sometimes even millions. The Quadratic Arithmetic Program (QAP) can
     knowledge.
 \end{remark}
 
-To define a constraint in the R1CS we need four vectors: three coefficient vectors ($a$, $b$, and
-$c$) and the witness one ($w$). And that's just for one constraint. As you can imagine, many of
+To define a constraint in the R1CS we need four vectors: three coefficient vectors ($\mathbf{a}$, $\mathbf{b}$, and
+$\mathbf{c}$) and the witness one ($\mathbf{w}$). And that's just for one constraint. As you can imagine, many of
 the values in these vectors are zeros. In circuits with thousands of inputs, outputs, and auxiliary
-variables, where there are also thousands of constraints, you could end up with millions of zeroes.
+variables, where there are also thousands of constraints, you could end up with a millions of zeroes.
+\begin{remark}
+    A matrix in which most of the elements are zero in numerical analysis is usually called \textbf{sparse
+    matrix}.
+\end{remark}
 
 So, we need to change the way how we manage coefficients. 
 
 \begin{definition} 
     Consider a Rank-1 Constraint System (R1CS) defined by $m$ constraints. Each constraint is
     associated with coefficient vectors $a_i b_i$ and $c_i$, where $i \in \{1, 2, \dots, m\}$ and
-    also a witness vector $w$ consisting of $n$ elements.
+    also a witness vector $\mathbf{w}$ consisting of $n$ elements.
 
     Then this system can also be represented using the corresponding matrices $A, B,$ and $C$.
     \begin{align*}
@@ -497,7 +508,7 @@ So, we need to change the way how we manage coefficients.
     \begin{itemize}
         \item Each row of the matrices corresponds to the coefficients of a specific constraint.
         \item Each column of these matrices corresponds to the coefficients associated with a 
-        particular element of the witness vector $w$.
+        particular element of the witness vector $\mathbf{w}$.
     \end{itemize}
 \end{definition}
 
@@ -509,7 +520,7 @@ So, we need to change the way how we manage coefficients.
         a_3 &= (0, 0, 1, 0, 0, 0, 0) \\
         a_4 &= (1, 0, -1, 0, 0, 0, 0)
     \end{align*}
-    $n = 7, m = 4$
+    This corresponds to $n = 7, m = 4$
     \begin{equation*}
         A = \begin{pmatrix}
             a_{11} & a_{12} & a_{13} & a_{14} & a_{15} & a_{16} & a_{17} \\
@@ -531,9 +542,9 @@ coefficient of the $j$ element in the witness vector.
 \begin{example}
     Considering the witness from the previos examples: 
     \begin{equation*}
-         w = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult})
+        \mathbf{w} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult})
     \end{equation*}
-    For element $x_1$ we are interesting in the third columns of the $A$, $B$ and $C$ matrices, as
+    For element $x_1$ we are interested in the third columns of the $A$, $B$ and $C$ matrices, as
     it's placed on the third position in the witness vector, so $j = 3$.\\
     For matrix $A$:
     \begin{center}
@@ -575,7 +586,7 @@ coefficient of the $j$ element in the witness vector.
                 ++(-0.75,0) -- ++(0,2.25) -- cycle;
 
             \draw[OliveGreen, thick] 
-                ([xshift=-10pt,yshift=-48pt]A.north east) -- ++(-4.3,0) -- 
+                ([xshift=-10pt,yshift=-48pt]A.north east) -- ++(-4.33,0) -- 
                 ++(0,-0.63) -- ++(4.3,0) -- cycle;
         
         \end{tikzpicture}
@@ -586,7 +597,7 @@ As we know from the previous chapters, such a mapping in math can be built using
 interpolation.
 
 \begin{remark}
-    As a remainder the Lagrange interpolation polynomial for a given set of points 
+    As a remainder, the Lagrange interpolation polynomial for a given set of points 
     $\{(x_0,y_0),(x_1,y_1),\dots,(x_n,y_n)\} \subset \mathbb{F} \times \mathbb{F}$
     can be built with the following formula:
     \begin{equation*}
@@ -595,20 +606,20 @@ interpolation.
 \end{remark}
 
 For a given column $j \in \{1, 2, \dots, n\}$ in a matrix $A$ the set of points that define the
-variable polynomial $a_j(x)$ can be defined as follows:
+variable polynomial $A_j(x)$ can be defined as follows:
 \begin{equation*}
     \{(i, a_{ij}) \mid i \in \{1, 2, \dots, m\}\}
 \end{equation*}
 The same is true for matrices $B$ and $C$, resulting in $3n$ polynomials, $n$ for each of the
 coefficients matrices:
 \begin{align*}
-    a_1(x), a_2(x), \dots, a_n(x), 
-    b_1(x), b_2(x), \dots, b_n(x),
-    c_1(x), c_2(x), \dots, c_n(x)
+    A_1(x), A_2(x), \dots, A_n(x), 
+    B_1(x), B_2(x), \dots, B_n(x),
+    C_1(x), C_2(x), \dots, C_n(x)
 \end{align*}
 
 \begin{example}
-    Considering the witness vector $w$ and matrix $A$ from the previous example, for the variable
+    Considering the witness vector $\mathbf{w}$ and matrix $A$ from the previous example, for the variable
     $x_1$, the next set of points can be derived:
     \begin{equation*}
         \{(1,1), (2,0), (3,1), (4,-1)\}
@@ -635,7 +646,7 @@ coefficients matrices:
 
     As shown in Figure~\ref{fig:example-interpolation}, the curve intersects all the given points.
     In this figure, the x-axis represents the constraint number, and the y-axis represents the 
-    coefficients of the $x_1$ пwitness element.
+    coefficients of the $x_1$ witness element.
 \end{example}
 
 \begin{figure}[H]
@@ -678,16 +689,16 @@ coefficients matrices:
     \label{fig:example-interpolation}
 \end{figure}
 
-The degree of coefficient polynomials won't exceed $m - 1$.
+The degree of coefficient polynomials doesn't exceed $m - 1$.
 
-Now, using coefficients encoded with polynomials, a constraint number $X, X \in \{1, \dots\ m\}$, from
-a constraint system with a witness vector $w$ can be built in the next way:
+Now, using coefficients encoded with polynomials, a constraint number $X \in \{1, \dots\ m\}$, from
+a constraint system with a witness vector $\mathbf{w}$ can be built in the next way:
 \begin{align*}
     (w_1A_1(X) + w_2A_2(X) + \dots + w_nA_n(X)) &\times (w_1B_1(X) + w_2B_2(X) + \dots + w_nB_n(X)) =\\ = (w_1C_1(X) + w_2C_2(X)& + \dots + w_nC_n(X))
 \end{align*}
 Or:
 \begin{align*}
-    (\sum_{i = 1}^{n} w_iA_i(X)) \times (\sum_{i = 1}^{n} w_iB_i(X)) = (\sum_{i = 1}^{n} w_iC_i(X))
+    \left( \sum_{i = 1}^{n} w_iA_i(X) \right) \times \left( \sum_{i = 1}^{n} w_iB_i(X) \right) = \left( \sum_{i = 1}^{n} w_iC_i(X) \right)
 \end{align*}
 
 \begin{remark}
