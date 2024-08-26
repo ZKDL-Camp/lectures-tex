@@ -537,57 +537,47 @@ coefficient of the $j$ element in the witness vector.
     it's placed on the third position in the witness vector, so $j = 3$.\\
     For matrix $A$:
     \begin{center}
-        \begin{tikzpicture}[baseline=(current bounding box.center)]
-            % Matrix A with highlighted column
-            \matrix[
-                matrix of math nodes,
-                left delimiter={[},
-                right delimiter={]},
-                nodes={anchor=center,minimum size=0.8cm}
-            ] (A) {
-                0 & 0 & 1 & 0 & 0 & 0 & 0 \\
-                0 & 0 & 0 & 1 & 0 & 0 & 0 \\
-                0 & 0 & 1 & 0 & 0 & 0 & 0 \\
-                1 & 0 & -1 & 0 & 0 & 0 & 0 \\
-            };
+        \begin{tikzpicture}
+            % Node to contain the pmatrix
+            \node (A) at (0,0) {$
+                \begin{pmatrix}
+                    0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+                    0 & 0 & 0 & 1 & 0 & 0 & 0 \\
+                    0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+                    1 & 0 & -1 & 0 & 0 & 0 & 0 \\
+                \end{pmatrix}
+            $};
         
             % Draw the red rectangle around the third column
             \draw[red, thick] 
-                (A-1-3.north west) -- (A-4-3.south west) -- 
-                (A-4-3.south east) -- (A-1-3.north east) -- cycle;
+                ([xshift=-77pt,yshift=-2pt]A.north east) -- ++(0,-2.25) -- 
+                ++(-0.75,0) -- ++(0,2.25) -- cycle;
+        
         \end{tikzpicture}
     \end{center}
 
     Thus, for constraint number 4 ($i = 4$) the coefficient of $x_1$ is $-1$:
     \begin{center}
-        \begin{tikzpicture}[baseline=(current bounding box.center)]
-            % Matrix A with highlighted column
-            \matrix[
-                matrix of math nodes,
-                left delimiter={[},
-                right delimiter={]},
-                nodes={anchor=center,minimum size=0.8cm}
-            ] (A) {
-                0 & 0 & 1 & 0 & 0 & 0 & 0 \\
-                0 & 0 & 0 & 1 & 0 & 0 & 0 \\
-                0 & 0 & 1 & 0 & 0 & 0 & 0 \\
-                1 & 0 & -1 & 0 & 0 & 0 & 0 \\
-            };
+        \begin{tikzpicture}
+            % Node to contain the pmatrix
+            \node (A) at (0,0) {$
+                \begin{pmatrix}
+                    0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+                    0 & 0 & 0 & 1 & 0 & 0 & 0 \\
+                    0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+                    1 & 0 & -1 & 0 & 0 & 0 & 0 \\
+                \end{pmatrix}
+            $};
         
             % Draw the red rectangle around the third column
             \draw[red, thick] 
-                (A-1-3.north west) -- (A-4-3.south west) -- 
-                (A-4-3.south east) -- (A-1-3.north east) -- cycle;
-    
-            % Draw the green rectangle around the fourth column
-            \draw[green, thick] 
-                (A-4-1.north west) -- (A-4-7.north east) -- 
-                (A-4-7.south east) -- (A-4-1.south west) -- cycle;
-    
-            % Draw the choosen one element
-            \draw[black, thick] 
-                (A-4-3.north west) -- (A-4-3.south west) -- 
-                (A-4-3.south east) -- (A-4-3.north east) -- cycle;
+                ([xshift=-77pt,yshift=-2pt]A.north east) -- ++(0,-2.25) -- 
+                ++(-0.75,0) -- ++(0,2.25) -- cycle;
+
+            \draw[OliveGreen, thick] 
+                ([xshift=-10pt,yshift=-48pt]A.north east) -- ++(-4.3,0) -- 
+                ++(0,-0.63) -- ++(4.3,0) -- cycle;
+        
         \end{tikzpicture}
     \end{center}
 \end{example}
