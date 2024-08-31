@@ -521,7 +521,7 @@ So, we need to change the way how we manage coefficients.
     
     In this representation:
     \begin{itemize}
-        \item Each row of the matrices corresponds to the coefficients of a specific constraint.
+        \item Each $i$-th row of the matrices corresponds to the coefficients of a specific constraint.
         \item Each column of these matrices corresponds to the coefficients associated with a 
         particular element of the witness vector $\mathbf{w}$.
     \end{itemize}
@@ -716,9 +716,9 @@ a constraint system with a witness vector $\mathbf{w}$ can be built in the next 
     (w_1A_1(X) + w_2A_2(X) + \dots + w_nA_n(X)) &\times (w_1B_1(X) + w_2B_2(X) + \dots + w_nB_n(X)) =\\ = (w_1C_1(X) + w_2C_2(X)& + \dots + w_nC_n(X))
 \end{align*}
 Or:
-\begin{align*}
+\begin{equation*}
     \left( \sum_{i = 1}^{n} w_iA_i(X) \right) \times \left( \sum_{i = 1}^{n} w_iB_i(X) \right) = \left( \sum_{i = 1}^{n} w_iC_i(X) \right)
-\end{align*}
+\end{equation*}
 
 \begin{remark}
     Some pretty obvious property should be noted. In the theorem ~\ref{thm:polynomials-degree-op}
@@ -836,5 +836,27 @@ Or:
     \caption{Addition of two polynomials}
     \label{fig:example-polynomial-addition}
 \end{figure}
+
+Now, back to the constraint defined using polynomials, let's define polynomials $A(x), B(x), C(x)$ 
+as:
+\begin{equation*}
+    A(X) = \sum_{i = 1}^{n} w_iA_i(X), \quad B(X) = \sum_{i = 1}^{n} w_iB_i(X), \quad C(X) = \sum_{i = 1}^{n} w_iC_i(X)
+\end{equation*}
+Thus:
+\begin{equation*}
+    A(X) + B(X) = C(X)
+\end{equation*}
+
+Therefore, as the polynomial $P(X) = A(X) + B(X) - C(X)$ has roots at $x = 1,\dots,n$, it can be
+divide by $T(X) = \prod_{i=1}^{n}(x-i)$ without a remainder!
+
+\begin{equation*}
+    \frac{A(X) + B(X) - C(X)}{(X-1)(X-2)\dots(X-n)} = \frac{P(X)}{T(X)} = H(X)
+\end{equation*}
+
+Where $T(X)$ is called the target polynomial.
+
+This was our final step in representing a high-level programming language to some math primitive.
+We've managed to encode our computation to a single polynomial.
 
 \end{document}
