@@ -260,12 +260,27 @@ Almost any program written in high-level programming language can be translated 
 arithmetic circuits, that are really powerfull tool. But for the ZK proof we need slightly different
 format of it -- \textbf{Rank-1 Constraint System}, where the simpliest term is \textbf{constraint}. 
 This offers a more flexible and general way to describe these parts.
-    
+
 \begin{definition}
-    The inner product of a linear space $\mathbb{V}$ is any symmetric, linear in the first 
+    The \textbf{inner product} of a linear space $\mathbb{V}$ is any symmetric, linear in the first 
     argument, and positive binary function from vector space to a set of scalars. \\
-    
-    Let $\mathbb{V}$ be a vector space over the field $\mathbb{F}$. An \textbf{inner product} 
+    \begin{equation*}
+        \langle \cdot, \cdot \rangle: \mathbb{V} \times \mathbb{V} \rightarrow \mathbb{F}
+    \end{equation*}
+
+    $\forall \mathbf{u}, \mathbf{v}, \mathbf{w} \in \mathbb{V}, \forall a \in \mathbb{F}$ the 
+    following properties are satisfied:
+    \begin{itemize}
+        \item Symmetry: $\langle \mathbf{u}, \mathbf{v} \rangle = \langle \mathbf{v}, \mathbf{u} \rangle$
+        \item Linearity in the first argument: $\langle c\mathbf{u} + \mathbf{v}, \mathbf{w} \rangle = c \langle \mathbf{u}, \mathbf{w} \rangle + \langle \mathbf{v}, \mathbf{w} \rangle$
+        \item Positivity: $\langle \mathbf{u}, \mathbf{u} \rangle \geq 0$ and $\langle \mathbf{u}, \mathbf{u} \rangle = 0 \Leftrightarrow \mathbf{u} = 0$
+    \end{itemize}
+\end{definition}
+
+Plenty of functions can be built that satisfy the inner product definition, we'll use the one that
+is usually called \textbf{dot product}.
+\begin{definition}
+    Let $\mathbb{V}$ be a vector space over the field $\mathbb{F}$. The \textbf{dot product} 
     on $\mathbb{V}$ is a function:
     \begin{equation*}
         \langle \cdot, \cdot \rangle: \mathbb{V} \times \mathbb{V} \rightarrow \mathbb{F}
@@ -274,12 +289,12 @@ This offers a more flexible and general way to describe these parts.
     \begin{equation*}
         \langle \mathbf{u}, \mathbf{v} \rangle = \sum_{i=1}^{n} u_i v_i
     \end{equation*}
-    With the basic properties are satisfied $\forall c \in \mathbb{F}, \forall u, v, w \in \mathbb{V}$:
-    \begin{itemize}
-        \item Symmetry: $\langle \mathbf{u}, \mathbf{v} \rangle = \langle \mathbf{v}, \mathbf{u} \rangle$
-        \item Linearity in the first argument: $\langle c\mathbf{u} + \mathbf{v}, \mathbf{w} \rangle = c \langle \mathbf{u}, \mathbf{w} \rangle + \langle \mathbf{v}, \mathbf{w} \rangle$
-        \item Positivity: $\langle \mathbf{u}, \mathbf{u} \rangle \geq 0$ and $\langle \mathbf{u}, \mathbf{u} \rangle = 0 \Leftrightarrow \mathbf{u} = 0$
-    \end{itemize}
+
+    Alternatively, the dot product can also be denoted using the dot notation as:
+    \begin{equation*}
+        \mathbf{u} \cdot \mathbf{v}
+    \end{equation*}
+    That is why it's called the ``dot`` product.
 \end{definition}
 
 \begin{example}
@@ -587,7 +602,11 @@ coefficient of the $j$ element in the witness vector.
 
             \draw[OliveGreen, thick] 
                 ([xshift=-10pt,yshift=-48pt]A.north east) -- ++(-4.33,0) -- 
-                ++(0,-0.63) -- ++(4.3,0) -- cycle;
+                ++(0,-0.63) -- ++(4.33,0) -- cycle;
+
+            \draw[black, thick] 
+                ([xshift=-77pt,yshift=-48pt]A.north east) -- ++(-0.75,0) -- 
+                ++(0,-0.63) -- ++(0.75,0) -- cycle;
         
         \end{tikzpicture}
     \end{center}
@@ -817,7 +836,5 @@ Or:
     \caption{Addition of two polynomials}
     \label{fig:example-polynomial-addition}
 \end{figure}
-
-
 
 \end{document}
