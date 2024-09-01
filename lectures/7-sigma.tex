@@ -236,7 +236,7 @@ As with previous examples, suppose we are given the cyclic group $\mathbb{G}$ or
 
 Now, this makes it easier to define the relation $\mathcal{R}$ for the Chaum-Pedersen protocol:
 \begin{equation*}
-    \mathcal{R} = \left\{ (\beta, (u,v,w)) \in \mathbb{Z}_q \times \mathbb{G}^3: v = g^{\beta} \wedge w = u^{\beta} \right\}
+    \mathcal{R} = \left\{ ((u,v,w), \beta) \in \mathbb{G}^3 \times \mathbb{Z}_q: v = g^{\beta} \wedge w = u^{\beta} \right\}
 \end{equation*}
 
 In other words, here we have a witness $\beta \in \mathbb{Z}_q$, while the statement is a triplet $(u,v,w) \in \mathbb{G}^3$. Again, we want to convert this into a Sigma protocol. We do it as follows.
@@ -282,7 +282,7 @@ Now, the most interesting part! Probably, you have noticed, that all protocols a
 
 Let $(\mathbb{H}, \oplus)$ and $(\mathbb{T}, \otimes)$ be two finite abelian groups and suppose we have some concrete homomorphism $\psi: \mathbb{H} \to \mathbb{T}$. Moreover, we require that given $t \in \mathbb{T}$, finding the pre-image of $t$ (meaning, finding some $h \in \mathbb{H}$ such that $\psi(h)=t$) is computationally hard. Suppose $\mathcal{F}$ is a set of all homomorphisms from $\mathbb{H}$ to $\mathbb{T}$ (sometimes denoted as $\mathsf{Hom}(\mathbb{H}, \mathbb{T})$). Now, define the following relation:
 \begin{equation*}
-    \mathcal{R} = \left\{ (h,(t,\psi)) \in \mathbb{H} \times (\mathbb{T} \times \mathcal{F}): \psi(h) = t \right\}
+    \mathcal{R} = \left\{ ((t,\psi), h) \in (\mathbb{T} \times \mathcal{F}) \times \mathbb{H}: \psi(h) = t \right\}
 \end{equation*}
 
 And now the prover $\mathcal{P}$ wants to convince the verifier $\mathcal{V}$ that he knows the witness $h$ to the statement $(t,\psi)$. 
@@ -312,10 +312,56 @@ Now, we formulate the general Sigma protocol for the relation $\mathcal{R}$ over
 
 \subsection{Combining Sigma Protocols}
 
-Now, suppose we have the Sigma interactive protocol $(\mathcal{P}_0,\mathcal{V}_0)$ for one relation $\mathcal{R}_0 \subset \mathcal{W}_0 \times \mathcal{X}_0$ and another Sigma interactive protocol $(\mathcal{P}_1,\mathcal{V}_1)$ for another relation $\mathcal{R}_1 \subset \mathcal{W}_1 \times \mathcal{X}_1$. Now, we want to combine these two protocols into a single one. Namely, we want our prover to be able to convince the verifier that:
+Now, suppose we have the Sigma interactive protocol $(\mathcal{P}_0,\mathcal{V}_0)$ for one relation $\mathcal{R}_0 \subseteq \mathcal{W}_0 \times \mathcal{X}_0$ and another Sigma interactive protocol $(\mathcal{P}_1,\mathcal{V}_1)$ for another relation $\mathcal{R}_1 \subseteq \mathcal{W}_1 \times \mathcal{X}_1$. Now, we want to combine these two protocols into a single one. Namely, we want our prover to be able to convince the verifier that:
 \begin{enumerate}
     \item He knows the witnesses $w_0,w_1$ to both statements $x_0,x_1$.
     \item He knows the witness $w \in \mathcal{W}_0 \cup \mathcal{W}_1$ to either statement $x_0$ or $x_1$.
 \end{enumerate}
+
+Among two, the second one is a bit more interesting since it allows us to prove the knowledge of a witness to either of the statements. This is called the \textit{OR-composition} of Sigma protocols.
+
+\subsubsection{The AND Sigma Protocol}
+
+Now, let the prover $\mathcal{P}$ prove the witness knowledge of the following relation:
+\begin{equation*}
+    \mathcal{R}_{\text{AND}} = \left\{ ((x_0,x_1), (w_0,w_1)) \in (\mathcal{X}_0 \times \mathcal{X}_1) \times (\mathcal{W}_0 \times \mathcal{W}_1): (w_0,x_0) \in \mathcal{R}_0 \wedge (w_1,x_1) \in \mathcal{R}_1 \right\}
+\end{equation*}
+
+We define the following protocol.
+
+\begin{definition}[The AND Sigma Protocol]
+    Define a pair of algorithms $(\mathcal{P},\mathcal{V})$ which are run as follows:
+    \begin{enumerate}
+        \item The prover $\mathcal{P}$ runs $\mathcal{P}_0(w_0,x_0)$ to get commitment $a_0$ and runs $\mathcal{P}_1(w_1,x_1)$ to get $a_1$ and sends the pair $\mathbf{a} = (a_0,a_1)$ to $\mathcal{V}$.
+        \item The verifier computes the challenge $c \xleftarrow{R} \mathcal{C}$ and sends it to $\mathcal{P}$.
+        \item The prover feeds provers $\mathcal{P}_0(w_0,x_0)$ and $\mathcal{P}_1(w_1,x_1)$ with the challenge to get responses $z_0$ and $z_1$, respectively. He then sends $\mathbf{z} = (z_0,z_1)$ to $\mathcal{V}$.
+        \item The verifier checks whether both $\mathcal{V}_0(a_0,c,z_0)$ and $\mathcal{V}_1(a_1,c,z_1)$ pass.
+    \end{enumerate}
+\end{definition}
+
+However, such protocol is not very interesting since what we did essentially is just running two protocols separately: one for $(\mathcal{P}_0,\mathcal{V}_0)$, and the other for $(\mathcal{P}_1,\mathcal{V}_1)$. The only difference is that we use the single challenge for both protocols.
+
+\subsubsection{The OR Sigma Protocol}
+
+The less trivial example is the following: define the relation
+\begin{equation*}
+    \mathcal{R}_{\text{OR}} = \left\{ ((x_0, x_1), (w, b)) \in (\mathcal{X}_0 \times \mathcal{X}_1) \times ((\mathcal{W}_0 \cup \mathcal{W}_1) \times \{0,1\}): (x, w_b) \in \mathcal{R}_b \right\}
+\end{equation*}
+
+Here, the statement is $x_0$ and $x_1$, but the witness is the witness $w$ to either $x_0$ or $x_1$, and the bit $b \in \{0,1\}$, marking to which of the statement $w$ belongs to. That being said, $w$ might be from either set $\mathcal{W}_0$ or $\mathcal{W}_1$: that is why we say that $w \in \mathcal{W}_0 \cup \mathcal{W}_1$.
+
+To make the interactive protocol work, we add one more assumption about both relations $\mathcal{R}_0$ and $\mathcal{R}_1$. Suppose that the challenge space $\mathcal{C} \subseteq \{0,1\}^{\ell}$. This assumption is not very strong as typically $\mathcal{C}$ is some subspace of integers and thus decomposing some $c \in \mathcal{C}$ into the fixed-length bit representation is a trivial task.
+
+Now, we describe the algorithm.
+
+\begin{definition}[The OR Sigma Protocol]
+    Define a pair of algorithms $(\mathcal{P},\mathcal{V})$ for relation $\mathcal{R}_{\text{OR}}$ with $b^* := 1-b$ as follows:
+    \begin{enumerate}
+        \item The prover chooses a random challenge $c_{b^*} \xleftarrow{R} \mathcal{C}$ and generates random commitment and response $(a_{b^*}, z_{b^*})$ that form a valid accepting conversation $(a_{b^*}, c_{b^*}, z_{b^*})$ (essentially, the prover runs the simulator $(a_{b^*}, z_{b^*}) \xleftarrow{R} \mathsf{Sim}_{b^*}(x_{b^*}, c_{b^*})$). Then, $\mathcal{P}$ also runs $\mathcal{P}_b(x_b, w)$ to get a valid commitment $a_b$ and sends $(a_0,a_1)$ to $\mathcal{V}$.
+        \item The verifier sends a random challenge $c \xleftarrow{R} \mathcal{C} \subseteq \{0,1\}^{\ell}$.
+        \item The prover XORs both challenges: $c_b \gets c \oplus c_{b^*}$. Then it feeds the challenge $c_b$ to the prover $\mathcal{P}_b(x_b,w)$ to get the responses $z_b$ ($b \in \{0,1\}$) and sends $(c_0,z_0,z_1)$ to $\mathcal{V}$.
+        \item Verifier computes $c_1 \gets c \oplus c_0$ and checks that both verifications $\mathcal{V}_0(a_0,c_0,z_0)$ and $\mathcal{V}_1(a_1,c_1,z_1)$ pass.
+    \end{enumerate}
+\end{definition}
 
 \end{document}
