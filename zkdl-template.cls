@@ -29,10 +29,15 @@
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[a4paper, top=1.0in,bottom=1.0in, left=0.8in, right=0.8in, footskip=0.4in, includefoot]{geometry}
 \RequirePackage[most]{tcolorbox}
-%\pgfplotsset{compat=newest}
 \RequirePackage{multicol}
 \RequirePackage[bottom,multiple]{footmisc} % ensures footnotes are at the bottom of the page, and separates footnotes by a comma if they are adjacent
+
+% --- Hyperref settings ---
 \RequirePackage{hyperref}
+\hypersetup{pdflang=en}
+    \hypersetup{colorlinks=true,
+      citecolor=blue!80,
+      linkcolor=black!70!red}
 \RequirePackage[nameinlink]{cleveref} % nameinlink ensures that the entire element is clickable in the pdf, not just the number
 
 % --- Tikz settings ---
