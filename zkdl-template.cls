@@ -63,6 +63,11 @@
 % --- Linter settings ---
 \RequirePackage{listings, listings-rust}
 
+% --- Ticks and crosses ---
+\usepackage{pifont} % http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\textcolor{green!65!black}{\ding{51}}}%
+\newcommand{\xmark}{\textcolor{red!80!black}{\ding{55}}}%
+
 %% Code Block Settings
 \RequirePackage{listings}
 \definecolor{dkgreen}{rgb}{0,0.5,0}
