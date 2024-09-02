@@ -148,8 +148,17 @@ Now, the Schnorr Protocol is just one of the many examples of a so-called \textb
 \end{definition}
 
 \begin{remark}
-    The name ``Sigma'' protocol comes from the fact that the ``shape'' of the message flow vaguely resembles the Greek letter $\Sigma$.
+    The name ``Sigma'' protocol comes from the fact that the ``shape'' of the message flow vaguely resembles the Greek letter $\Sigma$: see \Cref{fig:sigma_protocol_illustration}.
 \end{remark}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.3\linewidth]{images/lecture_7/sigma_protocol_illustration.pdf}
+
+    \caption{Sigma Protocol Illustration: the flow of messages between prover $\mathcal{P}$ and verifier $\mathcal{V}$ closely resembles the Greek letter $\Sigma$, which is marked in \textcolor{red}{\textbf{red}} in the Figure.}
+    \label{fig:sigma_protocol_illustration}
+\end{figure}
+
 
 \begin{example}
     In particular, for the Schnorr Protocol, the Sigma protocol is defined over the relation $\mathcal{R} \subset \mathcal{X} \times \mathcal{W}$ where:
