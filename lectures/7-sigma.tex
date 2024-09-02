@@ -172,7 +172,7 @@ Now, the Schnorr Protocol is just one of the many examples of a so-called \textb
 Similarly to interactive protocols, Sigma protocols also have a property called \textit{soundness}. However, there is an additional property called \textit{special soundness} that simplifies the general notion of soundness.
 
 \begin{definition}[Special Soundness]
-    Let $(\mathcal{P}, \mathcal{V})$ be a $\Sigma$-protocol for $\mathcal{R} \subseteq \mathcal{X} \times \mathcal{Y}$. We that that $(\mathcal{P},\mathcal{V})$ is \textbf{special sound} if there exists a witness extractor $\mathcal{E}$ such that, given statement $x \in \mathcal{X}$ and two accepting conversations $(a,c,z)$ and $(a',c',z')$ (where $c \neq c'$), the extractor can always efficiently compute the witness $w$ such that $(x,w) \in \mathcal{R}$.
+    Let $(\mathcal{P}, \mathcal{V})$ be a $\Sigma$-protocol for $\mathcal{R} \subseteq \mathcal{X} \times \mathcal{Y}$. We that that $(\mathcal{P},\mathcal{V})$ is \textbf{special sound} if there exists a witness extractor $\mathcal{E}$ such that, given statement $x \in \mathcal{X}$ and two accepting conversations $(a,c,z)$ and $(a,c',z')$ (where $c \neq c'$)\footnote{Notice that initial commitments in both conversations are the same!}, the extractor can always efficiently compute the witness $w$ such that $(x,w) \in \mathcal{R}$.
 \end{definition}
 
 \begin{example}

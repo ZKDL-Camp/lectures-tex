@@ -1,0 +1,48 @@
+\documentclass{zkdl-tests-template}
+
+\title{\huge\sffamily\bfseries Lecture \#7 Exercises}
+\author{\Large\sffamily Distributed Lab}
+\date{\sffamily September 3, 2024}
+\titlepic{\includegraphics[width=0.15\textwidth]{../lectures/images/common/logo.png}}
+
+\begin{document}
+
+\pagestyle{fancy}
+
+\maketitle
+
+\begin{tcolorbox}[colback=gray!10!white,fonttitle=\bfseries,colframe=purple!80!black,title=Exercises 1-5. Schnorr's Identification Protocol: ]
+    \textit{You are given the protocol and five ways to implement it. Most of them lack the crucial properties. For each attempt, you need to determine whether the protocol is correct and, if not, specify which of the properties are violated.}
+    \vspace{10px}
+ 
+    Recall, that given the cyclic group $\mathbb{G}$ of order $q$, the prover wants to convince the verifier that he knows the discrete logarithm $\alpha$ of $h \in \mathbb{G}$ with respect to the generator $g \in \mathbb{G}$ (so that $g^{\alpha}=h$).
+
+    Here are five attempts to construct the protocol:
+
+    \textcolor{purple!80!black}{\textbf{Attempt 1.}} Prover sends witness $\alpha$ to the verifier. Verifier checks whether $h = g^{\alpha}$.
+
+    \textcolor{purple!80!black}{\textbf{Attempt 2.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$ and sends $a \gets \alpha + r$ to the verifier. Verifier checks whether $h = g^a$.
+
+    \textcolor{purple!80!black}{\textbf{Attempt 3.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$, calculates $a \gets \alpha + r$ and sends both $(a,r)$ to the verifier. Verifier checks whether $g^r h = g^a$.
+
+    \textcolor{purple!80!black}{\textbf{Attempt 4.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$, calculates $a \gets g^r, z \gets \alpha+r$ and sends $(a,z)$ to the verifier. Verifier checks whether $a \cdot h = g^z$.
+
+    \textcolor{purple!80!black}{\textbf{Attempt 5.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$, calculates $a \gets g^r$, and sends $a$ to the verifier. Verifier chooses $e \xleftarrow{R} \mathbb{Z}_q$ and sends to the prover. Prover calculates $z \gets \alpha e + r$ and sends to the prover. Verifier checks whether $a \cdot h^e = g^z$.
+
+    \vspace{10px}
+
+    Below, mark whether the properties of \textit{completeness}, \textit{soundness}, and \textit{zero-knowledge} hold for each attempt.
+
+    \begin{center}
+    \begin{tabular}{ |l|c|c|c|c|c| } 
+        \hline
+        \textbf{Attempt \#} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} \\ \hline
+        \textbf{Completeness} holds? & & & & & \\ \hline
+        \textbf{Soundness} holds? & & & & & \\ \hline
+        \textbf{Zero-Knowledge} holds? & & & & & \\ \hline
+    \end{tabular}
+    \end{center}
+
+\end{tcolorbox}
+
+\end{document}
