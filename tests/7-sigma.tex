@@ -1,0 +1,120 @@
+\documentclass{zkdl-tests-template}
+
+\title{\huge\sffamily\bfseries Lecture \#7 Exercises}
+\author{\Large\sffamily Distributed Lab}
+\date{\sffamily September 3, 2024}
+\titlepic{\includegraphics[width=0.15\textwidth]{../lectures/images/common/logo.png}}
+
+\begin{document}
+
+\pagestyle{fancy}
+
+\maketitle
+
+\begin{tcolorbox}[colback=gray!10!white,fonttitle=\bfseries,colframe=purple!80!black,title=Exercises 1-5. In search of correct Schnorr's Identification Protocol\ldots]
+    \textit{You are given the protocol and five ways to implement it. Most of them lack the crucial properties. For each attempt, you need to determine whether the protocol is correct and, if not, specify which of the properties are violated.}
+    \vspace{10px}
+ 
+    Recall, that given the cyclic group $\mathbb{G}$ of order $q$, the prover wants to convince the verifier that he knows the discrete logarithm $\alpha$ of $h \in \mathbb{G}$ with respect to the generator $g \in \mathbb{G}$ (so that $g^{\alpha}=h$).
+
+    Here are five attempts to construct the protocol:
+
+    \textcolor{purple!80!black}{\textbf{Attempt 1.}} Prover sends witness $\alpha$ to the verifier. Verifier checks whether $h = g^{\alpha}$.
+
+    \textcolor{purple!80!black}{\textbf{Attempt 2.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$ and sends $a \gets \alpha + r$ to the verifier. Verifier checks whether $h = g^a$.
+
+    \textcolor{purple!80!black}{\textbf{Attempt 3.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$, calculates $a \gets \alpha + r$ and sends both $(a,r)$ to the verifier. Verifier checks whether $g^r h = g^a$.
+
+    \textcolor{purple!80!black}{\textbf{Attempt 4.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$, calculates $a \gets g^r, z \gets \alpha+r$ and sends $(a,z)$ to the verifier. Verifier checks whether $a \cdot h = g^z$.
+
+    \textcolor{purple!80!black}{\textbf{Attempt 5.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$, calculates $a \gets g^r$, and sends $a$ to the verifier. Verifier chooses $e \xleftarrow{R} \mathbb{Z}_q$ and sends to the prover. Prover calculates $z \gets \alpha e + r$ and sends to the prover. Verifier checks whether $a \cdot h^e = g^z$.
+
+    \vspace{10px}
+
+    Below, mark whether the properties of \textit{completeness}, \textit{soundness}, and \textit{zero-knowledge} hold for each attempt.
+
+    \begin{center}
+    \begin{tabular}{ |l|c|c|c|c|c| } 
+        \hline
+        \textbf{Attempt \#} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} \\ \hline
+        \textbf{Completeness} holds? & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark \\ \hline
+        \textbf{Soundness} holds? & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark \\ \hline
+        \textbf{Zero-Knowledge} holds? & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark\\ \hline
+    \end{tabular}
+    \end{center}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=gray!10!white,fonttitle=\bfseries,colframe=purple!80!black,title=Exercises 6-10. Non-Interactive Chaum-Pedersen Protocol.]
+    \textit{This section explores how to make the previously considered Chaum-Pedersen protocol non-interactive. Fill in the gaps in the following text with the correct statements.}
+    \vspace{10px}
+
+    Recall that the Chaum-Pedersen protocol allows the prover $\mathcal{P}$ to convince the skeptical verifier $\mathcal{V}$ that the given triplet $(u,v,w) \in \mathbb{G}^3$ is a Diffie-Hellman (DH) triplet in the cyclic group $\mathbb{G}$ of prime order $q$ with a generator $g \in \mathbb{G}$, meaning that $u=g^{\alpha},v=g^{\beta},w=g^{\alpha\beta}$ for some $\alpha,\beta \in \mathbb{Z}_q$. However, instead of making $(\alpha,\beta)$ as a witness, observe that $\beta$ is sufficient. Indeed, if $u=g^{\alpha},v=g^{\beta}$, then $w=\boxed{\textcolor{purple!80!black}{\textbf{6}}}$. Thus, the relation is:
+    \begin{equation*}
+        \mathcal{R} = \left\{ ((u,v,w), \beta) \in \mathbb{G}^3 \times \mathbb{Z}_q: \boxed{\textcolor{purple!80!black}{\textbf{7}}} \right\}
+    \end{equation*}
+
+    Now, we apply the \textit{Fiat-Shamir Transformation}. Recall that prover, instead of getting the random challenge $c \xleftarrow{R} \mathcal{C} \subset \mathbb{Z}_q$ from the verifier interactively, calculates it as the hash function from the public statement $(u,v,w)$ and the prover's commitment. For that reason, define the non-interactive proof system $\Phi = (\mathsf{Gen}, \mathsf{Verify})$ as follows:
+    \begin{itemize}
+        \item $\mathsf{Gen}$: On input $(u,v,w) \in \mathbb{G}^3$, 
+        \begin{enumerate}
+            \item Sample $\beta_r \xleftarrow{R} \mathbb{Z}_q$ and compute the commitment $\boxed{\textcolor{purple!80!black}{\textbf{8}}}$.
+            \item Use the hash function $\boxed{\textcolor{purple!80!black}{\textbf{9}}}$ to get the challenge $c \gets \boxed{\textcolor{purple!80!black}{\textbf{10}}}$.
+            \item Compute response $\beta_z \gets \beta_r + \beta c$ and output commitment $(v_r,w_r)$ and $\beta_z$ as a proof $\pi$.
+        \end{enumerate}
+        \item $\mathsf{Verify}$: Upon receiving statement $(u,v,w)$ and a proof $\pi=(v_r,w_r,\beta_z)$, the verifier:
+        \begin{enumerate}
+            \item Recomputes the challenge $c$ using the hash function.
+            \item Accepts if and only if $g^{\beta_z} = v_r v^c$ and $u^{\beta_z} = w_r w^c$.
+        \end{enumerate}
+    \end{itemize}
+
+    \begin{center}
+        \begin{tabular}{p{5cm}p{5.15cm}p{6cm}}
+            % Exercise 3
+            \textbf{Exercise 6.}
+            \begin{enumerate}[A)]
+                \item $v^{\beta}$
+                \item $u^{\beta}$
+                \item $vu$
+                \item $v^u$
+                \item $v^{\beta}u$
+            \end{enumerate} &   
+            \textbf{Exercise 7.}
+            \begin{enumerate}[A)]
+                \item $v = g^{\beta}$ and $w = vu$
+                \item $v = g^{\beta}$ and $w = v^{\beta}$
+                \item $v = g^{\beta}$ and $w = u^{\beta}$
+                \item $u = g^{\beta}$ and $w = u^{\beta}$
+                \item $u/w = g^{\beta}$
+            \end{enumerate} & \\
+            \textbf{Exercise 8.}
+            \begin{enumerate}[A)]
+                \item $(v_r,w_r) = (g^{\beta_r},g^{\beta_r\beta})$
+                \item $(v_r,w_r) = (g^{\beta_r},w^{\beta_r})$
+                \item $(v_r,w_r) = (g^{\beta_r},u^{\beta_r})$
+                \item $(v_r,w_r) = (g^{\beta},g^{\beta_r})$
+                \item $(v_r,w_r) = (g^{\beta},g^{\beta_r}g^{\beta})$
+            \end{enumerate}
+            &
+            \textbf{Exercise 9.}
+            \begin{enumerate}[A)]
+                \item $H: \mathbb{G}^3 \times \mathbb{G}^2 \to \mathcal{C}$
+                \item $H: \mathbb{G}^3 \times (\mathbb{G} \times \mathbb{Z}_q) \to \mathcal{C}$
+                \item $H: \mathbb{G}^3 \to \mathcal{C}$
+                \item $H: \mathbb{G}^3 \times \mathbb{Z}_q \to \mathcal{C}$
+                \item $H: \mathbb{G}^2 \times \mathbb{Z}_q \to \mathcal{C}$
+            \end{enumerate} 
+            &
+            \textbf{Exercise 10.}
+            \begin{enumerate}[A)]
+                \item $H((u,v,w),(v_r,w_r))$
+                \item $H((u,v,w),(v_r,\beta_r))$
+                \item $H(u,v,w)$
+                \item $H((u,v,w),\beta_r)$
+                \item $H((v_r,w_r),\beta_r)$
+            \end{enumerate} 
+        \end{tabular}
+    \end{center}
+\end{tcolorbox}
+
+\end{document}
