@@ -109,8 +109,8 @@ That being said, formally the interaction between prover $\mathcal{P}$ and verif
 \begin{figure}
     \centering
     \begin{tikzpicture}
-        \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/lecture_6/prover.png}\\Prover $\mathcal{P}$};
-        \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/lecture_6/verifier.png}\\Verifier $\mathcal{V}$};
+        \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
+        \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
 
         \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]prover.south) -- ([yshift=-11cm]prover.south);
         \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]verifier.south) -- ([yshift=-11cm]verifier.south);
@@ -210,8 +210,8 @@ Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended w
 \begin{figure}[H]
     \centering
     \begin{tikzpicture}
-        \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/lecture_6/prover.png}\\Prover $\mathcal{P}$};
-        \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/lecture_6/verifier.png}\\Verifier $\mathcal{V}$};
+        \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
+        \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
 
         \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]prover.south) -- ([yshift=-8cm]prover.south);
         \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]verifier.south) -- ([yshift=-8cm]verifier.south);
@@ -285,6 +285,15 @@ Finally, we are ready to define the \textbf{zero-knowledge}.
     An interactive protocol $(\mathcal{P}, \mathcal{V})$ is \textbf{zero-knowledge} for a language $\mathcal{L}_{\mathcal{R}}$ if for every poly-time verifier $\mathcal{V}^*$ there exists a poly-time simulator $\mathsf{Sim}$ such that for any valid statement $x \in \mathcal{L}_{\mathcal{R}}$:
     \begin{equation*}
         \mathsf{view}_{\mathcal{V}^*}(\mathcal{P}, \mathcal{V}^*)[x] \approx \mathsf{Sim}(x)
+    \end{equation*}
+\end{definition}
+
+However, the condition that verifier might be arbitrary is rather strong. Therefore, we introduce the notion of \textbf{honest-verifier zero-knowledge}.
+
+\begin{definition}{Honest-Verifier Zero-Knowledge (HVZK)}
+    An interactive protocol $(\mathcal{P}, \mathcal{V})$ is \textbf{honest-verifier zero-knowledge} for a language $\mathcal{L}_{\mathcal{R}}$ if there exists a probabilistic poly-time simulator $\mathsf{Sim}$ such that for any valid statement $x \in \mathcal{L}_{\mathcal{R}}$\footnote{Below, we assume that the verifier $\mathcal{V}$ is honest: he is following the protocol.}:
+    \begin{equation*}
+        \mathsf{view}_{\mathcal{V}}(\mathcal{P}, \mathcal{V})[x] \approx \mathsf{Sim}(x)
     \end{equation*}
 \end{definition}
 
@@ -382,9 +391,9 @@ Here how it goes. Suppose we have an interactive protocol $(\mathcal{P}, \mathca
         \node(targetzonelabel)[left=0.6cm of targetbox,rotate=90,anchor=north,color=blue!90!black]{\textbf{Non-interactive part}};
 
         % Three participants
-        \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/lecture_6/prover.png}\\Prover $\mathcal{P}$};
-        \node[inner sep=0pt, align=center, right=1.5cm of prover] (hash) {\includegraphics[width=1.25cm]{lectures/images/lecture_6/random_oracle.png}\\Proof Stream\\ (with random oracle $\mathcal{O}_{\text{R}}$)};
-        \node[inner sep=0pt, align=center, right=7.5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/lecture_6/verifier.png}\\Verifier $\mathcal{V}$};
+        \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
+        \node[inner sep=0pt, align=center, right=1.5cm of prover] (hash) {\includegraphics[width=1.25cm]{lectures/images/common/random_oracle.png}\\Proof Stream\\ (with random oracle $\mathcal{O}_{\text{R}}$)};
+        \node[inner sep=0pt, align=center, right=7.5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
         
         % Dashed lines under participants
         \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]prover.south) -- ([yshift=-9.5cm]prover.south);
@@ -428,125 +437,6 @@ The reason why such transformation works is that the random oracle $\mathcal{O}_
 \begin{theorem}
     Suppose that $(\mathcal{P},\mathcal{V})$ is a public-coin interactive argument of knowledge for some language $\mathcal{L}_{\mathcal{R}}$ with a negligible soundness error. Then, the Fiat-Shamir transformation of $(\mathcal{P}^{\mathcal{O}_{\text{R}}},\mathcal{V}^{\mathcal{O}_{\text{R}}})$ is a non-interactive argument for $\mathcal{L}_{\mathcal{R}}$ with negligible soundness error in the random oracle model $\mathcal{O}_{\text{R}}$.
 \end{theorem}
-
-\subsubsection{Schnorr's Identification Protocol}
-
-To better illustrate the Fiat-Shamir Transformation in practice, let us consider one of the most widely used signatures: Schnorr Signature. It is a simple and elegant protocol that allows one party to prove to another party that it knows a discrete logarithm of a given element. 
-
-Let us formalize it using theory from \Cref{section:relations_and_languages}. Suppose $\mathbb{G}$ is a cyclic group of order $q$ with a generator $g$. Then, the relation and language being considered are:
-\begin{equation*}
-    \mathcal{R} = \{(u, \alpha) \in \mathbb{G} \times \mathbb{Z}_q: u = g^{\alpha}\}, \; \mathcal{L}_{\mathcal{R}} = \{u \in \mathbb{G}: \exists \alpha \in \mathbb{Z}_q: u = g^{\alpha}\}
-\end{equation*}
-
-Now, suppose prover $\mathcal{P}$ has a valid statement and a witness $(u,\alpha) \in \mathcal{R}$ and he wants to convince the verifier $\mathcal{V}$ that he knows the witness $\alpha$ to the public statement $u$ (that is, we are building the proof of knowledge). Well, the easiest way how to proceed is simply giving $\alpha$ to $\mathcal{V}$, but this is obviously not what we want. Instead, the Schnorr protocol allows $\mathcal{P}$ to prove the knowledge of $\alpha$ without revealing it. 
-
-First, let us start with the interactive version of the protocol. 
-
-\begin{definition}
-    \textbf{The Schnorr interactive identification protocol} $\Pi_{\text{Sch}} = (\mathsf{Gen}, \mathcal{P}, \mathcal{V})$ with a generation function $\mathsf{Gen}$ and prover $\mathcal{P}$ and verifier $\mathcal{V}$ is defined as follows:
-    \begin{itemize}
-        \item $\mathsf{Gen}(1^{\lambda})$: As with most public-key cryptosystems, we take $\alpha \xleftarrow{R} \mathbb{Z}_q$ and $u \gets g^{\alpha}$. We output the \textit{verification key} as $\mathsf{vk} := u$, and the \textit{secret key} as $\mathsf{sk} := \alpha$.
-        \item The protocol between $(\mathcal{P},\mathcal{V})$ is run as follows:
-        \begin{itemize}
-            \item $\mathcal{P}$ computes $r \gets \mathbb{Z}_q^{\times}, a \gets g^{r}$ and sends $a$ to $\mathcal{V}$.
-            \item $\mathcal{V}$ sends a random challenge $e \xleftarrow{R} \mathbb{Z}_q$ to $\mathcal{P}$.
-            \item $\mathcal{P}$ computes $\sigma \gets r + \alpha e \in \mathbb{Z}_q$ and sends $\sigma$ to $\mathcal{V}$.
-            \item $\mathcal{V}$ accepts if $g^{\sigma} = a \cdot u^e$, otherwise it rejects.
-        \end{itemize}
-    \end{itemize}
-
-    This protocol is illustrated in \Cref{fig:interactive_schnorr}. 
-\end{definition}
-
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}
-        \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/lecture_6/prover.png}\\Prover $\mathcal{P}$};
-        \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/lecture_6/verifier.png}\\Verifier $\mathcal{V}$};
-
-        \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]prover.south) -- ([yshift=-9cm]prover.south);
-        \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]verifier.south) -- ([yshift=-9cm]verifier.south);
-
-        \node[align=center,fill=white!5,thick,below=0.5cm of prover](prover-setup){
-        \noindent\rule{3.5cm}{0.8pt}\\
-        $r \xleftarrow{R} \mathbb{Z}_q^{\times}$ \\
-        $a \gets g^r$ \\
-        \noindent\rule{3.5cm}{0.8pt}};
-
-        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-3cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm]{Send $a$};
-
-        \node[align=center,fill=white!5,thick,below=3.5cm of verifier](verifier-choice){
-        \noindent\rule{3.5cm}{0.8pt}\\
-        $e \xleftarrow{R} \mathbb{Z}_q$ \\
-        \noindent\rule{3.5cm}{0.8pt}};
-
-        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-5.5cm]verifier.south) coordinate (l2)--(l2-|prover) node[midway, above=0mm]{Send $e$};
-
-        \node[align=center,fill=white!5,thick,below=6.0cm of prover](prover-setup){
-        \noindent\rule{3.5cm}{0.8pt}\\
-        Compute $\sigma \gets r + \alpha e \in \mathbb{Z}_q$\\
-        \noindent\rule{3.5cm}{0.8pt}};
-
-        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-8cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm]{Send $\sigma$};
-
-        \node[align=center,fill=white!5,thick,below=8.5cm of verifier](verifier-choice){
-        \noindent\rule{3.5cm}{0.8pt}\\
-        Verify $g^{\sigma} = a \cdot u^e$ \\
-        \noindent\rule{3.5cm}{0.8pt}};
-    \end{tikzpicture}
-
-    \caption{The interactive Schnorr protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$ for proof of knowledge of discrete logarithm relation.}
-    \label{fig:interactive_schnorr}
-\end{figure}
-
-Now, one can prove the following theorem.
-\begin{theorem}
-    The Schnorr protocol $\Pi_{\text{Sch}}$ is complete, sound, and (honest verifier) zero-knowledge proof of knowledge.
-\end{theorem}
-
-\textbf{Proof.} We are not going to prove the zero-knowledge and soundness properly, but completeness and proof of knowledge are quite straightforward to show.
-
-\begin{itemize}
-    \item \textbf{Completeness.} Just observe that $g^{\sigma} = g^{r+\alpha e} = g^r(g^{\alpha})^e = a \cdot u^e$.
-    \item \textbf{Proof of Knowledge.} To prove that the protocol is a proof of knowledge, we need to construct an extractor $\mathcal{E}^{\mathcal{P}}$. We construct it as follows:
-    \begin{enumerate}
-        \item Extractor runs the prover and gets $a$, $e$, and $\sigma$ as a response.
-        \item Extractor rewinds back to the verifier's challenge step, generates a new challenge $e' \xleftarrow{R} \mathbb{Z}_q$ and gets new prover's response $\sigma'$ (for the same prover's randomness $r$).
-        \item Extractor outputs the witness $x \gets (\sigma - \sigma')(e - e')^{-1}$.
-    \end{enumerate}
-    The reason why this works is following: notice that $g^{\sigma} = a \cdot u^{e}, g^{\sigma'} = a \cdot u^{e'}$. Therefore, by dividing former by latter, we obtain $g^{\sigma - \sigma'} = u^{e - e'} = g^{\alpha(e-e')}$. It immediately follows that $\alpha = (\sigma - \sigma')(e - e')^{-1}$.
-\end{itemize}
-
-\vspace{10px}
-
-\begin{remark}
-    Before considering how to make such protocol non-interactive correctly, suppose that we instead do the following: after interaction with the verifier, the prover publishes the conversation as a proof of knowledge. Would that be a valid non-interactive proof? In other words, can we convince the independent observer of the interaction that the prover knows the witness? The answer is no (and it is generally so for any interactive protocol). The reason why is that the prover can first sample randomly $e,\sigma \xleftarrow{R} \mathbb{Z}_q$, compute $a \gets g^{\sigma}/u^e$ and simply publish $(a,e,\sigma)$ as a proof. This is a valid conversation since $g^{\sigma} = a \cdot u^{e} = (g^{\sigma}/u^e) \cdot u^e$ and thus the observer would be convinced that the prover knows the witness. However, the prover might not know the witness at all!
-
-    Therefore, the prover needs to get a challenge $e$ \textbf{before} he commits to the value $a$. Otherwise, he can precompute $a$ and publish it as a proof (or simply make a deal with the verifier to fool the observer). 
-\end{remark}
-
-Now, notice that the provided protocol is a public-coin protocol. Therefore, we can apply the Fiat-Shamir transformation to make it non-interactive. Suppose we have a random oracle $\mathcal{O}_{\text{R}}: \mathbb{G} \times \mathbb{Z}_q \to \mathbb{Z}_q$:
-\begin{enumerate}
-    \item The prover $\mathcal{P}$ computes $r \gets \mathbb{Z}_q^{\times}, a \gets g^{r}$ and sends $a$ to the Fiat-Shamir Channel.
-    \item The Fiat-Shamir channel responds with the challenge $e \gets \mathcal{O}_{\text{R}}(u,a)$.
-    \item The prover $\mathcal{P}$ computes $\sigma \gets r + \alpha e$ and sends $\sigma$ to the Fiat-Shamir Channel.
-    \item The Fiat-Shamir channel outputs the proof $\pi = (a,e,\sigma)$, which the verifier can check via previously mentioned equation $g^{\sigma} = a \cdot u^e$.
-\end{enumerate}
-
-Now, notice that $e$ might not be included in the proof since the verifier can compute it by himself. Therefore, the final proof $\pi$ can be reduced to $(a,\sigma) \in \mathbb{G} \times \mathbb{Z}_q$ and its computation does not need any interaction with the verifier. Moreover, it is still complete, sound, and proof of knowledge due to the Fiat-Shamir transformation. It is also (not easy to prove) zero-knowledge.
-
-\subsubsection{Schnorr's Signature Scheme}
-
-Now, turning the Schnorr's Identification Protocol into a signature scheme is quite straightforward. The only modification to the non-interactive proof described in the previous section is that we include the message $m \in \mathcal{M}$ instead of our statement $u \in \mathbb{G}$ in the computation of the challenge $e$. Now, let us give a formal definition.
-
-\begin{definition}
-    The Schnorr Signature Scheme is $\Sigma_{\text{Sch}} = (\mathsf{Gen}, \mathsf{Sign}, \mathsf{Verify})$, where:
-    \begin{itemize}
-        \item $\mathsf{Gen}(1^{\lambda})$: We take $\alpha \xleftarrow{R} \mathbb{Z}_q$ and $u \gets g^{\alpha}$. The \textit{public key} is $\mathsf{pk} := u$, while the \textit{secret key} as $\mathsf{sk} := \alpha$.
-        \item $\mathsf{Sign}(m,\mathsf{sk})$: The signer computes $r \gets \mathbb{Z}_q^{\times}, a \gets g^{r}, e \gets H(m, a), \sigma \gets r + \alpha e$ and outputs the signature $(a,\sigma)$.
-        \item $\mathsf{Verify}((a, \sigma), m,\mathsf{pk})$: The verifier checks if $g^{\sigma} = a \cdot u^e$ for $e \gets H(m, a)$.
-    \end{itemize}
-\end{definition}
 
 \subsection{Exercises}
 
