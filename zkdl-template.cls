@@ -30,6 +30,7 @@
 \RequirePackage[a4paper, top=1.0in,bottom=1.0in, left=0.8in, right=0.8in, footskip=0.4in, includefoot]{geometry}
 \RequirePackage[most]{tcolorbox}
 \RequirePackage{multicol}
+\RequirePackage{bm}
 \RequirePackage[bottom,multiple]{footmisc} % ensures footnotes are at the bottom of the page, and separates footnotes by a comma if they are adjacent
 
 % --- Hyperref settings ---
