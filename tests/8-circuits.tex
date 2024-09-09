@@ -1,0 +1,118 @@
+\documentclass{zkdl-tests-template}
+
+\title{\huge\sffamily\bfseries Lecture \#8 Task}
+\author{\Large\sffamily Distributed Lab}
+\date{\sffamily September 12, 2024}
+\titlepic{\includegraphics[width=0.15\textwidth]{../lectures/images/common/logo.png}}
+
+\begin{document}
+
+\pagestyle{fancy}
+
+\maketitle
+
+\vspace{20px}
+
+\begin{center}
+    Turn to the next page to see the tasks $\Longrightarrow$
+\end{center}
+
+\section{R1CS In Rust}
+
+\subsection{Introduction}
+
+This time, the task is a bit unusual: you need to implement a simple Rank-1 Constraint System (R1CS) in Rust. 
+For that reason, consider a pretty simple problem: the prover $\mathcal{P}$ wants to convince the verifier
+$\mathcal{V}$ that he knows the modular cube root of $y$ modulo $p$ for the given $y \in \mathbb{F}_p$. Here,
+$p$ is the BLS12-381 prime, which will become handy in the next tasks.
+
+For that reason, we construct the circuit of the following form:
+\begin{equation*}
+    \mathtt{C}(x,y) = x^3 - y,
+\end{equation*}
+
+Here, we need only two constraints to check the correctness of the prover's statement:
+\begin{enumerate}
+    \item $r_1 = x \times x$.
+    \item $r_2 = x \times r_1 - y$.
+\end{enumerate}
+
+Therefore, the solution vector becomes $\mathbf{w} = (1,x,y,r_1,r_2)$. The goal of this task is to:
+\begin{itemize}
+    \item Implement the basic Linear Algebra operations for R1CS in Rust.
+    \item Implement the R1CS satisfiability check.
+    \item Construct the matrices $L,R,O$ to check the satisfiability of the given solution vector $\mathbf{w}$ (checking the cubic root of given $y$).
+\end{itemize}
+
+\subsection{Task Statement}
+
+\subsubsection{Task 1: Preparation}
+
+All the source code we are going to refer to is specified by the link below:
+\begin{center}
+    \url{https://github.com/ZKDL-Camp/lecture-8-r1cs-qap}
+\end{center}
+
+Download Rust\footnote{If you are the total beginner, you might find these official resources useful: \url{https://www.rust-lang.org/learn}} (in case you do not have one), clone/fork the repository and verify that everything compiles (just that, the code does not work yet). In case you are confused, the project is structured as follows:
+\begin{itemize}
+    \item \texttt{src/main.rs} contains the entrypoint where you can test your implementation.
+    \item \texttt{src/finite\_field.rs} contains the $\mathbb{F}_p$ specification --- you will not need it.
+    \item \texttt{src/linear\_algebra.rs} contains the basic Linear Algebra operations (with vectors and matrices) you need to implement.
+    \item \texttt{src/r1cs.rs} contains the R1CS implementation where you also would need to implement a piece of functionality.
+\end{itemize}
+
+\subsubsection{Task 2: Linear Algebra Operations}
+
+Now, recall that our ultimate goal is to construct the matrices $L,R,O$ to check the following satisfiability condition:
+\begin{equation*}
+    L\mathbf{w} \odot R\mathbf{w} = O\mathbf{w},
+\end{equation*}
+
+And additionally, for education purposes, we will want to check the satisfiability of any specified constraint, that is:
+\begin{equation*}
+    \langle \boldsymbol{\ell}_j, \mathbf{w} \rangle \times \langle \boldsymbol{r}_j, \mathbf{w} \rangle = \langle \boldsymbol{o}_j, \mathbf{w} \rangle.
+\end{equation*}
+
+For that reason, we need to have the Hadamard product (element-wise multiplication) and inner (dot) product of two vectors and the matrix-vector product. For that reason, implement the following functions in the \texttt{linear\_algebra.rs} module:
+\begin{enumerate}
+    \item \texttt{Vector::dot(\&self, other: \&Self) -> Fp} --- the inner product of two vectors.
+    \item \texttt{Vector::hadamard\_product(\&self, other: \&Self) -> Self} --- the Hadamard (elementwise) product $\mathbf{v} \odot \mathbf{u}$ of two vectors.
+    \item \texttt{Matrix::hadamard\_product(\&self, other: \&Self) -> Self} --- the Hadamard (elementwise) product $A \odot B$ of two matrices.
+    \item \texttt{Matrix::vector\_product(\&self, other: \&Vector) -> Vector} --- the matrix-vector product $A\mathbf{v}$.
+\end{enumerate}
+
+To test the correctness of your implementation, run
+\begin{center}
+    \texttt{cargo test linear\_algebra}
+\end{center}
+
+\subsubsection{Task 3: R1CS Satisfiability Check}
+
+Now, we need to implement the R1CS satisfiability check. For that reason, implement the following functions in the \texttt{r1cs.rs} module:
+\begin{enumerate}
+    \item \texttt{R1CS::is\_satisfied(\&self, witness: \&Vector<WITNESS\_SIZE>) -> bool} --- the function that checks the satisfiability of the given solution vector $\mathbf{w}$.
+    \item \texttt{R1CS::is\_constraint\_satisfied(\&self, witness: \&Vector<WITNESS\_SIZE>, j: usize) -> bool} --- the function that checks whether the $j$-th constraint is satisfied.
+\end{enumerate}
+
+To test the correctness of your implementation, run
+\begin{center}
+    \texttt{cargo test r1cs}
+\end{center}
+
+\subsubsection{Task 4: R1CS for Cubic Root}
+
+Now, as the final step, construct the matrices $L,R,O$ for the given R1CS problem and check the satisfiability of the solution vector $\mathbf{w} = (1,x,y,r_1,r_2)$ where $x$ is the cubic root of $y$ modulo $p$. For that reason, insert the missing pieces of code in the \texttt{main.rs} file. This file will automatically:
+\begin{enumerate}
+    \item Generate a random valid witness.
+    \item Construct the R1CS with the given matrices $L,R,O$.
+    \item Check the satisfiability of the given solution vector.
+\end{enumerate}
+
+\textbf{Hint.} In the lecture, we considered a bit more complicated circuit
+\begin{equation*}
+    \mathtt{C}(x_1,x_2,x_3) = x_1 \times x_2 \times x_3 + (1-x_1) \times (x_2 + x_3), \quad x_1 \in \{0,1\}, \quad x_2,x_3 \in \mathbb{F}_p
+\end{equation*}
+
+You might take a look at how this circuit is implemented in the \texttt{r1cs.rs} file in the \texttt{tests} module and adapt it to the cubic root problem.
+
+\end{document}
