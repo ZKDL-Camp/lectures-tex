@@ -42,18 +42,19 @@ to $m_2 = 15$. Which values $(m_2, r_2)$ should he send to Dmytro at the opening
 \end{enumerate}
 
 \textbf{Exercise 3.} We define a dummy hash function $H(a, b) = (a \cdot 3 + b \cdot 7) \pmod{41}$. You have a Merkle tree built with depth $4$ 
-using hash function $H$ with root equal $37$. Which inclusion proof is valid for element $3$?
-Position defines how leaves should be hashed:
+using hash function $H$ with root equal $37$. Position defines how leaves should be hashed:
+\begin{itemize}
+    \item if $\mathsf{left}$, then $h_i \gets H(h_{i-1}, \mathsf{branch}[i])$
+    \item if $\mathsf{right}$, then $h_i \gets H(\mathsf{branch}[i], h_{i-1})$
+\end{itemize}
 
-    - if $left \rightarrow h_i = Hash(h_{i-1}, branch[i])$
-
-    - if $right \rightarrow  h_i = Hash(branch[i], h_{i-1})$
+Which inclusion proof is valid for element $3$?
 
 \begin{enumerate}[(A)]
-    \item branch: $[4, 16, 13]$, position: $[left, right, left]$
-    \item branch: $[1, 40, 3]$, position: $[left, left, left]$
-    \item branch: $[5, 12, 13]$, position: $[right, right, left]$
-    \item branch: $[4, 17, 13]$, position: $[left, right, left]$
+    \item branch: $[4, 16, 13]$, position: $[\mathsf{left}, \mathsf{right}, \mathsf{left}]$
+    \item branch: $[1, 40, 3]$, position: $[\mathsf{left}, \mathsf{left}, \mathsf{left}]$
+    \item branch: $[5, 12, 13]$, position: $[\mathsf{right}, \mathsf{right}, \mathsf{left}]$
+    \item branch: $[4, 17, 13]$, position: $[\mathsf{left}, \mathsf{right}, \mathsf{left}]$
 \end{enumerate}
 
 \textbf{Exercise 4.} Given a polynomial $p(x) = x^3 - 10x^2 + 31x - 30$, Oleksandr wants to prove that $p(2)=0$. 
