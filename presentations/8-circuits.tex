@@ -352,7 +352,7 @@
         Similar to Boolean Circuits, the \textbf{Arithmetic circuits} consist of gates and
         wires. 
         \begin{itemize}
-            \item Wires: elements of some finite field $\mathbb{F}$.
+            \item Wires: elements of some finite field $\mathbb{F}_p$.
             \item Gates: addition ($\oplus$) and multiplication ($\odot$) corresponding to the field.
         \end{itemize} 
 
@@ -442,7 +442,7 @@
                 def evaluate(x1: F, x2: F) -> F:
                     return x1**3 + x2**2
             \end{lstlisting}
-            Looks easy, right? But the circuit is now much less trivial.
+            Looks easy, right? \pause But the circuit is now much less trivial.
             \vspace{-8pt}
             \begin{equation*}
                 \begin{array}{c c c}
@@ -620,28 +620,7 @@
             \label{fig:multivariate-polynomial-circuit}
         \end{figure}
     \end{frame}
-
-    \begin{frame}{Circuit Satisfability Problem}
-        \begin{definition}
-            Arithmetic circuit $\mathtt{C}: \mathbb{F}^N \to \mathbb{F}$ over a finite field 
-            $\mathbb{F}$ is a directed acyclic graph where internal nodes are labeled via 
-            \texttt{+}, \texttt{-}, and $\times$, and inputs are labeled $1,x_1,x_2,\dots,x_n$. 
-            By $|\mathtt{C}|$ we denote the number of gates in the circuit.
-        \end{definition}
-        \pause
-        \begin{definition}
-            The \textbf{Circuit Satisfiability Problem} is defined as follows: given an arithmetic 
-            circuit $\mathtt{C}$ and a public input $x \in \mathbb{F}^n$, determine if there exists 
-            a private input $w \in \mathbb{F}^m$ such that $\mathtt{C}(x,w) = 0$. More formally, the
-            problem is determined by relation $\mathcal{R}_{\texttt{C}}$ and corresponding language
-            $\mathcal{L}_{\texttt{C}}$ as follows:
-            \begin{align*}
-                \mathcal{R}_{\texttt{C}} &= \{(x,w) \in \mathbb{F}^n \times \mathbb{F}^m \; | \; \mathtt{C}(x,w) = 0\},\\ 
-                \mathcal{L}_{\texttt{C}} &= \{x \in \mathbb{F}^n \; | \; \exists w \in \mathbb{F}^m: \mathtt{C}(x,w) = 0\}
-            \end{align*}
-        \end{definition}
-    \end{frame}
-
+    
     \section{Linear Algebruh Preliminaries}
 
     \begin{frame}{Vector Space}
