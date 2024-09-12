@@ -499,16 +499,16 @@
                 % x1**3
                 \draw[arrow,gray] (x1) to [bend left=45] (x1_x1);
                 \draw[arrow,gray] (x1) to [bend right=15] (x1_x1);
-                \draw[arrow,gray] (x1_x1) -- (x1_x1_x1);
-                \draw[arrow,gray] (x1) to [bend right=45] (x1_x1_x1);
+                \draw[arrow,gray] (x1_x1) -- node[midway, above] {$x_1^2$} (x1_x1_x1);
+                \draw[arrow,gray] (x1) to [bend right=45] node[midway, above] {$x_1$} (x1_x1_x1);
         
                 % x2**2
                 \draw[arrow,gray] (x2) to [bend left=30] (x2_x2);
                 \draw[arrow,gray] (x2) to [bend right=30] (x2_x2);
         
                 % Summation
-                \draw[arrow,gray] (x1_x1_x1) -- (plus);
-                \draw[arrow,gray] (x2_x2) -- (plus);
+                \draw[arrow,gray] (x1_x1_x1) -- node[midway, above right] {$x_1^3$} (plus);
+                \draw[arrow,gray] (x2_x2) -- node[midway, above] {$x_2^2$} (plus);
         
                 % Result
                 \node[var] (q) at (7.0, -0.5) {$Q$};
