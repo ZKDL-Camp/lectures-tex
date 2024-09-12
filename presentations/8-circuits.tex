@@ -142,12 +142,6 @@
 
         We can retrieve some information from that:
 
-        \begin{alertblock}{Question \#81673}
-            What is a secret data? Who is a prover and who is a verifier?            
-        \end{alertblock}
-
-        \pause
-
         \vspace{0.1cm}
         \textbf{The Secret Data}: the exact treasure location.
 
@@ -185,32 +179,24 @@
         \end{columns}
     \end{frame}
 
-    \begin{frame}
+    \begin{frame}{The First Question To Resolve}
         But the problems that we usually want to solve are in a slightly different format.
-
         \pause
 
         \vspace{0.2cm}
         When we need to prove that some element is in a merkle tree, we can't come
         to a verifier and give them a "coin"...
-
-        \center
-        \includegraphics[width=10cm]{../presentations/images/lecture_8/exactcodetomathflow.jpg}
-    \end{frame}
-
-    \section{Boolean Circuits}
-
-    \begin{frame}{The First Question To Resolve}
-        The cryptographic tools we have learned in the previous lectures operate with numbers or
-        certain primitives above them. 
         
+        \pause
         \begin{alertblock}{Question?}
             How do we convert a program into a mathematical language?
         \end{alertblock}
 
-        \vspace{1cm}
-        Do not forget about succintness!
+        \center
+        \includegraphics[width=9cm]{../presentations/images/lecture_8/exactcodetomathflow.jpg}
     \end{frame}
+
+    \section{Boolean Circuits}
 
     \begin{frame}{Boolean Circuits}
         We can do that in a way like the computer does it - boolean circuits.
