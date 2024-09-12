@@ -1016,6 +1016,13 @@
                 w_1 \\ w_2 \\ \vdots \\ w_n
             \end{bmatrix} = \begin{bmatrix}
                 \mathbf{a}_1^{\top}\mathbf{w} \\ \mathbf{a}_2^{\top}\mathbf{w} \\ \vdots \\ \mathbf{a}_m^{\top}\mathbf{w}
+            \end{bmatrix} = \begin{bmatrix}
+                \sum_{i=1}^{n}a_{1i}w_i \\ \sum_{i=1}^{n}a_{2i}w_i \\ \vdots \\ \sum_{i=1}^{n}a_{ni}w_i
+            \end{bmatrix} = \begin{bmatrix}
+                \langle \mathbf{a}_1, \mathbf{w}\rangle \\
+                \langle \mathbf{a}_2, \mathbf{w}\rangle \\
+                \vdots \\
+                \langle \mathbf{a}_m, \mathbf{w}\rangle 
             \end{bmatrix}
             \vspace{-5pt}
         \end{equation*}}
