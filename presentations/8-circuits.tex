@@ -901,7 +901,7 @@
     \begin{frame}[fragile]{Constraint System Example}
         Now, let us consider a more complex example.
         \begin{lstlisting}[language=Python,numbers=none]
-        def r(x1: bool, x2: F, x3: F) -> F:
+        def r(x1: F, x2: F, x3: F) -> F:
             return x2 * x3 if x1 else x2 + x3
         \end{lstlisting}
         That can be expressed as:
@@ -1088,7 +1088,7 @@
             \end{equation*}
             Where $A$ is the outer product of vectors $\mathbf{a}$, $\mathbf{b}$, so a \textbf{rank-1} matrix.
         \end{lemma}
-
+        \pause
         \textbf{Lemma proof.} Consider $\mathbf{a}, \mathbf{b}, \mathbf{c}, \mathbf{w} \in \mathbb{F}^n$.
         \vspace{-5pt}
         \begin{equation*}
