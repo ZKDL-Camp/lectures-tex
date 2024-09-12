@@ -620,7 +620,7 @@
             \label{fig:multivariate-polynomial-circuit}
         \end{figure}
     \end{frame}
-    
+
     \section{Linear Algebruh Preliminaries}
 
     \begin{frame}{Vector Space}
@@ -876,29 +876,25 @@
 
     \begin{frame}{Constraint Example}
         \begin{example}
-            Consider the most basic circuit with one multiplication gate:
+            Consider the most basic circuit with one multiplication gate: $x_1 \times x_2 = r$.
+            The witnes vector $\mathbf{w} = (r, x_1, x_2)$. So
+            \vspace{-5pt}
+            \begin{align*}
+                w_2 &\times w_3 = w_1 \\
+                (0 + w_2 + 0) &\times (0 + 0 + w_3) = w1 + 0 + 0 \\
+                (0w_1 + 1w_2 + 0w_3) &\times (0w_1 + 0w_2 + 1w_3) = 1w_1 + 0w_2 + 0w_3
+            \end{align*}
+            Therefore the coefficients vectors are:
             \vspace{-5pt}
             \begin{equation*}
-                r = x_1 \times x_2
+                \mathbf{a} = (0, 1, 0), \quad \mathbf{b} = (0, 0, 1), \quad \mathbf{c} = (1, 0, 0). 
                 \vspace{-5pt}
             \end{equation*}
-            Since we have $3$ variables, the constraint is written as:
+            The general form of our constraint is:
             \vspace{-5pt}
             \begin{equation*}
                 (a_1w_1 + a_2w_2 + a_3w_3)(b_1w_1 + b_2w_2 + b_3w_3) = c_1w_1 + c_2w_2 + c_3w_3
-                \vspace{-5pt}
             \end{equation*}
-            Coefficients and witness vectors are:
-            \vspace{-5pt}
-            \begin{equation*}
-                \mathbf{w} = (r, x_1, x_2), \quad \mathbf{a} = (0, 1, 0), \quad \mathbf{b} = (0, 0, 1), \quad \mathbf{c} = (1, 0, 0). 
-                \vspace{-5pt}
-            \end{equation*}
-            Therefore, our expression above reduces to:
-            \vspace{-5pt}
-            \[ (0w_1 + 1w_2 + 0w_3)(0w_1 + 0w_2 + 1w_3) = (1w_1 + 0w_2 + 0w_3) \vspace{-5pt} \]
-            \[ w_2 \times w_3 = w_1 \vspace{-5pt} \]
-            \[ x_1 \times x_2 = r \]
         \end{example}
     \end{frame}
 
