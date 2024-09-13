@@ -74,22 +74,22 @@
             Knowledge.
         \end{definition}
 
-        
+        \pause
 
         \begin{itemize}
             \item \textbf{Argument of Knowledge} --- a proof that the prover knows the data (witness) that resolves a certain
-            problem, and this knowledge can be ``extracted''. 
+            problem, and this knowledge can be ``extracted''. \pause
             \item \textbf{Succinctness} --- the proof size and verification time is relatively small to the computation size and typically does not depend on the size of 
-            the data or statement. 
+            the data or statement. \pause
             \item \textbf{Non-interactiveness} --- to produce the proof, the prover does not need any interaction
-            with the verifier. 
+            with the verifier. \pause
             \item \textbf{Zero-Knowledge} --- the verifier learns nothing about the data used to produce the
             proof, despite knowing that this data resolves the given problem and that the prover possesses it.
         \end{itemize}
     \end{frame}
 
     \begin{frame}{Still didn't get who is Snark...}
-        Well... Let's take a look at some example. 
+        Well... Let's take a look at some example. \pause
 
         \begin{columns}
             \begin{column}{0.2\textwidth}
@@ -101,7 +101,7 @@
             \end{column}
         \end{columns}
 
-        
+        \pause
 
         \begin{columns}
             \begin{column}{0.7\textwidth}
@@ -113,7 +113,7 @@
             \end{column}
         \end{columns}
 
-        
+        \pause
 
         \begin{columns}
             \begin{column}{0.2\textwidth}
@@ -138,7 +138,7 @@
             \end{column}
         \end{columns}
 
-        
+        \pause
 
         We can retrieve some information from that:
 
@@ -157,16 +157,16 @@
 
         \begin{itemize} 
             \item \textbf{Argument of Knowledge}: You need to create a proof that demonstrates you know the
-            chest is. 
+            chest is. \pause
             \item \textbf{Succinct}: The proof you provide is very small and concise. It doesn't matter how
-            large the treasure map is or how many steps it took you to find the chest. 
+            large the treasure map is or how many steps it took you to find the chest. \pause
             \item \textbf{Non-interactive}: You don't need to have a back-and-forth conversation with the 
-            organizer to create this proof. 
+            organizer to create this proof. \pause
             \item \textbf{Zero-Knowledge}: The proof doesn't reveal any information about the actual 
             location of the treasure chest.
         \end{itemize}
 
-        
+        \pause
 
         \begin{columns}
             \begin{column}{0.3\textwidth}
@@ -181,13 +181,13 @@
 
     \begin{frame}{The First Question To Resolve}
         But the problems that we usually want to solve are in a slightly different format.
-        
+        \pause
 
         \vspace{0.2cm}
         When we need to prove that some element is in a merkle tree, we can't come
         to a verifier and give them a "coin"...
         
-        
+        \pause
         \begin{alertblock}{Question?}
             How do we convert a program into a mathematical language?
         \end{alertblock}
@@ -257,7 +257,7 @@
                 \caption{Boolean \texttt{AND} and \texttt{OR} Gates}
             \end{minipage}
             \hspace{0.05\textwidth} % Space between figures
-            
+            \pause
             \begin{minipage}{0.36\textwidth}
                 \centering
                 \begin{tabular}{|c|c|c|}
@@ -323,7 +323,7 @@
             \end{tikzpicture}
             \vspace{-5pt}
             \caption{Example of a circuit evaluating $d = (a \;\texttt{AND}\; b) \,\texttt{OR}\; c$.}
-        \end{figure}
+        \end{figure}\pause
         \vspace{-5pt}
         Boolean circuits receive an input vector of {0, 1} and resolve to true (1) or false (0);\\
         \vspace{5pt}
@@ -415,19 +415,19 @@
                 def multiply(a: F, b: F) -> F:
                     return a * b
             \end{lstlisting}
-            
+            \pause
             This can be represented as a circuit with only one (multiplication) gate:
             \begin{equation*}
                 r = a \times b
             \end{equation*}    
-            
+            \pause
             The witness vector (essentially, our solution vector) is $\mathbf{w} = (r, a, b)$, for
             example: $(6, 2, 3)$. \\
             \vspace{5pt}
             We assume that the $a$ and $b$ are input values.
         \end{example}
 
-        
+        \pause
 
         \begin{block}{Note}
             We can think of the ``=`` in the gate as an assertion.
@@ -442,7 +442,7 @@
                 def evaluate(x1: F, x2: F) -> F:
                     return x1**3 + x2**2
             \end{lstlisting}
-            Looks easy, right?  But the circuit is now much less trivial.
+            Looks easy, right? \pause But the circuit is now much less trivial.
             \vspace{-8pt}
             \begin{equation*}
                 \begin{array}{c c c}
@@ -529,14 +529,14 @@
                     else:
                         return b + c
             \end{lstlisting}
-            
+            \pause
             We can transform such a function into the next expression:
             \vspace{-8pt}
             \begin{equation*}
                 r = a \times (b \times c) + (1 - a) \times (b + c)    
                 \vspace{-8pt}
             \end{equation*}
-            
+            \pause
             Corresponding equations for the circuit are:
             \vspace{-8pt}
             \begin{equation*}
@@ -748,7 +748,7 @@
             \end{equation*}
         \end{definition}
 
-        
+        \pause
         \begin{block}{Note}                 
             The dot product can also be denoted using the dot notation as:
             \vspace{-8pt}
@@ -851,7 +851,7 @@
                 \end{bmatrix}
             \end{equation*}
 
-            
+            \pause
             The rows/columns number 2 and 3 in the result matrix can be represented as a linear 
             combination of the first row/column, specifically by multiplying it by 2 and 3, 
             respectively. 
@@ -909,7 +909,7 @@
             r = x_1 \times (x_2 \times x_3) + (1 - x_1) \times (x_2 + x_3)
         \end{equation*}
         
-        
+        \pause
         \begin{alertblock}{}
             We need a boolean restriction for $x_1$:
             \vspace{-8pt}
@@ -918,7 +918,7 @@
             \end{equation*}
         \end{alertblock}
 
-        
+        \pause
         Thus, the next constraints can be build:
         \vspace{-5pt}
         \begin{align*}
@@ -1006,7 +1006,7 @@
             \end{bmatrix}
             \vspace{-5pt}
         \end{equation*}}
-        
+        \pause
         Consider an expression $A\mathbf{w}$:
         \vspace{-5pt}
         {\scriptsize \begin{equation*}
@@ -1026,7 +1026,7 @@
             \end{bmatrix}
             \vspace{-5pt}
         \end{equation*}}
-        
+        \pause
         Therefore, we have:
         \vspace{-5pt}
         {\scriptsize \begin{equation*}
@@ -1050,7 +1050,7 @@
             \end{bmatrix}
             \vspace{-5pt}
         \end{equation*}}
-        
+        \pause
         Thus, {\small $A\mathbf{w} \odot B\mathbf{w} = C\mathbf{w}$} is equivalent to the system of $m$ constraints:
         \vspace{-5pt}
         {\small \begin{equation*}
@@ -1096,7 +1096,7 @@
             \end{equation*}
             Where $A$ is the outer product of vectors $\mathbf{a}$, $\mathbf{b}$, so a \textbf{rank-1} matrix.
         \end{lemma}
-        
+        \pause
         \textbf{Lemma proof.} Consider $\mathbf{a}, \mathbf{b}, \mathbf{c}, \mathbf{w} \in \mathbb{F}^n$.
         \vspace{-5pt}
         \begin{equation*}
