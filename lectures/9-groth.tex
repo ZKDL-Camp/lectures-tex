@@ -1,0 +1,110 @@
+\documentclass[../lecture-notes.tex]{subfiles}
+
+\newcommand{\Circ}{\textit{\texttt{C}}}
+
+\begin{document}
+
+\subsection{Probabilistically Checkable Proofs}
+
+Before going further we should get acquainted with one more concept from the computational 
+complexity theory, that have an important application in zk-SNARK and provides the theoretical 
+backbone. 
+
+A Probabilistically Checkable Proof (PCP) is a type of proof system where the verifier can 
+efficiently check the correctness of a proof by examining only a small, random portion of it, rather
+than verifying it entirely. 
+\begin{definition}
+    A language $\mathcal{L} \subseteq \Sigma^*$ (for some given alphabet $\Sigma$) is in the class $\mathsf{PCP}(r,q)$ (\textbf{probabilistically checkable proofs}), 
+    where $r$ is the \emph{randomness complexity} and $q$ is the \emph{query complexity}, 
+    if for a given pair of algorithms $(\mathcal{P}, \mathcal{V})$: 
+    \begin{itemize}
+        \item \emph{Syntax:} $\mathcal{P}$ calculates a proof (bit string) $\pi \in \Sigma^*$ in polynomial time $\mathsf{poly}(|x|)$ of the common input $x$. The prover $\mathcal{P}$ and verifier $\mathcal{V}$ interact, where the verifier has an oracle access to $\pi$ (meaning, he queries it at any position).
+        \item \emph{Complexity:} $\mathcal{V}$ uses at most $r$ random bits to decide which part of the proof to 
+        query and the verifier queries at most $q$ bits of the proof.
+    \end{itemize}
+    
+    Such pair of algorithms $(\mathcal{P}, \mathcal{V})$ should satisfy the following properties (with a security parameter $\lambda \in \mathbb{N}$):
+    \begin{itemize}
+        \item \textbf{Completeness}: If $x \in \mathcal{L}$, then $\Pr[\mathcal{V}^{\pi}(x) = 1] = 1$.
+        \item \textbf{Soundness}: If $x \notin \mathcal{L}$, then for any possible (malicious) proof $\pi^*$, 
+        \begin{equation*}
+            \Pr[\mathcal{V}^{\pi^*}(x) = 1] = \mathsf{negl}(\lambda).
+        \end{equation*}
+    \end{itemize}
+\end{definition}
+This allows a verification of huge statements with high confidence while using limited computational
+resources.
+
+\begin{theorem}{\textbf{PCP theorem (PCP characterization theorem)}\\}
+    Any decision problem in $\mathsf{NP}$ has a PCP verifier that uses logarithmic randomness 
+    $O(\log n)$ and a constant number of queries $O(1)$, independent of $n$.
+    \begin{equation*}
+        \mathsf{NP} = \mathsf{PCP}(O(\log n), O(1))
+    \end{equation*}
+\end{theorem}
+
+\subsubsection{PCP application in QAP}
+
+When constructing a Quadratic Arithmetic Program (QAP) for a circuit $\Circ$, we represented the whole circuit's 
+computation using the following relation:
+\begin{equation*}
+    L(X)R(X) - O(X) = Z_{\Omega}(X)H(X),
+\end{equation*}
+where by $L(X)$, $R(X)$, $O(X)$ we denote the polynomials that represent the left, right and output 
+wires of the circuit, respectively. $Z_{\Omega}(X)$ is the target polynomial, while
+$H(X) := M(X)\big/Z_{\Omega}(X)$ for master polynomial $M(X) = L(X)R(X) - O(X)$ is the quotient polynomial.
+
+We effectively managed to transform all the circuit's constraints, and computations in the short form.
+It still allows one to verify that each computational step is preserved by verifying the 
+polynomial evaluation in specific (random) points, instead of recomputing everything. However, it is 
+not quite clear why such a check is safe and how it can be used in a PCP. In other words, why checking that $L(s)R(s)-O(s)=Z_{\Omega}(s)H(s)$ for randomly selected $s$ is enough to verify the circuit $\Circ$?
+
+\textbf{Soundness justification.} Why is it safe to use such a check? As it was said early, 
+we perform all the computations in some finite field $\mathbb{F}$. The 
+polynomials $L(X)$, $R(X)$ and $O(X)$ are interpolated polynomials using $\left| \Circ \right|$ (number of gates) points, so 
+\begin{equation*}
+    \deg(L) \le \left| \Circ \right|, \quad 
+    \deg(R) \le \left| \Circ \right|, \quad 
+    \deg(O) \le \left| \Circ \right|
+\end{equation*}
+
+Thus, using properties of polynomials' degrees, we can estimate the degree of polynomial $M(X) = L(X)R(X) - O(X)$.
+\begin{equation*}
+    \deg(M) \leq \max\{\deg(A) + \deg(B), \deg(C)\} = \max\{2 \left| \Circ \right|, \left| \Circ \right|\} = 2 \left| \Circ \right|
+\end{equation*}
+
+Now, using the \hyperref[lem:schwartz_zippel_lemma]{Schwartz-Zippel Lemma~\ref{lem:schwartz_zippel_lemma}},
+we can deduce that if an adversary $\mathcal{A}$ does not know a valid witness $\mathbf{w}$, 
+resolving the circuit $\Circ$, he can compute a polynomial $\widetilde{M}(X) \gets \mathcal{A}(\cdot)$ that 
+satisfies a verifier $\mathcal{V}_{\Circ}$ with probability less then 
+$2 \left| \Circ \right|/|\mathbb{F}|$. To put it formally, we can write:
+\begin{equation*}
+    \mathop{\text{Pr}}_{s \xleftarrow{R} \mathbb{F}}[\widetilde{M}(s) = M(s)] \leq \frac{2 \left| \Circ \right|}{|\mathbb{F}|}
+\end{equation*}
+This probability becomes negligible as $|\mathbb{F}|$ grows large (which is typically the case), giving us soundness. In the same time, the
+verifier accepts the $M(X)$ generated using a valid witness with probability $1$ giving us the 
+completeness, so, we can categorize QAP as PCP. 
+
+We will modify the form of our proof with the next modifications, but still preserve the PCP 
+properties.
+
+\subsubsection{Encrypted Verification}
+
+Now, assume we have the cyclic group $\mathbb{G}$ of prime order $r$ with a generator $g$. Typically, this is the group of points on an elliptic curve. Assume that $e: \mathbb{G} \times \mathbb{G} \to \mathbb{G}_T$ is a symmetric pairing function, where $\mathbb{G}_T$ is a target group.
+
+Now, suppose during the setup phase, we have a trusted party that generated a random value $\tau$ and public parameters $g^{\tau},g^{\tau^2},\dots,g^{\tau^{d}}$ for $d=2|\Circ|$ --- maximum degree of used polynomials (later we will use notation $\{g^{\tau^i}\}_{i \in [d]}$ for brevity). This way, we can find the KZG commitment for each polynomial. Thus, for example,
+\begin{equation*}
+    g^{L(\tau)} = g^{\sum_{i=0}^d L_i \tau^i} = \prod_{i=0}^d (g^{\tau^i})^{L_i},
+\end{equation*}
+
+and the same goes for $g^{R(\tau)}, g^{O(\tau)}, g^{H(\tau)}, g^{Z_{\Omega}(\tau)}$. Now, given these give points, how can we verify that the polynomial $M(X) = L(X)R(X) - O(X)$ is correct? Well, first notice that the check is equivalent to
+\begin{equation*}
+    L(\tau)R(\tau) = Z_\Omega(\tau)H(\tau) + O(\tau).
+\end{equation*}
+
+Notice that we transferred $O(\tau)$ to the right side of the equation to further avoid finding the inverse. Now, we can check this equality using encrypted values as follows:
+\begin{equation*}
+    e(g^{L(\tau)}, g^{R(\tau)}) = e(g^{Z_{\Omega}(\tau)}, g^{H(\tau)}) \cdot e(g^{O(\tau)}, g),
+\end{equation*}
+
+\end{document}
