@@ -1,7 +1,5 @@
 \documentclass[../lecture-notes.tex]{subfiles}
 
-\newcommand{\Circ}{\textit{\texttt{C}}}
-
 \begin{document}
 
 \subsection{Probabilistically Checkable Proofs}
@@ -33,7 +31,7 @@ than verifying it entirely.
     \end{itemize}
 \end{definition}
 This allows a verification of huge statements with high confidence while using limited computational
-resources.
+resources. See \Cref{fig:pcp}.
 
 \begin{theorem}{\textbf{PCP theorem (PCP characterization theorem)}\\}
     Any decision problem in $\mathsf{NP}$ has a PCP verifier that uses logarithmic randomness 
@@ -42,6 +40,129 @@ resources.
         \mathsf{NP} = \mathsf{PCP}(O(\log n), O(1))
     \end{equation*}
 \end{theorem}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \node[inner sep=0pt, align=center] at (-4.0, 0.0) (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
+        \node[inner sep=0pt, align=center] at (4.0, 0.0) (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
+
+        \draw[fill=gray!20!white, ultra thick] (-2.0, 4) rectangle (2.0, 3.25);
+
+        % Query boxes
+        \draw[fill=blue!60!white, ultra thick] (-1.0, 4) rectangle (-0.8, 3.25);
+        \node at (-0.9, 4.35) (pcp) {$q_1$};
+        \draw[fill=blue!60!white, ultra thick] (0.0, 4) rectangle (0.2, 3.25);
+        \node at (0.1, 4.35) (pcp) {$q_2$};
+        \draw[fill=blue!60!white, ultra thick] (0.5, 4) rectangle (0.7, 3.25);
+        \node at (0.6, 4.35) (pcp) {$q_3$};
+        \node at (0, 2.85) (pcp) {\textbf{PCP Oracle}};
+
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] (prover)--(pcp) node[midway, left=3mm]{Generate an oracle ($\pi$)};
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] (verifier)--(pcp) node[midway, right=3mm]{Point queries $q_1,\dots,q_m$};
+    \end{tikzpicture}
+    \caption{Illustration of a Probabilistically Checkable Proof (PCP) system. The prover $\mathcal{P}$ generates a PCP oracle $\pi$ that is queried by the verifier $\mathcal{V}$ at specific points $q_1,\dots,q_m$.}
+    \label{fig:pcp}
+\end{figure}
+
+However, despite the fact that PCP is a very powerful tool, it is not used directly in zk-SNARKs. We need to extend it a bit to make it more suitable for our purposes.
+
+Three main extensions of PCPs that are frequently used in SNARKs are:
+\begin{itemize}
+    \item \textbf{IPCP} (\textbf{Interactive PCP}): The prover commits to the PCP oracle and then, based on the interaction between the prover and verifier, the verifier queries the oracle and decides whether to accept the proof.
+    \item \textbf{IOP} (\textbf{Interactive Oracle Proof}): The prover and verifier interact and on each round, the prover commits to a new oracle. The verifier queries the oracle and decides whether to accept the proof.
+    \item \textbf{LPCP} (\textbf{Linear PCP}): The prover commits to a linear function and the verifier queries the function at specific points.
+\end{itemize}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \node[inner sep=0pt, align=center] at (-4.0, 0.0) (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
+        \node[inner sep=0pt, align=center] at (4.0, 0.0) (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
+
+        % Oracle 1
+        \node at (-2.0, 5.625) (oracle_1_left) {};
+        \node at (2.0, 5.625) (oracle_1_right) {};
+        \draw[fill=gray!20!white, ultra thick] (-2.0, 6) rectangle (2.0, 5.25);
+        \draw[fill=blue!60!white, ultra thick] (-1.0, 6) rectangle (-0.8, 5.25);
+        \node at (-0.9, 6.35) (pcp) {$q_1$};
+        \draw[fill=blue!60!white, ultra thick] (0.0, 6) rectangle (0.2, 5.25);
+        \node at (0.1, 6.35) (pcp) {$q_2$};
+        \draw[fill=blue!60!white, ultra thick] (0.5, 6) rectangle (0.7, 5.25);
+        \node at (0.6, 6.35) (pcp) {$q_3$};
+        \node at (0, 4.85) (pcp) {\textbf{PCP Oracle \#1}};
+
+        % Oracle 2
+        \node at (-2.0, 3.625) (oracle_2_left) {};
+        \node at (2.0, 3.625) (oracle_2_right) {};
+        \draw[fill=gray!20!white, ultra thick] (-2.0, 4) rectangle (2.0, 3.25);
+        \draw[fill=blue!60!white, ultra thick] (-0.4, 4) rectangle (-0.2, 3.25);
+        \node at (-0.3, 4.35) (pcp) {$q_1'$};
+        \draw[fill=blue!60!white, ultra thick] (0.2, 4) rectangle (0.4, 3.25);
+        \node at (0.3, 4.35) (pcp) {$q_2'$};
+        \draw[fill=blue!60!white, ultra thick] (1.5, 4) rectangle (1.7, 3.25);
+        \node at (1.6, 4.35) (pcp) {$q_3'$};
+        \node at (0, 2.85) (pcp) {\textbf{PCP Oracle \#2}};
+
+        % Oracle 3
+        \node at (-2.0, 1.625) (oracle_3_left) {};
+        \node at (2.0, 1.625) (oracle_3_right) {};
+        \draw[fill=gray!20!white, ultra thick] (-2.0, 2) rectangle (2.0, 1.25);
+        \draw[fill=blue!60!white, ultra thick] (-1.5, 2) rectangle (-1.3, 1.25);
+        \node at (-1.4, 2.35) (pcp) {$q_1''$};
+        \draw[fill=blue!60!white, ultra thick] (0.3, 2) rectangle (0.5, 1.25);
+        \node at (0.4, 2.35) (pcp) {$q_2''$};
+        \draw[fill=blue!60!white, ultra thick] (1.0, 2) rectangle (1.2, 1.25);
+        \node at (1.1, 2.35) (pcp) {$q_3''$};
+        \node at (0, 0.85) (pcp) {\textbf{PCP Oracle \#3}};
+
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] (prover)--(oracle_1_left) node[midway, left=3mm]{Commit to oracles ($\pi_1,\dots,\pi_r$)};
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] (verifier)--(oracle_1_right) node[midway, right=3mm]{Point queries ($\mathbf{q}_1,\dots,\mathbf{q}_r$)};
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] (prover)--(oracle_2_left) node[midway, left=3mm]{};
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] (verifier)--(oracle_2_right) node[midway, right=3mm]{};
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] (prover)--(oracle_3_left) node[midway, left=3mm]{};        
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] (verifier)--(oracle_3_right) node[midway, right=3mm]{};
+
+        % Two arrows to left and to right between the prover and verifier with the "Interaction" label
+        \draw[{Stealth[length=3mm]}-{Stealth[length=3mm]},line width=0.4mm,dashed] (prover) to node[midway, below]{Interaction} (verifier);
+    \end{tikzpicture}
+    \caption{Illustration of an Interactive Oracle Proof (IOP). On each round $i$ ($1 \leq i \leq r$), $\mathcal{V}$ sends a message $m_i$, and $\mathcal{P}$ commits to a new oracle $\pi_i$, which $\mathcal{V}$ can query at $\mathbf{q}_i=(q_{i,1},\dots,q_{i,m})$.}
+    \label{fig:pcp}
+\end{figure}
+
+While IOPs will be later used for PLONK and zk-STARKs, we will focus on Linear PCPs in the context of Groth16 zk-SNARK. Let us define it below.
+
+\begin{definition}[Linear PCP]
+    A \textbf{Linear PCP} is a PCP where the prover commits to a linear function $\boldsymbol{\pi} = (\pi_1,\dots,\pi_k)$ and the verifier queries the function at specific points $\boldsymbol{q}_1,\dots,\boldsymbol{q}_r$. Then, the prover responds with the values of the function at these points:
+    \begin{equation*}
+        \langle \boldsymbol{\pi}_1, \mathbf{q}_1 \rangle, \langle \boldsymbol{\pi}_2, \mathbf{q}_2 \rangle, \dots, \langle \boldsymbol{\pi}_r, \mathbf{q}_r \rangle.
+    \end{equation*}
+\end{definition}
+
+\begin{example}[QAP as a Linear PCP]
+    Recall that key QAP equation is:
+    \begin{equation*}
+        \left(\sum_{i=1}^nw_iL_i(X)\right)\left(\sum_{i=1}^nw_iR_i(X)\right) - \left(\sum_{i=1}^nw_iO_i(X)\right) = Z_{\Omega}(X)H(X).
+    \end{equation*}
+
+    Now, the notation might be confusing, but firstly, we denote vectors of polynomials: 
+    \begin{align*}
+        \boldsymbol{L}(X) & = (L_1(X),\dots,L_n(X)), \\
+        \boldsymbol{R}(X) & = (R_1(X),\dots,R_n(X)), \\
+        \boldsymbol{O}(X) & = (O_1(X),\dots,O_n(X)).
+    \end{align*}
+    
+    Now, consider the following \textbf{linear PCP for QAP}:
+    \begin{enumerate}
+        \item $\mathcal{P}$ commits to an extended witness $\mathbf{w}$ and coefficients $\mathbf{h} = (h_1,\dots,h_n)$ of $H(x)$.
+        \item $\mathcal{V}$ samples $\gamma \xleftarrow{R} \mathbb{F}$ and sends $\boldsymbol{\gamma} = (\gamma,\gamma^2,\dots,\gamma^n)$ to $\mathcal{P}$.
+        \item $\mathcal{P}$ reveals the following values:
+        \begin{equation*}
+            \pi_1 \gets \langle \mathbf{w}, \boldsymbol{L}(\gamma) \rangle, \quad \pi_2 \gets \langle \mathbf{w}, \boldsymbol{R}(\gamma) \rangle, \quad \pi_3 \gets \langle \mathbf{w}, \boldsymbol{O}(\gamma) \rangle, \quad \pi_4 \gets Z_{\Omega}(\gamma) \cdot \langle \mathbf{h}, \boldsymbol{\gamma} \rangle.
+        \end{equation*}
+        \item $\mathcal{V}$ checks whether $\pi_1\pi_2 - \pi_3 = \pi_4$.
+    \end{enumerate}
+\end{example}
 
 \subsubsection{PCP application in QAP}
 
@@ -70,14 +191,13 @@ polynomials $L(X)$, $R(X)$ and $O(X)$ are interpolated polynomials using $\left|
 
 Thus, using properties of polynomials' degrees, we can estimate the degree of polynomial $M(X) = L(X)R(X) - O(X)$.
 \begin{equation*}
-    \deg(M) \leq \max\{\deg(A) + \deg(B), \deg(C)\} = \max\{2 \left| \Circ \right|, \left| \Circ \right|\} = 2 \left| \Circ \right|
+    \deg(M) \leq \max\{\deg(A) + \deg(B), \deg(C)\} \leq 2 \left| \Circ \right|
 \end{equation*}
 
-Now, using the \hyperref[lem:schwartz_zippel_lemma]{Schwartz-Zippel Lemma~\ref{lem:schwartz_zippel_lemma}},
+Now, using the Schwartz-Zippel Lemma (see \Cref{lemma:sz}),
 we can deduce that if an adversary $\mathcal{A}$ does not know a valid witness $\mathbf{w}$, 
 resolving the circuit $\Circ$, he can compute a polynomial $\widetilde{M}(X) \gets \mathcal{A}(\cdot)$ that 
-satisfies a verifier $\mathcal{V}_{\Circ}$ with probability less then 
-$2 \left| \Circ \right|/|\mathbb{F}|$. To put it formally, we can write:
+satisfies a verifier $\mathcal{V}$ with probability less than $2 \left| \Circ \right|/|\mathbb{F}|$. To put it formally, we can write:
 \begin{equation*}
     \mathop{\text{Pr}}_{s \xleftarrow{R} \mathbb{F}}[\widetilde{M}(s) = M(s)] \leq \frac{2 \left| \Circ \right|}{|\mathbb{F}|}
 \end{equation*}
@@ -88,13 +208,18 @@ completeness, so, we can categorize QAP as PCP.
 We will modify the form of our proof with the next modifications, but still preserve the PCP 
 properties.
 
-\subsubsection{Encrypted Verification}
+In the following sections, we will introduce tools needed to succintly verify the equality above
+using the PCP properties. Since the overall proof is very complex from the very first glance, 
+we will break it down into smaller parts and explain each of them in detail. Let us start 
+with the first step.
 
-Now, assume we have the cyclic group $\mathbb{G}$ of prime order $r$ with a generator $g$. Typically, this is the group of points on an elliptic curve. Assume that $e: \mathbb{G} \times \mathbb{G} \to \mathbb{G}_T$ is a symmetric pairing function, where $\mathbb{G}_T$ is a target group.
+\subsubsection{Attempt \#1: Encrypted Verification}
 
-Now, suppose during the setup phase, we have a trusted party that generated a random value $\tau$ and public parameters $g^{\tau},g^{\tau^2},\dots,g^{\tau^{d}}$ for $d=2|\Circ|$ --- maximum degree of used polynomials (later we will use notation $\{g^{\tau^i}\}_{i \in [d]}$ for brevity). This way, we can find the KZG commitment for each polynomial. Thus, for example,
+Now, assume we have the cyclic group $\mathbb{G}$ of prime order $q$ with a generator $g$. Typically, this is the group of points on an elliptic curve. Assume for simplicity that $e: \mathbb{G} \times \mathbb{G} \to \mathbb{G}_T$ is a symmetric pairing function, where $(\mathbb{G}_T, \times)$ is a target group.
+
+Now, suppose during the setup phase, we have a trusted party that generated a random value $\tau \xleftarrow{R} \mathbb{F}$ and public parameters $g^{\tau},g^{\tau^2},\dots,g^{\tau^{d}}$ for $d=2|\Circ|$ --- maximum degree of used polynomials (later we will use notation $\{g^{\tau^i}\}_{i \in [d]}$ for brevity). Then, party \textbf{deleted} $\tau$. This way, we can now find the KZG commitment for each polynomial. Indeed, for example,
 \begin{equation*}
-    g^{L(\tau)} = g^{\sum_{i=0}^d L_i \tau^i} = \prod_{i=0}^d (g^{\tau^i})^{L_i},
+    \mathsf{com}(L) \triangleq g^{L(\tau)} = g^{\sum_{i=0}^d L_i \tau^i} = \prod_{i=0}^d (g^{\tau^i})^{L_i},
 \end{equation*}
 
 and the same goes for $g^{R(\tau)}, g^{O(\tau)}, g^{H(\tau)}, g^{Z_{\Omega}(\tau)}$. Now, given these give points, how can we verify that the polynomial $M(X) = L(X)R(X) - O(X)$ is correct? Well, first notice that the check is equivalent to
@@ -104,7 +229,72 @@ and the same goes for $g^{R(\tau)}, g^{O(\tau)}, g^{H(\tau)}, g^{Z_{\Omega}(\tau
 
 Notice that we transferred $O(\tau)$ to the right side of the equation to further avoid finding the inverse. Now, we can check this equality using encrypted values as follows:
 \begin{equation*}
-    e(g^{L(\tau)}, g^{R(\tau)}) = e(g^{Z_{\Omega}(\tau)}, g^{H(\tau)}) \cdot e(g^{O(\tau)}, g),
+    e(\mathsf{com}(L), \mathsf{com}(R)) = e(\mathsf{com}(Z_{\Omega}), \mathsf{com}(H)) \cdot e(\mathsf{com}(O), g),
 \end{equation*}
+
+\begin{remark}
+    One might ask: why is the above equation correct? Well, let us see:
+    \begin{flalign*}
+        & e(\mathsf{com}(L), \mathsf{com}(R)) = e(\mathsf{com}(Z_{\Omega}), \mathsf{com}(H)) \cdot e(\mathsf{com}(O), g) & \textit{\textcolor{green!60!black}{Initial statement}} \\
+        \Leftrightarrow \quad & e(g^{L(\tau)}, g^{R(\tau)}) = e(g^{Z_{\Omega}(\tau)}, g^{H(\tau)}) \cdot e(g^{O(\tau)}, g) & \textit{\textcolor{green!60!black}{KZG Commitment Definition}} \\
+        \Leftrightarrow \quad & e(g,g)^{L(\tau)R(\tau)} = e(g,g)^{Z_{\Omega}(\tau)H(\tau)}e(g,g)^{O(\tau)} & \textit{\textcolor{green!60!black}{Pairing bilinearity}} \\
+        \Leftrightarrow \quad & e(g,g)^{L(\tau)R(\tau)} = e(g,g)^{Z_{\Omega}(\tau)H(\tau) + O(\tau)} & \textit{\textcolor{green!60!black}{Exponent product rule}} \\
+        \Leftrightarrow \quad & L(\tau)R(\tau) = Z_{\Omega}(\tau)H(\tau) + O(\tau) & \textit{\textcolor{green!60!black}{QAP Check}} \\
+        \Leftrightarrow \quad & L(X)R(X) \equiv Z_{\Omega}(X)H(X) + O(X) & \textit{\textcolor{green!60!black}{Schwarz-Zippel Lemma}}
+    \end{flalign*}
+\end{remark}
+
+So, sounds like we are done. Let us summarize what we have done so far:
+\begin{tcolorbox}[title=Attempt \#1 zk-SNARK Protocol,
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    colbacktitle=blue!25!white,
+    coltitle=blue!20!black,
+    fonttitle=\bfseries,
+    boxrule=1.25pt,
+    subtitle style={boxrule=0pt,
+    colback=blue!20!white,
+    colupper=blue!75!gray} ]
+
+    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $Z_{\Omega}(X)$.
+
+    \tcbsubtitle{$\mathsf{Setup}(1^{\lambda})$}
+    The \emph{trusted party} conducts the following steps:
+    \begin{itemize}
+        \item Picks a random value $\tau \xleftarrow{R} \mathbb{F}$.
+        \item Calculates the public parameters $\{g^{\tau^i}\}_{i \in [d]}$.
+        \item \textcolor{red!80!black}{\textbf{Deletes}} $\tau$ (toxic waste).
+        \item \textbf{Outputs} verification key $\mathsf{vk} = \{\{g^{\tau^i}\}_{i \in [d]}, \mathsf{com}(Z_{\Omega})\}$.
+    \end{itemize}
+    \tcbsubtitle{$\mathsf{Prove}(\mathsf{vk}, \mathbf{x}, \mathbf{w})$}
+    The prover $\mathcal{P}$ conducts the following steps:
+    \begin{itemize}
+        \item Runs the circuit with the statement $\mathbf{x}$ and witness $\mathbf{w}$, obtains the intermediate constraint values, and calculates the polynomials $L(X), R(X), O(X)$ through Lagrange Interpolation.
+        \item Calculates $H(X) \gets (L(X)R(X) - O(X))\big/ Z_{\Omega}(X)$.
+        \item Calculates the KZG commitments as follows: $\pi_1 \gets \mathsf{com}(L), \pi_2 \gets \mathsf{com}(R), \pi_3 \gets \mathsf{com}(O), \pi_4 \gets \mathsf{com}(H)$ using powers of $\tau$ from the verification key $\mathsf{vk}$.
+        \item Publishes $\boldsymbol{\pi} = (\pi_1,\pi_2,\pi_3,\pi_4)$ as a proof.
+    \end{itemize}
+    \tcbsubtitle{$\mathsf{Verify}(\mathsf{vk}, \mathbf{x}, \boldsymbol{\pi})$}
+    Upon receiving $\boldsymbol{\pi} = (\pi_1,\pi_2,\pi_3,\pi_4)$, the verifier $\mathcal{V}$ checks:
+    \begin{equation*}
+        e(\pi_1, \pi_2) = e(\mathsf{com}(Z_{\Omega}), \pi_4) \cdot e(\pi_3, g).
+    \end{equation*}
+\end{tcolorbox}
+
+This sounds like an end to the story. However, there is a problem with this approach. 
+
+\subsubsection{Proof of Exponent}
+
+The next step is to ensure that each of $\pi_1,\dots,\pi_4$ was obtained through exponentiating the base $g$ and not some other value (e.g., $g^{100}$). This is crucial since the prover could have cheated by using a different base. 
+For that reason, we need some protocol that will check that. It is called the \textbf{Proof of Exponent} (PoE). Let us define it below.
+
+\begin{definition}[Proof of Exponent]
+    A \textbf{Proof of Exponent} (PoE) is a protocol that allows the prover $\mathcal{P}$ to convince the verifier $\mathcal{V}$ that he obtained a value $u$ through exponentiating a base $g$ by a certain value $x$. The protocol works as follows:
+    \begin{enumerate}
+        \item \textbf{Setup:} The trusted party picks a random $\alpha \xleftarrow{R} \mathbb{Z}_q$, publishes $g^{\alpha}$
+        \item \textbf{Prove:} $\mathcal{P}$ samples $\alpha \xleftarrow{R} \mathbb{F}$ and computes $u' \gets u^{\alpha}$. Then, $\mathcal{P}$ publishes $(u,u')$.
+        \item \textbf{Verify:} $\mathcal{V}$ checks whether $e(u,g^{\alpha}) = e(u',g)$.
+    \end{enumerate}
+\end{definition}
 
 \end{document}

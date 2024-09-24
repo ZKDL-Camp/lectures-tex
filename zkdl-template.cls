@@ -11,10 +11,11 @@
 \RequirePackage[T1,T2A]{fontenc}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[english]{babel}
+\RequirePackage{cmbright} % Font package
+
 \RequirePackage{graphicx}
 \RequirePackage{framed}
 \RequirePackage{dsfont}
-\RequirePackage{cmbright}
 \RequirePackage{extarrows}
 \RequirePackage[normalem]{ulem}
 \RequirePackage{indentfirst}
@@ -32,6 +33,10 @@
 \RequirePackage{multicol}
 \RequirePackage{bm}
 \RequirePackage[bottom,multiple]{footmisc} % ensures footnotes are at the bottom of the page, and separates footnotes by a comma if they are adjacent
+
+% --- Configuring Figure settings ---
+\usepackage[labelfont=bf]{caption}
+\counterwithin{figure}{section}
 
 % --- Hyperref settings ---
 \RequirePackage{hyperref}
@@ -108,6 +113,7 @@
 \renewcommand{\footrulewidth}{1.25pt}
 
 % --- Shortcuts ---
+\newcommand{\F}{\mathbb{F}}
 \newcommand{\ep}{\varepsilon}
 \newcommand{\vp}{\varphi}
 \newcommand{\lam}{\lambda}
@@ -115,84 +121,6 @@
 \renewcommand{\ip}[1]{\ensuremath{\left\langle#1\right\rangle}}
 \newcommand{\floor}[1]{\ensuremath{\left\lfloor#1\right\rfloor}}
 \newcommand{\ceil}[1]{\ensuremath{\left\lceil#1\right\rceil}}
-\newcommand{\A}{\mathbb{A}}
-\newcommand{\B}{\mathbb{B}}
-\newcommand{\D}{\mathbb{D}}
-\newcommand{\E}{\mathbb{E}}
-\newcommand{\F}{\mathbb{F}}
-\newcommand{\K}{\mathbb{K}}
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\Q}{\mathbb{Q}}
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\T}{\mathbb{T}}
-\newcommand{\X}{\mathbb{X}}
-\newcommand{\Y}{\mathbb{Y}}
-\newcommand{\Z}{\mathbb{Z}}
-\newcommand{\As}{\mathcal{A}}
-\newcommand{\Bs}{\mathcal{B}}
-\newcommand{\Cs}{\mathcal{C}}
-\newcommand{\Ds}{\mathcal{D}}
-\newcommand{\Es}{\mathcal{E}}
-\newcommand{\Fs}{\mathcal{F}}
-\newcommand{\Gs}{\mathcal{G}}
-\newcommand{\Hs}{\mathcal{H}}
-\newcommand{\Is}{\mathcal{I}}
-\newcommand{\Js}{\mathcal{J}}
-\newcommand{\Ks}{\mathcal{K}}
-\newcommand{\Ls}{\mathcal{L}}
-\newcommand{\Ms}{\mathcal{M}}
-\newcommand{\Ns}{\mathcal{N}}
-\newcommand{\Os}{\mathcal{O}}
-\newcommand{\Ps}{\mathcal{P}}
-\newcommand{\Qs}{\mathcal{Q}}
-\newcommand{\Rs}{\mathcal{R}}
-\newcommand{\Ss}{\mathcal{S}}
-\newcommand{\Ts}{\mathcal{T}}
-\newcommand{\Us}{\mathcal{U}}
-\newcommand{\Vs}{\mathcal{V}}
-\newcommand{\Ws}{\mathcal{W}}
-\newcommand{\Xs}{\mathcal{X}}
-\newcommand{\Ys}{\mathcal{Y}}
-\newcommand{\Zs}{\mathcal{Z}}
-\newcommand{\ab}{\textbf{a}}
-\newcommand{\bb}{\textbf{b}}
-\newcommand{\cb}{\textbf{c}}
-\newcommand{\db}{\textbf{d}}
-\newcommand{\ub}{\textbf{u}}
-\newcommand{\wb}{\textbf{w}}
-\newcommand{\xb}{\textbf{x}}
-\newcommand{\yb}{\textbf{y}}
-\newcommand{\zb}{\textbf{z}}
-\newcommand{\Ab}{\textbf{A}}
-\newcommand{\Bb}{\textbf{B}}
-\newcommand{\Cb}{\textbf{C}}
-\newcommand{\Db}{\textbf{D}}
-\newcommand{\eb}{\textbf{e}}
-\newcommand{\ex}{\textbf{e}_x}
-\newcommand{\ey}{\textbf{e}_y}
-\newcommand{\ez}{\textbf{e}_z}
-\newcommand{\abar}{\overline{a}}
-\newcommand{\bbar}{\overline{b}}
-\newcommand{\cbar}{\overline{c}}
-\newcommand{\dbar}{\overline{d}}
-\newcommand{\ubar}{\overline{u}}
-\newcommand{\vbar}{\overline{v}}
-\newcommand{\wbar}{\overline{w}}
-\newcommand{\xbar}{\overline{x}}
-\newcommand{\ybar}{\overline{y}}
-\newcommand{\zbar}{\overline{z}}
-\newcommand{\Abar}{\overline{A}}
-\newcommand{\Bbar}{\overline{B}}
-\newcommand{\Cbar}{\overline{C}}
-\newcommand{\Dbar}{\overline{D}}
-\newcommand{\Ubar}{\overline{U}}
-\newcommand{\Vbar}{\overline{V}}
-\newcommand{\Wbar}{\overline{W}}
-\newcommand{\Xbar}{\overline{X}}
-\newcommand{\Ybar}{\overline{Y}}
-\newcommand{\Zbar}{\overline{Z}}
-\newcommand{\Aint}{A^\circ}
-\newcommand{\Bint}{B^\circ}
 \newcommand{\limk}{\lim_{k\to\infty}}
 \newcommand{\limm}{\lim_{m\to\infty}}
 \newcommand{\limn}{\lim_{n\to\infty}}
@@ -247,6 +175,8 @@
 \DeclareMathOperator{\Re}{\text{Re}}
 \DeclareMathOperator{\Im}{\text{Im}}
 \DeclareMathOperator{\diag}{\text{diag}}
+
+\newcommand{\Circ}{\textit{\texttt{C}}}
 
 % --- Theorem keywords ---
 \newtheoremstyle{mystyle}{}{}{}{}{\sffamily\bfseries}{.}{ }{}
