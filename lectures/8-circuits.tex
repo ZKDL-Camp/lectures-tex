@@ -1308,14 +1308,15 @@ Now let us define polynomials $A(X)$, $B(X)$, $C(X)$ for easier notation:
 
 Therefore, our constraint can be rewritten as $A + B = C$ --- much less scary-looking than what we have written before. OK, but what does it give us? 
 
-Notice that if $A(X)+B(X)=C(X)$ for all $j \in \{1,\dots,m\}$ then polynomial, defined as $P(X) := A(X)+B(X)-C(X)$, has zeros at all elements from the set $\Omega = \{1,\dots,m\}$. Define the so-called \textbf{vanishing polynomial} on $\Omega$ as:
+Notice that if $A(X)+B(X)=C(X)$ for all $j \in \{1,\dots,m\}$ then polynomial, defined as $M(X) := A(X)+B(X)-C(X)$, has zeros at all elements from the set $\Omega = \{1,\dots,m\}$. Define the so-called \textbf{vanishing polynomial} on $\Omega$ as:
 \begin{equation*}
     Z_{\Omega}(X) := \prod_{\omega \in \Omega} (X - \omega) = \prod_{i=1}^m (X - i)
 \end{equation*} 
 
-Now, if $P(X)$ vanishes on all points from $\Omega$, it means that $Z_{\Omega}$ must divide $P$, so $Z_{\Omega} \mid P$. But that means
-that $P$ can be divided by $Z_{\Omega}$ without remainder! In other words, there exists some polynomial $H$ such that $P=Z_{\Omega}H$. All in all,
-let us give the definition of a \textbf{Quadratic Arithmetic Program}.
+Now, if $M(X)$ vanishes on all points from $\Omega$, it means that $Z_{\Omega}$ must divide $M$, so $Z_{\Omega} \mid M$. But that means
+that $M$ can be divided by $Z_{\Omega}$ without remainder! In other words, there exists some polynomial $H$ such that $M=Z_{\Omega}H$. We further drop index $\Omega$ for simplicity. 
+
+All in all, let us give the definition of a \textbf{Quadratic Arithmetic Program}.
 
 \begin{definition}[Quadratic Arithmetic Program]
     Suppose that $m$ R1CS constraints with a witness of size $n$ are written in a form
@@ -1328,9 +1329,9 @@ let us give the definition of a \textbf{Quadratic Arithmetic Program}.
         A_j(i) = a_{i,j}, \; B_j(i) = b_{i,j}, \; C_j(i) = c_{i,j}, \; \forall i \in \{1,\dots,m\} \; \forall j \in \{1,\dots,n\}
     \end{equation*}
 
-    Then, $\mathbf{w} \in \mathbb{F}^n$ is a valid assignment for the given QAP and \textbf{target polynomial} $Z_{\Omega}(X) = \prod_{i=1}^m (X-i)$ if and only if there exists such a polynomial $H(X)$ such that
+    Then, $\mathbf{w} \in \mathbb{F}^n$ is a valid assignment for the given QAP and \textbf{target polynomial} $Z(X) = \prod_{i=1}^m (X-i)$ if and only if there exists such a polynomial $H(X)$ such that
     \begin{equation*}
-        \left( \sum_{i = 1}^{n} w_iA_i(X) \right)\left( \sum_{i = 1}^{n} w_iB_i(X) \right) - \left( \sum_{i = 1}^{n} w_iC_i(X) \right) = Z_{\Omega}(X)H(X)
+        \left( \sum_{i = 1}^{n} w_iA_i(X) \right)\left( \sum_{i = 1}^{n} w_iB_i(X) \right) - \left( \sum_{i = 1}^{n} w_iC_i(X) \right) = Z(X)H(X)
     \end{equation*}
 \end{definition}
 

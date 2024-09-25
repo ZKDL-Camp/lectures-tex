@@ -142,7 +142,7 @@ While IOPs will be later used for PLONK and zk-STARKs, we will focus on Linear P
 \begin{example}[QAP as a Linear PCP]
     Recall that key QAP equation is:
     \begin{equation*}
-        \left(\sum_{i=1}^nw_iL_i(X)\right)\left(\sum_{i=1}^nw_iR_i(X)\right) - \left(\sum_{i=1}^nw_iO_i(X)\right) = Z_{\Omega}(X)H(X).
+        \left(\sum_{i=1}^nw_iL_i(X)\right)\left(\sum_{i=1}^nw_iR_i(X)\right) - \left(\sum_{i=1}^nw_iO_i(X)\right) = Z(X)H(X).
     \end{equation*}
 
     Now, the notation might be confusing, but firstly, we denote vectors of polynomials: 
@@ -155,30 +155,32 @@ While IOPs will be later used for PLONK and zk-STARKs, we will focus on Linear P
     Now, consider the following \textbf{linear PCP for QAP}:
     \begin{enumerate}
         \item $\mathcal{P}$ commits to an extended witness $\mathbf{w}$ and coefficients $\mathbf{h} = (h_1,\dots,h_n)$ of $H(x)$.
-        \item $\mathcal{V}$ samples $\gamma \xleftarrow{R} \mathbb{F}$ and sends $\boldsymbol{\gamma} = (\gamma,\gamma^2,\dots,\gamma^n)$ to $\mathcal{P}$.
+        \item $\mathcal{V}$ samples $\gamma \xleftarrow{R} \mathbb{F}$ and sends query $\boldsymbol{\gamma} = (\gamma,\gamma^2,\dots,\gamma^n)$ to $\mathcal{P}$.
         \item $\mathcal{P}$ reveals the following values:
         \begin{equation*}
-            \pi_1 \gets \langle \mathbf{w}, \boldsymbol{L}(\gamma) \rangle, \quad \pi_2 \gets \langle \mathbf{w}, \boldsymbol{R}(\gamma) \rangle, \quad \pi_3 \gets \langle \mathbf{w}, \boldsymbol{O}(\gamma) \rangle, \quad \pi_4 \gets Z_{\Omega}(\gamma) \cdot \langle \mathbf{h}, \boldsymbol{\gamma} \rangle.
+            \pi_1 \gets \langle \mathbf{w}, \boldsymbol{L}(\gamma) \rangle, \quad \pi_2 \gets \langle \mathbf{w}, \boldsymbol{R}(\gamma) \rangle, \quad \pi_3 \gets \langle \mathbf{w}, \boldsymbol{O}(\gamma) \rangle, \quad \pi_4 \gets Z(\gamma) \cdot \langle \mathbf{h}, \boldsymbol{\gamma} \rangle.
         \end{equation*}
         \item $\mathcal{V}$ checks whether $\pi_1\pi_2 - \pi_3 = \pi_4$.
     \end{enumerate}
 \end{example}
+
+Of course, the above example cannot be used as it is: at the very least, we have not specified how the prover commits to the extended witness $\mathbf{w}$ and coefficients $\mathbf{h}$ and then ensures consistency of $\pi_1,\dots,\pi_4$ with these commitments. For that reason, we need some more tools to make it work which we learned in the previous lectures.
 
 \subsubsection{PCP application in QAP}
 
 When constructing a Quadratic Arithmetic Program (QAP) for a circuit $\Circ$, we represented the whole circuit's 
 computation using the following relation:
 \begin{equation*}
-    L(X)R(X) - O(X) = Z_{\Omega}(X)H(X),
+    L(X)R(X) - O(X) = Z(X)H(X),
 \end{equation*}
 where by $L(X)$, $R(X)$, $O(X)$ we denote the polynomials that represent the left, right and output 
-wires of the circuit, respectively. $Z_{\Omega}(X)$ is the target polynomial, while
-$H(X) := M(X)\big/Z_{\Omega}(X)$ for master polynomial $M(X) = L(X)R(X) - O(X)$ is the quotient polynomial.
+wires of the circuit, respectively. $Z(X)$ is the target polynomial, while
+$H(X) := M(X)\big/Z(X)$ for master polynomial $M(X) = L(X)R(X) - O(X)$ is the quotient polynomial.
 
 We effectively managed to transform all the circuit's constraints, and computations in the short form.
 It still allows one to verify that each computational step is preserved by verifying the 
 polynomial evaluation in specific (random) points, instead of recomputing everything. However, it is 
-not quite clear why such a check is safe and how it can be used in a PCP. In other words, why checking that $L(s)R(s)-O(s)=Z_{\Omega}(s)H(s)$ for randomly selected $s$ is enough to verify the circuit $\Circ$?
+not quite clear why such a check is safe and how it can be used in a PCP. In other words, why checking that $L(s)R(s)-O(s)=Z(s)H(s)$ for randomly selected $s$ is enough to verify the circuit $\Circ$?
 
 \textbf{Soundness justification.} Why is it safe to use such a check? As it was said early, 
 we perform all the computations in some finite field $\mathbb{F}$. The 
@@ -191,7 +193,7 @@ polynomials $L(X)$, $R(X)$ and $O(X)$ are interpolated polynomials using $\left|
 
 Thus, using properties of polynomials' degrees, we can estimate the degree of polynomial $M(X) = L(X)R(X) - O(X)$.
 \begin{equation*}
-    \deg(M) \leq \max\{\deg(A) + \deg(B), \deg(C)\} \leq 2 \left| \Circ \right|
+    \deg(M) \leq \max\{\deg(L) + \deg(R), \deg(O)\} \leq 2 \left| \Circ \right|
 \end{equation*}
 
 Now, using the Schwartz-Zippel Lemma (see \Cref{lemma:sz}),
@@ -222,30 +224,30 @@ Now, suppose during the setup phase, we have a trusted party that generated a ra
     \mathsf{com}(L) \triangleq g^{L(\tau)} = g^{\sum_{i=0}^d L_i \tau^i} = \prod_{i=0}^d (g^{\tau^i})^{L_i},
 \end{equation*}
 
-and the same goes for $g^{R(\tau)}, g^{O(\tau)}, g^{H(\tau)}, g^{Z_{\Omega}(\tau)}$. Now, given these give points, how can we verify that the polynomial $M(X) = L(X)R(X) - O(X)$ is correct? Well, first notice that the check is equivalent to
+and the same goes for $g^{R(\tau)}, g^{O(\tau)}, g^{H(\tau)}, g^{Z(\tau)}$. Now, given these give points, how can we verify that the polynomial $M(X) = L(X)R(X) - O(X)$ is correct? Well, first notice that the check is equivalent to
 \begin{equation*}
-    L(\tau)R(\tau) = Z_\Omega(\tau)H(\tau) + O(\tau).
+    L(\tau)R(\tau) = Z(\tau)H(\tau) + O(\tau).
 \end{equation*}
 
 Notice that we transferred $O(\tau)$ to the right side of the equation to further avoid finding the inverse. Now, we can check this equality using encrypted values as follows:
 \begin{equation*}
-    e(\mathsf{com}(L), \mathsf{com}(R)) = e(\mathsf{com}(Z_{\Omega}), \mathsf{com}(H)) \cdot e(\mathsf{com}(O), g),
+    e(\mathsf{com}(L), \mathsf{com}(R)) = e(\mathsf{com}(Z), \mathsf{com}(H)) \cdot e(\mathsf{com}(O), g),
 \end{equation*}
 
 \begin{remark}
     One might ask: why is the above equation correct? Well, let us see:
     \begin{flalign*}
-        & e(\mathsf{com}(L), \mathsf{com}(R)) = e(\mathsf{com}(Z_{\Omega}), \mathsf{com}(H)) \cdot e(\mathsf{com}(O), g) & \textit{\textcolor{green!60!black}{Initial statement}} \\
-        \Leftrightarrow \quad & e(g^{L(\tau)}, g^{R(\tau)}) = e(g^{Z_{\Omega}(\tau)}, g^{H(\tau)}) \cdot e(g^{O(\tau)}, g) & \textit{\textcolor{green!60!black}{KZG Commitment Definition}} \\
-        \Leftrightarrow \quad & e(g,g)^{L(\tau)R(\tau)} = e(g,g)^{Z_{\Omega}(\tau)H(\tau)}e(g,g)^{O(\tau)} & \textit{\textcolor{green!60!black}{Pairing bilinearity}} \\
-        \Leftrightarrow \quad & e(g,g)^{L(\tau)R(\tau)} = e(g,g)^{Z_{\Omega}(\tau)H(\tau) + O(\tau)} & \textit{\textcolor{green!60!black}{Exponent product rule}} \\
-        \Leftrightarrow \quad & L(\tau)R(\tau) = Z_{\Omega}(\tau)H(\tau) + O(\tau) & \textit{\textcolor{green!60!black}{QAP Check}} \\
-        \Leftrightarrow \quad & L(X)R(X) \equiv Z_{\Omega}(X)H(X) + O(X) & \textit{\textcolor{green!60!black}{Schwarz-Zippel Lemma}}
+        & e(\mathsf{com}(L), \mathsf{com}(R)) = e(\mathsf{com}(Z), \mathsf{com}(H)) \cdot e(\mathsf{com}(O), g) & \textit{\textcolor{green!60!black}{Initial statement}} \\
+        \Leftrightarrow \quad & e(g^{L(\tau)}, g^{R(\tau)}) = e(g^{Z(\tau)}, g^{H(\tau)}) \cdot e(g^{O(\tau)}, g) & \textit{\textcolor{green!60!black}{KZG Commitment Definition}} \\
+        \Leftrightarrow \quad & e(g,g)^{L(\tau)R(\tau)} = e(g,g)^{Z(\tau)H(\tau)}e(g,g)^{O(\tau)} & \textit{\textcolor{green!60!black}{Pairing bilinearity}} \\
+        \Leftrightarrow \quad & e(g,g)^{L(\tau)R(\tau)} = e(g,g)^{Z(\tau)H(\tau) + O(\tau)} & \textit{\textcolor{green!60!black}{Exponent product rule}} \\
+        \Leftrightarrow \quad & L(\tau)R(\tau) = Z(\tau)H(\tau) + O(\tau) & \textit{\textcolor{green!60!black}{QAP Check}} \\
+        \Leftrightarrow \quad & L(X)R(X) \equiv Z(X)H(X) + O(X) & \textit{\textcolor{green!60!black}{Schwarz-Zippel Lemma}}
     \end{flalign*}
 \end{remark}
 
 So, sounds like we are done. Let us summarize what we have done so far:
-\begin{tcolorbox}[title=Attempt \#1 zk-SNARK Protocol,
+\begin{tcolorbox}[title=Attempt \#1: Non-sound SNARK Protocol,
     colback=blue!5!white,
     colframe=blue!75!black,
     colbacktitle=blue!25!white,
@@ -256,45 +258,255 @@ So, sounds like we are done. Let us summarize what we have done so far:
     colback=blue!20!white,
     colupper=blue!75!gray} ]
 
-    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $Z_{\Omega}(X)$.
+    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $Z(X)$.
 
     \tcbsubtitle{$\mathsf{Setup}(1^{\lambda})$}
     The \emph{trusted party} conducts the following steps:
     \begin{itemize}
         \item Picks a random value $\tau \xleftarrow{R} \mathbb{F}$.
         \item Calculates the public parameters $\{g^{\tau^i}\}_{i \in [d]}$.
-        \item \textcolor{red!80!black}{\textbf{Deletes}} $\tau$ (toxic waste).
-        \item \textbf{Outputs} verification key $\mathsf{vk} = \{\{g^{\tau^i}\}_{i \in [d]}, \mathsf{com}(Z_{\Omega})\}$.
+        \item \textbf{Deletes} $\tau$ (toxic waste).
+        \item \textbf{Outputs} prover parameters $\mathsf{pp} \gets \{g^{\tau^i}\}_{i \in [d]}$ and verifier parameters $\mathsf{vp} \gets \mathsf{com}(Z)$.
     \end{itemize}
-    \tcbsubtitle{$\mathsf{Prove}(\mathsf{vk}, \mathbf{x}, \mathbf{w})$}
+    \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbf{x}, \mathbf{w})$}
     The prover $\mathcal{P}$ conducts the following steps:
     \begin{itemize}
-        \item Runs the circuit with the statement $\mathbf{x}$ and witness $\mathbf{w}$, obtains the intermediate constraint values, and calculates the polynomials $L(X), R(X), O(X)$ through Lagrange Interpolation.
-        \item Calculates $H(X) \gets (L(X)R(X) - O(X))\big/ Z_{\Omega}(X)$.
-        \item Calculates the KZG commitments as follows: $\pi_1 \gets \mathsf{com}(L), \pi_2 \gets \mathsf{com}(R), \pi_3 \gets \mathsf{com}(O), \pi_4 \gets \mathsf{com}(H)$ using powers of $\tau$ from the verification key $\mathsf{vk}$.
-        \item Publishes $\boldsymbol{\pi} = (\pi_1,\pi_2,\pi_3,\pi_4)$ as a proof.
+        \item Runs the circuit with the statement $\mathbf{x}$ and witness $\mathbf{w}$, obtains the intermediate constraint values, and calculates the polynomials $L(X)$, $R(X)$, $O(X)$ through Lagrange Interpolation.
+        \item Calculates $H(X) \gets (L(X)R(X) - O(X))\big/ Z(X)$.
+        \item Calculates the KZG commitments as follows: 
+        \begin{equation*}
+            \pi_L \gets \mathsf{com}(L), \pi_R \gets \mathsf{com}(R), \pi_O \gets \mathsf{com}(O), \pi_H \gets \mathsf{com}(H),
+        \end{equation*}
+        using powers of $\tau$ from the prover parameters $\mathsf{pp}$.
+        \item Publishes $\boldsymbol{\pi} = (\pi_L,\pi_R,\pi_O,\pi_H)$ as a proof.
     \end{itemize}
-    \tcbsubtitle{$\mathsf{Verify}(\mathsf{vk}, \mathbf{x}, \boldsymbol{\pi})$}
-    Upon receiving $\boldsymbol{\pi} = (\pi_1,\pi_2,\pi_3,\pi_4)$, the verifier $\mathcal{V}$ checks:
+    \tcbsubtitle{$\mathsf{Verify}(\mathsf{vp}, \mathbf{x}, \boldsymbol{\pi})$}
+    Upon receiving $\boldsymbol{\pi} = (\pi_L,\pi_R,\pi_O,\pi_H)$, using $\mathsf{com}(Z)$ from the verifier parameters $\mathsf{vp}$, the verifier $\mathcal{V}$ checks:
     \begin{equation*}
-        e(\pi_1, \pi_2) = e(\mathsf{com}(Z_{\Omega}), \pi_4) \cdot e(\pi_3, g).
+        e(\pi_L, \pi_R) = e(\mathsf{com}(Z), \pi_H) \cdot e(\pi_O, g).
     \end{equation*}
 \end{tcolorbox}
 
-This sounds like an end to the story. However, there is a problem with this approach. 
+This sounds like an end to the story. However, there is a problem with this approach: there is no guarantee that commitments $\pi_L$, $\pi_R$, $\pi_O$, $\pi_H$ were indeed obtained through exponentiating the base $g$ by the corresponding values $L(\tau)$, $R(\tau)$, $O(\tau)$, and $H(\tau)$. In other words, how can the verifier know that prover indeed knows, say, polynomial $L(X)$ such that $\pi_L = g^{L(\tau)}$?
 
-\subsubsection{Proof of Exponent}
+\subsubsection{Attempt \#2: Including Proof of Exponent}
 
-The next step is to ensure that each of $\pi_1,\dots,\pi_4$ was obtained through exponentiating the base $g$ and not some other value (e.g., $g^{100}$). This is crucial since the prover could have cheated by using a different base. 
-For that reason, we need some protocol that will check that. It is called the \textbf{Proof of Exponent} (PoE). Let us define it below.
+In this section, we introduce the \textbf{Proof of Exponent assumption} (PoE) which makes KZG knowledge sound. Let us define it below.
 
-\begin{definition}[Proof of Exponent]
-    A \textbf{Proof of Exponent} (PoE) is a protocol that allows the prover $\mathcal{P}$ to convince the verifier $\mathcal{V}$ that he obtained a value $u$ through exponentiating a base $g$ by a certain value $x$. The protocol works as follows:
+\begin{definition}[Proof of Exponent for KZG Commitment]
+    A \textbf{Proof of Exponent} (PoE) is a protocol that allows the prover $\mathcal{P}$ to convince the verifier $\mathcal{V}$ that he obtained a value $\mathsf{com}(f)$ through exponentiating a base $g$ by $f(\tau)$. The protocol works as follows:
     \begin{enumerate}
-        \item \textbf{Setup:} The trusted party picks a random $\alpha \xleftarrow{R} \mathbb{Z}_q$, publishes $g^{\alpha}$
-        \item \textbf{Prove:} $\mathcal{P}$ samples $\alpha \xleftarrow{R} \mathbb{F}$ and computes $u' \gets u^{\alpha}$. Then, $\mathcal{P}$ publishes $(u,u')$.
-        \item \textbf{Verify:} $\mathcal{V}$ checks whether $e(u,g^{\alpha}) = e(u',g)$.
+        \item \textbf{Setup:} Proper parameters $\mathsf{pp}$ now contain not only $\{g^{\tau^i}\}_{i \in [d]}$, but also $\{g^{\alpha\tau^i}\}_{i \in [d]}$ for randomly selected $\tau,\alpha \xleftarrow{R} \mathbb{F}$ and further \textbf{deleted} values.
+        \item \textbf{Commit:} $\mathcal{P}$ commits to two values: $\mathsf{com}(f) = g^{f(\tau)}$ and $\mathsf{com}'(f) = g^{\alpha f(\tau)}$. The latter can be computed using $\mathsf{pp}$ as follows:
+        \begin{equation*}
+            \mathsf{com}'(f) = \prod_{i=0}^d (g^{\alpha\tau^i})^{f_i}
+        \end{equation*} 
+        \item \textbf{Verify:} $\mathcal{V}$ additionally checks $e(\mathsf{com}(f),g^{\alpha}) = e(\mathsf{com}'(f), g)$.
     \end{enumerate}
 \end{definition}
+
+The informal reason why it makes KZG commitment sound is following: suppose we have an adversary prover $\mathcal{P}^*$ that published commitment $c$ without knowing underlying polynomial $f(X)$. Now, there is no way for him to cheat the verifier. 
+Indeed, what $\mathcal{P}^*$ needs to do is calculating $c^{\alpha}$, but he does now know $\alpha$ since, similarly to $\tau$, it was deleted as a part of the toxic waste. Besides, he cannot obtain $\alpha$ for the same reason he cannot obtain $\tau$.
+
+For that reason, we modify the SNARK protocol to include not only commitments to polynomials but also PoE for each of them. Let us see how it looks like.
+
+\begin{tcolorbox}[title=Attempt \#2: SNARK with PoE included,
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    colbacktitle=blue!25!white,
+    coltitle=blue!20!black,
+    fonttitle=\bfseries,
+    boxrule=1.25pt,
+    subtitle style={boxrule=0pt,
+    colback=blue!20!white,
+    colupper=blue!75!gray} ]
+
+    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $Z(X)$.
+
+    \tcbsubtitle{$\mathsf{Setup}(1^{\lambda})$}
+    The \emph{trusted party} conducts the following steps:
+    \begin{itemize}
+        \item Picks a random value $\tau, \textcolor{green!50!black}{\alpha} \xleftarrow{R} \mathbb{F}$.
+        \item Calculates the public parameters $\{g^{\tau^i}\}_{i \in [d]}$, \textcolor{green!50!black}{$\{g^{\alpha\tau^i}\}_{i \in [d]}$}.
+        \item \textbf{Deletes} $\tau, \textcolor{green!50!black}{\alpha}$ (toxic waste).
+        \item \textbf{Outputs} proper parameters $\mathsf{pp}\gets\{\{g^{\tau^i}\}_{i \in [d]}, \textcolor{green!50!black}{\{g^{\alpha\tau^i}\}_{i \in [d]}}\}$, and verification parameters $\mathsf{vp} \gets \{g^{Z(\tau)}, \textcolor{green!50!black}{g^{\alpha}}\}$.
+    \end{itemize}
+    \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbf{x}, \mathbf{w})$}
+    The prover $\mathcal{P}$ conducts the following steps:
+    \begin{itemize}
+        \item Runs the circuit with the statement $\mathbf{x}$ and witness $\mathbf{w}$, obtains the intermediate constraint values, and calculates the polynomials $L(X), R(X), O(X)$ through Lagrange Interpolation.
+        \item Calculates $H(X) \gets (L(X)R(X) - O(X))\big/ Z(X)$.
+        \item Calculates the sound KZG commitments as follows: 
+        \begin{align*}
+            \pi_L \gets g^{L(\tau)}, & \quad\textcolor{green!50!black}{\pi_L' \gets g^{\alpha L(\tau)}} \\
+            \pi_R \gets g^{R(\tau)}, & \quad\textcolor{green!50!black}{\pi_R' \gets g^{\alpha R(\tau)}} \\
+            \pi_O \gets g^{O(\tau)}, & \quad\textcolor{green!50!black}{\pi_O' \gets g^{\alpha O(\tau)}} \\
+            \pi_H \gets g^{H(\tau)}, & \quad\textcolor{green!50!black}{\pi_H' \gets g^{\alpha H(\tau)}}.
+        \end{align*}
+        using powers $\{g^{\tau^i}\}_{i \in [d]}$ and $\{g^{\alpha\tau^i}\}_{i \in [d]}$ from the proper parameters $\mathsf{pp}$.
+        \item Publishes $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H')$ as a proof.
+    \end{itemize}
+    \tcbsubtitle{$\mathsf{Verify}(\mathsf{vp}, \mathbf{x}, \boldsymbol{\pi})$}
+    Upon receiving $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H')$, the verifier $\mathcal{V}$ checks:
+    \begin{align*}
+        e(\pi_L, \pi_R) = e(\mathsf{com}(Z), \pi_H) \cdot e(\pi_O, g), \\
+        \textcolor{green!50!black}{e(\pi_L, g^{\alpha}) = e(\pi_L', g)}, \quad \textcolor{green!50!black}{e(\pi_R, g^{\alpha}) = e(\pi_R', g)}, \\
+        \textcolor{green!50!black}{e(\pi_O, g^{\alpha}) = e(\pi_O', g)}, \quad \textcolor{green!50!black}{e(\pi_H, g^{\alpha}) = e(\pi_H', g)}.
+    \end{align*}
+\end{tcolorbox}
+
+The provided protocol is secure under the PoE assumption. However, it is still not fully sound. Currently, there is no guarantee that when evaluating $\pi_L$, $\pi_R$, $\pi_O$ we used the same extended witness $\mathbf{w}$. In other words, the prover can still cheat by using different extended witnesses for each polynomial (faking the proof system is still hard in this situation, but we want to make sure to eliminate all possible weaknesses). Let us see how to fix this!
+
+\subsubsection{Attempt \#3: Making SNARK Sound}
+
+Besides fixing the issue with consistent use of witness $\mathbf{w}$, we additionally include one more optimization we have not included so far.
+
+\textcolor{blue!75!gray}{\textbf{Optimization. Left/Right/Output Polynomial Preprocessing.}} Recall that:
+\begin{equation*}
+    L(X) = \sum_{i=0}^n w_iL_i(X), \quad R(X) = \sum_{i=0}^n w_i R_i(X), \quad O(X) = \sum_{i=0}^n w_iO_i(X).
+\end{equation*}
+while $M(X) = L(X)R(X) - O(X)$ is only known to the prover $\mathcal{P}$ since it contains the extended witness ($\mathbf{w}$) coefficients. However, the set of polynomials
+\begin{equation*}
+    \{L_i(X)\}_{i \in [n]}, \{R_i(X)\}_{i \in [n]}, \{O_i(X)\}_{i \in [n]}
+\end{equation*}
+are known in advance. Meaning, we can precompute the values of $\{g^{L_i(\tau)}\}_{i \in [n]}$, $\{g^{\alpha L_i(\tau)}\}_{i \in [n]}$, $\{g^{R_i(\tau)}\}_{i \in [n]}$, $\{g^{\alpha R_i(\tau)}\}_{i \in [n]}$, $\{g^{O_i(\tau)}\}_{i \in [n]}$, $\{g^{\alpha O_i(\tau)}\}_{i \in [n]}$ and use them in the prover parameters $\mathsf{pp}$.
+
+How? Suppose the prover $\mathcal{P}$ knows the extended witness $\mathbf{w}$. Consider the polynomial $L(X) = \sum_{i=0}^n w_iL_i(X)$. $\mathcal{P}$ can compute the KZG commitment $\pi_L$ and its PoE $\pi_L'$ as follows:
+\begin{equation*}
+    \pi_L \triangleq g^{L(\tau)} = g^{\sum_{i=0}^n w_iL_i(\tau)} = \prod_{i=0}^n (g^{L_i(\tau)})^{w_i}, \quad \pi_L' \triangleq g^{\alpha L(\tau)} = g^{\alpha \sum_{i=0}^n w_iL_i(\tau)} = \prod_{i=0}^n (g^{\alpha L_i(\tau)})^{w_i}.
+\end{equation*}
+
+\textcolor{green!50!black}{\textbf{Fix. Witness consistency check.}} 
+
+\textbf{Introducing new term with $\beta$}. To prove that the same $\mathbf{w}$ is used in all commitments, we need some ``checksum'' term that will somehow combine all polynomials $L(X)$, $R(X)$, and $O(X)$ with the witness $\mathbf{w}$. Moreover, we will need to compare this term with proofs $\pi_L$, $\pi_R$, and $\pi_O$. The best candidate for this is the following group element for some other random $\beta \xleftarrow{R} \mathbb{F}$:
+\begin{equation*}
+    \pi_{\beta} = g^{L(\tau) + R(\tau) + O(\tau)} = \prod_{i=1}^n (g^{L_i(\tau) + R_i(\tau) + O_i(\tau)})^{w_i}, \; \pi_{\beta}' = \prod_{i=1}^n (g^{\beta(L_i(\tau) + R_i(\tau) + O_i(\tau))})^{w_i}
+\end{equation*}
+
+This way, we get a term that includes all three polynomials $L(X)$, $R(X)$, and $O(X)$, and all coefficients of the extended witness $\mathbf{w}$. Moreover, verifier $\mathcal{V}$ can compare $\pi_{\beta}$ with three other commitments $\pi_L$, $\pi_R$, $\pi_O$ to ensure that all of them are consistent. This is done through the following check:
+\begin{equation*}
+    e(\pi_L\pi_R\pi_O, g^{\beta}) = e(\pi_{\beta}', g).
+\end{equation*}
+
+Again, this approach still has a weakness (yeah-yeah, I am also tired of this). Indeed, this check is complete (meaning, if $\mathbf{w}$ is used consistently across $\pi_L$, $\pi_R$, $\pi_O$, then the check will pass), but it is still not sound with an overwhelming probability. Indeed, suppose $\mathbf{w}$ is used inconsistently, meaning, we have extended witnesses $\mathbf{w}_L$, $\mathbf{w}_R$, $\mathbf{w}_O$, and $\mathbf{w}_{\beta}$, each for corresponding polynomials. If the witness is consistent, the following condition must hold:
+\begin{equation*}
+    (w_{L,i}L_i(\tau) + w_{R,i}R_i(\tau) + w_{O,i}O_i(\tau))\beta = w_{\beta,i}\beta(L_i(\tau) + R_i(\tau) + O_i(\tau)) \quad \forall i \in [n]
+\end{equation*}
+
+Assume otherwise. Consider a simple situation where it happens that $L_i \equiv R_i$, meaning $L_i(\tau)$ and $R_i(\tau)$ are the same (call them $q$). Then,
+\begin{equation*}
+    (w_{L,i} + w_{R,i})q + w_{O,i}O_i(\tau)= w_{\beta,i}(2q + O_i(\tau)) \quad \forall i \in [n]
+\end{equation*}
+
+For arbitrarily chosen $w_{R,i}$ and $w_{O,i}$, the adversary prover $\mathcal{P}^*$ can set $w_{\beta,i} := w_{O,i}$ and $w_{L,i}=2w_{O,i} - w_{R,i}$. It is easy to verify that the above equation would hold, meaning that $\mathbf{w}$ is not the same across all polynomials. 
+
+One might ask: well, situation when $L_i \equiv R_i$ is very rare! Indeed, but there also might be situations where $L_i \equiv 5R_i$, $R_i \equiv 100O_i$, or $L_i \equiv 235O_i$ --- all of them would lead to the same issue. One easy fix is to make $\beta$ different for each polynomial $L(X)$, $R(X)$, $O(X)$. What is the solution? 
+
+\textbf{Introducing separate $\beta_L$, $\beta_R$, $\beta_O$.} Our proposal is to make $\beta$ different for each polynomial $L(X)$, $R(X)$, $O(X)$, making it much harder for the adversary to find inconsistent witnesses. That being said, during the setup phase, we choose arbitrary $\beta_L,\beta_R,\beta_O \xleftarrow{R} \mathbb{F}$ and publish $\{g^{\beta_LL_i(\tau)+\beta_RR_i(\tau)+\gamma_OO_i(\tau)}\}_{i \in [n]}$ as a part of the prover parameters $\mathsf{pp}$. Then, the prover $\mathcal{P}$ calculates the following additional commitment:
+\begin{equation*}
+    \pi_{\beta} \gets \prod_{i=1}^n (g^{\beta_LL_i(\tau) + \beta_RR_i(\tau) + \beta_OO_i(\tau)})^{w_i}
+\end{equation*}
+and then publishes $\pi_{\beta}$ as a part of the proof. The verifier $\mathcal{V}$ checks the following condition:
+\begin{equation*}
+    e(\pi_L, g^{\beta_L}) \cdot e(\pi_R, g^{\beta_R}) \cdot e(\pi_O, g^{\beta_O}) = e(\pi_{\beta}, g).
+\end{equation*}
+
+Even that is not the end of the story! We also need to make sure that $g^{\beta_L}$, $g^{\beta_R}$, and $g^{\beta_O}$ are incompatible with $g^{\sum_{i=0}^n (\beta_LL(\tau) + \beta_RR(\tau) + \beta_OO(\tau))w_i}$ (for reasons we drop here due to already long explanation). For that reason, we multiply $\beta_L$, $\beta_R$, $\beta_O$ by some random factor $\gamma \xleftarrow{R} \mathbb{F}$. This way, the proving part remains the same, but the check becomes:
+\begin{equation*}
+    e(\pi_L, g^{\gamma\beta_L}) \cdot e(\pi_R, g^{\gamma\beta_R}) \cdot e(\pi_O, g^{\gamma\beta_O}) = e(\pi_{\beta}, g^{\gamma}).
+\end{equation*}
+
+Oof, that was a long fix! Let us come back to the new version of the SNARK protocol (not yet zero-knowledge)!
+
+\begin{tcolorbox}[title=Attempt \#3: Sound SNARK Protocol,
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    colbacktitle=blue!25!white,
+    coltitle=blue!20!black,
+    fonttitle=\bfseries,
+    boxrule=1.25pt,
+    subtitle style={boxrule=0pt,
+    colback=blue!20!white,
+    colupper=blue!75!gray} ]
+
+    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $Z(X)$.
+
+    \tcbsubtitle{$\mathsf{Setup}(1^{\lambda})$}
+    The \emph{trusted party} conducts the following steps:
+    \begin{itemize}
+        \item Picks random values $\tau, \alpha, \textcolor{green!50!black}{\beta_L, \beta_R, \beta_O, \gamma} \xleftarrow{R} \mathbb{F}$.
+        \item \textbf{Outputs} prover parameters $\mathsf{pp}$ and verification parameters $\mathsf{vp}$:
+        \begin{align*}
+            \mathsf{pp} &\gets \big\{\{g^{\tau^i}\}_{i \in [d]}, \textcolor{green!50!black}{\{g^{L_i(\tau)}, g^{\alpha L_i(\tau)}, g^{R_i(\tau)}, g^{\alpha R_i(\tau)}}, \\ 
+            & \textcolor{green!50!black}{g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, g^{\beta_LL(\tau)+\beta_RR(\tau)+\beta_OO(\tau)}\}_{i \in [n]}}\big\} \\
+            \mathsf{vp} &\gets \big\{ g^{Z(\tau)}, g^{\alpha}, \textcolor{green!50!black}{g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, g^{\beta_O\gamma}, g^{\gamma}} \big\}
+        \end{align*}
+        \item \textbf{Deletes} aforementioned random scalars (toxic waste).
+    \end{itemize}
+    \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbf{x}, \mathbf{w})$}
+    The prover $\mathcal{P}$ conducts the following steps:
+    \begin{itemize}
+        \item Runs the circuit to get $\mathbf{w}$ and $L(X),R(X),O(X)$.
+        \item Calculates $H(X) \gets (L(X)R(X) - O(X))\big/ Z(X)$.
+        \item Calculates the sound KZG commitments as follows: 
+        \begin{align*}
+            \pi_L \gets g^{L(\tau)}, \quad \pi_L' \gets g^{\alpha L(\tau)}, \\
+            \pi_R \gets g^{R(\tau)}, \quad \pi_R' \gets g^{\alpha R(\tau)}, \\
+            \pi_O \gets g^{O(\tau)}, \quad \pi_O' \gets g^{\alpha O(\tau)}, \\
+            \pi_H \gets g^{H(\tau)}, \quad \pi_H' \gets g^{\alpha H(\tau)}.
+        \end{align*}
+        \item \textcolor{green!50!black}{Calculates the additional commitment $\pi_{\beta}$ as follows:}
+        \begin{equation*}
+            \textcolor{green!50!black}{\pi_{\beta} \gets g^{\beta_LL(\tau) + \beta_RR(\tau) + \beta_OO(\tau)}}
+        \end{equation*}
+        \item Publishes $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\textcolor{green!50!black}{\pi_{\beta}})$ as a proof.
+    \end{itemize}
+
+    \tcbsubtitle{$\mathsf{Verify}(\mathsf{vp}, \mathbf{x}, \boldsymbol{\pi})$}
+    Upon receiving $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\textcolor{green!50!black}{\pi_{\beta}})$, the verifier $\mathcal{V}$ checks:
+    \begin{align*}
+        e(\pi_L, \pi_R) = e(\mathsf{com}(Z), \pi_H) \cdot e(\pi_O, g), \\
+        e(\pi_L, g^{\alpha}) = e(\pi_L', g), \quad e(\pi_R, g^{\alpha}) = e(\pi_R', g), \\
+        e(\pi_O, g^{\alpha}) = e(\pi_O', g), \quad e(\pi_H, g^{\alpha}) = e(\pi_H', g), \\
+        \textcolor{green!50!black}{e(\pi_L, g^{\gamma\beta_L}) \cdot e(\pi_R, g^{\gamma\beta_R}) \cdot e(\pi_O, g^{\gamma\beta_O}) = e(\pi_{\beta}, g^{\gamma})}.
+    \end{align*}
+\end{tcolorbox}
+
+\subsubsection{Attempt \#4: Splitting the Extended Witness}
+
+Now, recall that the actual circuit $\Circ$ is defined for some statement $\mathbf{x}$ and witness $\mathbf{w}$. According to the Circuit Satisfability Problem, 
+the prover $\mathcal{P}$ wants to convince the verifier $\mathcal{V}$ that he knows the witness $\mathbf{w}$ 
+such that the circuit $\Circ(\mathbf{x}, \mathbf{w}) = 0$. Up until now, we have been using 
+the extended witness $\widetilde{\mathbf{w}}$ to represent the trace of computation. 
+However, we can split the witness into two parts: the first part $\mathbf{w}_{\text{mid}}$ --- intermediate witness 
+that contains the private witness $\mathbf{w}$ and intermediate variables values, and 
+the second part $\mathbf{w}_{\text{io}}$ --- input/output witness that contains public 
+statement information (e.g., $\mathbf{x}$). Suppose for vector $\widetilde{\mathbf{w}} = (\widetilde{w}_1,\dots,\widetilde{w}_n)$ 
+we pick out the set of indeces $\mathcal{I}_{\text{mid}} \subset [n]$ to represent the intermediate witness 
+and $\mathcal{I}_{\text{io}} \subset [n]$ to represent the input/output witness 
+(of course, $\mathcal{I}_{\text{mid}} \cap \mathcal{I}_{\text{io}} = \emptyset$ 
+and $\mathcal{I}_{\text{mid}} \cup \mathcal{I}_{\text{io}} = [n]$).
+
+Now, how do we split the proofs $\pi_L,\pi_R,\dots$ into two parts? Well, consider for instance $\pi_L$:
+\begin{equation*}
+    \pi_L = g^{\sum_{i=0}^n w_iL_i(\tau)}.
+\end{equation*}
+
+We split this expression as follows:
+\begin{equation*}
+    \pi_L = \underbrace{\textcolor{purple}{g^{\sum_{i \in \mathcal{I}_{\text{mid}}} w_iL_i(\tau)}}}_{\textcolor{purple}{\text{new $\pi_L$}}} 
+    \times 
+    \underbrace{\textcolor{green!50!black}{g^{\sum_{i \in \mathcal{I}_{\text{io}}} w_iL_i(\tau)}}}_{\textcolor{green!50!black}{\pi_{L,\text{io}}}}.
+\end{equation*}
+
+This way, the prover $\mathcal{P}$ first calculates the new commitment $\textcolor{purple}{\pi_L}$ using only the intermediate witness $\mathbf{w}_{\text{mid}}$ and then the verifier can compute the ``public'' portion of the proof $\textcolor{green!50!black}{\pi_{L,\text{io}}}$ using the input/output witness $\mathbf{w}_{\text{io}}$ (which is typically quite easy to do since $|\mathcal{I}_{\text{io}}|$ is typically much smaller than $|\mathcal{I}_{\text{mid}}|$). The same goes for other parts of the proof $\boldsymbol{\pi}$.
+
+\subsubsection{Attempt \#5: Making SNARK Zero-Knowledge}
+
+\subsection{Real Protocols}
+
+\subsubsection{Pinocchio Protocol}
+
+\subsubsection{Groth16 Protocol}
 
 \end{document}
