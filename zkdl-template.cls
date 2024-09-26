@@ -33,6 +33,7 @@
 \RequirePackage{multicol}
 \RequirePackage{bm}
 \RequirePackage[bottom,multiple]{footmisc} % ensures footnotes are at the bottom of the page, and separates footnotes by a comma if they are adjacent
+\RequirePackage[makeroom]{cancel}
 
 % --- Configuring Figure settings ---
 \usepackage[labelfont=bf]{caption}
