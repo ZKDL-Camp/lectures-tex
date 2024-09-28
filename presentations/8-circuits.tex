@@ -1,60 +1,10 @@
-\documentclass{beamer}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-
-% -- Including some standard packages --
-\usepackage{graphicx}
-\usepackage{soul}
-\usepackage{hyperref}
-\usepackage{colortbl}
-\usepackage{dsfont}
-\usepackage{soul}
-
-% -- Choosing theme --
-
-\usetheme{Boadilla}
-\usecolortheme{whale}
-\setbeamercolor{alerted text}{fg=purple} % Making alerted text non-red
-
-% Tikz
-\usepackage{tikz}
-\usetikzlibrary{matrix,positioning,fit,backgrounds,intersections}
-
-% Code highlighting
-\usepackage{listings,lstautogobble}
-
-% -- Cross signs --
-\usepackage{pifont} % http://ctan.org/pkg/pifont
-\newcommand{\cmark}{\ding{51}}%
-\newcommand{\xmark}{\ding{55}}%
-\newcommand{\xopt}{\ding{48}}%
-
-\usepackage{listings}
-
-% -- Custom commands --
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
+\documentclass{zkdl-presentation-template}
 
 \title[zk-SNARK I]{\textbf{Introduction to zk-SNARK. R1CS}}
 \author{Distributed Lab}
 \date{Sep 12, 2024}
 \titlegraphic{
     \includegraphics[width=\textwidth]{images/banner_wide.png}
-}
-
-\expandafter\def\expandafter\insertshorttitle\expandafter{%
-  \insertshorttitle\hfill%
-  \insertframenumber\,/\,\inserttotalframenumber}
-
-\AtBeginSection[]{
-  \begin{frame}
-  \vfill
-  \centering
-  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
-    \usebeamerfont{title}\insertsectionhead\par%
-  \end{beamercolorbox}
-  \vfill
-  \end{frame}
 }
 
 \begin{document}

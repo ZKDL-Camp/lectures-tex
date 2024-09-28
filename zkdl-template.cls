@@ -11,7 +11,7 @@
 \RequirePackage[T1,T2A]{fontenc}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[english]{babel}
-\RequirePackage{cmbright} % Font package
+\RequirePackage{cmbright}
 
 \RequirePackage{graphicx}
 \RequirePackage{framed}

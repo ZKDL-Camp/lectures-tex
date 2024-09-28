@@ -1,34 +1,4 @@
-\documentclass[xcolor={usenames,dvipsnames}]{beamer}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-
-% -- Including some standard packages --
-\usepackage{graphicx}
-\usepackage{soul}
-\usepackage{hyperref}
-\usepackage{colortbl}
-\usepackage{dsfont}
-\usepackage{soul}
-
-% -- Choosing theme --
-
-\usetheme{Boadilla}
-\usecolortheme{spruce}
-\setbeamercolor{alerted text}{fg=purple} % Making alerted text non-red
-
-% Tikz
-\usepackage{tikz,tikz-3dplot,tikz-cd,tkz-tab,tkz-euclide,pgf,pgfplots}
-\usetikzlibrary{matrix,positioning,fit,backgrounds,intersections}
-
-% -- Cross signs --
-\usepackage{pifont} % http://ctan.org/pkg/pifont
-\newcommand{\cmark}{\ding{51}}%
-\newcommand{\xmark}{\ding{55}}%
-\newcommand{\xopt}{\ding{48}}%
-
-% -- Custom commands --
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
+\documentclass{zkdl-presentation-template}
 
 \title[Introduction to ZK]{\textbf{Sigma Protocols}}
 \author{Distributed Lab}
@@ -37,20 +7,6 @@
     \includegraphics[width=\textwidth]{images/banner_wide.png}
 }
 
-\expandafter\def\expandafter\insertshorttitle\expandafter{%
-  \insertshorttitle\hfill%
-  \insertframenumber\,/\,\inserttotalframenumber}
-
-\AtBeginSection[]{
-  \begin{frame}
-  \vfill
-  \centering
-  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
-    \usebeamerfont{title}\insertsectionhead\par%
-  \end{beamercolorbox}
-  \vfill
-  \end{frame}
-}
 
 \begin{document}
 	\frame {
@@ -63,7 +19,7 @@
 
 	\section{Introduction}
 
-    \subsection{Recap}
+
     \begin{frame}{Recap on Interactive Proofs}
         \begin{itemize}
             \item \textbf{Interactive proofs} allows practically prover $\mathcal{P}$ to convince the verifier $\mathcal{V}$ that some statement is true.
@@ -78,7 +34,6 @@
         \end{alertblock}
     \end{frame}
 
-    \subsection{Motivation for $\Sigma$-protocols}
     \begin{frame}{Motivation}
         In many cases, we need to prove relatively trivial statements without revealing the witness:
         \begin{itemize}
@@ -95,9 +50,8 @@
         \end{alertblock}
     \end{frame}
 
-    \section{Schnorr Identification Protocol}
+    \section{Schnorr IP}
 
-    \subsection{Interactive Protocol}
     \begin{frame}{Problem Statement}
         Suppose $\mathbb{G}$ is a cyclic group of order $q$ with a generator $g$. Then, the relation and language being considered are:
         \begin{equation*}
@@ -175,7 +129,6 @@
         \end{alertblock}
     \end{frame}
 
-    \subsection{Non-interactive Schnorr's Identification Protocol}
     \begin{frame}{Applying Fiat-Shamir Transformation}
         \begin{block}{Reminder}
             Suppose prover had messages $(m_1,m_2,\dots,m_n)$ before verifier sends a challenge $c$. If $x$ is a public statement, it suffices to choose $c \gets H(x,m_1,\dots,m_n)$ without any interaction.
@@ -196,7 +149,6 @@
         \end{definition}
     \end{frame}
 
-    \subsection{Schnorr's Signature Scheme}
 
     \begin{frame}{Schnorr's Signature Scheme}
         It easy to turn the non-interactive identification protocol into a signature scheme! Simply regard $(u,m)$ as a public statement with a message $m$!
@@ -213,9 +165,8 @@
         \textbf{Note:} In \textcolor{green!80!black}{\textbf{green}} we marked the only difference between the identification and signature protocols.
     \end{frame}
 
-    \section{Sigma Protocols}
+    \section{$\Sigma$-Protocols}
     
-    \subsection{Definition}
     \begin{frame}{Generalization}
         Now, can we generalize the Schnorr protocol to any relation $\mathcal{R}$?
 
@@ -254,8 +205,7 @@
         \end{example}
     \end{frame}
 
-    \section{Sigma Protocols Examples}
-    \subsection{Okamoto Representation Protocol}
+    \section{Examples}
 
     \begin{frame}{Okamoto's Protocol}
         Again, let $\mathbb{G}$ be a cyclic group of prime order $q$ with a generator $g \in \mathbb{G}$ and let $h \in \mathbb{G}$ an arbitrary group element.
@@ -319,7 +269,6 @@
         from which the extractor $\mathcal{E}$ can efficiently compute witness as follows: $\alpha \gets (\alpha_z - \alpha_z')\big/(c-c')$ and $\beta \gets (\beta_z - \beta_z')\big/(c-c')$.
     \end{frame}
 
-    \subsection{Chaum-Pedersen Protocol}
     \begin{frame}{Diffie-Hellman Triplets}
         Suppose we are given the cyclic group $\mathbb{G}$ or prime order $q$ and generator $g \in \mathbb{G}$. 
 
@@ -352,8 +301,6 @@
             Chaum-Pedersen Protocol is a $\Sigma$-protocol for the relation $\mathcal{R}$ which is Honest-Verifier Zero-Knowledge (HVZK).
         \end{theorem}
     \end{frame}
-
-    \subsection{Pre-image of a homomorphism $\Sigma$-protocol}
 
     \begin{frame}{Homomorphism}
         Let us formulate the core objects that we will use in this section:
@@ -409,8 +356,6 @@
         \end{theorem}
     \end{frame}
 
-    \subsection{Combining $\Sigma$-Protocols}
-
     \begin{frame}{Combining $\Sigma$-Protocols}
         One of the features (which we are not going to delve into) is the ability to combine $\Sigma$-protocols to prove more complex statements. Namely,
         \begin{itemize}
@@ -425,7 +370,6 @@
 
     \section{Coding Time!}
 
-    \subsection{Okamoto's Protocol}
     \begin{frame}{Methodology}
         \begin{block}{Reminder}
             Suppose prover had messages $(m_1,m_2,\dots,m_n)$ before verifier sends a challenge $c$. If $x$ is a public statement, it suffices to choose $c \gets H(x,m_1,\dots,m_n)$ without any interaction.
