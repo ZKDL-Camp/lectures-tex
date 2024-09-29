@@ -1,6 +1,7 @@
 \documentclass{zkdl-presentation-template}
 
 \usepackage[dvipsnames]{xcolor}
+\usepackage{wasysym}
 
 \title[zk-SNARK I]{\textbf{QAP, PCP, POE}}
 \author{Distributed Lab}
@@ -1017,6 +1018,37 @@
                 \item $\mathcal{V}$ checks whether $\pi_1\pi_2 - \pi_3 = \pi_4$.
             \end{enumerate}
         \end{example}
+    \end{frame}
+
+    \begin{frame}
+        \begin{alertblock}{Question}
+            Why is it safe to use such a check?
+        \end{alertblock}
+
+        The polynomials $L(x)$, $R(x)$ and $O(x)$ are interpolated polynomials using 
+        $\left| C \right|$ (number of gates) points, so:
+        \vspace{-5pt}
+        \begin{equation*}
+            \deg(L) \le \left| C \right|, \quad
+            \deg(R) \le \left| C \right|, \quad 
+            \deg(O) \le \left| C \right|
+            \vspace{-5pt}
+        \end{equation*}
+        \pause
+        Thus, we can estimate the degree of polynomial $M(x) = L(x)R(x) - O(x)$.
+        \vspace{-5pt}
+        \begin{equation*}
+            \deg(M) \leq \max\{\deg(L) + \deg(R), \deg(O)\} \leq 2 \left| C \right|
+            \vspace{-5pt}
+        \end{equation*}
+        \pause
+        If an adversary $\mathcal{A}$ does not know a valid witness $\mathbf{w}$, he can compute a
+        polynomial $\widetilde{M}(x) \gets \mathcal{A}(\cdot)$ that satisfies a verifier 
+        $\mathcal{V}$:
+        \vspace{-5pt}
+        \begin{equation*}
+            \mathop{\text{Pr}}_{s \xleftarrow{R} \mathbb{F}}[\widetilde{M}(s) = M(s)] \leq \frac{2 \left| C \right|}{|\mathbb{F}|}
+        \end{equation*}
     \end{frame}
 
     \begin{frame}{}
