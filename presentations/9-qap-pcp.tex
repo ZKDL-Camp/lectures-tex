@@ -21,13 +21,17 @@
 
     \section{Recap}
 
-    \begin{frame}{Recap. ZK-SNARK}
+    \begin{frame}{Recap: what is zk-SNARK?}
         \begin{definition}
-            \textbf{zk-SNARK} – Zero-Knowledge Succinct Non-interactive ARgument of 
-            Knowledge.
+            \begin{center}
+                \textbf{zk-SNARK} \\
+                \textbf{Z}ero-\textbf{K}nowledge \textbf{S}uccinct \textbf{N}on-interactive \textbf{AR}gument of \textbf{K}nowledge.
+            \end{center}
         \end{definition}
+
         \pause
-        \begin{itemize}[itemsep=1pt]
+
+        \begin{itemize}[label=\ding{51}]
             \item \textbf{Argument of Knowledge} --- a proof that the prover knows the data (witness) that resolves a certain
             problem, and this knowledge can be ``extracted''. \pause
             \item \textbf{Succinctness} --- the proof size and verification time is relatively small to the computation size and typically does not depend on the size of 
@@ -39,8 +43,8 @@
         \end{itemize}
     \end{frame}
 
-    \begin{frame}{Recap. Arbitrary Program To Circuits}
-        We can do that in a way like the computer does it - boolean circuits.
+    \begin{frame}{Recap: Arbitrary Program To Circuits}
+        We can do that in a way like the computer does it --- \textbf{boolean circuits}.
 
         % --- Writing diagrams ---
         % Define circle styles and colors
@@ -104,7 +108,7 @@
     \end{frame}
 
     \begin{frame}{Recap. Arbitrary Program To Circuits}
-        We can do that in a way like the computer does it - boolean circuits.
+        We can do that in a way like the computer does it --- \textbf{boolean circuits}.
 
         % --- Writing diagrams ---
         % Define circle styles and colors
@@ -163,17 +167,17 @@
             \end{minipage}
             \hspace{0.05\textwidth} % Space between figures
         \end{figure}
-        > 100000 gates just for SHA256...
+        > \textbf{100000 gates} just for \texttt{SHA256}\ldots
         \pause
         But nothing stops us from using something more powerful instead of boolean values, gates.
     \end{frame}
 
     \begin{frame}{Recap. Arbitrary Program To Circuits}
-        Similar to Boolean Circuits, the \textbf{Arithmetic circuits} consist of gates and
+        Similar to Boolean Circuits, the \textbf{Arithmetic Circuits} consist of gates and
         wires. 
         \begin{itemize}
-            \item Wires: elements of some finite field $\mathbb{F}_p$.
-            \item Gates: addition ($\oplus$) and multiplication ($\odot$) corresponding to the field.
+            \item \textbf{Wires}: elements of some finite field $\mathbb{F}$.
+            \item \textbf{Gates}: field addition ($+$) and multiplication ($\times$).
         \end{itemize} 
 
         % --- Writing diagrams ---
@@ -232,12 +236,12 @@
     \begin{frame}[fragile]{Recap. Arbitrary Program To Circuits}
         \begin{example}
             How can we translate \texttt{if} statements?
-            \begin{lstlisting}[language=Python, numbers=none, autogobble=true, xleftmargin=8pt]
-                def example(a: bool, b: F, c: F) -> F:
-                    if a:
-                        return b * c 
-                    else:
-                        return b + c
+            \begin{lstlisting}[language=Python,numbers=none]
+def example(a: bool, b: F, c: F) -> F:
+    if a:
+        return b * c 
+    else:
+        return b + c
             \end{lstlisting}
             \pause
             We can transform such a function into the next expression:
@@ -334,12 +338,12 @@
     \begin{frame}[fragile]{Recap. Arbitrary Program To Circuits}
         \begin{example}
             How can we translate \texttt{if} statements?
-            \begin{lstlisting}[language=Python, numbers=none, autogobble=true, xleftmargin=8pt]
-                def example(a: bool, b: F, c: F) -> F:
-                    if a:
-                        return b * c 
-                    else:
-                        return b + c
+            \begin{lstlisting}[language=Python,numbers=none]
+def example(a: bool, b: F, c: F) -> F:
+    if a:
+        return b * c 
+    else:
+        return b + c
             \end{lstlisting}
             \pause
             We can transform such a function into the next expression:
@@ -388,7 +392,7 @@
             \vspace{-5pt}
             \begin{align*}
                 w_2 &\times w_3 = w_1 \\
-                (0 + w_2 + 0) &\times (0 + 0 + w_3) = w1 + 0 + 0 \\
+                (0 + w_2 + 0) &\times (0 + 0 + w_3) = w_1 + 0 + 0 \\
                 (0w_1 + 1w_2 + 0w_3) &\times (0w_1 + 0w_2 + 1w_3) = 1w_1 + 0w_2 + 0w_3
             \end{align*}
             Therefore the coefficients vectors are:
@@ -438,12 +442,20 @@
 
     \begin{frame}
         Problems we have for now: \pause
-        \begin{itemize}
+        \begin{itemize}[label=\ding{51}]
             \item Although Rank-1 Constraint Systems provide a powerful method for representing 
             computations, they are not succinct. \pause
             \item We need to transform our computations into a form that is more convenient for 
             proving statements about them.
         \end{itemize}
+
+        \begin{alertblock}{Notice}
+            A very convenient form for representing computations is \textbf{polynomials}!
+
+            \vspace{10px}
+
+            \textbf{Idea:} Instead of checking polynomial equality $P(x)=Q(x)$ at multiple points $Q(x_1),\ldots,Q(x_n)$ (essentially, checking each constraint), we check it only once at $\tau \xleftarrow{R} \mathbb{F}$: $P(\tau)=Q(\tau)$. Soundness is guaranteed by the \textbf{Schwartz-Zippel Lemma}.
+        \end{alertblock}
     \end{frame}
 
     \begin{frame}
@@ -502,7 +514,7 @@
         \end{center}
             
         \pause
-        Pleeeeeenty of zeroes, doesn't it? And this is just one out of 3 matrices...
+        Pleeeeeenty of zeroes, right? And this is just one out of 3 matrices...
     \end{frame}
 
     \begin{frame}
@@ -866,10 +878,10 @@
             \vspace{-5pt}
         \end{equation*}
         \pause
-        It means, that $M(X)$ can be devide by \textbf{vanishing polynomial} $Z_{\Omega}(X)$ without a remainder!
+        It means, that $M(X)$ can be divided by \textbf{vanishing polynomial} $Z_{\Omega}(X)$ without a remainder!
         \vspace{-8pt}
         \begin{equation*}
-            Z_{\Omega}(X) = \prod_{i=1}^m (X - i), \qquad H(X) = \frac{M(X)}{Z_{\Omega}(X)}
+            Z_{\Omega}(X) = \prod_{i=1}^m (X - i), \qquad \text{$H(X) = \frac{M(X)}{Z_{\Omega}(X)}$ is a polynomial}
             \vspace{-5pt}
         \end{equation*}
     \end{frame}
@@ -878,7 +890,7 @@
         \begin{definition}[Quadratic Arithmetic Program]
             Suppose that $m$ R1CS constraints with a witness of size $n$ are written in a form
             \begin{equation*}
-                A\mathbf{w} \odot B\mathbf{w} = C\mathbf{w}, \; A,B,C \in \mathbb{F}^{m \times n}
+                A\mathbf{w} \odot B\mathbf{w} = C\mathbf{w}, \qquad (A,B,C \in \mathbb{F}^{m \times n})
             \end{equation*}
         
             Then, the \textbf{Quadratic Arithmetic Program} consists of $3n$ polynomials $A_1,\dots,A_n$, $B_1,\dots,B_n$, $C_1,\dots,C_n$ such that:
@@ -1043,12 +1055,14 @@
         \end{equation*}
         \pause
         If an adversary $\mathcal{A}$ does not know a valid witness $\mathbf{w}$, he can compute a
-        polynomial $\widetilde{M}(x) \gets \mathcal{A}(\cdot)$ that satisfies a verifier 
+        polynomial $(\widetilde{M}(x), \widetilde{H}(x)) \gets \mathcal{A}(\cdot)$ that satisfies a verifier 
         $\mathcal{V}$:
         \vspace{-5pt}
         \begin{equation*}
-            \mathop{\text{Pr}}_{s \xleftarrow{R} \mathbb{F}}[\widetilde{M}(s) = M(s)] \leq \frac{2 \left| C \right|}{|\mathbb{F}|}
+            \mathop{\text{Pr}}_{s \xleftarrow{R} \mathbb{F}}[\widetilde{M}(s) = Z(s)\widetilde{H}(s)] \leq \frac{2 \left| C \right|}{|\mathbb{F}|}
         \end{equation*}
+
+        If $|\mathbb{F}|$ is large enough, $2|C|/|\mathbb{F}|$ is \textit{negligible}.
     \end{frame}
 
     \begin{frame}{}
