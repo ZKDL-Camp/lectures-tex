@@ -4,7 +4,7 @@
 % -- Beamer settings --
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{beamer}}
 \ProcessOptions\relax
-\LoadClass{beamer}
+\LoadClass[xcolor={dvipsnames}]{beamer}
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
@@ -60,4 +60,31 @@
   \end{beamercolorbox}
   \vfill
   \end{frame}
+}
+
+%% Code Block Settings
+\RequirePackage{listings}
+\definecolor{dkgreen}{rgb}{0,0.5,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\lstset{
+    numbers=left,  
+    frame=tb,
+    % aboveskip=3mm,
+    % belowskip=3mm,
+    showstringspaces=false,
+    columns=fixed,
+    % framerule=1pt,
+    rulecolor=\color{gray!35},
+    backgroundcolor=\color{gray!5},
+    basicstyle={\ttfamily\small},
+    numberstyle=\footnotesize\color{gray},
+    keywordstyle=\bfseries\color{MidnightBlue!95!black},
+    commentstyle=\color{dkgreen},
+    stringstyle=\color{mauve},
+    breaklines=true,
+    breakatwhitespace=true,
+    tabsize=2,
+    extendedchars=false,
+    postbreak=\mbox{\hspace{-1.4em}\textcolor{purple}{$\hookrightarrow$}\space}
 }
