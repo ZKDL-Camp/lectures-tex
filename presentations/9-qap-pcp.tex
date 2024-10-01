@@ -1065,6 +1065,94 @@ def example(a: bool, b: F, c: F) -> F:
         If $|\mathbb{F}|$ is large enough, $2|C|/|\mathbb{F}|$ is \textit{negligible}.
     \end{frame}
 
+    \section{Proof Of Exponent}
+
+    \begin{frame}{Encrypted Verification}
+        Let's try to prove that we know some polynomial $p(x)$ that can be divided to $t(x)$ without a 
+        remainder.
+
+        \pause
+        Consider polynomial: $p(x) = x^2 - 5x$. \pause And some homomorphic ecnryption with a
+        generator $g$.
+        
+        To evaluate encrypted polynomial e.q.:
+        {\large
+        \begin{equation*}
+            g^{p(\tau)} \pause = g^{\left( \tau^2 - 5\tau \right)} \pause = \left( g^{\tau^2} \right)^1 \dot {\left( g^{\tau^1} \right)}^{-5}
+        \end{equation*}}
+        Prover needs ecnrypted powers of tau: $\{g^{\tau^i}\}_{i \in [d]}$.
+    \end{frame}
+
+    \begin{frame}{Encrypted Verification}
+        \textbf{Verifier}: 
+        \vspace{-5pt}
+        \begin{itemize}[label=\ding{51}]
+            \item \vspace{-3pt} Picks a random value $\tau \xleftarrow{R} \mathbb{F}$. \pause
+            \item \vspace{-3pt} Calculates the public parameters $\{g^{\tau^i}\}_{i \in [d]}$. \pause
+            \item \vspace{-3pt} Calculates $t(\tau)$. \pause
+            \item \vspace{-3pt} Outputs prover parameters $\{g^{\tau^i}\}_{i \in [d]}$. \pause
+        \end{itemize}
+        \textbf{Prover}: 
+        \vspace{-5pt}
+        \begin{itemize}[label=\ding{51}]
+            \item \vspace{-3pt} Calculates $h(x) = \frac{p(x)}{t(x)}$. \pause
+            \item \vspace{-3pt} Using $\{g^{\tau^i}\}_{i \in [d]}$ calculates $g^{p(\tau)}$ and $g^{h(\tau)}$. \pause
+            \item \vspace{-3pt} Provides encrypted polynomials $g^{p(\tau)}$ and $g^{h(\tau)}$ to the verifier. \pause
+        \end{itemize}
+        \textbf{Verifier}: 
+        \vspace{-5pt}
+        \begin{itemize}[label=\ding{51}]
+            \item \vspace{-3pt} Checks whether $g^{p(\tau)} = \left( g^{h(\tau)} \right)^{t(\tau)}$.
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{That doesn't work...}
+        \textbf{Verifier}: 
+        \vspace{-5pt}
+        \begin{itemize}[label=\ding{51}]
+            \item \vspace{-3pt} Picks a random value $\tau \xleftarrow{R} \mathbb{F}$. \pause
+            \item \vspace{-3pt} Calculates the public parameters $\{g^{\tau^i}\}_{i \in [d]}$. \pause
+            \item \vspace{-3pt} Calculates $t(\tau)$. \pause
+            \item \vspace{-3pt} Outputs prover parameters $\{g^{\tau^i}\}_{i \in [d]}$. \pause
+        \end{itemize}
+        \textbf{Adversary}: 
+        \vspace{-5pt}
+        \begin{itemize}[label=\ding{51}]
+            \item \vspace{-3pt} Picks a random value $r \xleftarrow{R} \mathbb{F}$, calculates $g^s$. \pause
+            \item \vspace{-3pt} Calculates $g^{t(\tau)}$. \pause
+            \item \vspace{-3pt} Calculates $g^{\widetilde{p}(\tau)} = {\left( g^{t(\tau)} \right)}^s$. \pause
+        \end{itemize}
+        \textbf{Verifier}: 
+        \vspace{-5pt}
+        \begin{itemize}[label=\ding{51}]
+            \item \vspace{-3pt} Checks whether $g^{\widetilde{p}(\tau)} = \left( g^{s} \right)^{t(\tau)}$.
+        \end{itemize}
+    \end{frame}
+
+    \begin{frame}{Proof Of Exponent}
+        \textbf{Verifier}: 
+        \vspace{-5pt}
+        \begin{itemize}[label=\ding{51}]
+            \item \vspace{-3pt} Picks a random values $\tau \xleftarrow{R} \mathbb{F}$, $a \xleftarrow{R} \mathbb{F}$. \pause
+            \item \vspace{-3pt} Calculates the public parameters $\{g^{\tau^i}\}_{i \in [d]}$ and $\{g^{a\tau^i}\}_{i \in [d]}$ \pause
+            \item \vspace{-3pt} Calculates $t(\tau)$. \pause
+        \end{itemize}
+        \textbf{Prover}: 
+        \vspace{-5pt}
+        \begin{itemize}[label=\ding{51}]
+            \item \vspace{-3pt} Calculates $h(x) = \frac{p(x)}{t(x)}$. \pause
+            \item \vspace{-3pt} Using $\{g^{\tau^i}\}_{i \in [d]}$ calculates $g^{p(\tau)}$, $g^{h(\tau)}$. \pause
+            \item \vspace{-3pt} Using $\{g^{a\tau^i}\}_{i \in [d]}$ calculates $g^{p^{\prime}(\tau)} = g^{ap(\tau)}$. \pause
+            \item \vspace{-3pt} Provides encrypted polynomials to the verifier. \pause
+        \end{itemize}
+        \textbf{Verifier}: 
+        \vspace{-5pt}
+        \begin{itemize}[label=\ding{51}]
+            \item \vspace{-3pt} Checks whether $g^{p(\tau)} = \left( g^{h(\tau)} \right)^{t(\tau)}$. \pause
+            \item \vspace{-3pt} Checks whether $g^{p^{\prime}(\tau)} = \left( g^{p(\tau)} \right)^{a} = g^{ap(\tau)}$. 
+        \end{itemize}
+    \end{frame}
+
     \begin{frame}{}
         \centering \Large
         \emph{Thanks for your attention!}
