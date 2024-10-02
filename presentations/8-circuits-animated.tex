@@ -1,10 +1,60 @@
-\documentclass{zkdl-presentation-template}
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+
+% -- Including some standard packages --
+\usepackage{graphicx}
+\usepackage{soul}
+\usepackage{hyperref}
+\usepackage{colortbl}
+\usepackage{dsfont}
+\usepackage{soul}
+
+% -- Choosing theme --
+
+\usetheme{Boadilla}
+\usecolortheme{whale}
+\setbeamercolor{alerted text}{fg=purple} % Making alerted text non-red
+
+% Tikz
+\usepackage{tikz}
+\usetikzlibrary{matrix,positioning,fit,backgrounds,intersections}
+
+% Code highlighting
+\usepackage{listings,lstautogobble}
+
+% -- Cross signs --
+\usepackage{pifont} % http://ctan.org/pkg/pifont
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\xopt}{\ding{48}}%
+
+\usepackage{listings}
+
+% -- Custom commands --
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
 
 \title[zk-SNARK I]{\textbf{Introduction to zk-SNARK. R1CS}}
 \author{Distributed Lab}
 \date{Sep 12, 2024}
 \titlegraphic{
     \includegraphics[width=\textwidth]{images/banner_wide.png}
+}
+
+\expandafter\def\expandafter\insertshorttitle\expandafter{%
+  \insertshorttitle\hfill%
+  \insertframenumber\,/\,\inserttotalframenumber}
+
+\AtBeginSection[]{
+  \begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+    \usebeamerfont{title}\insertsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
 }
 
 \begin{document}
@@ -20,32 +70,30 @@
 
     \begin{frame}{What Is zk-SNARK?}
         \begin{definition}
-            \begin{center}
-                \textbf{zk-SNARK} \\
-                \textbf{Z}ero-\textbf{K}nowledge \textbf{S}uccinct \textbf{N}on-interactive \textbf{AR}gument of \textbf{K}nowledge.
-            \end{center}
+            \textbf{zk-SNARK} – Zero-Knowledge Succinct Non-interactive ARgument of 
+            Knowledge.
         \end{definition}
 
-        
+        \pause
 
         \begin{itemize}
             \item \textbf{Argument of Knowledge} --- a proof that the prover knows the data (witness) that resolves a certain
-            problem, and this knowledge can be ``extracted''. 
+            problem, and this knowledge can be ``extracted''. \pause
             \item \textbf{Succinctness} --- the proof size and verification time is relatively small to the computation size and typically does not depend on the size of 
-            the data or statement. 
+            the data or statement. \pause
             \item \textbf{Non-interactiveness} --- to produce the proof, the prover does not need any interaction
-            with the verifier. 
+            with the verifier. \pause
             \item \textbf{Zero-Knowledge} --- the verifier learns nothing about the data used to produce the
             proof, despite knowing that this data resolves the given problem and that the prover possesses it.
         \end{itemize}
     \end{frame}
 
-    \begin{frame}{Still don't get who is SNARK...}
+    \begin{frame}{Still didn't get who is Snark...}
         Well... Let's take a look at some example. \pause
 
         \begin{columns}
             \begin{column}{0.2\textwidth}
-                \includegraphics[width=\linewidth]{../presentations/images/lecture_8/urtreasurehunter.png}
+                \includegraphics[width=\linewidth]{../presentations/images/lecture_8/urtreasurehunter.jpg}
             \end{column}
     
             \begin{column}{0.7\textwidth}
@@ -53,7 +101,7 @@
             \end{column}
         \end{columns}
 
-        
+        \pause
 
         \begin{columns}
             \begin{column}{0.7\textwidth}
@@ -61,15 +109,15 @@
             \end{column}
 
             \begin{column}{0.2\textwidth}
-                \includegraphics[width=\linewidth]{../presentations/images/lecture_8/uvefoundtreasure.png}
+                \includegraphics[width=\linewidth]{../presentations/images/lecture_8/uvefoundtreasure.jpg}
             \end{column}
         \end{columns}
 
-        
+        \pause
 
         \begin{columns}
             \begin{column}{0.2\textwidth}
-                \includegraphics[width=\linewidth]{../presentations/images/lecture_8/howtomakeaproof.png}
+                \includegraphics[width=\linewidth]{../presentations/images/lecture_8/howtomakeaproof.jpg}
             \end{column}
 
             \begin{column}{0.7\textwidth}
@@ -78,21 +126,19 @@
         \end{columns}
     \end{frame}
 
-    \begin{frame}{Still don't get who is SNARK...}
+    \begin{frame}{Still didn't get who is Snark...}
         \begin{columns}
             \begin{column}{0.65\textwidth}
-                \begin{block}{The Problem}
-                You have found a hidden treasure chest, and you want to 
+                \textbf{The Problem}: you have found a hidden treasure chest, and you want to 
                 prove to the organizer that you know its location without actually revealing that.
-                \end{block}
             \end{column}
 
             \begin{column}{0.3\textwidth}
-                \includegraphics[width=\textwidth]{../presentations/images/lecture_8/treasurelocation.png}
+                \includegraphics[width=\textwidth]{../presentations/images/lecture_8/treasurelocation.jpg}
             \end{column}
         \end{columns}
 
-        
+        \pause
 
         We can retrieve some information from that:
 
@@ -111,18 +157,20 @@
 
         \begin{itemize} 
             \item \textbf{Argument of Knowledge}: You need to create a proof that demonstrates you know the
-            chest is. 
+            chest is. \pause
             \item \textbf{Succinct}: The proof you provide is very small and concise. It doesn't matter how
-            large the treasure map is or how many steps it took you to find the chest. 
+            large the treasure map is or how many steps it took you to find the chest. \pause
             \item \textbf{Non-interactive}: You don't need to have a back-and-forth conversation with the 
-            organizer to create this proof. 
+            organizer to create this proof. \pause
             \item \textbf{Zero-Knowledge}: The proof doesn't reveal any information about the actual 
             location of the treasure chest.
         \end{itemize}
-        \pause \vspace{-10pt}
+
+        \pause
+
         \begin{columns}
             \begin{column}{0.3\textwidth}
-                \includegraphics[width=\textwidth]{../presentations/images/lecture_8/treasure.png}
+                \includegraphics[width=\textwidth]{../presentations/images/lecture_8/treasure.jpg}
             \end{column}
 
             \begin{column}{0.65\textwidth}
@@ -133,19 +181,19 @@
 
     \begin{frame}{The First Question To Resolve}
         But the problems that we usually want to solve are in a slightly different format.
-        
+        \pause
 
-        \vspace{0.1cm}
+        \vspace{0.2cm}
         When we need to prove that some element is in a merkle tree, we can't come
         to a verifier and give them a "coin"...
         
-        
+        \pause
         \begin{alertblock}{Question?}
             How do we convert a program into a mathematical language?
         \end{alertblock}
 
         \center
-        \includegraphics[width=9cm]{../presentations/images/lecture_8/exactcodetomathflow.png}
+        \includegraphics[width=9cm]{../presentations/images/lecture_8/exactcodetomathflow.jpg}
     \end{frame}
 
     \section{Boolean Circuits}
@@ -209,7 +257,7 @@
                 \caption{Boolean \texttt{AND} and \texttt{OR} Gates}
             \end{minipage}
             \hspace{0.05\textwidth} % Space between figures
-            
+            \pause
             \begin{minipage}{0.36\textwidth}
                 \centering
                 \begin{tabular}{|c|c|c|}
@@ -275,7 +323,7 @@
             \end{tikzpicture}
             \vspace{-5pt}
             \caption{Example of a circuit evaluating $d = (a \;\texttt{AND}\; b) \,\texttt{OR}\; c$.}
-        \end{figure}
+        \end{figure}\pause
         \vspace{-5pt}
         Boolean circuits receive an input vector of {0, 1} and resolve to true (1) or false (0);\\
         \vspace{5pt}
@@ -290,9 +338,10 @@
         \begin{figure}[h!]
             \centering
             \includegraphics[width=8cm]{../presentations/images/lecture_8/sha256booleancircuit.jpg}
+            \vspace{-10pt}  % Reduce the vertical space between the image and the caption
             \caption{Stats of a SHA256 boolean circuit implementation.}
         \end{figure}
-        More than $100000$ gates. Impressive, isn't it? \\
+        More than $100000$ gates. Impressive, doesn't it? \\
         \vspace{5pt }
         But it also shows how inconvenient the boolean circuits are. 
     \end{frame}
@@ -300,11 +349,11 @@
     \section{Arithmetic Circuits}
 
     \begin{frame}{Arithmetic Circuits}
-        Similar to Boolean Circuits, the \textbf{Arithmetic Circuits} consist of gates and
+        Similar to Boolean Circuits, the \textbf{Arithmetic circuits} consist of gates and
         wires. 
         \begin{itemize}
-            \item \textbf{Wires}: elements of some finite field $\mathbb{F}$.
-            \item \textbf{Gates}: field addition ($+$) and multiplication ($\times$).
+            \item Wires: elements of some finite field $\mathbb{F}$.
+            \item Gates: addition ($+$) and multiplication ($\times$) corresponding to the field.
         \end{itemize} 
 
         % --- Writing diagrams ---
@@ -366,19 +415,19 @@
                 def multiply(a: F, b: F) -> F:
                     return a * b
             \end{lstlisting}
-            
+            \pause
             This can be represented as a circuit with only one (multiplication) gate:
             \begin{equation*}
                 r = a \times b
             \end{equation*}    
-            
+            \pause
             The witness vector (essentially, our solution vector) is $\mathbf{w} = (r, a, b)$, for
             example: $(6, 2, 3)$. \\
             \vspace{5pt}
             We assume that the $a$ and $b$ are input values.
         \end{example}
 
-        
+        \pause
 
         \begin{block}{Note}
             We can think of the ``=`` in the gate as an assertion.
@@ -393,7 +442,7 @@
                 def evaluate(x1: F, x2: F) -> F:
                     return x1**3 + x2**2
             \end{lstlisting}
-            Looks easy, right?  But the circuit is now much less trivial.
+            Looks easy, right? \pause But the circuit is now much less trivial.
             \vspace{-8pt}
             \begin{equation*}
                 \begin{array}{c c c}
@@ -480,14 +529,14 @@
                     else:
                         return b + c
             \end{lstlisting}
-            
+            \pause
             We can transform such a function into the next expression:
             \vspace{-8pt}
             \begin{equation*}
                 r = a \times (b \times c) + (1 - a) \times (b + c)    
                 \vspace{-8pt}
             \end{equation*}
-            
+            \pause
             Corresponding equations for the circuit are:
             \vspace{-8pt}
             \begin{equation*}
@@ -699,7 +748,7 @@
             \end{equation*}
         \end{definition}
 
-        
+        \pause
         \begin{block}{Note}                 
             The dot product can also be denoted using the dot notation as:
             \vspace{-8pt}
@@ -802,7 +851,7 @@
                 \end{bmatrix}
             \end{equation*}
 
-            
+            \pause
             The rows/columns number 2 and 3 in the result matrix can be represented as a linear 
             combination of the first row/column, specifically by multiplying it by 2 and 3, 
             respectively. 
@@ -855,15 +904,12 @@
         def r(x1: F, x2: F, x3: F) -> F:
             return x2 * x3 if x1 else x2 + x3
         \end{lstlisting}
-
-        \vspace{-10pt}
-
         That can be expressed as:
         \begin{equation*}
             r = x_1 \times (x_2 \times x_3) + (1 - x_1) \times (x_2 + x_3)
         \end{equation*}
         
-        
+        \pause
         \begin{alertblock}{}
             We need a boolean restriction for $x_1$:
             \vspace{-8pt}
@@ -872,7 +918,7 @@
             \end{equation*}
         \end{alertblock}
 
-        
+        \pause
         Thus, the next constraints can be build:
         \vspace{-5pt}
         \begin{align*}
@@ -884,22 +930,19 @@
     \end{frame}
 
     \begin{frame}[fragile]{Constraint System Example}
-        The witness vector: $\mathbf{w} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult})$. The coefficients vectors:
-        
-        \vspace{-20pt}
+        The witness vector: $\mathbf{w} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult})$.
 
+        \vspace{2pt}
+        The coefficients vectors:
+        \vspace{-5pt}
         \begin{align*}
             \mathbf{a}_1 &= (0, 0, 1, 0, 0, 0, 0), & \mathbf{b}_1 &= (0, 0, 1, 0, 0, 0, 0), & \mathbf{c}_1 &= (0, 0, 1, 0, 0, 0, 0) \\
             \mathbf{a}_2 &= (0, 0, 0, 1, 0, 0, 0), & \mathbf{b}_2 &= (0, 0, 0, 0, 1, 0, 0), & \mathbf{c}_2 &= (0, 0, 0, 0, 0, 1, 0) \\
             \mathbf{a}_3 &= (0, 0, 1, 0, 0, 0, 0), & \mathbf{b}_3 &= (0, 0, 0, 0, 0, 1, 0), & \mathbf{c}_3 &= (0, 0, 0, 0, 0, 0, 1) \\
             \mathbf{a}_4 &= (1, 0, -1, 0, 0, 0, 0), & \mathbf{b}_4 &= (0, 0, 0, 1, 1, 0, 0), & \mathbf{c}_4 &= (0, 1, 0, 0, 0, 0, -1)
         \end{align*}
-
+        Using the arithmetic in a large finite field $\mathbb{F}_p$, consider the following values:
         \vspace{-10pt}
-
-        Using the arithmetic in a large $\mathbb{F}_p$, consider the following values:
-        
-        \vspace{-15pt}
         \begin{equation*}
             x_1 = 1, \quad x_2 = 3, \quad x_3 = 4
             \vspace{-5pt}
@@ -963,7 +1006,7 @@
             \end{bmatrix}
             \vspace{-5pt}
         \end{equation*}}
-        
+        \pause
         Consider an expression $A\mathbf{w}$:
         \vspace{-5pt}
         {\scriptsize \begin{equation*}
@@ -983,7 +1026,7 @@
             \end{bmatrix}
             \vspace{-5pt}
         \end{equation*}}
-        
+        \pause
         Therefore, we have:
         \vspace{-5pt}
         {\scriptsize \begin{equation*}
@@ -1007,7 +1050,7 @@
             \end{bmatrix}
             \vspace{-5pt}
         \end{equation*}}
-        
+        \pause
         Thus, {\small $A\mathbf{w} \odot B\mathbf{w} = C\mathbf{w}$} is equivalent to the system of $m$ constraints:
         \vspace{-5pt}
         {\small \begin{equation*}
@@ -1053,7 +1096,7 @@
             \end{equation*}
             Where $A$ is the outer product of vectors $\mathbf{a}$, $\mathbf{b}$, so a \textbf{rank-1} matrix.
         \end{lemma}
-        
+        \pause
         \textbf{Lemma proof.} Consider $\mathbf{a}, \mathbf{b}, \mathbf{c}, \mathbf{w} \in \mathbb{F}^n$.
         \vspace{-5pt}
         \begin{equation*}
