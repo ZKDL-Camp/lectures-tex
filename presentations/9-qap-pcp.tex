@@ -335,35 +335,6 @@ def example(a: bool, b: F, c: F) -> F:
          \end{figure}
     \end{frame}
 
-    \begin{frame}[fragile]{Recap. Arbitrary Program To Circuits}
-        \begin{example}
-            How can we translate \texttt{if} statements?
-            \begin{lstlisting}[language=Python,numbers=none]
-def example(a: bool, b: F, c: F) -> F:
-    if a:
-        return b * c 
-    else:
-        return b + c
-            \end{lstlisting}
-            \pause
-            We can transform such a function into the next expression:
-            \vspace{-8pt}
-            \begin{equation*}
-                r = a \times (b \times c) + (1 - a) \times (b + c)    
-                \vspace{-8pt}
-            \end{equation*}
-            \pause
-            Corresponding equations for the circuit are:
-            \vspace{-8pt}
-            \begin{equation*}
-                \begin{aligned}
-                    r_1 &= b \times c, \quad &r_3 &= 1 - a, \quad &r_5 &= r_3 \times r_2 \\
-                    r_2 &= b + c, \quad &r_4 &= a \times r_1, \quad &r &= r_4 + r_5
-                \end{aligned}
-            \end{equation*}
-        \end{example}
-    \end{frame}
-
     \begin{frame}{Recap. R1CS}
         Each \textbf{constraint} in the Rank-1 Constraint System must be in the form:
         \begin{equation*}
@@ -525,7 +496,6 @@ def example(a: bool, b: F, c: F) -> F:
                 % Node to contain the pmatrix
                 \node (A) at (0,0) {$\mathbf{w} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult})$};
             
-                \pause
                 % Draw the red rectangle around the third column
                 \draw[red, very thick] 
                     ([xshift=-108pt,yshift=-2pt]A.north east) -- ++(0,-0.5) -- 
@@ -558,7 +528,7 @@ def example(a: bool, b: F, c: F) -> F:
             \end{tikzpicture}
         \end{center}
         \vspace{-10pt}
-        Consider 4th constraint: $(1 - x_1) \times (x_2 + x_3) = r - \mathsf{selectMult}$
+        \pause Consider 4th constraint: $(1 - x_1) \times (x_2 + x_3) = r - \mathsf{selectMult}$
         \vspace{-8pt}
         \begin{center}
             \begin{tikzpicture}
@@ -1072,7 +1042,7 @@ def example(a: bool, b: F, c: F) -> F:
         remainder.
 
         \pause
-        Consider polynomial: $p(x) = x^2 - 5x$. \pause And some homomorphic ecnryption with a
+        Consider polynomial: $p(x) = x^2 - 5x$. \pause And some homomorphic encryption with a
         generator $g$.
         
         To evaluate encrypted polynomial e.q.:
@@ -1080,7 +1050,7 @@ def example(a: bool, b: F, c: F) -> F:
         \begin{equation*}
             g^{p(\tau)} \pause = g^{\left( \tau^2 - 5\tau \right)} \pause = \left( g^{\tau^2} \right)^1 \dot {\left( g^{\tau^1} \right)}^{-5}
         \end{equation*}}
-        Prover needs ecnrypted powers of tau: $\{g^{\tau^i}\}_{i \in [d]}$.
+        Prover needs encrypted powers of tau: $\{g^{\tau^i}\}_{i \in [d]}$.
     \end{frame}
 
     \begin{frame}{Encrypted Verification}
@@ -1118,14 +1088,14 @@ def example(a: bool, b: F, c: F) -> F:
         \textbf{Adversary}: 
         \vspace{-5pt}
         \begin{itemize}[label=\ding{51}]
-            \item \vspace{-3pt} Picks a random value $r \xleftarrow{R} \mathbb{F}$, calculates $g^s$. \pause
+            \item \vspace{-3pt} Picks a random value $r \xleftarrow{R} \mathbb{F}$, calculates $g^r$. \pause
             \item \vspace{-3pt} Calculates $g^{t(\tau)}$. \pause
-            \item \vspace{-3pt} Calculates $g^{\widetilde{p}(\tau)} = {\left( g^{t(\tau)} \right)}^s$. \pause
+            \item \vspace{-3pt} Calculates $g^{\widetilde{p}(\tau)} = {\left( g^{t(\tau)} \right)}^r$. \pause
         \end{itemize}
         \textbf{Verifier}: 
         \vspace{-5pt}
         \begin{itemize}[label=\ding{51}]
-            \item \vspace{-3pt} Checks whether $g^{\widetilde{p}(\tau)} = \left( g^{s} \right)^{t(\tau)}$.
+            \item \vspace{-3pt} Checks whether $g^{\widetilde{p}(\tau)} = \left( g^{r} \right)^{t(\tau)}$.
         \end{itemize}
     \end{frame}
 
