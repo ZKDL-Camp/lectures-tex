@@ -82,17 +82,13 @@
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 \lstset{
     numbers=left,  
-    frame=tb,
     aboveskip=3mm,
     belowskip=3mm,
     showstringspaces=false,
     columns=fixed,
-    framerule=1pt,
-    rulecolor=\color{gray!35},
-    backgroundcolor=\color{gray!5},
     basicstyle={\ttfamily\small},
     numberstyle=\footnotesize\color{gray},
-    keywordstyle=\bfseries\color{MidnightBlue!95!black},
+    keywordstyle=\bfseries\color{blue!80!black},
     commentstyle=\color{dkgreen},
     stringstyle=\color{mauve},
     breaklines=true,
@@ -244,7 +240,7 @@
 \newenvironment{talign*}{\let\displaystyle\textstyle\csname align*\endcsname}{\endalign}
 
 \usepackage[explicit]{titlesec}
-\titleformat{\section}{\fontsize{24}{30}\sffamily\bfseries}{\thesection}{20pt}{#1}
+\titleformat{\section}{\fontsize{20}{22}\sffamily\bfseries}{\thesection}{20pt}{#1}
 \titleformat{\subsection}{\fontsize{16}{18}\sffamily\bfseries}{\thesubsection}{12pt}{#1}
 \titleformat{\subsubsection}{\fontsize{10}{12}\sffamily\large\bfseries}{\thesubsubsection}{8pt}{#1}
 
