@@ -1,0 +1,24 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerouterthemeAltarguelles}
+
+\mode<presentation>
+
+% remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+% headline navigation
+\defbeamertemplate*{headline}{Altarguelles}{
+    \begin{beamercolorbox}[ht=1.2em,dp=1.6em]{section in head/foot}
+        {\usebeamerfont{headline section}\insertnavigation{\paperwidth}}
+    \end{beamercolorbox}
+}
+
+% frame title
+\defbeamertemplate*{frametitle}{Altarguelles}{
+    \begin{beamercolorbox}[wd=.95\paperwidth]{normal text}
+        {\usebeamerfont{frame title}\insertframetitle}
+    \end{beamercolorbox}
+}
+
+\mode<all>
+\endinput

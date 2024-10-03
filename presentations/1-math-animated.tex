@@ -1,59 +1,18 @@
-\documentclass{beamer}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
+\documentclass{zkdl-presentation-template}
 
-% -- Including some standard packages --
-\usepackage{graphicx}
-\usepackage{soul}
-\usepackage{hyperref}
-\usepackage{colortbl}
-\usepackage{dsfont}
-\usepackage{soul}
-
-% -- Choosing theme --
-
-\usetheme{Boadilla}
-\usecolortheme{whale}
-\setbeamercolor{alerted text}{fg=purple} % Making alerted text non-red
-
-% Tikz
-\usepackage{tikz}
-\usetikzlibrary{matrix,positioning,fit,backgrounds,intersections}
-
-% -- Cross signs --
-\usepackage{pifont} % http://ctan.org/pkg/pifont
-\newcommand{\cmark}{\ding{51}}%
-\newcommand{\xmark}{\ding{55}}%
-\newcommand{\xopt}{\ding{48}}%
-
-% -- Custom commands --
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
-
-\title[Mathematics I]{\textbf{Mathematics for Cryptography: Number Theory, Groups, Polynomials}}
+\title[Mathematics: Part I]{\textbf{Mathematics for Cryptography: Basic Notation and Groups}}
 \author{Distributed Lab}
 \date{July 18, 2024}
-\titlegraphic{
-    \includegraphics[width=\textwidth]{images/banner_wide.png}
-}
-
-\expandafter\def\expandafter\insertshorttitle\expandafter{%
-  \insertshorttitle\hfill%
-  \insertframenumber\,/\,\inserttotalframenumber}
-
-\AtBeginSection[]{
-  \begin{frame}
-  \vfill
-  \centering
-  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
-    \usebeamerfont{title}\insertsectionhead\par%
-  \end{beamercolorbox}
-  \vfill
-  \end{frame}
-}
+\homepage{zkdl-camp.github.io}
+\github{ZKDL-Camp}
 
 \begin{document}
     \frame {
+      \tikz [remember picture,overlay]
+        \node at
+            ([yshift=1.5cm,xshift=-1.5cm]current page.south east) 
+            %or: (current page.center)
+            {\includegraphics[width=60pt]{images/logo.png}};
       \titlepage
     }
   
@@ -70,7 +29,7 @@
           \begin{itemize}
             \only<1-5>{\item ZKDL is an intensive course on low-level zero-knowledge cryptography.}
             \only<2-5>{\item We will learn zero-knowledge proving systems \textbf{from total scratch}.}
-            \only<3-5>{\item This means that the material is \textbf{hard}. We want commitment and attention from your side.}
+            \only<3-5>{\item This means that material is \textbf{hard}. We want commitment and attention from your side.}
             \only<4-5>{\item We, in turn, provide you structured explanation of the material, practical examples and exercises.}
           \end{itemize}
         \end{column}
@@ -85,7 +44,7 @@
 
       \only<5> {
         \begin{alertblock}{Note}
-          This course is beneficial for everyone: even lecturers do not know all the material and content is subject to change. Please, feel free to ask questions and provide feedback, and we will adjust the material accordingly.
+          This course is beneficial for everyone: even lecturers do not know all the material. Please, feel free to ask questions and provide feedback, and we will adjust the material accordingly.
         \end{alertblock}
       }
     \end{frame}
@@ -114,7 +73,7 @@
         \end{columns}
         
         \begin{alertblock}{Note}
-          We are R\&D experts in Cryptography, so we need to boost our skills in academic writing, lecturing, and understanding very advanced topics.
+          We are R\&D experts in Cryptography, so we need to boost our skills in academic writing, lecturing, and understanding advanced topics.
         \end{alertblock}
     \end{frame}
 
@@ -156,7 +115,7 @@
 
     \begin{frame}{Sets}
       \begin{definition}
-        \textbf{Set} is a collection of \textit{distinct} objects, considered as an object in its own right. \pause
+        \textbf{Set} is a collection of (possibly) \textit{distinct} objects, considered as an object in its own right. \pause
       \end{definition}
 
       \begin{example}
@@ -166,9 +125,9 @@
           \item $\mathbb{R}$ is a set of real numbers.
           \item $\mathbb{R}_{>0}$ is a set of positive real numbers. \pause
           \item $\{1, 2, 5, 10\}$ is a set of four elements.
-          \item $\{1, 2, 2, 3\} = \{1,2,3\}$ -- we do not count duplicates. \pause
-          \item $\{1,2,3\} = \{2,1,3\}$ -- order does not matter.
-          \item $\{\{1,2\},\{3,4\}, \{\sqrt{5}\}\}$ is a valid set -- elements can be sets themselves.
+          \item $\{1, 2, 2, 3\} = \{1,2,3\}$ --- we do not count duplicates. \pause
+          \item $\{1,2,3\} = \{2,1,3\}$ --- order does not matter.
+          \item $\{\{1,2\},\{3,4\}, \{\sqrt{5}\}\}$ --- elements can be sets themselves.
         \end{itemize}
       \end{example}
     \end{frame}
@@ -184,47 +143,47 @@
     \tikzset{filled/.style={fill=circle area, draw=circle edge, ultra thick},
         outline/.style={draw=circle edge, ultra thick}}    
 
-      \begin{figure}
-        \begin{center}
-        \begin{tabular}{cc}
-        % Set A and B
-        \begin{tikzpicture}
-            \begin{scope}
-                \clip \firstcircle;
-                \fill[filled] \secondcircle;
-            \end{scope}
-            \draw[outline] \firstcircle node {$A$};
-            \draw[outline] \secondcircle node {$B$};
-            \node[anchor=south] at (current bounding box.north) {$A \cap B$};
-        \end{tikzpicture} &   
-        %Set A or B but not (A and B) also known a A xor B
-        \begin{tikzpicture}
-            \draw[filled, even odd rule] \firstcircle node {$A$}
-                                        \secondcircle node{$B$};
-            \node[anchor=south] at (current bounding box.north) {$\overline{A \cap B}$};
-        \end{tikzpicture}
-        \\
-        % Set A or B
-        \begin{tikzpicture}
-            \draw[filled] \firstcircle node {$A$}
-                        \secondcircle node {$B$};
-            \node[anchor=south] at (current bounding box.north) {$A \cup B$};
-        \end{tikzpicture} &  
-        % Set A but not B
-        \begin{tikzpicture}
-            \begin{scope}
-                \clip \firstcircle;
-                \draw[filled, even odd rule] \firstcircle node {$A$}
-                                            \secondcircle;
-            \end{scope}
-            \draw[outline] \firstcircle
-                        \secondcircle node {$B$};
-            \node[anchor=south] at (current bounding box.north) {$A \setminus B$};
-        \end{tikzpicture}
-    \end{tabular}
-    \end{center}
-    \label{fig:venn_diagrams}
-    \end{figure}
+        \begin{figure}
+          \begin{center}
+          \begin{tabular}{cc}
+          % Set A and B
+          \begin{tikzpicture}[scale=0.8, every node/.style={scale=0.8}]
+              \begin{scope}
+                  \clip \firstcircle;
+                  \fill[filled] \secondcircle;
+              \end{scope}
+              \draw[outline] \firstcircle node {$A$};
+              \draw[outline] \secondcircle node {$B$};
+              \node[anchor=south] at (current bounding box.north) {$A \cap B$};
+          \end{tikzpicture} &   
+          %Set A or B but not (A and B) also known a A xor B
+          \begin{tikzpicture}[scale=0.8, every node/.style={scale=0.8}]
+              \draw[filled, even odd rule] \firstcircle node {$A$}
+                                          \secondcircle node{$B$};
+              \node[anchor=south] at (current bounding box.north) {$\overline{A \cap B}$};
+          \end{tikzpicture}
+          \\
+          % Set A or B
+          \begin{tikzpicture}[scale=0.8, every node/.style={scale=0.8}]
+              \draw[filled] \firstcircle node {$A$}
+                          \secondcircle node {$B$};
+              \node[anchor=south] at (current bounding box.north) {$A \cup B$};
+          \end{tikzpicture} &  
+          % Set A but not B
+          \begin{tikzpicture}[scale=0.8, every node/.style={scale=0.8}]
+              \begin{scope}
+                  \clip \firstcircle;
+                  \draw[filled, even odd rule] \firstcircle node {$A$}
+                                             \secondcircle;
+              \end{scope}
+              \draw[outline] \firstcircle
+                          \secondcircle node {$B$};
+              \node[anchor=south] at (current bounding box.north) {$A \setminus B$};
+          \end{tikzpicture}
+      \end{tabular}
+      \end{center}
+      \label{fig:venn_diagrams}
+      \end{figure}
     \end{frame}
     
     \begin{frame}{Operations on sets: Examples}
@@ -357,7 +316,7 @@
     \begin{frame}{Why Groups?!}
         But integers on their own are not enough. We need to define a structure that allows us to perform operations on them.
 
-        This is very similar to interfaces: we abstract from the implementation, just merely stating we have ``some'' addition/multiplication.
+        This is very similar to interfaces: we abstract from the implementation, just merely stating we have ``some'' operation.
 
         \begin{example}
             Consider set $\mathbb{G} := \{\text{Dmytro}, \text{Dan}, \text{Friendship}\}$. We can safely define an operation $\oplus$ as:
@@ -659,7 +618,7 @@
           For any two polynomials $p,q \in \mathbb{F}[x]$ and $n = \deg p, m = \deg q$, the following two statements are true:
           \begin{enumerate}
               \item $\deg (pq) = n + m$.
-              \item $\deg (p + q) = \max\{n,m\}$ if $n \neq m$ and $\deg (p+q) \leq m$ for $m=n$.
+              \item $\deg (p+q) = \max\{n,m\}, n \neq m$ and $\deg (p+q) \leq m, m=n$.
           \end{enumerate}
       \end{theorem}
     \end{frame}
@@ -788,9 +747,9 @@
     \begin{frame}{Shamir's Protocol}
       \begin{block}{Note}
         Here, we require the \textbf{correctness}: for every $\alpha \in F$, for every possible output $(\alpha_1,\dots,\alpha_n) \gets \mathsf{Gen}(\alpha, t, n)$, and any $t$-size subset $\mathcal{I}$ of $\{1,\dots,n\}$ we have
-        \begin{equation}
+        \begin{equation*}
             \mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}}) = \alpha.
-        \end{equation}
+        \end{equation*}
       \end{block}
       \pause
 
@@ -798,9 +757,9 @@
         Now, \textbf{Shamir's protocol} works as follows: $F=\mathbb{F}_q$ and
         \begin{itemize}
             \item $\mathsf{Gen}(\alpha, k, n)$: choose random $k_1,\dots,k_{t-1} \xleftarrow[]{R} \mathbb{F}_q$ and define the polynomial
-            \begin{equation}
+            \begin{equation*}
                 \omega(x) := \alpha + k_1x + k_2x^2 + \cdots + k_{t-1}x^{t-1} \in \mathbb{F}_q^{\leq (t-1)}[x],     
-            \end{equation}
+            \end{equation*}
             and then compute $\alpha_i \gets \omega(i) \in \mathbb{F}_q, \; i = 1,\dots,n$. 
         \end{itemize}
       \end{definition}

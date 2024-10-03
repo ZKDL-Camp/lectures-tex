@@ -1,59 +1,18 @@
-\documentclass{beamer}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
+\documentclass{zkdl-presentation-template}
 
-% -- Including some standard packages --
-\usepackage{graphicx}
-\usepackage{soul}
-\usepackage{hyperref}
-\usepackage{colortbl}
-\usepackage{dsfont}
-\usepackage{soul}
-
-% -- Choosing theme --
-
-\usetheme{Boadilla}
-\usecolortheme{whale}
-\setbeamercolor{alerted text}{fg=purple} % Making alerted text non-red
-
-% Tikz
-\usepackage{tikz}
-\usetikzlibrary{matrix,positioning,fit,backgrounds,intersections}
-
-% -- Cross signs --
-\usepackage{pifont} % http://ctan.org/pkg/pifont
-\newcommand{\cmark}{\ding{51}}%
-\newcommand{\xmark}{\ding{55}}%
-\newcommand{\xopt}{\ding{48}}%
-
-% -- Custom commands --
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
-
-\title[Mathematics I]{\textbf{Mathematics for Cryptography I: Notation and Groups}}
+\title[Mathematics: Part I]{\textbf{Mathematics for Cryptography: Basic Notation and Groups}}
 \author{Distributed Lab}
 \date{July 18, 2024}
-\titlegraphic{
-    \includegraphics[width=\textwidth]{images/banner_wide.png}
-}
-
-\expandafter\def\expandafter\insertshorttitle\expandafter{%
-  \insertshorttitle\hfill%
-  \insertframenumber\,/\,\inserttotalframenumber}
-
-\AtBeginSection[]{
-  \begin{frame}
-  \vfill
-  \centering
-  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
-    \usebeamerfont{title}\insertsectionhead\par%
-  \end{beamercolorbox}
-  \vfill
-  \end{frame}
-}
+\homepage{zkdl-camp.github.io}
+\github{ZKDL-Camp}
 
 \begin{document}
     \frame {
+      \tikz [remember picture,overlay]
+        \node at
+            ([yshift=1.5cm,xshift=-1.5cm]current page.south east) 
+            %or: (current page.center)
+            {\includegraphics[width=60pt]{images/logo.png}};
       \titlepage
     }
   
@@ -70,7 +29,7 @@
           \begin{itemize}
             \item ZKDL is an intensive course on low-level zero-knowledge cryptography.
             \item We will learn zero-knowledge proving systems \textbf{from total scratch}.
-            \item This means that the material is \textbf{hard}. We want commitment and attention from your side.
+            \item This means that material is \textbf{hard}. We want commitment and attention from your side.
             \item We, in turn, provide you structured explanation of the material, practical examples and exercises.
           \end{itemize}
         \end{column}
@@ -84,7 +43,7 @@
         \end{columns}
 
       \begin{alertblock}{Note}
-        This course is beneficial for everyone: even lecturers do not know all the material and content is subject to change. Please, feel free to ask questions and provide feedback, and we will adjust the material accordingly.
+        This course is helpful for everyone: even lecturers do not know all the material fully. Please, feel free to ask questions and provide feedback --- we will adjust the material accordingly.
       \end{alertblock}
 
     \end{frame}
@@ -113,7 +72,7 @@
         \end{columns}
         
         \begin{alertblock}{Note}
-          We are R\&D experts in Cryptography, so we need to boost our skills in academic writing, lecturing, and understanding very advanced topics.
+          We are R\&D experts in Cryptography, so we need to boost our skills in academic writing, lecturing, and understanding advanced topics.
         \end{alertblock}
     \end{frame}
 
@@ -155,7 +114,7 @@
 
     \begin{frame}{Sets}
       \begin{definition}
-        \textbf{Set} is a collection of \textit{distinct} objects, considered as an object in its own right.
+        \textbf{Set} is a collection of (possibly) \textit{distinct} objects, considered as an object in its own right.
       \end{definition}
 
       \begin{example}
@@ -167,7 +126,7 @@
           \item $\{1, 2, 5, 10\}$ is a set of four elements.
           \item $\{1, 2, 2, 3\} = \{1,2,3\}$ -- we do not count duplicates.
           \item $\{1,2,3\} = \{2,1,3\}$ -- order does not matter.
-          \item $\{\{1,2\},\{3,4\}, \{\sqrt{5}\}\}$ is a valid set -- elements can be sets themselves.
+          \item $\{\{1,2\},\{3,4\}, \{\sqrt{5}\}\}$ -- elements can be sets themselves.
         \end{itemize}
       \end{example}
     \end{frame}
@@ -187,7 +146,7 @@
         \begin{center}
         \begin{tabular}{cc}
         % Set A and B
-        \begin{tikzpicture}
+        \begin{tikzpicture}[scale=0.8, every node/.style={scale=0.8}]
             \begin{scope}
                 \clip \firstcircle;
                 \fill[filled] \secondcircle;
@@ -197,24 +156,24 @@
             \node[anchor=south] at (current bounding box.north) {$A \cap B$};
         \end{tikzpicture} &   
         %Set A or B but not (A and B) also known a A xor B
-        \begin{tikzpicture}
+        \begin{tikzpicture}[scale=0.8, every node/.style={scale=0.8}]
             \draw[filled, even odd rule] \firstcircle node {$A$}
                                         \secondcircle node{$B$};
             \node[anchor=south] at (current bounding box.north) {$\overline{A \cap B}$};
         \end{tikzpicture}
         \\
         % Set A or B
-        \begin{tikzpicture}
+        \begin{tikzpicture}[scale=0.8, every node/.style={scale=0.8}]
             \draw[filled] \firstcircle node {$A$}
                         \secondcircle node {$B$};
             \node[anchor=south] at (current bounding box.north) {$A \cup B$};
         \end{tikzpicture} &  
         % Set A but not B
-        \begin{tikzpicture}
+        \begin{tikzpicture}[scale=0.8, every node/.style={scale=0.8}]
             \begin{scope}
                 \clip \firstcircle;
                 \draw[filled, even odd rule] \firstcircle node {$A$}
-                                            \secondcircle;
+                                           \secondcircle;
             \end{scope}
             \draw[outline] \firstcircle
                         \secondcircle node {$B$};
@@ -355,7 +314,7 @@
     \begin{frame}{Why Groups?!}
         But integers on their own are not enough. We need to define a structure that allows us to perform operations on them.
 
-        This is very similar to interfaces: we abstract from the implementation, just merely stating we have ``some'' addition/multiplication.
+        This is very similar to interfaces: we abstract from the implementation, just merely stating we have ``some'' operation.
 
         \begin{example}
             Consider set $\mathbb{G} := \{\text{Dmytro}, \text{Dan}, \text{Friendship}\}$. We can safely define an operation $\oplus$ as:
@@ -600,8 +559,21 @@
     \end{example}
     \end{frame}
   
-    \begin{frame}{}
-        \centering \Large
-        \emph{Thanks for your attention!}
-      \end{frame}
+    \begin{frame}[plain, standout]
+      \centering
+      \LARGE
+      \textbf{Thank you for your attention} \\
+      
+      \vspace{0.2cm} \Huge \ding{170} \large \\
+      
+      \vspace{1cm}
+
+      \href{https://zkdl-camp.github.io/}{\raisebox{-.1em}{\hspace{.025em}\faIcon{globe}}\hspace{.325em}zkdl-camp.github.io} \\
+
+      \href{https://github.com/ZKDL-Camp}{\raisebox{-.1em}{\hspace{.025em}\faIcon{github}}\hspace{.325em}github.com/ZKDL-Camp}
+      
+      \begin{center}
+          \includegraphics[width=0.15\textwidth]{images/logo.png}
+      \end{center}
+  \end{frame}
 \end{document}

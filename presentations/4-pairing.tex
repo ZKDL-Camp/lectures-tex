@@ -1,61 +1,20 @@
-\documentclass[xcolor={usenames,dvipsnames}]{beamer}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-
-% -- Including some standard packages --
-\usepackage{graphicx}
-\usepackage{soul}
-\usepackage{hyperref}
-\usepackage{colortbl}
-\usepackage{dsfont}
-\usepackage{soul}
-
-% -- Choosing theme --
-
-\usetheme{Boadilla}
-\usecolortheme{spruce}
-\setbeamercolor{alerted text}{fg=purple} % Making alerted text non-red
-
-% Tikz
-\usepackage{tikz,tikz-3dplot,tikz-cd,tkz-tab,tkz-euclide,pgf,pgfplots}
-\usetikzlibrary{matrix,positioning,fit,backgrounds,intersections}
-
-% -- Cross signs --
-\usepackage{pifont} % http://ctan.org/pkg/pifont
-\newcommand{\cmark}{\ding{51}}%
-\newcommand{\xmark}{\ding{55}}%
-\newcommand{\xopt}{\ding{48}}%
-
-% -- Custom commands --
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
+\documentclass{zkdl-presentation-template}
 
 \title[Projective Space and Pairing]{\textbf{Projective Coordinates and Pairing}}
 \author{Distributed Lab}
 \date{August 8, 2024}
-\titlegraphic{
-    \includegraphics[width=\textwidth]{images/banner_wide.png}
-}
-
-\expandafter\def\expandafter\insertshorttitle\expandafter{%
-  \insertshorttitle\hfill%
-  \insertframenumber\,/\,\inserttotalframenumber}
-
-\AtBeginSection[]{
-  \begin{frame}
-  \vfill
-  \centering
-  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
-    \usebeamerfont{title}\insertsectionhead\par%
-  \end{beamercolorbox}
-  \vfill
-  \end{frame}
-}
+\homepage{zkdl-camp.github.io}
+\github{ZKDL-Camp}
 
 \begin{document}
-	\frame {
-		\titlepage
-	}
+    \frame {
+        \tikz [remember picture,overlay]
+        \node at
+            ([yshift=1.5cm,xshift=-1.5cm]current page.south east) 
+            %or: (current page.center)
+            {\includegraphics[width=60pt]{images/logo.png}};
+        \titlepage
+    }
  
 	\begin{frame}{Plan}
         \tableofcontents
@@ -67,10 +26,13 @@
     \begin{frame}{Elliptic Curve Definition}
         \begin{definition}
             Suppose that $\mathbb{K}$ is a field. An \textbf{elliptic curve} $E$ over $\mathbb{K}$ is defined as a set of points $(x,y) \in \mathbb{K}^2$:
+            \vspace{-5pt}
             \begin{equation*}
                 y^2 = x^3+ax+b,
             \end{equation*}
-            called a \textbf{Short Weierstrass equation}, where $a,b \in \mathbb{K}$ and $4a^3+27b^2 \neq 0$. We denote $E/\mathbb{K}$ to denote the elliptic curve over field $\mathbb{K}$.
+            \vspace{-20pt}
+
+            called a \textbf{Short Weierstrass equation}, where $a,b \in \mathbb{K}$ and $4a^3+27b^2 \neq 0$. $E/\mathbb{K}$ denotes the elliptic curve over field $\mathbb{K}$.
         \end{definition}
 
         \begin{block}{Definition}
@@ -114,9 +76,9 @@
             \begin{column}{0.5\textwidth}
             Let 
             \begin{itemize}
-                \item $\textcolor{blue}{\mathbf{M}}$ --- cost of multiplication;
-                \item $\textcolor{ForestGreen}{\mathbf{S}}$ --- cost of squaring;
-                \item $\textcolor{red}{\mathbf{I}}$ --- cost of inverse.
+                \item $\textcolor{oc-indigo-8}{\boldsymbol{M}}$ --- cost of multiplication;
+                \item $\textcolor{oc-green-8}{\boldsymbol{S}}$ --- cost of squaring;
+                \item $\textcolor{oc-red-7}{\boldsymbol{I}}$ --- cost of inverse.
             \end{itemize}
 
             (all in some extension $\mathbb{F}_{p^m}$)
@@ -124,22 +86,22 @@
         \begin{column}{0.5\textwidth}
             \textbf{Algorithm 1:} Calculating $P \oplus Q$
             \begin{gather*}
-                \lambda \gets (y_P-y_Q)\textcolor{blue}{\times}(x_P-x_Q)^{\textcolor{red}{-1}} \\
-                x_R \gets \lambda^{\textcolor{ForestGreen}{2}} - x_P - x_Q \\
-                y_R \gets \lambda \textcolor{blue}{\times} (x_P - x_R) - y_P
+                \lambda \gets (y_P-y_Q)\textcolor{oc-indigo-8}{\times}(x_P-x_Q)^{\textcolor{oc-red-7}{-1}} \\
+                x_R \gets \lambda^{\textcolor{oc-green-8}{2}} - x_P - x_Q \\
+                y_R \gets \lambda \textcolor{oc-indigo-8}{\times} (x_P - x_R) - y_P
             \end{gather*}
         \end{column}
         \end{columns}
         \vspace{10px}
         Then, calculating the aforementioned formula costs:
         \begin{equation*}
-            2\textcolor{blue}{\mathbf{M}} + \textcolor{ForestGreen}{\mathbf{S}} + \textcolor{red}{\mathbf{I}}
+            2\textcolor{oc-indigo-8}{\boldsymbol{M}} + \textcolor{oc-green-8}{\boldsymbol{S}} + \textcolor{oc-red-7}{\boldsymbol{I}}
         \end{equation*}
 
         Well, just 4 operations... Easy right?
 
         \begin{alertblock}{Main Problem!}
-            Typically, $\mathbf{I} \approx 80\mathbf{M}$. So, the effective cost is roughly \textbf{80 operations}. Too bad. We need to fix it!
+            Typically, $\boldsymbol{I} \approx 80\boldsymbol{M}$. So, the effective cost is roughly \textbf{80 operations}. Too bad. We need to fix it!
         \end{alertblock}
     \end{frame}
 
@@ -180,7 +142,7 @@
             Then $\sim$ is an equivalence relation on $\mathcal{X}$.
             \begin{enumerate}
                 \item \textbf{Reflexivity:} $x \sim x$ since $x$ has the same birthday as $x$.
-                \item \textbf{Symmetry:} If $x \sim y$, then $y \sim x$ since $x$ has the same birthday as $y$.
+                \item \textbf{Symmetry:} If $x \sim y$, then $y \sim x$ (obvious).
                 \item \textbf{Transitivity:} If $x \sim y$ and $y \sim z$, then $x \sim z$.
             \end{enumerate}
         \end{example}
@@ -331,15 +293,18 @@
         \end{block}
 
         \begin{definition}
-            The \textbf{homogeneous projective form} of the elliptic curve is given by the equation:
+            The \textbf{homogeneous projective form} of the elliptic curve is given by the following equation:
+            \vspace{-5pt}
             \begin{equation*}
-                Y^2Z = X^3 + aXZ^2 + bZ^3,
+                E_{\mathbb{P}}: Y^2Z = X^3 + aXZ^2 + bZ^3,
             \end{equation*}
+            \vspace{-20pt}
+            
             where the point at infinity is encoded as $\mathcal{O} = (0:1:0)$.
         \end{definition}
 
         \begin{block}{Remark}
-            Why $\mathcal{O} = (0:1:0)$. Note that all $(0:\lambda:0)$ lie on the Elliptic Curve.
+            Why $\mathcal{O} = (0:1:0)$? Note that all $(0:\lambda:0)$ lie on $E_{\mathbb{P}}$.
         \end{block}
     \end{frame}
 
@@ -420,17 +385,16 @@
         \end{example}
     \end{frame}
 
-    \section{Pairings}
-    \subsection{Basic Definition}
+    \section{Elliptic Curve-based Pairing}
     \begin{frame}{Definition}
         \begin{definition}
-            \textbf{Pairing} is a bilinear, non-degenerate, efficiently computable map $e: \textcolor{red}{\mathbb{G}_1} \times \textcolor{blue}{\mathbb{G}_2} \to \textcolor{ForestGreen}{\mathbb{G}_T}$, where $\textcolor{red}{\mathbb{G}_1},\textcolor{blue}{\mathbb{G}_2}$ are two groups (typically, elliptic curve groups) and $\textcolor{ForestGreen}{\mathbb{G}_T}$ is a target group (typically, a set of scalars). Let us decipher the definition:
+            \textbf{Pairing} is a bilinear, non-degenerate, efficiently computable map $e: \textcolor{oc-red-7}{\mathbb{G}_1} \times \textcolor{oc-indigo-8}{\mathbb{G}_2} \to \textcolor{oc-green-8}{\mathbb{G}_T}$, where $\textcolor{oc-red-7}{\mathbb{G}_1},\textcolor{oc-indigo-8}{\mathbb{G}_2}$ are two groups (typically, elliptic curve groups) and $\textcolor{oc-green-8}{\mathbb{G}_T}$ is a target group (typically, a set of scalars). Let us decipher the definition:
             \begin{itemize}
                 \item \textbf{Bilinearity} means essentially the following:
                 \begin{equation*}
-                    e([a]\textcolor{red}{P},[b]\textcolor{blue}{Q}) = e([ab]\textcolor{red}{P},\textcolor{blue}{Q}) = e(\textcolor{red}{P},[ab]\textcolor{blue}{Q}) = e(\textcolor{red}{P},\textcolor{blue}{Q})^{ab}.        
+                    e([a]\textcolor{oc-red-7}{P},[b]\textcolor{oc-indigo-8}{Q}) = e([ab]\textcolor{oc-red-7}{P},\textcolor{oc-indigo-8}{Q}) = e(\textcolor{oc-red-7}{P},[ab]\textcolor{oc-indigo-8}{Q}) = e(\textcolor{oc-red-7}{P},\textcolor{oc-indigo-8}{Q})^{ab}.        
                 \end{equation*}
-                \item \textbf{Non-degeneracy} means that $e(G_1,G_2) \neq 1$ (where $G_1,G_2$ are generators of $\textcolor{red}{\mathbb{G}_1},\textcolor{blue}{\mathbb{G}_2}$, respectively). This property basically says that the pairing is not trivial.
+                \item \textbf{Non-degeneracy} means that $e(G_1,G_2) \neq 1$ (where $G_1,G_2$ are generators of $\textcolor{oc-red-7}{\mathbb{G}_1},\textcolor{oc-indigo-8}{\mathbb{G}_2}$, respectively). This property basically says that the pairing is not trivial.
                 \item \textbf{Efficient computability} means that the pairing can be computed in a reasonable time.
             \end{itemize}
         \end{definition}
@@ -454,14 +418,13 @@
         \end{example}
     \end{frame}
 
-    \subsection{Elliptic Curve-based Pairing}
     \begin{frame}{Elliptic Curve-based Pairing}
         \begin{example}
-            \textbf{Pairing for BN254.} For BN254 (with equation $y^2=x^3+3$), the pairing function $e: \textcolor{red}{\mathbb{G}_1} \times \textcolor{blue}{\mathbb{G}_2} \to \textcolor{ForestGreen}{\mathbb{G}_T}$ is defined over the following groups:
+            \textbf{Pairing for BN254.} For BN254 (with equation $y^2=x^3+3$), the pairing function $e: \textcolor{oc-red-7}{\mathbb{G}_1} \times \textcolor{oc-indigo-8}{\mathbb{G}_2} \to \textcolor{oc-green-8}{\mathbb{G}_T}$ is defined over the following groups:
             \begin{itemize}
-                \item $\textcolor{red}{\mathbb{G}_1}$ --- points on the regular curve $E(\mathbb{F}_p)$.
-                \item $\textcolor{blue}{\mathbb{G}_2}$ --- $r$-torsion points on the twisted curve $E'(\mathbb{F}_{p^2})$ over the field extension $\mathbb{F}_{p^2}$ (with equation $y^2 = x^3+\frac{3}{\xi}$ for $\xi=9+u \in \mathbb{F}_{p^2}$).
-                \item $\textcolor{ForestGreen}{\mathbb{G}_T}$ --- $r$th roots of unity $\Omega_r \subset \mathbb{F}_{p^{12}}^{\times}$.
+                \item $\textcolor{oc-red-7}{\mathbb{G}_1}$ --- points on the regular curve $E(\mathbb{F}_p)$.
+                \item $\textcolor{oc-indigo-8}{\mathbb{G}_2}$ --- $r$-torsion points on the twisted curve $E'(\mathbb{F}_{p^2})$ over the field extension $\mathbb{F}_{p^2}$ (with equation $y^2 = x^3+\frac{3}{\xi}$ for $\xi=9+u \in \mathbb{F}_{p^2}$).
+                \item $\textcolor{oc-green-8}{\mathbb{G}_T}$ --- $r$th roots of unity $\Omega_r \subset \mathbb{F}_{p^{12}}^{\times}$.
             \end{itemize}
         
              Some clarifications:
@@ -500,7 +463,6 @@
         \end{definition}
     \end{frame}
 
-    \subsection{Application \#1: BLS Signature}
     \begin{frame}{Application \#1: BLS Signature}
         Suppose we have pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ (with generators $G_1,G_2$, respectively), and a hash function $\mathsf{H}$, mapping message space $\mathcal{M}$ to $\mathbb{G}_1$.
         
@@ -515,13 +477,12 @@
         
         Let us check the correctness:
         \begin{equation*}
-            e(\sigma,G_2) = e(\textcolor{blue}{[\mathsf{sk}]}\mathsf{H}(m),G_2) = e(\mathsf{H}(m), \textcolor{blue}{[\mathsf{sk}]}G_2) = e(\mathsf{H}(m), \mathsf{pk})
+            e(\sigma,G_2) = e(\textcolor{oc-indigo-8}{[\mathsf{sk}]}\mathsf{H}(m),G_2) = e(\mathsf{H}(m), \textcolor{oc-indigo-8}{[\mathsf{sk}]}G_2) = e(\mathsf{H}(m), \mathsf{pk})
         \end{equation*}
         
         \textbf{Remark:} $\mathbb{G}_1$ and $\mathbb{G}_2$ might be switched: public keys might live instead in $\mathbb{G}_1$ while signatures in $\mathbb{G}_2$.
     \end{frame}
 
-    \subsection{Application \#2: Quadratic Verifications}
     \begin{frame}{Application \#2: Quadratic Verifications}
         \begin{block}{Task}
             Alice wants to convince Bob that she knows such $\alpha,\beta$ such that $\alpha + \beta = 2$, but she does not want to reveal $\alpha,\beta$. How to do that?
@@ -577,8 +538,21 @@
         \end{example}
     \end{frame}
     
-	\begin{frame}{}
-      \centering \Large
-      \emph{Thanks for your attention!}
+    \begin{frame}[plain, standout]
+        \centering
+        \LARGE
+        \textbf{Thank you for your attention} \\
+        
+        \vspace{0.2cm} \Huge \ding{170} \large \\
+        
+        \vspace{1cm}
+  
+        \href{https://zkdl-camp.github.io/}{\raisebox{-.1em}{\hspace{.025em}\faIcon{globe}}\hspace{.325em}zkdl-camp.github.io} \\
+  
+        \href{https://github.com/ZKDL-Camp}{\raisebox{-.1em}{\hspace{.025em}\faIcon{github}}\hspace{.325em}github.com/ZKDL-Camp}
+        
+        \begin{center}
+            \includegraphics[width=0.15\textwidth]{images/logo.png}
+        \end{center}
     \end{frame}
 \end{document}

@@ -1,17 +1,20 @@
 \documentclass{zkdl-presentation-template}
 
-\title[Introduction to ZK]{\textbf{Sigma Protocols}}
+\title[Sigma Protocols]{\textbf{Sigma Protocols}}
 \author{Distributed Lab}
 \date{September 3, 2024}
-\titlegraphic{
-    \includegraphics[width=\textwidth]{images/banner_wide.png}
-}
-
+\homepage{zkdl-camp.github.io}
+\github{ZKDL-Camp}
 
 \begin{document}
-	\frame {
-		\titlepage
-	}
+    \frame {
+        \tikz [remember picture,overlay]
+        \node at
+            ([yshift=1.5cm,xshift=-1.5cm]current page.south east) 
+            %or: (current page.center)
+            {\includegraphics[width=60pt]{images/logo.png}};
+        \titlepage
+    }
  
 	\begin{frame}{Plan}
         \tableofcontents
@@ -23,9 +26,9 @@
     \begin{frame}{Recap on Interactive Proofs}
         \begin{itemize}
             \item \textbf{Interactive proofs} allows practically prover $\mathcal{P}$ to convince the verifier $\mathcal{V}$ that some statement is true.
-            \item \textbf{Soundness} ensures that the prover cannot cheat the verifier, while \textbf{zero-knowledge} that the verifier learns nothing about the witness.
+            \item \textbf{Soundness} ensures that the prover cannot cheat the verifier, while \textbf{zero-knowledge} that witness is ``concealed''.
             \item \textbf{Argument of knowledge} ensures that the prover also ``knows'' the witness (that is, exists some extractor $\mathcal{E}$ that, acting as an admin, can extract the witness).
-            \item If verifier's messages are random values, the protocol is \textbf{public-coin}.
+            \item If $\mathcal{V}$'s messages are random values, the protocol is \textbf{public-coin}.
             \item Any public-coin protocol can be transformed into a \textbf{non-interactive} proof using \textbf{Fiat-Shamir heuristic}.
         \end{itemize}
 
@@ -39,7 +42,7 @@
         \begin{itemize}
             \item ``I know the discrete log of a point $P \in E(\mathbb{F}_p)$''.
             \item ``I know the representation of a point $P \in E(\mathbb{F}_p)$, that is $(\alpha,\beta) \in \mathbb{Z}_q^2$ such that $P=[\alpha]G + [\beta]H$''.
-            \item ``I know the $e$th modular root $w$ of $x \in \mathbb{Z}_N^{\times}$ (that is, $w^e=x$)''. \textcolor{blue!60!white}{For $e=2$, see previous lecture.}
+            \item ``I know the $e$th modular root $w$ of $x \in \mathbb{Z}_N^{\times}$ (that is, $w^e=x$)''. \textcolor{oc-orange-8}{For $e=2$, see previous lecture.}
             \item ``I know that $(P,Q,R) \in E(\mathbb{F}_p)^3$ is a Diffie-Hellman triplet''.
         \end{itemize}
 
@@ -77,7 +80,7 @@
             \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]prover.south) -- ([yshift=-9cm]prover.south);
             \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]verifier.south) -- ([yshift=-9cm]verifier.south);
     
-            \node[align=center,fill=white!5,thick,below=0.5cm of prover](prover-setup){
+            \node[align=center,fill=oc-gray-0,thick,below=0.5cm of prover](prover-setup){
             \noindent\rule{3.5cm}{0.8pt}\\
             $r \xleftarrow{R} \mathbb{Z}_q^{\times}$ \\
             $a \gets g^r$ \\
@@ -85,21 +88,21 @@
     
             \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-3cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm]{Send $a$};
     
-            \node[align=center,fill=white!5,thick,below=3.5cm of verifier](verifier-choice){
+            \node[align=center,fill=oc-gray-0,thick,below=3.5cm of verifier](verifier-choice){
             \noindent\rule{3.5cm}{0.8pt}\\
             $e \xleftarrow{R} \mathbb{Z}_q$ \\
             \noindent\rule{3.5cm}{0.8pt}};
     
             \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-5.5cm]verifier.south) coordinate (l2)--(l2-|prover) node[midway, above=0mm]{Send $e$};
     
-            \node[align=center,fill=white!5,thick,below=6.0cm of prover](prover-setup){
+            \node[align=center,fill=oc-gray-0,thick,below=6.0cm of prover](prover-setup){
             \noindent\rule{3.5cm}{0.8pt}\\
             Compute $\sigma \gets r + \alpha e \in \mathbb{Z}_q$\\
             \noindent\rule{3.5cm}{0.8pt}};
     
             \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-8cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm]{Send $\sigma$};
     
-            \node[align=center,fill=white!5,thick,below=8.5cm of verifier](verifier-choice){
+            \node[align=center,fill=oc-gray-0,thick,below=8.5cm of verifier](verifier-choice){
             \noindent\rule{3.5cm}{0.8pt}\\
             Verify $g^{\sigma} = a \cdot u^e$ \\
             \noindent\rule{3.5cm}{0.8pt}};
@@ -157,20 +160,18 @@
             The Schnorr Signature Scheme is $\Sigma_{\text{Sch}} = (\mathsf{Gen}, \mathsf{Sign}, \mathsf{Verify})$, where:
             \begin{itemize}
                 \item $\mathsf{Gen}(1^{\lambda})$: \textbf{Output} $\alpha \xleftarrow{R} \mathbb{Z}_q$ and $u \gets g^{\alpha}$.
-                \item $\mathsf{Sign}(m,\mathsf{sk})$: The signer computes $r \gets \mathbb{Z}_q^{\times}, a \gets g^{r}, e \gets H(u, \textcolor{green!80!black}{m}, a), \sigma \gets r + \alpha e$ and outputs $(a,\sigma)$.
-                \item $\mathsf{Verify}((a, \sigma), m,\mathsf{pk})$: The verifier checks if $g^{\sigma} = a \cdot u^e$ for $e \gets H(u, \textcolor{green!80!black}{m}, a)$.
+                \item $\mathsf{Sign}(m,\mathsf{sk})$: The signer computes $r \gets \mathbb{Z}_q^{\times}, a \gets g^{r}, e \gets H(u, \textcolor{oc-green-8}{m}, a), \sigma \gets r + \alpha e$ and outputs $(a,\sigma)$.
+                \item $\mathsf{Verify}((a, \sigma), m,\mathsf{pk})$: The verifier checks if $g^{\sigma} = a \cdot u^e$ for $e \gets H(u, \textcolor{oc-green-8}{m}, a)$.
             \end{itemize}
         \end{definition}
 
-        \textbf{Note:} In \textcolor{green!80!black}{\textbf{green}} we marked the only difference between the identification and signature protocols.
+        \textbf{Note:} In \textcolor{oc-green-8}{\textbf{green}} we marked the only difference between the identification and signature protocols.
     \end{frame}
 
     \section{$\Sigma$-Protocols}
     
     \begin{frame}{Generalization}
-        Now, can we generalize the Schnorr protocol to any relation $\mathcal{R}$?
-
-        Well, not for any, but for a large class of relations called \textbf{Sigma protocols}!
+        Now, can we generalize the Schnorr protocol to any relation $\mathcal{R}$? Well, not for any, but for a large class called \textbf{Sigma protocols}!
 
         \begin{definition}
             Let $\mathcal{R} \subset \mathcal{X} \times \mathcal{W}$ be an effective relation. A \textbf{Sigma protocol} for $\mathcal{R}$ is an interactive protocol $(\mathcal{P}, \mathcal{V})$ that satisfies the following properties:
@@ -178,12 +179,12 @@
                 \item In the beginning, $\mathcal{P}$ computes a \textbf{commitment} $a$ and sends it to $\mathcal{V}$.
                 \item $\mathcal{V}$ chooses a random \textbf{challenge} $c \in \mathcal{C}$ from the challenge space $\mathcal{C}$ and sends it to $\mathcal{P}$.
                 \item Upon receiving $c$, $\mathcal{P}$ computes the response $z$ and sends it to $\mathcal{V}$.
-                \item $\mathcal{V}$ outputs either $\mathsf{accept}$ or $\mathsf{reject}$ based on the \textbf{conversation} $(a,c,z)$.
+                \item $\mathcal{V}$ outputs either $\mathsf{accept}$ or $\mathsf{reject}$ based on \textbf{conversation} $(a,c,z)$.
             \end{itemize}
         \end{definition}
 
         \begin{definition}
-            $(a,c,z)$ is an \textbf{accepting conversation} if $\mathcal{V}$ outputs $\mathsf{accept}$ on this tuple.
+            $(\widetilde{a},\widetilde{c},\widetilde{z})$ is an \textbf{accepting conversation} if $\mathcal{V}$ accepts $(\widetilde{a},\widetilde{c},\widetilde{z})$.
         \end{definition}
     \end{frame}
 
@@ -232,7 +233,7 @@
             \begin{enumerate}
                 \item $\mathcal{P}$ computes $\alpha_r \xleftarrow{R} \mathbb{Z}_q, \; \beta_r \xleftarrow{R} \mathbb{Z}_q, \; u_r \gets g^{\alpha_r}h^{\beta_r}$ and sends commitment $u_r$ to $\mathcal{V}$.
                 \item $\mathcal{V}$ samples the challenge $c \xleftarrow{R} \mathbb{Z}_q$ and sends $c$ to $\mathcal{P}$.
-                \item $\mathcal{P}$ computes $\alpha_z \gets \alpha_r + \alpha c, \beta_z \gets \beta_r + \beta c$ and sends $\mathbf{z} = (\alpha_z,\beta_z)$.
+                \item $\mathcal{P}$ computes $\alpha_z \gets \alpha_r + \alpha c, \beta_z \gets \beta_r + \beta c$, sends $(\alpha_z,\beta_z)$.
                 \item $\mathcal{V}$ checks whether $g^{\alpha_z}h^{\beta_z} = u_r u^c$ and accepts or rejects the proof.
             \end{enumerate}
         \end{definition}
@@ -312,10 +313,7 @@
         \end{itemize}
 
         \begin{block}{Reminder}
-            Homomorphism $\psi: \mathbb{H} \to \mathbb{T}$ is a function, satisfying the following property:
-            \begin{equation*}
-                \forall h_1, h_2 \in \mathbb{H}: \psi(h_1 + h_2) = \psi(h_1)\psi(h_2)
-            \end{equation*}
+            Homomorphism $\psi: \mathbb{H} \to \mathbb{T}$ is a function, satisfying $\forall h_1, h_2 \in \mathbb{H}: \psi(h_1 + h_2) = \psi(h_1)\psi(h_2)$.
         \end{block}
 
         \begin{alertblock}{Note}
@@ -328,8 +326,9 @@
         \begin{equation*}
             \mathcal{R} = \left\{ ((t,\psi), h) \in (\mathbb{T} \times \mathcal{F}) \times \mathbb{H}: \psi(h) = t \right\}
         \end{equation*}
+        \vspace{-25pt}
 
-        $\mathcal{P}$ wants to convince $\mathcal{V}$ that he knows witness $h$ to the statement $(t,\psi)$. 
+        $\mathcal{P}$ is convincing $\mathcal{V}$ that he knows witness $h$ to the statement $(t,\psi)$. 
         \begin{example}
             Now, why does this generalize the previous protocols? Well, let us consider all previous examples:
             \begin{itemize}
@@ -341,10 +340,10 @@
     \end{frame}
 
     \begin{frame}{Sigma Protocol}
-        \begin{definition}[Sigma Protocol for the pre-image of a homomorphism]
+        \begin{definition}[Sigma Protoco: pre-image of homomorphism]
             The protocol consists of two algorithms: $(\mathcal{P}, \mathcal{V})$, where the prover is assumed to know the witness $h \in \mathbb{H}$ defined above. The protocol is defined as follows:
             \begin{enumerate}
-                \item $\mathcal{P}$ computes $h_r \xleftarrow{R} \mathbb{H}, t_r \gets \psi(h_r) \in \mathbb{T}$ and sends $t_r$ to the verifier $\mathcal{V}$.
+                \item $\mathcal{P}$ computes $h_r \xleftarrow{R} \mathbb{H}, t_r \gets \psi(h_r) \in \mathbb{T}$ and sends $t_r$ to $\mathcal{V}$.
                 \item $\mathcal{V}$ samples the challenge $c \xleftarrow{R} \mathcal{C} \subset \mathbb{Z}$ from the challenge space and sends $c$ to $\mathcal{P}$.
                 \item $\mathcal{P}$ computes $h_z \gets h_r + h\cdot c$ and sends $h_z$ to $\mathcal{V}$.
                 \item $\mathcal{V}$ checks whether $\psi(h_z) = t_r t^c$, and accepts or rejects the proof.
@@ -374,6 +373,7 @@
         \begin{block}{Reminder}
             Suppose prover had messages $(m_1,m_2,\dots,m_n)$ before verifier sends a challenge $c$. If $x$ is a public statement, it suffices to choose $c \gets H(x,m_1,\dots,m_n)$ without any interaction.
         \end{block}
+        \vspace{-10pt}
 
         Let us turn \textbf{Okamoto's Protocol} into a non-interactive proof using the Fiat-Shamir heuristic!
 
@@ -381,8 +381,8 @@
             \begin{enumerate}
                 \item $\mathcal{P}$ computes $\alpha_r \xleftarrow{R} \mathbb{Z}_q, \; \beta_r \xleftarrow{R} \mathbb{Z}_q, \; u_r \gets g^{\alpha_r}h^{\beta_r}$ and sends commitment $u_r$ to $\mathcal{V}$.
                 \item $\mathcal{V}$ samples the challenge $c \xleftarrow{R} \mathbb{Z}_q$ and sends $c$ to $\mathcal{P}$.
-                \item $\mathcal{P}$ computes $\alpha_z \gets \alpha_r + \alpha c, \beta_z \gets \beta_r + \beta c$ and sends $\mathbf{z} = (\alpha_z,\beta_z)$.
-                \item $\mathcal{V}$ checks whether $g^{\alpha_z}h^{\beta_z} = u_r u^c$ and accepts or rejects the proof.
+                \item $\mathcal{P}$ computes $\alpha_z \gets \alpha_r + \alpha c, \beta_z \gets \beta_r + \beta c$, sends $(\alpha_z,\beta_z)$.
+                \item $\mathcal{V}$ checks whether $g^{\alpha_z}h^{\beta_z} = u_r u^c$ and accepts/rejects.
             \end{enumerate}
         \end{block}
     \end{frame}
@@ -406,12 +406,25 @@
         \end{block}
 
         \begin{center}
-            \textcolor{red!80!black}{\url{https://github.com/ZKDL-Camp/lecture-7-sigma}}
+            \textcolor{oc-pink-7}{\url{https://github.com/ZKDL-Camp/lecture-7-sigma}}
         \end{center}
     \end{frame}
 
-	\begin{frame}{}
-      \centering \Large
-      \textbf{Thank you for your attention!}
+    \begin{frame}[plain, standout]
+        \centering
+        \LARGE
+        \textbf{Thank you for your attention} \\
+        
+        \vspace{0.2cm} \Huge \ding{170} \large \\
+        
+        \vspace{1cm}
+  
+        \href{https://zkdl-camp.github.io/}{\raisebox{-.1em}{\hspace{.025em}\faIcon{globe}}\hspace{.325em}zkdl-camp.github.io} \\
+  
+        \href{https://github.com/ZKDL-Camp}{\raisebox{-.1em}{\hspace{.025em}\faIcon{github}}\hspace{.325em}github.com/ZKDL-Camp}
+        
+        \begin{center}
+            \includegraphics[width=0.15\textwidth]{images/logo.png}
+        \end{center}
     \end{frame}
 \end{document}

@@ -1,5 +1,8 @@
 \documentclass{zkdl-presentation-template}
 
+\usepackage[dvipsnames]{xcolor}
+\usepackage{wasysym}
+
 \title[zk-SNARK: Part II]{\textbf{QAP, PCP, POE: Demystifying zk-SNARK Tools}}
 \author{Distributed Lab}
 \date{October 1, 2024}
@@ -13,7 +16,6 @@
             ([yshift=1.5cm,xshift=-1.5cm]current page.south east) 
             %or: (current page.center)
             {\includegraphics[width=60pt]{images/logo.png}};
-
         \titlepage
     }
 
@@ -31,13 +33,15 @@
             \end{center}
         \end{definition}
 
+        \pause
+
         \begin{itemize}[label=\ding{51}]
             \item \textbf{Argument of Knowledge} --- a proof that the prover knows the data (witness) that resolves a certain
-            problem, and this knowledge can be ``extracted''. 
+            problem, and this knowledge can be ``extracted''. \pause
             \item \textbf{Succinctness} --- the proof size and verification time is relatively small to the computation size and typically does not depend on the size of 
-            the data or statement. 
+            the data or statement. \pause
             \item \textbf{Non-interactiveness} --- to produce the proof, the prover does not need any interaction
-            with the verifier. 
+            with the verifier. \pause
             \item \textbf{Zero-Knowledge} --- the verifier learns nothing about the data used to produce the
             proof, despite knowing that this data resolves the given problem and that the prover possesses it.
         \end{itemize}
@@ -167,11 +171,14 @@
             \end{minipage}
             \hspace{0.05\textwidth} % Space between figures
         \end{figure}
-        > \textbf{100000 gates} just for \texttt{SHA256}\ldots But nothing stops us from using something more powerful instead of boolean values, gates.
+        > \textbf{100000 gates} just for \texttt{SHA256}\ldots
+        \pause
+        But nothing stops us from using something more powerful instead of boolean values, gates.
     \end{frame}
 
     \begin{frame}{Recap. Arbitrary Program To Circuits}
-        Similar to Boolean Circuits, the \textbf{Arithmetic Circuits} consist of gates and wires. 
+        Similar to Boolean Circuits, the \textbf{Arithmetic Circuits} consist of gates and
+        wires. 
         \begin{itemize}
             \item \textbf{Wires}: elements of some finite field $\mathbb{F}$.
             \item \textbf{Gates}: field addition ($+$) and multiplication ($\times$).
@@ -240,14 +247,14 @@ def example(a: bool, b: F, c: F) -> F:
     else:
         return b + c
             \end{lstlisting}
-            
+            \pause
             We can transform such a function into the next expression:
             \vspace{-8pt}
             \begin{equation*}
                 r = a \times (b \times c) + (1 - a) \times (b + c)    
                 \vspace{-8pt}
             \end{equation*}
-            
+            \pause
             Corresponding equations for the circuit are:
             \vspace{-8pt}
             \begin{equation*}
@@ -337,14 +344,14 @@ def example(a: bool, b: F, c: F) -> F:
         \begin{equation*}
             \langle \boldsymbol{a}, \boldsymbol{w}\rangle \times \langle \boldsymbol{b}, \boldsymbol{w}\rangle = \langle \boldsymbol{c}, \boldsymbol{w}\rangle
         \end{equation*}
-        
+        \pause
         Where $\langle \boldsymbol{u}, \boldsymbol{v}\rangle$ is a dot product.
         \vspace{-10pt}
         \begin{equation*}
             \langle \boldsymbol{u}, \boldsymbol{v} \rangle := \boldsymbol{u}^{\top}\boldsymbol{v} = \sum_{i=1}^{n} u_i v_i 
             \vspace{-5pt}
         \end{equation*}
-        
+        \pause
         Thus
         \vspace{-5pt}
         \begin{equation*}
@@ -382,7 +389,7 @@ def example(a: bool, b: F, c: F) -> F:
         \begin{equation*}
             r = x_1 \times (x_2 \times x_3) + (1 - x_1) \times (x_2 + x_3)
         \end{equation*}
-        
+        \pause
         Thus, the next constraints can be build:
         \vspace{-5pt}
         \begin{align*}
@@ -391,9 +398,10 @@ def example(a: bool, b: F, c: F) -> F:
             x_1 \times \mathsf{mult} &= \mathsf{selectMult} \tag{3} \\
             (1 - x_1) \times (x_2 + x_3) &= r - \mathsf{selectMult} \tag{4}
         \end{align*}
-        
+        \pause
         The witness vector: $\boldsymbol{w} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult})$.
         
+        \pause
         \vspace{2pt}
         The coefficients vectors:
         \vspace{-25pt}
@@ -408,10 +416,10 @@ def example(a: bool, b: F, c: F) -> F:
     \section[QAP]{Quadratic Arithmetic Program}
 
     \begin{frame}
-        Problems we have for now: 
+        Problems we have for now: \pause
         \begin{itemize}[label=\ding{51}]
             \item Although Rank-1 Constraint Systems provide a powerful method for representing 
-            computations, they are not succinct. 
+            computations, they are not succinct. \pause
             \item We need to transform our computations into a form that is more convenient for 
             proving statements about them.
         \end{itemize}
@@ -420,18 +428,19 @@ def example(a: bool, b: F, c: F) -> F:
             A very convenient form for representing computations is \textbf{polynomials}!
 
             \vspace{10px}
- 
-            \textbf{Idea:} Instead of checking polynomial equality $P(x)=Q(x)$ at multiple points $x_1,\dots,x_n$ (essentially, checking each constraint), we check it only once at $\tau \xleftarrow{R} \mathbb{F}$: $P(\tau)=Q(\tau)$. Soundness is guaranteed by the \textbf{Schwartz-Zippel Lemma}.
+
+            \textbf{Idea:} Instead of checking polynomial equality $P(x)=Q(x)$ at multiple points $Q(x_1),\ldots,Q(x_n)$ (essentially, checking each constraint), we check it only once at $\tau \xleftarrow{R} \mathbb{F}$: $P(\tau)=Q(\tau)$. Soundness is guaranteed by the \textbf{Schwartz-Zippel Lemma}.
         \end{alertblock}
     \end{frame}
 
     \begin{frame}
-        We finished with the following constraint vectors:
+        We finished with:
         \begin{equation*}
             \boldsymbol{a}_1, \boldsymbol{a}_2, \dots, \boldsymbol{a}_m, \quad
             \boldsymbol{b}_1, \boldsymbol{b}_2, \dots, \boldsymbol{b}_m, \quad
             \boldsymbol{c}_1, \boldsymbol{c}_2, \dots, \boldsymbol{c}_m, 
         \end{equation*}
+        \pause
         Of course, they form corresponding matrices:
         \begin{equation*}
             A = \begin{bmatrix}
@@ -440,8 +449,9 @@ def example(a: bool, b: F, c: F) -> F:
                 \vdots & \vdots & \ddots & \vdots \\
                 a_{m1} & a_{m2} & \dots & a_{mn}
             \end{bmatrix}, \;
-            \text{same goes for $B$ and $C$}
+            \text{and same for $B$ and $C$}
         \end{equation*}
+        \pause
         An example of a single ``if`` statement:
         \begin{center}
         \begin{minipage}{0.4\textwidth}
@@ -465,7 +475,9 @@ def example(a: bool, b: F, c: F) -> F:
             $};
         \end{tikzpicture}
         \end{minipage}
-        \end{center}   
+        \end{center}
+            
+        \pause
         Pleeeeeenty of zeroes, right? And this is just one out of 3 matrices...
     \end{frame}
 
@@ -509,7 +521,7 @@ def example(a: bool, b: F, c: F) -> F:
             \end{tikzpicture}
         \end{center}
         \vspace{-10pt}
-         Consider 4th constraint: $(1 - x_1) \times (x_2 + x_3) = r - \mathsf{selectMult}$
+        \pause Consider 4th constraint: $(1 - x_1) \times (x_2 + x_3) = r - \mathsf{selectMult}$
         \vspace{-8pt}
         \begin{center}
             \begin{tikzpicture}
@@ -541,7 +553,7 @@ def example(a: bool, b: F, c: F) -> F:
                     ++(0,-0.42) -- ++(0.7,0) -- cycle;
             \end{tikzpicture}
         \end{center}
-        
+        \pause
         \vspace{-10pt}
         So, every column is a mapping of constraint number to a coefficient for the witness element.
     \end{frame}
@@ -555,7 +567,7 @@ def example(a: bool, b: F, c: F) -> F:
             \vspace{-10pt}
         \end{equation*}  
 
-        
+        \pause
         There are $n$ columns and $m$ constraints. So, it results in $n$ polynomials such that:
         \vspace{-10pt}
         \begin{equation*}
@@ -563,7 +575,7 @@ def example(a: bool, b: F, c: F) -> F:
             \vspace{-10pt}
         \end{equation*}
 
-        
+        \pause
         The same is true for matrices $B$ and $C$, with $3n$ polynomials in total, $n$ for each of the
         coefficients matrices:
         \vspace{-8pt}
@@ -575,7 +587,7 @@ def example(a: bool, b: F, c: F) -> F:
         \end{align*}
 
         \vspace{-10pt}
-        
+        \pause
         \begin{block}{Note}
             We could have assigned any \textit{unique} index from $\mathbb{F}$ to each constraint
             (say, $t_i$ for each $i \in [m]$) and interpolate through these points:
@@ -654,7 +666,7 @@ def example(a: bool, b: F, c: F) -> F:
             But what does it change? We ``exchanged`` $3n$ columns for $3n$ polynomials.
         \end{alertblock}
 
-        
+        \pause
         \vspace{-5pt}
         Consider two polynomials $p(x)$ and $q(x)$:
         \begin{equation*}
@@ -669,7 +681,7 @@ def example(a: bool, b: F, c: F) -> F:
             \vspace{-10pt}
         \end{equation*}
         
-        
+        \pause
         The sum of these polynomials can be calculated as:
         \vspace{-5pt}
         \begin{equation*}
@@ -773,7 +785,7 @@ def example(a: bool, b: F, c: F) -> F:
             = &(w_1C_1(X) + w_2C_2(X) + \dots + w_nC_n(X))
             \vspace{-5pt}
         \end{align*}
-        
+        \pause
         Or written more concisely:
         \vspace{-5pt}
         \begin{equation*}
@@ -788,14 +800,14 @@ def example(a: bool, b: F, c: F) -> F:
             \left( \sum_{i = 1}^{n} w_iA_i(j) \right) \times \left( \sum_{i = 1}^{n} w_iB_i(j) \right) = \left( \sum_{i = 1}^{n} w_iC_i(j) \right) \; \forall j \in \{1,\dots,m\}
             \vspace{-5pt}
         \end{equation*}
-        
+        \pause
         Recall that we interpolated polynomials to have $A_i(j) = a_{j,i}$. Therefore, the equation above can be reduced to:
         \vspace{-5pt}
         \begin{equation*}
             \left( \sum_{i = 1}^{n} w_ia_{j,i} \right) \times \left( \sum_{i = 1}^{n} w_ib_{j,i} \right) = \left( \sum_{i = 1}^{n} w_ic_{j,i} \right) \; \forall j \in \{1,\dots,m\}
             \vspace{-5pt}
         \end{equation*}
-        
+        \pause
         But hold on again! Notice that $\sum_{i = 1}^{n} w_ia_{j,i} = \langle \boldsymbol{w}, \boldsymbol{a}_j \rangle$ and therefore we have:
         \vspace{-5pt}
         \begin{equation*}
@@ -813,7 +825,7 @@ def example(a: bool, b: F, c: F) -> F:
             A(X) = \sum_{i = 1}^{n} w_iA_i(X), \quad B(X) = \sum_{i = 1}^{n} w_iB_i(X), \quad C(X) = \sum_{i = 1}^{n} w_iC_i(X)
             \vspace{-5pt}
         \end{equation*}
-          
+        \pause  
         Therefore:
         \vspace{-5pt}
         \begin{equation*}
@@ -828,7 +840,7 @@ def example(a: bool, b: F, c: F) -> F:
             M(X) = A(X) \times B(X) - C(X)
             \vspace{-5pt}
         \end{equation*}
-        
+        \pause
         It means, that $M(X)$ can be divided by \textbf{vanishing polynomial} $Z_{\Omega}(X)$ without a remainder!
         \vspace{-8pt}
         \begin{equation*}
@@ -869,9 +881,9 @@ def example(a: bool, b: F, c: F) -> F:
         
                 \node at (0, 2.85) (pcp) {\textbf{PCP Oracle}};
                 \draw[-{Stealth[length=3mm]},line width=0.4mm] (prover)--(pcp) node[midway, left=3mm]{Generate an oracle ($\pi$)};
-                \draw[-{Stealth[length=3mm]},line width=0.4mm] (verifier)--(pcp) node[midway, right=3mm]{Point queries};
+                \draw[-{Stealth[length=3mm]},line width=0.4mm] (verifier)--(pcp) node[midway, right=3mm]{Point queries $q_1,q_2,\ldots$};
 
-                
+                \pause
                 % Query boxes
                 \draw[fill=blue!60!white, ultra thick] (-1.0, 4) rectangle (-0.8, 3.25);
                 \node at (-0.9, 4.35) (pcp) {$q_1$};
@@ -997,12 +1009,14 @@ def example(a: bool, b: F, c: F) -> F:
             \deg(O) \le \left| C \right|
             \vspace{-5pt}
         \end{equation*}
+        \pause
         Thus, we can estimate the degree of polynomial $M(x) = L(x)R(x) - O(x)$.
         \vspace{-5pt}
         \begin{equation*}
             \deg(M) \leq \max\{\deg(L) + \deg(R), \deg(O)\} \leq 2 \left| C \right|
             \vspace{-5pt}
         \end{equation*}
+        \pause
         If an adversary $\mathcal{A}$ does not know a valid witness $\boldsymbol{w}$, he can compute a
         polynomial $(\widetilde{M}(x), \widetilde{H}(x)) \gets \mathcal{A}(\cdot)$ that satisfies a verifier 
         $\mathcal{V}$:
@@ -1010,46 +1024,43 @@ def example(a: bool, b: F, c: F) -> F:
         \begin{equation*}
             \mathop{\text{Pr}}_{s \xleftarrow{R} \mathbb{F}}[\widetilde{M}(s) = Z(s)\widetilde{H}(s)] \leq \frac{2 \left| C \right|}{|\mathbb{F}|}
         \end{equation*}
+
         If $|\mathbb{F}|$ is large enough, $2|C|/|\mathbb{F}|$ is \textit{negligible}.
     \end{frame}
 
     \section{Proof Of Exponent}
 
     \begin{frame}{Encrypted Verification}
-        Let us try to prove that we know some polynomial $p(x)$ that can be divided to $t(x)$ without a 
+        Let's try to prove that we know some polynomial $p(x)$ that can be divided to $t(x)$ without a 
         remainder.
 
-        Consider the polynomial: $p(x) = x^2 - 5x + 2$. Additionally, we will need a cyclic group $\mathbb{G}$ with a generator $g \in \mathbb{G}$. We also define the \textit{encryption} operation as follows:
-        \begin{equation*}
-            \mathsf{Enc}: \mathbb{F} \to \mathbb{G}, \quad \mathsf{Enc}(x) := g^x
-        \end{equation*}
+        \pause
+        Consider polynomial: $p(x) = x^2 - 5x$. \pause And some homomorphic encryption with a
+        generator $g$.
         
-        Essentially, $\mathsf{Enc}(p(\tau))$ is the \textbf{KZG Commitment}. Let us see the encryption of $p(\tau)$ for our example:
+        To evaluate encrypted polynomial e.q.:
         {\large
         \begin{equation*}
-            \mathsf{Enc}(p(\tau)) = g^{p(\tau)} = g^{\left( \tau^2 - 5\tau + 2 \right)}  = \left( g^{\tau^2} \right)^1 \cdot {\left( g^{\tau^1} \right)}^{-5} \cdot \left(g^{\tau^0}\right)^2
+            g^{p(\tau)} \pause = g^{\left( \tau^2 - 5\tau \right)} \pause = \left( g^{\tau^2} \right)^1 \dot {\left( g^{\tau^1} \right)}^{-5}
         \end{equation*}}
-
-        \begin{alertblock}{Note}
-            KZG Commitment requires only encrypted powers of $\tau$: $\{g^{\tau^i}\}_{i \in [d]}$.
-        \end{alertblock}
+        Prover needs encrypted powers of tau: $\{g^{\tau^i}\}_{i \in [d]}$.
     \end{frame}
 
     \begin{frame}{Encrypted Verification}
         \textbf{Verifier}: 
         \vspace{-5pt}
         \begin{itemize}[label=\ding{51}]
-            \item \vspace{-3pt} Picks a random value $\tau \xleftarrow{R} \mathbb{F}$. 
-            \item \vspace{-3pt} Calculates the public parameters $\{g^{\tau^i}\}_{i \in [d]}$. 
-            \item \vspace{-3pt} Calculates $t(\tau)$. 
-            \item \vspace{-3pt} Outputs prover parameters $\{g^{\tau^i}\}_{i \in [d]}$. 
+            \item \vspace{-3pt} Picks a random value $\tau \xleftarrow{R} \mathbb{F}$. \pause
+            \item \vspace{-3pt} Calculates the public parameters $\{g^{\tau^i}\}_{i \in [d]}$. \pause
+            \item \vspace{-3pt} Calculates $t(\tau)$. \pause
+            \item \vspace{-3pt} Outputs prover parameters $\{g^{\tau^i}\}_{i \in [d]}$. \pause
         \end{itemize}
         \textbf{Prover}: 
         \vspace{-5pt}
         \begin{itemize}[label=\ding{51}]
-            \item \vspace{-3pt} Calculates $h(x) = \frac{p(x)}{t(x)}$. 
-            \item \vspace{-3pt} Using $\{g^{\tau^i}\}_{i \in [d]}$ calculates $g^{p(\tau)}$ and $g^{h(\tau)}$. 
-            \item \vspace{-3pt} Provides encrypted polynomials $g^{p(\tau)}$ and $g^{h(\tau)}$ to the verifier. 
+            \item \vspace{-3pt} Calculates $h(x) = \frac{p(x)}{t(x)}$. \pause
+            \item \vspace{-3pt} Using $\{g^{\tau^i}\}_{i \in [d]}$ calculates $g^{p(\tau)}$ and $g^{h(\tau)}$. \pause
+            \item \vspace{-3pt} Provides encrypted polynomials $g^{p(\tau)}$ and $g^{h(\tau)}$ to the verifier. \pause
         \end{itemize}
         \textbf{Verifier}: 
         \vspace{-5pt}
@@ -1062,17 +1073,17 @@ def example(a: bool, b: F, c: F) -> F:
         \textbf{Verifier}: 
         \vspace{-5pt}
         \begin{itemize}[label=\ding{51}]
-            \item \vspace{-3pt} Picks a random value $\tau \xleftarrow{R} \mathbb{F}$. 
-            \item \vspace{-3pt} Calculates the public parameters $\{g^{\tau^i}\}_{i \in [d]}$. 
-            \item \vspace{-3pt} Calculates $t(\tau)$. 
-            \item \vspace{-3pt} Outputs prover parameters $\{g^{\tau^i}\}_{i \in [d]}$. 
+            \item \vspace{-3pt} Picks a random value $\tau \xleftarrow{R} \mathbb{F}$. \pause
+            \item \vspace{-3pt} Calculates the public parameters $\{g^{\tau^i}\}_{i \in [d]}$. \pause
+            \item \vspace{-3pt} Calculates $t(\tau)$. \pause
+            \item \vspace{-3pt} Outputs prover parameters $\{g^{\tau^i}\}_{i \in [d]}$. \pause
         \end{itemize}
         \textbf{Adversary}: 
         \vspace{-5pt}
         \begin{itemize}[label=\ding{51}]
-            \item \vspace{-3pt} Picks a random value $r \xleftarrow{R} \mathbb{F}$, calculates $g^r$. 
-            \item \vspace{-3pt} Calculates $g^{t(\tau)}$. 
-            \item \vspace{-3pt} Calculates $g^{\widetilde{p}(\tau)} = {\left( g^{t(\tau)} \right)}^r$. 
+            \item \vspace{-3pt} Picks a random value $r \xleftarrow{R} \mathbb{F}$, calculates $g^r$. \pause
+            \item \vspace{-3pt} Calculates $g^{t(\tau)}$. \pause
+            \item \vspace{-3pt} Calculates $g^{\widetilde{p}(\tau)} = {\left( g^{t(\tau)} \right)}^r$. \pause
         \end{itemize}
         \textbf{Verifier}: 
         \vspace{-5pt}
@@ -1085,41 +1096,33 @@ def example(a: bool, b: F, c: F) -> F:
         \textbf{Verifier}: 
         \vspace{-5pt}
         \begin{itemize}[label=\ding{51}]
-            \item \vspace{-3pt} Picks a random values $\tau \xleftarrow{R} \mathbb{F}$, $a \xleftarrow{R} \mathbb{F}$. 
-            \item \vspace{-3pt} Calculates the public parameters $\{g^{\tau^i}\}_{i \in [d]}$ and $\{g^{a\tau^i}\}_{i \in [d]}$ 
-            \item \vspace{-3pt} Calculates $t(\tau)$. 
+            \item \vspace{-3pt} Picks a random values $\tau \xleftarrow{R} \mathbb{F}$, $a \xleftarrow{R} \mathbb{F}$. \pause
+            \item \vspace{-3pt} Calculates the public parameters $\{g^{\tau^i}\}_{i \in [d]}$ and $\{g^{a\tau^i}\}_{i \in [d]}$ \pause
+            \item \vspace{-3pt} Calculates $t(\tau)$. \pause
         \end{itemize}
         \textbf{Prover}: 
         \vspace{-5pt}
         \begin{itemize}[label=\ding{51}]
-            \item \vspace{-3pt} Calculates $h(x) = \frac{p(x)}{t(x)}$. 
-            \item \vspace{-3pt} Using $\{g^{\tau^i}\}_{i \in [d]}$ calculates $g^{p(\tau)}$, $g^{h(\tau)}$. 
-            \item \vspace{-3pt} Using $\{g^{a\tau^i}\}_{i \in [d]}$ calculates $g^{p^{\prime}(\tau)} = g^{ap(\tau)}$. 
-            \item \vspace{-3pt} Provides encrypted polynomials to the verifier. 
+            \item \vspace{-3pt} Calculates $h(x) = \frac{p(x)}{t(x)}$. \pause
+            \item \vspace{-3pt} Using $\{g^{\tau^i}\}_{i \in [d]}$ calculates $g^{p(\tau)}$, $g^{h(\tau)}$. \pause
+            \item \vspace{-3pt} Using $\{g^{a\tau^i}\}_{i \in [d]}$ calculates $g^{p^{\prime}(\tau)} = g^{ap(\tau)}$. \pause
+            \item \vspace{-3pt} Provides encrypted polynomials to the verifier. \pause
         \end{itemize}
         \textbf{Verifier}: 
         \vspace{-5pt}
         \begin{itemize}[label=\ding{51}]
-            \item \vspace{-3pt} Checks whether $g^{p(\tau)} = \left( g^{h(\tau)} \right)^{t(\tau)}$. 
+            \item \vspace{-3pt} Checks whether $g^{p(\tau)} = \left( g^{h(\tau)} \right)^{t(\tau)}$. \pause
             \item \vspace{-3pt} Checks whether $g^{p^{\prime}(\tau)} = \left( g^{p(\tau)} \right)^{a} = g^{ap(\tau)}$. 
         \end{itemize}
     \end{frame}
 
     \begin{frame}[plain, standout]
         \centering
-        \LARGE
-        \textbf{Thank you for your attention} \\
-        
-        \vspace{0.2cm} \Huge \ding{170} \large \\
-        
-        \vspace{1cm}
-  
-        \href{https://zkdl-camp.github.io/}{\raisebox{-.1em}{\hspace{.025em}\faIcon{globe}}\hspace{.325em}zkdl-camp.github.io} \\
-  
-        \href{https://github.com/ZKDL-Camp}{\raisebox{-.1em}{\hspace{.025em}\faIcon{github}}\hspace{.325em}github.com/ZKDL-Camp}
-        
+        \huge
+        \textbf{Thank you for your attention!} \\
+    
         \begin{center}
-            \includegraphics[width=0.15\textwidth]{images/logo.png}
+            \includegraphics[width=0.2\textwidth]{images/logo.png}
         \end{center}
     \end{frame}
 \end{document}

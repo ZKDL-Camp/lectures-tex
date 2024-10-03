@@ -4,19 +4,14 @@
 % --- Beamer settings ---
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{beamer}}
 \ProcessOptions\relax
-\LoadClass[xcolor={dvipsnames}]{beamer}
+\LoadClass[compress, final, xcolor={dvipsnames}]{beamer}
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 
 % --- Setting the theme ---
-\usetheme{Arguelles}
-\setbeamercolor{block title}{bg=blue!50!white, fg=white}
-\setbeamercolor{block body}{bg=blue!10}
-\setbeamercolor{block title alerted}{fg=white, bg=purple!50!white}
-\setbeamercolor{block body alerted}{bg=purple!10}
-\setbeamercolor{block title example}{fg=white, bg=green!70!black}
-\setbeamercolor{block body example}{bg=green!10}
+\usetheme{altarguelles}
+\setbeamertemplate{sections/subsections in toc}[square]
 
 % --- Bold captions ---
 \usepackage[labelfont=bf]{caption}
@@ -27,7 +22,6 @@
 \RequirePackage{hyperref}
 \RequirePackage{colortbl}
 \RequirePackage{dsfont}
-\RequirePackage{soul}
 
 % --- Tikz ---
 \RequirePackage{tikz}
@@ -52,13 +46,26 @@
   \insertframenumber\,/\,\inserttotalframenumber}
 
 \AtBeginSection[]{
-  \begin{frame}
-  \vfill
-  \centering
-  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
-    \usebeamerfont{title}\insertsectionhead\par%
-  \end{beamercolorbox}
-  \vfill
+  \begin{frame}[standout]
+    \begin{tcolorbox}[
+      boxrule=0pt,
+      boxsep=0pt,
+      blanker,
+      borderline north={2.0pt}{-10pt}{white},
+      borderline south={2.0pt}{-10pt}{white},
+      left=8pt,
+      right=8pt,
+      before skip=10pt,
+      after skip=10pt,
+      colframe=black!95!gray, 
+      colback=white,
+      center, 
+      arc=1em]
+      \centering\LARGE
+      \textcolor{white}{
+        \textbf{\insertsectionhead}
+      }
+    \end{tcolorbox}
   \end{frame}
 }
 
@@ -72,9 +79,9 @@
 \lstdefinestyle{mystyle}{
     language=Python,
     commentstyle=\color{codegreen},
-    keywordstyle=\color{magenta},
+    keywordstyle=\bfseries\color{oc-pink-7},
     numberstyle=\tiny\color{codegray},
-    stringstyle=\color{codepurple},
+    stringstyle=\color{oc-teal-7},
     basicstyle=\ttfamily\footnotesize,
     breakatwhitespace=false,         
     breaklines=true,                 
