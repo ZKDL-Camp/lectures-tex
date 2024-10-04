@@ -1,65 +1,19 @@
-\documentclass{beamer}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
+\documentclass{zkdl-presentation-template}
 
-% -- Including some standard packages --
-\usepackage{graphicx}
-\usepackage{soul}
-\usepackage{hyperref}
-\usepackage{colortbl}
-\usepackage{dsfont}
-\usepackage{soul}
-
-% -- Choosing theme --
-
-\usetheme{Boadilla}
-\usecolortheme{whale}
-\setbeamercolor{alerted text}{fg=purple} % Making alerted text non-red
-
-% Tikz
-\usepackage{tikz}
-\usetikzlibrary{matrix,positioning,fit,backgrounds,intersections}
-
-% Code highlighting
-\usepackage{listings,lstautogobble}
-
-% -- Cross signs --
-\usepackage{pifont} % http://ctan.org/pkg/pifont
-\newcommand{\cmark}{\ding{51}}%
-\newcommand{\xmark}{\ding{55}}%
-\newcommand{\xopt}{\ding{48}}%
-
-\usepackage{listings}
-
-% -- Custom commands --
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
-
-\title[zk-SNARK I]{\textbf{Introduction to zk-SNARK. R1CS}}
+\title[zk-SNARK: Part I]{\textbf{Introduction to zk-SNARKs. R1CS}}
 \author{Distributed Lab}
-\date{Sep 12, 2024}
-\titlegraphic{
-    \includegraphics[width=\textwidth]{images/banner_wide.png}
-}
-
-\expandafter\def\expandafter\insertshorttitle\expandafter{%
-  \insertshorttitle\hfill%
-  \insertframenumber\,/\,\inserttotalframenumber}
-
-\AtBeginSection[]{
-  \begin{frame}
-  \vfill
-  \centering
-  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
-    \usebeamerfont{title}\insertsectionhead\par%
-  \end{beamercolorbox}
-  \vfill
-  \end{frame}
-}
+\date{September 12, 2024}
+\homepage{zkdl-camp.github.io}
+\github{ZKDL-Camp}
 
 \begin{document}
-    \frame {
-        \titlepage
+\frame {
+    \tikz [remember picture,overlay]
+    \node at
+        ([yshift=1.5cm,xshift=-1.5cm]current page.south east) 
+        %or: (current page.center)
+        {\includegraphics[width=60pt]{images/logo.png}};
+    \titlepage
     }
 
     \begin{frame}{Plan}
@@ -70,8 +24,10 @@
 
     \begin{frame}{What Is zk-SNARK?}
         \begin{definition}
-            \textbf{zk-SNARK} – Zero-Knowledge Succinct Non-interactive ARgument of 
-            Knowledge.
+            \begin{center}
+                \textbf{zk-SNARK} \\
+                \textbf{Z}ero-\textbf{K}nowledge \textbf{S}uccinct \textbf{N}on-interactive \textbf{AR}gument of \textbf{K}nowledge.
+            \end{center}
         \end{definition}
 
         
@@ -88,12 +44,12 @@
         \end{itemize}
     \end{frame}
 
-    \begin{frame}{Still didn't get who is Snark...}
+    \begin{frame}{Still don't get who is SNARK...}
         Well... Let's take a look at some example. 
 
         \begin{columns}
             \begin{column}{0.2\textwidth}
-                \includegraphics[width=\linewidth]{../presentations/images/lecture_8/urtreasurehunter.jpg}
+                \includegraphics[width=\linewidth]{../presentations/images/lecture_8/urtreasurehunter.png}
             \end{column}
     
             \begin{column}{0.7\textwidth}
@@ -109,7 +65,7 @@
             \end{column}
 
             \begin{column}{0.2\textwidth}
-                \includegraphics[width=\linewidth]{../presentations/images/lecture_8/uvefoundtreasure.jpg}
+                \includegraphics[width=\linewidth]{../presentations/images/lecture_8/uvefoundtreasure.png}
             \end{column}
         \end{columns}
 
@@ -117,7 +73,7 @@
 
         \begin{columns}
             \begin{column}{0.2\textwidth}
-                \includegraphics[width=\linewidth]{../presentations/images/lecture_8/howtomakeaproof.jpg}
+                \includegraphics[width=\linewidth]{../presentations/images/lecture_8/howtomakeaproof.png}
             \end{column}
 
             \begin{column}{0.7\textwidth}
@@ -126,15 +82,17 @@
         \end{columns}
     \end{frame}
 
-    \begin{frame}{Still didn't get who is Snark...}
+    \begin{frame}{Still don't get who is SNARK...}
         \begin{columns}
             \begin{column}{0.65\textwidth}
-                \textbf{The Problem}: you have found a hidden treasure chest, and you want to 
+                \begin{block}{The Problem}
+                You have found a hidden treasure chest, and you want to 
                 prove to the organizer that you know its location without actually revealing that.
+                \end{block}
             \end{column}
 
             \begin{column}{0.3\textwidth}
-                \includegraphics[width=\textwidth]{../presentations/images/lecture_8/treasurelocation.jpg}
+                \includegraphics[width=\textwidth]{../presentations/images/lecture_8/treasurelocation.png}
             \end{column}
         \end{columns}
 
@@ -165,12 +123,10 @@
             \item \textbf{Zero-Knowledge}: The proof doesn't reveal any information about the actual 
             location of the treasure chest.
         \end{itemize}
-
-        
-
+         \vspace{-10pt}
         \begin{columns}
             \begin{column}{0.3\textwidth}
-                \includegraphics[width=\textwidth]{../presentations/images/lecture_8/treasure.jpg}
+                \includegraphics[width=\textwidth]{../presentations/images/lecture_8/treasure.png}
             \end{column}
 
             \begin{column}{0.65\textwidth}
@@ -183,7 +139,7 @@
         But the problems that we usually want to solve are in a slightly different format.
         
 
-        \vspace{0.2cm}
+        \vspace{0.1cm}
         When we need to prove that some element is in a merkle tree, we can't come
         to a verifier and give them a "coin"...
         
@@ -193,24 +149,24 @@
         \end{alertblock}
 
         \center
-        \includegraphics[width=9cm]{../presentations/images/lecture_8/exactcodetomathflow.jpg}
+        \includegraphics[width=9cm]{../presentations/images/lecture_8/exactcodetomathflow.png}
     \end{frame}
 
     \section{Boolean Circuits}
 
     \begin{frame}{Boolean Circuits}
-        We can do that in a way like the computer does it - boolean circuits.
+        We can do that in a way like the computer does it --- \textbf{Boolean Circuits}.
 
         % --- Writing diagrams ---
         % Define circle styles and colors
         \colorlet{circle edge}{gray!50!black}
         \colorlet{circle area}{gray!20}
-        \colorlet{gate1 edge}{green!50!black}
-        \colorlet{gate1 area}{green!20}
-        \colorlet{gate2 edge}{orange!50!black}
-        \colorlet{gate2 area}{orange!20}
-        \colorlet{gate3 edge}{blue!50!black}
-        \colorlet{gate3 area}{blue!20}
+        \colorlet{gate1 edge}{oc-green-9}
+        \colorlet{gate1 area}{oc-green-2}
+        \colorlet{gate2 edge}{oc-yellow-9}
+        \colorlet{gate2 area}{oc-yellow-2}
+        \colorlet{gate3 edge}{oc-indigo-9}
+        \colorlet{gate3 area}{oc-indigo-2}
 
         \tikzset{
             var/.style={circle, draw=circle edge, fill=circle area, very thick, minimum size=0.7cm, text centered},
@@ -220,45 +176,48 @@
             arrow/.style={-latex, ultra thick}
         }
 
-        \begin{figure}[h!]
-            \centering
-            
-            \begin{minipage}{0.54\textwidth}
+        \begin{columns}
+            % Description
+            \begin{column}{0.7\textwidth}
                 \centering
-                % Boolean AND and OR gates
-                \begin{tabular}{cc}
-                    \begin{tikzpicture}
-                        % Nodes
-                        \node[var] (a) at (0, -1.5) {$a$};
-                        \node[var] (b) at (2, -1.5) {$b$};
-                        \node[gate1] (and) at (1, 0) {\texttt{AND}};
-                        \node[var] (c) at (1, 1.75) {$c$};
-        
-                        % Arrows
-                        \draw[arrow,gray] (a) -- (and);
-                        \draw[arrow,gray] (b) -- (and);
-                        \draw[arrow,gray!50!black] (and) -- (c);
-                    \end{tikzpicture}
-                    &
-                    \begin{tikzpicture}
-                        % Nodes
-                        \node[var] (a) at (0, -1.5) {$a$};
-                        \node[var] (b) at (2, -1.5) {$b$};
-                        \node[gate2] (or) at (1, 0) {\texttt{OR}};
-                        \node[var] (c) at (1, 1.75) {$c$};
-        
-                        % Arrows
-                        \draw[arrow,gray] (a) -- (or);
-                        \draw[arrow,gray] (b) -- (or);
-                        \draw[arrow,gray!50!black] (or) -- (c);
-                    \end{tikzpicture}
-                \end{tabular}
-                \centering
-                \caption{Boolean \texttt{AND} and \texttt{OR} Gates}
-            \end{minipage}
-            \hspace{0.05\textwidth} % Space between figures
+                \begin{minipage}{0.8\textwidth}
+                    \centering
+                    % Boolean AND and OR gates
+                    \begin{tabular}{cc}
+                        \begin{tikzpicture}
+                            % Nodes
+                            \node[var] (a) at (0, -1.5) {$a$};
+                            \node[var] (b) at (2, -1.5) {$b$};
+                            \node[gate1] (and) at (1, 0) {\texttt{AND}};
+                            \node[var] (c) at (1, 1.75) {$c$};
             
-            \begin{minipage}{0.36\textwidth}
+                            % Arrows
+                            \draw[arrow,gray] (a) -- (and);
+                            \draw[arrow,gray] (b) -- (and);
+                            \draw[arrow,gray!50!black] (and) -- (c);
+                        \end{tikzpicture}
+                        &
+                        \begin{tikzpicture}
+                            % Nodes
+                            \node[var] (a) at (0, -1.5) {$a$};
+                            \node[var] (b) at (2, -1.5) {$b$};
+                            \node[gate2] (or) at (1, 0) {\texttt{OR}};
+                            \node[var] (c) at (1, 1.75) {$c$};
+            
+                            % Arrows
+                            \draw[arrow,gray] (a) -- (or);
+                            \draw[arrow,gray] (b) -- (or);
+                            \draw[arrow,gray!50!black] (or) -- (c);
+                        \end{tikzpicture}
+                    \end{tabular}
+                    %\centering
+                    %\caption{Boolean \texttt{AND} and \texttt{OR} Gates}
+                \end{minipage}
+            \end{column}
+
+            % Column 2    
+            \begin{column}{0.3\textwidth}
+                \begin{minipage}{\textwidth}
                 \centering
                 \begin{tabular}{|c|c|c|}
                     \hline
@@ -273,9 +232,10 @@
                     1 & 1 & 1 \\
                     \hline
                 \end{tabular}
-                \caption{\texttt{AND} Gate Truth Table}
+                %\caption{\texttt{AND} Gate Truth Table}
             \end{minipage}
-        \end{figure}
+        \end{column}
+        \end{columns}
 
         \begin{block}{Note}
         With any of \{\texttt{AND}, \texttt{NOT}\} or \{\texttt{OR}, \texttt{NOT}\} gates sets one can
@@ -288,12 +248,12 @@
         % Define circle styles and colors
         \colorlet{circle edge}{gray!50!black}
         \colorlet{circle area}{gray!20}
-        \colorlet{gate1 edge}{green!50!black}
-        \colorlet{gate1 area}{green!20}
-        \colorlet{gate2 edge}{orange!50!black}
-        \colorlet{gate2 area}{orange!20}
-        \colorlet{gate3 edge}{blue!50!black}
-        \colorlet{gate3 area}{blue!20}
+        \colorlet{gate1 edge}{oc-green-9}
+        \colorlet{gate1 area}{oc-green-2}
+        \colorlet{gate2 edge}{oc-yellow-9}
+        \colorlet{gate2 area}{oc-yellow-2}
+        \colorlet{gate3 edge}{oc-indigo-9}
+        \colorlet{gate3 area}{oc-indigo-2}
 
         \tikzset{
             var/.style={circle, draw=circle edge, fill=circle area, very thick, minimum size=0.7cm, text centered},
@@ -338,10 +298,9 @@
         \begin{figure}[h!]
             \centering
             \includegraphics[width=8cm]{../presentations/images/lecture_8/sha256booleancircuit.jpg}
-            \vspace{-10pt}  % Reduce the vertical space between the image and the caption
             \caption{Stats of a SHA256 boolean circuit implementation.}
         \end{figure}
-        More than $100000$ gates. Impressive, doesn't it? \\
+        More than $100000$ gates. Impressive, isn't it? \\
         \vspace{5pt }
         But it also shows how inconvenient the boolean circuits are. 
     \end{frame}
@@ -349,23 +308,23 @@
     \section{Arithmetic Circuits}
 
     \begin{frame}{Arithmetic Circuits}
-        Similar to Boolean Circuits, the \textbf{Arithmetic circuits} consist of gates and
+        Similar to Boolean Circuits, the \textbf{Arithmetic Circuits} consist of gates and
         wires. 
         \begin{itemize}
-            \item Wires: elements of some finite field $\mathbb{F}$.
-            \item Gates: addition ($+$) and multiplication ($\times$) corresponding to the field.
+            \item \textbf{Wires}: elements of some finite field $\mathbb{F}$.
+            \item \textbf{Gates}: field addition ($+$) and multiplication ($\times$).
         \end{itemize} 
 
         % --- Writing diagrams ---
         % Define circle styles and colors
         \colorlet{circle edge}{gray!50!black}
         \colorlet{circle area}{gray!20}
-        \colorlet{gate1 edge}{green!50!black}
-        \colorlet{gate1 area}{green!20}
-        \colorlet{gate2 edge}{orange!50!black}
-        \colorlet{gate2 area}{orange!20}
-        \colorlet{gate3 edge}{blue!50!black}
-        \colorlet{gate3 area}{blue!20}
+        \colorlet{gate1 edge}{oc-green-9}
+        \colorlet{gate1 area}{oc-green-2}
+        \colorlet{gate2 edge}{oc-yellow-9}
+        \colorlet{gate2 area}{oc-yellow-2}
+        \colorlet{gate3 edge}{oc-indigo-9}
+        \colorlet{gate3 area}{oc-indigo-2}
 
         \tikzset{
             var/.style={circle, draw=circle edge, fill=circle area, very thick, minimum size=0.7cm, text centered},
@@ -421,7 +380,7 @@
                 r = a \times b
             \end{equation*}    
             
-            The witness vector (essentially, our solution vector) is $\mathbf{w} = (r, a, b)$, for
+            The witness vector (essentially, our solution vector) is $\boldsymbol{w} = (r, a, b)$, for
             example: $(6, 2, 3)$. \\
             \vspace{5pt}
             We assume that the $a$ and $b$ are input values.
@@ -468,12 +427,12 @@
         % Define circle styles and colors
         \colorlet{circle edge}{gray!50!black}
         \colorlet{circle area}{gray!20}
-        \colorlet{gate1 edge}{green!50!black}
-        \colorlet{gate1 area}{green!20}
-        \colorlet{gate2 edge}{orange!50!black}
-        \colorlet{gate2 area}{orange!20}
-        \colorlet{gate3 edge}{blue!50!black}
-        \colorlet{gate3 area}{blue!20}
+        \colorlet{gate1 edge}{oc-green-9}
+        \colorlet{gate1 area}{oc-green-2}
+        \colorlet{gate2 edge}{oc-yellow-9}
+        \colorlet{gate2 area}{oc-yellow-2}
+        \colorlet{gate3 edge}{oc-indigo-9}
+        \colorlet{gate3 area}{oc-indigo-2}
 
         \tikzset{
             var/.style={circle, draw=circle edge, fill=circle area, very thick, minimum size=0.7cm, text centered},
@@ -552,12 +511,12 @@
         % Define circle styles and colors
         \colorlet{circle edge}{gray!50!black}
         \colorlet{circle area}{gray!20}
-        \colorlet{gate1 edge}{green!50!black}
-        \colorlet{gate1 area}{green!20}
-        \colorlet{gate2 edge}{orange!50!black}
-        \colorlet{gate2 area}{orange!20}
-        \colorlet{gate3 edge}{blue!50!black}
-        \colorlet{gate3 area}{blue!20}
+        \colorlet{gate1 edge}{oc-green-9}
+        \colorlet{gate1 area}{oc-green-2}
+        \colorlet{gate2 edge}{oc-yellow-9}
+        \colorlet{gate2 area}{oc-yellow-2}
+        \colorlet{gate3 edge}{oc-indigo-9}
+        \colorlet{gate3 area}{oc-indigo-2}
 
         \tikzset{
             var/.style={circle, draw=circle edge, fill=circle area, very thick, minimum size=0.7cm, text centered},
@@ -628,15 +587,15 @@
             A \textbf{vector space} $V$ over the field $\mathbb{F}$ is an abelian group for addition
             ``$+$`` together with a scalar multiplication operation ``$\cdot$`` from $\mathbb{F} \times V$
             to $V$, sending $(\lambda,x) \mapsto \lambda x$ and such that for any 
-            $\mathbf{v},\mathbf{u} \in V$ and $\lambda,\mu \in \mathbb{F}$ we have:
+            $\boldsymbol{v},\boldsymbol{u} \in V$ and $\lambda,\mu \in \mathbb{F}$ we have:
             \begin{itemize}
-                \item $\lambda(\mathbf{u}+\mathbf{v}) = \lambda \mathbf{u} + \lambda \mathbf{v}$
-                \item $(\lambda + \mu)\mathbf{v} = \lambda \mathbf{v} + \mu \mathbf{v}$
-                \item $(\lambda \mu)\mathbf{v} = \lambda(\mu \mathbf{v})$
-                \item $1\mathbf{v} = \mathbf{v}$
+                \item $\lambda(\boldsymbol{u}+\boldsymbol{v}) = \lambda \boldsymbol{u} + \lambda \boldsymbol{v}$
+                \item $(\lambda + \mu)\boldsymbol{v} = \lambda \boldsymbol{v} + \mu \boldsymbol{v}$
+                \item $(\lambda \mu)\boldsymbol{v} = \lambda(\mu \boldsymbol{v})$
+                \item $1\boldsymbol{v} = \boldsymbol{v}$
             \end{itemize}
 
-            Any element $\mathbf{v} \in V$ is called a \textbf{vector}, and any element
+            Any element $\boldsymbol{v} \in V$ is called a \textbf{vector}, and any element
             $\lambda \in \mathbb{F}$ is called a \textbf{scalar}. We also mark vector elements in 
             boldface.
         \end{definition}
@@ -693,7 +652,7 @@
             \textbf{column vectors}. This means that the vector $v = (v_1,v_2,\dots,v_n)$ is 
             represented as a matrix:
             \begin{equation*}
-                \mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{bmatrix}
+                \boldsymbol{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{bmatrix}
             \end{equation*} 
             This is a common convention in linear algebra, and we will use it in the following 
             sections.
@@ -714,7 +673,7 @@
                 B = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{bmatrix}, \quad B^{\top} = \begin{bmatrix} 1 & 4 \\ 2 & 5 \\ 3 & 6 \end{bmatrix}
             \end{equation*}
             \begin{equation*}
-                \mathbf{v} = \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}, \quad \mathbf{v}^{\top} = [1,2,3]
+                \boldsymbol{v} = \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}, \quad \boldsymbol{v}^{\top} = [1,2,3]
             \end{equation*}
         \end{example}
     \end{frame}
@@ -724,12 +683,12 @@
             Consider the vector space $\mathbb{V}$ over the finite field $\mathbb{F}_p$. The 
             \textbf{inner product} is a function 
             $\langle \cdot, \cdot \rangle: \mathbb{V} \times \mathbb{V} \to \mathbb{F}_p$ satisfying 
-            the following conditions for all $\mathbf{u},\mathbf{v},\mathbf{w} \in \mathbb{V}$:
+            the following conditions for all $\boldsymbol{u},\boldsymbol{v},\boldsymbol{w} \in \mathbb{V}$:
             \begin{itemize}
-                \item $\langle \mathbf{u} + \mathbf{v}, \mathbf{w} \rangle = \langle \mathbf{u}, \mathbf{w} \rangle + \langle \mathbf{v}, \mathbf{w} \rangle$.
-                \item $\langle \mathbf{u}, \mathbf{v} + \mathbf{w} \rangle = \langle \mathbf{u}, \mathbf{v} \rangle + \langle \mathbf{u}, \mathbf{w} \rangle$.
-                \item $\langle \mathbf{u}, \mathbf{v} \rangle = 0$ for all $\mathbf{u} \in \mathbb{V}$ iff $\mathbf{v} = \mathbf{0}$.
-                \item $\langle \mathbf{u}, \mathbf{v} \rangle = 0$ for all $\mathbf{v} \in \mathbb{V}$ iff $\mathbf{u} = \mathbf{0}$.
+                \item $\langle \boldsymbol{u} + \boldsymbol{v}, \boldsymbol{w} \rangle = \langle \boldsymbol{u}, \boldsymbol{w} \rangle + \langle \boldsymbol{v}, \boldsymbol{w} \rangle$.
+                \item $\langle \boldsymbol{u}, \boldsymbol{v} + \boldsymbol{w} \rangle = \langle \boldsymbol{u}, \boldsymbol{v} \rangle + \langle \boldsymbol{u}, \boldsymbol{w} \rangle$.
+                \item $\langle \boldsymbol{u}, \boldsymbol{v} \rangle = 0$ for all $\boldsymbol{u} \in \mathbb{V}$ iff $\boldsymbol{v} = \boldsymbol{0}$.
+                \item $\langle \boldsymbol{u}, \boldsymbol{v} \rangle = 0$ for all $\boldsymbol{v} \in \mathbb{V}$ iff $\boldsymbol{u} = \boldsymbol{0}$.
             \end{itemize}
         \end{definition}   
 
@@ -742,9 +701,9 @@
             Consider the vector space $\mathbb{F}^n$ over the finite field $\mathbb{F}$. The 
             \textbf{dot product} on $\mathbb{F}^n$ is a function 
             $\langle \cdot, \cdot \rangle: \mathbb{F}^n \times \mathbb{F}^n \rightarrow \mathbb{F}$, 
-            defined for every $\mathbf{u}, \mathbf{v} \in \mathbb{F}^n$ as follows:
+            defined for every $\boldsymbol{u}, \boldsymbol{v} \in \mathbb{F}^n$ as follows:
             \begin{equation*}
-                \langle \mathbf{u}, \mathbf{v} \rangle := \mathbf{u}^{\top}\mathbf{v} = \sum_{i=1}^{n} u_i v_i
+                \langle \boldsymbol{u}, \boldsymbol{v} \rangle := \boldsymbol{u}^{\top}\boldsymbol{v} = \sum_{i=1}^{n} u_i v_i
             \end{equation*}
         \end{definition}
 
@@ -753,7 +712,7 @@
             The dot product can also be denoted using the dot notation as:
             \vspace{-8pt}
             \begin{equation*}
-                \mathbf{u} \cdot \mathbf{v}
+                \boldsymbol{u} \cdot \boldsymbol{v}
                 \vspace{-8pt}
             \end{equation*}
             That is why it's called the ``dot`` product.
@@ -762,13 +721,13 @@
 
     \begin{frame}{Dot Product}
         \begin{example}
-            Let $\mathbf{u}, \mathbf{v}$ are vectors over the real number $\mathbb{R}$, where
+            Let $\boldsymbol{u}, \boldsymbol{v}$ are vectors over the real number $\mathbb{R}$, where
             \begin{equation*}
-                \mathbf{u} = (1, 2, 3), \quad \mathbf{v} = (2, 4, 3)
+                \boldsymbol{u} = (1, 2, 3), \quad \boldsymbol{v} = (2, 4, 3)
             \end{equation*}
             Then: 
             \begin{equation*}
-                \langle \mathbf{u}, \mathbf{v}\rangle = \sum_{i=1}^{3}u_iv_i = 2 \cdot 1 + 2 \cdot 4 + 3 \cdot 3 = 2 + 8 + 9 = 19
+                \langle \boldsymbol{u}, \boldsymbol{v}\rangle = \sum_{i=1}^{3}u_iv_i = 2 \cdot 1 + 2 \cdot 4 + 3 \cdot 3 = 2 + 8 + 9 = 19
             \end{equation*}
         \end{example}
     \end{frame}
@@ -801,11 +760,11 @@
 
     \begin{frame}{Outer Product}
         \begin{definition}
-            Given two vectors $\mathbf{u} \in \mathbb{F}^n$, $\mathbf{v} \in \mathbb{F}^m$ the 
+            Given two vectors $\boldsymbol{u} \in \mathbb{F}^n$, $\boldsymbol{v} \in \mathbb{F}^m$ the 
             \textbf{outer product} is a the matrix whose entries are all products of an element in
             the first vector with an element in the second vector:
             \begin{equation*}
-                \mathbf{u} \otimes \mathbf{v} := \mathbf{u}\mathbf{v}^{\top} = \begin{bmatrix}
+                \boldsymbol{u} \otimes \boldsymbol{v} := \boldsymbol{u}\boldsymbol{v}^{\top} = \begin{bmatrix}
                     u_1 v_1 & u_1 v_2 & \cdots & u_1 v_n \\
                     u_2 v_1 & u_2 v_2 & \cdots & u_2 v_n \\
                     \vdots & \vdots & \ddots & \vdots \\
@@ -817,12 +776,12 @@
 
     \begin{frame}{Outer Product}
         \begin{lemma}[Properties of outer product]
-            For any scalar $c \in \mathbb{F}$ and $(\mathbf{u}, \mathbf{v}, \mathbf{w}) \in \mathbb{F}^n \times \mathbb{F}^m \times \mathbb{F}^p$:
+            For any scalar $c \in \mathbb{F}$ and $(\boldsymbol{u}, \boldsymbol{v}, \boldsymbol{w}) \in \mathbb{F}^n \times \mathbb{F}^m \times \mathbb{F}^p$:
             \begin{itemize}
-                \item Transpose: $(\mathbf{u} \otimes \mathbf{v}) = (\mathbf{v} \otimes \mathbf{u})^{\textsf{T}}$
-                \item Distributivity: $\mathbf{u} \otimes (\mathbf{v} + \mathbf{w}) = \mathbf{u} \otimes \mathbf{v} + \mathbf{u} \otimes \mathbf{w}$
-                \item Scalar Multiplication: $c(\mathbf{v} \otimes \mathbf{u}) = (c\mathbf{v}) \otimes \mathbf{u} = \mathbf{v} \otimes (c\mathbf{u})$
-                \item Rank: the outer product $\mathbf{u} \otimes \mathbf{v}$ is a rank-1 matrix if $\mathbf{u}$ and $\mathbf{v}$ are non-zero
+                \item Transpose: $(\boldsymbol{u} \otimes \boldsymbol{v}) = (\boldsymbol{v} \otimes \boldsymbol{u})^{\textsf{T}}$
+                \item Distributivity: $\boldsymbol{u} \otimes (\boldsymbol{v} + \boldsymbol{w}) = \boldsymbol{u} \otimes \boldsymbol{v} + \boldsymbol{u} \otimes \boldsymbol{w}$
+                \item Scalar Multiplication: $c(\boldsymbol{v} \otimes \boldsymbol{u}) = (c\boldsymbol{v}) \otimes \boldsymbol{u} = \boldsymbol{v} \otimes (c\boldsymbol{u})$
+                \item Rank: the outer product $\boldsymbol{u} \otimes \boldsymbol{v}$ is a rank-1 matrix if $\boldsymbol{u}$ and $\boldsymbol{v}$ are non-zero
                 vectors
             \end{itemize}
         \end{lemma}
@@ -830,17 +789,13 @@
 
     \begin{frame}{Outer Product}
         \begin{example}
-            Let $\mathbf{u}, \mathbf{v}$ are vectors over the real number $\mathbb{R}$, where
+            Let $\boldsymbol{u}, \boldsymbol{v}$ are vectors over the real number $\mathbb{R}$, where
             \begin{equation*}
-                \mathbf{u} = (1, 2, 3), \quad \mathbf{v} = (2, 4, 3)
+                \boldsymbol{u} = (1, 2, 3), \quad \boldsymbol{v} = (2, 4, 3)
             \end{equation*}
             Then: 
             \begin{equation*}
-                \mathbf{u} \otimes \mathbf{v} = \mathbf{u}\mathbf{v}^{\top} = \begin{bmatrix}
-                1 \\ 2 \\ 3
-                \end{bmatrix}\begin{bmatrix}
-                2 & 4 & 3
-                \end{bmatrix} = \begin{bmatrix}
+                \boldsymbol{u} \otimes \boldsymbol{v} = \boldsymbol{u}\boldsymbol{v}^{\top} = \begin{bmatrix}
                     1 \cdot 2 & 1 \cdot 4 & 1 \cdot 3 \\
                     2 \cdot 2 & 2 \cdot 4 & 2 \cdot 3 \\
                     3 \cdot 2 & 3 \cdot 4 & 3 \cdot 3
@@ -864,12 +819,12 @@
         \begin{definition}
             Each \textbf{constraint} in the Rank-1 Constraint System must be in the form:
             \begin{equation*}
-                \langle \mathbf{a}, \mathbf{w}\rangle \times \langle \mathbf{b}, \mathbf{w}\rangle = \langle \mathbf{c}, \mathbf{w}\rangle
+                \langle \boldsymbol{a}, \boldsymbol{w}\rangle \times \langle \boldsymbol{b}, \boldsymbol{w}\rangle = \langle \boldsymbol{c}, \boldsymbol{w}\rangle
             \end{equation*}
-            Where $\mathbf{w}$ is a vector containing all the \textit{input}, \textit{output}, and 
-            \textit{intermediate} variables involved in the computation. The vectors $\mathbf{a}$, 
-            $\mathbf{b}$, and $\mathbf{c}$ are vectors of coefficients corresponding to these variables, 
-            and they define the relationship between the linear combinations of $\mathbf{w}$ on the 
+            Where $\boldsymbol{w}$ is a vector containing all the \textit{input}, \textit{output}, and 
+            \textit{intermediate} variables involved in the computation. The vectors $\boldsymbol{a}$, 
+            $\boldsymbol{b}$, and $\boldsymbol{c}$ are vectors of coefficients corresponding to these variables, 
+            and they define the relationship between the linear combinations of $\boldsymbol{w}$ on the 
             left-hand side and the right-hand side of the equation.
         \end{definition}        
     \end{frame}
@@ -877,7 +832,7 @@
     \begin{frame}{Constraint Example}
         \begin{example}
             Consider the most basic circuit with one multiplication gate: $x_1 \times x_2 = r$.
-            The witnes vector $\mathbf{w} = (r, x_1, x_2)$. So
+            The witnes vector $\boldsymbol{w} = (r, x_1, x_2)$. So
             \vspace{-5pt}
             \begin{align*}
                 w_2 &\times w_3 = w_1 \\
@@ -887,7 +842,7 @@
             Therefore the coefficients vectors are:
             \vspace{-5pt}
             \begin{equation*}
-                \mathbf{a} = (0, 1, 0), \quad \mathbf{b} = (0, 0, 1), \quad \mathbf{c} = (1, 0, 0). 
+                \boldsymbol{a} = (0, 1, 0), \quad \boldsymbol{b} = (0, 0, 1), \quad \boldsymbol{c} = (1, 0, 0). 
                 \vspace{-5pt}
             \end{equation*}
             The general form of our constraint is:
@@ -904,22 +859,21 @@
         def r(x1: F, x2: F, x3: F) -> F:
             return x2 * x3 if x1 else x2 + x3
         \end{lstlisting}
+
+        \vspace{-10pt}
+
         That can be expressed as:
         \begin{equation*}
             r = x_1 \times (x_2 \times x_3) + (1 - x_1) \times (x_2 + x_3)
         \end{equation*}
         
         
-        \begin{alertblock}{}
-            We need a boolean restriction for $x_1$:
-            \vspace{-8pt}
-            \begin{equation*}
-                x_1 \times (1 - x_1) = 0
-            \end{equation*}
-        \end{alertblock}
+        \begin{block}{}
+            We need a boolean restriction for $x_1$: that is, $x_1 \times (1 - x_1) = 0$.
+        \end{block}
 
         
-        Thus, the next constraints can be build:
+        Thus, the next constraints can be built:
         \vspace{-5pt}
         \begin{align*}
             x_1 \times x_1 &= x_1 \quad \text{(binary check)} \tag{1} \\
@@ -930,19 +884,22 @@
     \end{frame}
 
     \begin{frame}[fragile]{Constraint System Example}
-        The witness vector: $\mathbf{w} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult})$.
+        The witness vector: $\boldsymbol{w} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult})$. The coefficients vectors:
+        
+        \vspace{-20pt}\small
 
-        \vspace{2pt}
-        The coefficients vectors:
-        \vspace{-5pt}
         \begin{align*}
-            \mathbf{a}_1 &= (0, 0, 1, 0, 0, 0, 0), & \mathbf{b}_1 &= (0, 0, 1, 0, 0, 0, 0), & \mathbf{c}_1 &= (0, 0, 1, 0, 0, 0, 0) \\
-            \mathbf{a}_2 &= (0, 0, 0, 1, 0, 0, 0), & \mathbf{b}_2 &= (0, 0, 0, 0, 1, 0, 0), & \mathbf{c}_2 &= (0, 0, 0, 0, 0, 1, 0) \\
-            \mathbf{a}_3 &= (0, 0, 1, 0, 0, 0, 0), & \mathbf{b}_3 &= (0, 0, 0, 0, 0, 1, 0), & \mathbf{c}_3 &= (0, 0, 0, 0, 0, 0, 1) \\
-            \mathbf{a}_4 &= (1, 0, -1, 0, 0, 0, 0), & \mathbf{b}_4 &= (0, 0, 0, 1, 1, 0, 0), & \mathbf{c}_4 &= (0, 1, 0, 0, 0, 0, -1)
-        \end{align*}
-        Using the arithmetic in a large finite field $\mathbb{F}_p$, consider the following values:
+            \boldsymbol{a}_1 &= (0, 0, 1, 0, 0, 0, 0), & \boldsymbol{b}_1 &= (0, 0, 1, 0, 0, 0, 0), & \boldsymbol{c}_1 &= (0, 0, 1, 0, 0, 0, 0) \\
+            \boldsymbol{a}_2 &= (0, 0, 0, 1, 0, 0, 0), & \boldsymbol{b}_2 &= (0, 0, 0, 0, 1, 0, 0), & \boldsymbol{c}_2 &= (0, 0, 0, 0, 0, 1, 0) \\
+            \boldsymbol{a}_3 &= (0, 0, 1, 0, 0, 0, 0), & \boldsymbol{b}_3 &= (0, 0, 0, 0, 0, 1, 0), & \boldsymbol{c}_3 &= (0, 0, 0, 0, 0, 0, 1) \\
+            \boldsymbol{a}_4 &= (1, 0, -1, 0, 0, 0, 0), & \boldsymbol{b}_4 &= (0, 0, 0, 1, 1, 0, 0), & \boldsymbol{c}_4 &= (0, 1, 0, 0, 0, 0, -1)
+        \end{align*}\normalsize
+
         \vspace{-10pt}
+
+        Using the arithmetic in a large $\mathbb{F}_p$, consider the following values:
+        
+        \vspace{-15pt}
         \begin{equation*}
             x_1 = 1, \quad x_2 = 3, \quad x_3 = 4
             \vspace{-5pt}
@@ -959,36 +916,22 @@
 
     \begin{frame}{R1CS In Matrix Form}
         \begin{theorem} 
-            Consider a Rank-1 Constraint System (R1CS) defined by $m$ constraints. Each constraint is
-            associated with coefficient vectors $\mathbf{a}_i$, $\mathbf{b}_i$, and $\mathbf{c}_i$, where $i \in \{1, 2, \dots, m\}$ and
-            also a witness vector $\mathbf{w}$ consisting of $n$ elements.
+            Consider a \textbf{Rank-1 Constraint System} (\textbf{R1CS}) defined over $m$ constraints. Each constraint in such system is
+            associated with coefficient vectors $\boldsymbol{a}_i$, $\boldsymbol{b}_i$, and $\boldsymbol{c}_i$, where $i \in \{1, 2, \dots, m\}$ and
+            also a witness vector $\boldsymbol{w}$ consisting of $n$ elements.
         
             Then this system can also be represented using the corresponding matrices $A$, $B$, and $C$.
-            {\scriptsize
             \begin{align*}
                 A = \begin{bmatrix}
                     a_{11} & a_{12} & \dots & a_{1n} \\
                     a_{21} & a_{22} & \dots & a_{2n} \\
                     \vdots & \vdots & \ddots & \vdots \\
                     a_{m1} & a_{m2} & \dots & a_{mn}
-                \end{bmatrix} & \quad
-                B = \begin{bmatrix}
-                    b_{11} & b_{12} & \dots & b_{1n} \\
-                    b_{21} & b_{22} & \dots & b_{2n} \\
-                    \vdots & \vdots & \ddots & \vdots \\
-                    b_{m1} & b_{m2} & \dots & b_{mn}
-                \end{bmatrix} & 
-                C = \begin{bmatrix}
-                    c_{11} & c_{12} & \dots & c_{1n} \\
-                    c_{21} & c_{22} & \dots & c_{2n} \\
-                    \vdots & \vdots & \ddots & \vdots \\
-                    c_{m1} & c_{m2} & \dots & c_{mn}
-                \end{bmatrix}
+                \end{bmatrix}, \; \text{same for $B$ and $C$,}
             \end{align*}
-            }
             such that all constraints can be reduced to the single equation:
             \begin{equation*}
-                A\mathbf{w} \odot B\mathbf{w} = C\mathbf{w}
+                A\boldsymbol{w} \odot B\boldsymbol{w} = C\boldsymbol{w}
             \end{equation*}
         \end{theorem}
     \end{frame}
@@ -998,31 +941,31 @@
         \vspace{-5pt}
         {\scriptsize \begin{equation*}
             A = \begin{bmatrix}
-                \mathbf{a}_1^{\top} \\ \mathbf{a}_2^{\top} \\ \vdots \\ \mathbf{a}_m^{\top}
+                \boldsymbol{a}_1^{\top} \\ \boldsymbol{a}_2^{\top} \\ \vdots \\ \boldsymbol{a}_m^{\top}
             \end{bmatrix}, \quad B = \begin{bmatrix}
-                \mathbf{b}_1^{\top} \\ \mathbf{b}_2^{\top} \\ \vdots \\ \mathbf{b}_m^{\top}
+                \boldsymbol{b}_1^{\top} \\ \boldsymbol{b}_2^{\top} \\ \vdots \\ \boldsymbol{b}_m^{\top}
             \end{bmatrix}, \quad C = \begin{bmatrix}
-                \mathbf{c}_1^{\top} \\ \mathbf{c}_2^{\top} \\ \vdots \\ \mathbf{c}_m^{\top}
+                \boldsymbol{c}_1^{\top} \\ \boldsymbol{c}_2^{\top} \\ \vdots \\ \boldsymbol{c}_m^{\top}
             \end{bmatrix}
             \vspace{-5pt}
         \end{equation*}}
         
-        Consider an expression $A\mathbf{w}$:
+        Consider an expression $A\boldsymbol{w}$:
         \vspace{-5pt}
         {\scriptsize \begin{equation*}
-            A\mathbf{w} = \begin{bmatrix}
-                \mathbf{a}_1^{\top} \\ \mathbf{a}_2^{\top} \\ \vdots \\ \mathbf{a}_m^{\top}
+            A\boldsymbol{w} = \begin{bmatrix}
+                \boldsymbol{a}_1^{\top} \\ \boldsymbol{a}_2^{\top} \\ \vdots \\ \boldsymbol{a}_m^{\top}
             \end{bmatrix}\begin{bmatrix}
                 w_1 \\ w_2 \\ \vdots \\ w_n
             \end{bmatrix} = \begin{bmatrix}
-                \mathbf{a}_1^{\top}\mathbf{w} \\ \mathbf{a}_2^{\top}\mathbf{w} \\ \vdots \\ \mathbf{a}_m^{\top}\mathbf{w}
+                \boldsymbol{a}_1^{\top}\boldsymbol{w} \\ \boldsymbol{a}_2^{\top}\boldsymbol{w} \\ \vdots \\ \boldsymbol{a}_m^{\top}\boldsymbol{w}
             \end{bmatrix} = \begin{bmatrix}
                 \sum_{i=1}^{n}a_{1i}w_i \\ \sum_{i=1}^{n}a_{2i}w_i \\ \vdots \\ \sum_{i=1}^{n}a_{ni}w_i
             \end{bmatrix} = \begin{bmatrix}
-                \langle \mathbf{a}_1, \mathbf{w}\rangle \\
-                \langle \mathbf{a}_2, \mathbf{w}\rangle \\
+                \langle \boldsymbol{a}_1, \boldsymbol{w}\rangle \\
+                \langle \boldsymbol{a}_2, \boldsymbol{w}\rangle \\
                 \vdots \\
-                \langle \mathbf{a}_m, \mathbf{w}\rangle 
+                \langle \boldsymbol{a}_m, \boldsymbol{w}\rangle 
             \end{bmatrix}
             \vspace{-5pt}
         \end{equation*}}
@@ -1030,46 +973,46 @@
         Therefore, we have:
         \vspace{-5pt}
         {\scriptsize \begin{equation*}
-            A\mathbf{w} = \begin{bmatrix}
-                \langle \mathbf{a}_1, \mathbf{w}\rangle \\
-                \langle \mathbf{a}_2, \mathbf{w}\rangle \\
+            A\boldsymbol{w} = \begin{bmatrix}
+                \langle \boldsymbol{a}_1, \boldsymbol{w}\rangle \\
+                \langle \boldsymbol{a}_2, \boldsymbol{w}\rangle \\
                 \vdots \\
-                \langle \mathbf{a}_m, \mathbf{w}\rangle 
+                \langle \boldsymbol{a}_m, \boldsymbol{w}\rangle 
             \end{bmatrix}, \quad
-            B\mathbf{w} = \begin{bmatrix}
-                \langle \mathbf{b}_1, \mathbf{w}\rangle \\
-                \langle \mathbf{b}_2, \mathbf{w}\rangle \\
+            B\boldsymbol{w} = \begin{bmatrix}
+                \langle \boldsymbol{b}_1, \boldsymbol{w}\rangle \\
+                \langle \boldsymbol{b}_2, \boldsymbol{w}\rangle \\
                 \vdots \\
-                \langle \mathbf{b}_m, \mathbf{w}\rangle 
+                \langle \boldsymbol{b}_m, \boldsymbol{w}\rangle 
             \end{bmatrix}, \quad
-            C\mathbf{w} = \begin{bmatrix}
-                \langle \mathbf{c}_1, \mathbf{w}\rangle \\
-                \langle \mathbf{c}_2, \mathbf{w}\rangle \\
+            C\boldsymbol{w} = \begin{bmatrix}
+                \langle \boldsymbol{c}_1, \boldsymbol{w}\rangle \\
+                \langle \boldsymbol{c}_2, \boldsymbol{w}\rangle \\
                 \vdots \\
-                \langle \mathbf{c}_m, \mathbf{w}\rangle 
+                \langle \boldsymbol{c}_m, \boldsymbol{w}\rangle 
             \end{bmatrix}
             \vspace{-5pt}
         \end{equation*}}
         
-        Thus, {\small $A\mathbf{w} \odot B\mathbf{w} = C\mathbf{w}$} is equivalent to the system of $m$ constraints:
+        Thus, {\small $A\boldsymbol{w} \odot B\boldsymbol{w} = C\boldsymbol{w}$} is equivalent to the system of $m$ constraints:
         \vspace{-5pt}
         {\small \begin{equation*}
-            \langle \mathbf{a}_j, \mathbf{w}\rangle \times \langle \mathbf{b}_j, \mathbf{w} \rangle = \langle \mathbf{c}_j, \mathbf{w} \rangle, \; j \in \{1,\dots,m\}.
+            \langle \boldsymbol{a}_j, \boldsymbol{w}\rangle \times \langle \boldsymbol{b}_j, \boldsymbol{w} \rangle = \langle \boldsymbol{c}_j, \boldsymbol{w} \rangle, \; j \in \{1,\dots,m\}.
         \end{equation*}}
     \end{frame}
 
     \begin{frame}{R1CS In Matrix Form}
         \begin{example}
-            The vectors $\mathbf{a}_i$ from the previous examples have the form:
-            {\small\begin{align*}
-                \mathbf{a}_1 &= (0, 0, 1, 0, 0, 0, 0) \\
-                \mathbf{a}_2 &= (0, 0, 0, 1, 0, 0, 0) \\
-                \mathbf{a}_3 &= (0, 0, 1, 0, 0, 0, 0) \\
-                \mathbf{a}_4 &= (1, 0, -1, 0, 0, 0, 0)
+            The vectors $\boldsymbol{a}_i$ from the previous examples have the form:
+            {\begin{align*}
+                \boldsymbol{a}_1 &= (0, 0, 1, 0, 0, 0, 0) \\
+                \boldsymbol{a}_2 &= (0, 0, 0, 1, 0, 0, 0) \\
+                \boldsymbol{a}_3 &= (0, 0, 1, 0, 0, 0, 0) \\
+                \boldsymbol{a}_4 &= (1, 0, -1, 0, 0, 0, 0)
             \end{align*}}
-            This corresponds to $n = 7, m = 4$
-            {\small \begin{equation*}
-                A = \begin{bmatrix}
+            This corresponds to $n = 7, m = 4$, so the matrix $A$ becomes:
+            {\footnotesize \begin{equation*}
+                \begin{bmatrix}
                     a_{1,1} & a_{1,2} & a_{1,3} & a_{1,4} & a_{1,5} & a_{1,6} & a_{1,7} \\
                     a_{2,1} & a_{2,2} & a_{2,3} & a_{2,4} & a_{2,5} & a_{2,6} & a_{2,7} \\
                     a_{3,1} & a_{3,2} & a_{3,3} & a_{3,4} & a_{3,5} & a_{3,6} & a_{3,7} \\
@@ -1086,18 +1029,19 @@
 
     \begin{frame}{Why Rank-1?}
         \begin{lemma}
-            Suppose we have a constraint $\langle \mathbf{a}, \mathbf{w}\rangle \times \langle \mathbf{b}, \mathbf{w}\rangle = \langle \mathbf{c}, \mathbf{w} \rangle$ 
-            with coefficient vectors $\mathbf{a}$, $\mathbf{b}$, $\mathbf{c}$ and witness vector 
-            $\mathbf{w}$ (all from $\mathbb{F}^n$). Then it can be expressed in the form:
+            Suppose we have a constraint $\langle \boldsymbol{a}, \boldsymbol{w}\rangle \times \langle \boldsymbol{b}, \boldsymbol{w}\rangle = \langle \boldsymbol{c}, \boldsymbol{w} \rangle$ 
+            with coefficient vectors $\boldsymbol{a}$, $\boldsymbol{b}$, $\boldsymbol{c}$ and witness vector 
+            $\boldsymbol{w}$ (all from $\mathbb{F}^n$). Then it can be expressed in the form:
             \vspace{-5pt}
             \begin{equation*}
-                 \mathbf{w}^{\top} A \mathbf{w} + \mathbf{c}^{\top} \mathbf{w} = 0
+                 \boldsymbol{w}^{\top} A \boldsymbol{w} + \boldsymbol{c}^{\top} \boldsymbol{w} = 0
                  \vspace{-5pt}
             \end{equation*}
-            Where $A$ is the outer product of vectors $\mathbf{a}$, $\mathbf{b}$, so a \textbf{rank-1} matrix.
+            Where $A = \boldsymbol{a} \otimes \boldsymbol{b}$ --- \textbf{rank-1} matrix.
         \end{lemma}
+        \vspace{-10pt}
         
-        \textbf{Lemma proof.} Consider $\mathbf{a}, \mathbf{b}, \mathbf{c}, \mathbf{w} \in \mathbb{F}^n$.
+        \textbf{Lemma proof.} Consider $\boldsymbol{a}, \boldsymbol{b}, \boldsymbol{c}, \boldsymbol{w} \in \mathbb{F}^n$.
         \vspace{-5pt}
         \begin{equation*}
             \left(\sum_{i=1}^{n} a_i w_i\right) \times \left(\sum_{j=1}^{n} b_j w_j\right) = \sum_{k=1}^{n} c_k w_k
@@ -1106,19 +1050,27 @@
         Combine the products into a double sum on the left side:
         \vspace{-5pt}
         \begin{equation*}
-            \sum_{i=1}^{n} \sum_{j=1}^{n} a_i b_j w_i w_j = \mathbf{w}^{\top} (\mathbf{a} \otimes \mathbf{b}) \mathbf{w} = \mathbf{w}^{\top} A \mathbf{w}
+            \sum_{i=1}^{n} \sum_{j=1}^{n} a_i b_j w_i w_j = \boldsymbol{w}^{\top} (\boldsymbol{a} \otimes \boldsymbol{b}) \boldsymbol{w} = \boldsymbol{w}^{\top} A \boldsymbol{w}
             \vspace{-5pt}
         \end{equation*}
-        Thus, the constraint can be written as:
-        \vspace{-5pt}
-        \begin{equation*}
-            \mathbf{w}^{\top} A \mathbf{w} + \mathbf{c}^{\top} \mathbf{w} = 0
-            \vspace{-5pt}
-        \end{equation*}
+        Thus, the constraint can be written as $\boldsymbol{w}^{\top} A \boldsymbol{w} + \boldsymbol{c}^{\top} \boldsymbol{w} = 0$.
     \end{frame}
 
-    \begin{frame}{}
-        \centering \Large
-        \emph{Thanks for your attention!}
+    \begin{frame}[plain, standout]
+        \centering
+        \LARGE
+        \textbf{Thank you for your attention} \\
+        
+        \vspace{0.2cm} \Huge \ding{170} \large \\
+        
+        \vspace{1cm}
+  
+        \href{https://zkdl-camp.github.io/}{\raisebox{-.1em}{\hspace{.025em}\faIcon{globe}}\hspace{.325em}zkdl-camp.github.io} \\
+  
+        \href{https://github.com/ZKDL-Camp}{\raisebox{-.1em}{\hspace{.025em}\faIcon{github}}\hspace{.325em}github.com/ZKDL-Camp}
+        
+        \begin{center}
+            \includegraphics[width=0.15\textwidth]{images/logo.png}
+        \end{center}
     \end{frame}
 \end{document}

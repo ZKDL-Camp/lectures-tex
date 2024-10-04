@@ -1,0 +1,124 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerinnerthemeAltarguelles}
+
+\mode<presentation>
+
+% additional title page fields
+\def\insertevent{}
+\newcommand{\event}[1]{
+  \def\insertevent{#1}
+}
+\def\insertemail{}
+\newcommand{\email}[1]{
+  \def\insertemail{\href{mailto:#1}{\raisebox{-.1em}{\faIcon{envelope}}\hspace{.3em}#1}}
+}
+\def\inserthomepage{}
+\newcommand{\homepage}[1]{
+  \def\inserthomepage{\href{https://#1}{\raisebox{-.1em}{\hspace{.025em}\faIcon{globe}}\hspace{.325em}#1}}
+}
+\def\insertgithub{}
+\newcommand{\github}[1]{
+  \def\insertgithub{\href{https://github.com/#1}{\raisebox{-.1em}{\hspace{.025em}\faIcon{github}}\hspace{.325em}github.com/#1}}
+}
+
+% title page
+\defbeamertemplate*{title page}{Altarguelles}{
+  \vfill\begin{beamercolorbox}{inverted text}
+    {\usebeamerfont{title}\inserttitle}\par
+    {\usebeamerfont{subtitle}\insertsubtitle}\par\bigskip
+    {\usebeamerfont{event}\insertevent}\par
+    {\usebeamerfont{date}\insertdate}\par\bigskip
+    {\usebeamerfont{author}\insertauthor}\par\smallskip
+    {\usebeamerfont{institute}\insertinstitute}\par
+    {\usebeamerfont{email}\insertemail}\par
+    {\usebeamerfont{homepage}\inserthomepage}\par
+    {\usebeamerfont{github}\insertgithub}
+  \end{beamercolorbox}
+  \addtocounter{framenumber}{-1}
+}
+
+% lists
+\setlist{nosep,leftmargin=*}
+\setlist[1]{labelindent=\parindent,itemsep=.5em}
+\setlist[2]{before=\small}
+\setlist[itemize,1]{label=$\bullet$}
+\setlist[itemize,2]{label=$\circ$}
+\setlist[itemize,3]{label=$\cdot$}
+\setlist[enumerate,1]{label=\arabic*.}
+\setlist[enumerate,2]{label=\theenumi\arabic*.}
+\setlist[enumerate,3]{label=\theenumii\arabic*.}
+\setlist[description]{font=\normalfont\itshape,style=multiline}
+
+% blocks
+\setbeamertemplate{blocks}[rounded]
+
+% background
+\BeforeBeginEnvironment{frame}{
+  \setbeamertemplate{background}{
+    \begin{tikzpicture}
+      \useasboundingbox (0,0) rectangle (\paperwidth,\paperheight);
+      \ifnum\thepage>1\relax
+        \fill[structure.bg] (0,.01\paperheight) rectangle (\paperwidth,.99\paperheight);
+      \fi
+    \end{tikzpicture}
+  }
+}
+
+% fullscreen image
+\newcommand{\fillpicture}[1]{
+  \centering
+  \ifbeamer@plainframe
+    \tikz[remember picture,overlay] \node[inner sep=0pt] at (current page.center) {
+      \includegraphics[width=\paperwidth,height=.98\paperheight]{#1}
+    };
+  \else
+    \tikz[remember picture,overlay] \node[inner sep=0pt] at ($(current page.north)-(0,.526\paperheight)$) {
+      \includegraphics[width=\paperwidth,height=.929\paperheight]{#1}
+    };
+  \fi
+}
+
+% background image
+\define@key{beamerframe}{bg}{
+  \setbeamertemplate{background}{
+    \begin{tikzpicture}
+      \useasboundingbox (0,0) rectangle (\paperwidth,\paperheight);
+      \path[fill overzoom image=#1] (0,.01\paperheight) rectangle (\paperwidth,.99\paperheight);
+    \end{tikzpicture}
+  }
+}
+
+% standout frame
+\providebool{Altarguelles@standout}
+\define@key{beamerframe}{standout}[true]{
+  \booltrue{Altarguelles@standout}
+  \begingroup
+  \setbeamertemplate{background}{}
+  \setbeamercolor*{normal text}{fg=structure.bg}
+  \setbeamercolor*{footline}{fg=structure.bg}
+  \beamer@frametopskip=0pt plus 1fill\relax%
+  \beamer@framebottomskip=0pt plus 1.25fill\relax%
+  \color{structure.bg}
+  \large
+}
+\pretocmd{\beamer@reseteecodes}{
+  \ifbool{Altarguelles@standout}{
+    \endgroup\boolfalse{Altarguelles@standout}
+  }{}
+}{}{}
+
+% suppress frame numbering
+\providebool{Altarguelles@noframenumbering}
+\define@key{beamerframe}{noframenumbering}[true]{
+  \booltrue{Altarguelles@noframenumbering}
+  \begingroup
+  \setbeamertemplate{footline}{}
+}
+\pretocmd{\beamer@reseteecodes}{
+  \ifbool{Altarguelles@noframenumbering}{
+    \endgroup\boolfalse{Altarguelles@noframenumbering}
+  }{}
+}{}{}
+
+\mode<all>
+\endinput

@@ -1,59 +1,18 @@
-\documentclass{beamer}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-
-% -- Including some standard packages --
-\usepackage{graphicx}
-\usepackage{soul}
-\usepackage{hyperref}
-\usepackage{colortbl}
-\usepackage{dsfont}
-\usepackage{soul}
-
-% -- Choosing theme --
-
-\usetheme{Boadilla}
-\usecolortheme{whale}
-\setbeamercolor{alerted text}{fg=purple} % Making alerted text non-red
-
-% Tikz
-\usepackage{tikz,tikz-3dplot,tikz-cd,tkz-tab,tkz-euclide,pgf,pgfplots}
-\usetikzlibrary{matrix,positioning,fit,backgrounds,intersections}
-
-% -- Cross signs --
-\usepackage{pifont} % http://ctan.org/pkg/pifont
-\newcommand{\cmark}{\ding{51}}%
-\newcommand{\xmark}{\ding{55}}%
-\newcommand{\xopt}{\ding{48}}%
-
-% -- Custom commands --
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
+\documentclass{zkdl-presentation-template}
 
 \title[Mathematics II]{\textbf{Mathematics for Cryptography II: Security Analysis, Polynomials, Number Theory}}
 \author{Distributed Lab}
 \date{July 25, 2024}
-\titlegraphic{
-    \includegraphics[width=\textwidth]{images/banner_wide.png}
-}
-
-\expandafter\def\expandafter\insertshorttitle\expandafter{%
-  \insertshorttitle\hfill%
-  \insertframenumber\,/\,\inserttotalframenumber}
-
-\AtBeginSection[]{
-  \begin{frame}
-  \vfill
-  \centering
-  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
-    \usebeamerfont{title}\insertsectionhead\par%
-  \end{beamercolorbox}
-  \vfill
-  \end{frame}
-}
+\homepage{zkdl-camp.github.io}
+\github{ZKDL-Camp}
 
 \begin{document}
     \frame {
+      \tikz [remember picture,overlay]
+        \node at
+            ([yshift=1.5cm,xshift=-1.5cm]current page.south east) 
+            %or: (current page.center)
+            {\includegraphics[width=60pt]{images/logo.png}};
       \titlepage
     }
   
@@ -67,7 +26,7 @@
             \item How to read\ldots This\ldots
         \end{itemize}
         \begin{figure}
-            \includegraphics[width=0.8\textwidth]{images/lecture_2/bulletproof.png}
+            \includegraphics[width=\textwidth]{images/lecture_2/bulletproof.png}
             \caption{This is not that hard as it seems. Figure from ``\textit{Bulletproofs: Short Proofs for Confidential Transactions and More}''}
             \label{fig:wuuttt}
         \end{figure}
@@ -116,11 +75,13 @@
             \end{itemize}
         \end{definition}
 
+        \vspace{-10pt}
         We require the \textbf{correctness}:
         \begin{equation*}
             \forall k \in \mathcal{K}, \forall m \in \mathcal{M}: D(k,E(k,m)) = m.
         \end{equation*}
-
+        
+        \vspace{-10pt}
         \begin{alertblock}{Question}
             What else cipher must have to be practical?
         \end{alertblock}
@@ -147,18 +108,18 @@
                 \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]challenger.south) -- ([yshift=-7cm]challenger.south);
                 \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]adversary.south) -- ([yshift=-7cm]adversary.south);
         
-                \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-1.5cm]adversary.south) coordinate (l2)--(l2-|challenger) node[midway, above=2mm, fill=white]{Send $m_0, m_1 \in \mathcal{M}, |m_0| = |m_1|$};
+                \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-1.5cm]adversary.south) coordinate (l2)--(l2-|challenger) node[midway, above=2mm, fill=white, fill opacity=0.0, text opacity=1.0]{Send $m_0, m_1 \in \mathcal{M}, |m_0| = |m_1|$};
         
-                \node[align=center,fill=white!5,thick,below=2.5cm of challenger](challenger-actions){
+                \node[align=center,fill=oc-gray-0,thick,below=2.5cm of challenger](challenger-actions){
                 \noindent\rule{3.5cm}{0.8pt}\\
                 $b \xleftarrow{R} \{0,1\}$ \\
                 $k \xleftarrow{R} \mathcal{K}$ \\
                 $c \gets E(k,m_b)$ \\
                 \noindent\rule{3.5cm}{0.8pt}};
         
-                \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-6cm]challenger.south) coordinate (l2)--(l2-|adversary) node[midway, above=2mm, fill=white]{Send cipher $c$};
+                \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-6cm]challenger.south) coordinate (l2)--(l2-|adversary) node[midway, above=2mm, fill=white, fill opacity=0.0, text opacity=1.0]{Send cipher $c$};
         
-                \node[align=center,fill=white!5,thick,below=5cm of adversary](adversary-guess){
+                \node[align=center,fill=oc-gray-0,thick,below=5cm of adversary](adversary-guess){
                 \noindent\rule{3.5cm}{0.8pt}\\
                 Guess bit $\hat{b} \in \{0,1\}$\\
                 \noindent\rule{3.5cm}{0.8pt}};
@@ -320,13 +281,14 @@
         \begin{equation*}
             u^n = g^{\alpha n} = g^{2\alpha' n} = (g^{2n})^{\alpha'} = 1^{\alpha'} = 1
         \end{equation*}
+        \vspace{-20pt}
 
         Therefore, if $u = g^{\alpha}, v = g^{\beta}, w = g^{\gamma}$, adversary knows the parity of $\alpha, \beta, \gamma$. He then checks if parity of $\alpha\beta$ equals parity of $\gamma$.
     \end{frame}
 
     \section{Polynomials}
 
-    \subsection{Definition}
+    \subsection{Basic Theory}
 
     \begin{frame}{Definition}
       \begin{definition}
@@ -376,11 +338,11 @@
           For any two polynomials $p,q \in \mathbb{F}[x]$ and $n = \deg p, m = \deg q$, the following two statements are true:
           \begin{enumerate}
               \item $\deg (pq) = n + m$.
-              \item $\deg (p + q) = \max\{n,m\}$ if $n \neq m$ and $\deg (p+q) \leq m$ for $m=n$.
+              \item $\deg (p + q) = \max\{n,m\}, n \neq m$ and $\deg (p+q) \leq m,m=n$.
           \end{enumerate}
       \end{theorem}
     \end{frame}
-    \subsection{Roots and Divisibility}
+
     \begin{frame}{Roots of Polynomials}
       \begin{definition}
           Let $p(x) \in \mathbb{F}[x]$ be a polynomial of degree $\deg p \geq 1$. A field element $x_0 \in \mathbb{F}$ is called a root of $p(x)$ if $p(x_0) = 0$.
@@ -486,7 +448,7 @@
     \end{theorem}
     \end{frame}
 
-    \subsection{Interpolation Applications: Shamir Secret Sharing}
+    \subsection{Shamir Secret Sharing}
     \begin{frame}{Application: Shamir Secret Sharing}
       \begin{alertblock}{Motivation}    
         How to share a secret $\alpha$ among $n$ people in such a way that any $t$ of them can reconstruct the secret, but any $t-1$ cannot?
@@ -504,18 +466,18 @@
     \begin{frame}{Shamir's Protocol}
       \begin{block}{Note}
         Here, we require the \textbf{correctness}: for every $\alpha \in F$, for every possible output $(\alpha_1,\dots,\alpha_n) \gets \mathsf{Gen}(\alpha, t, n)$, and any $t$-size subset $\mathcal{I}$ of $\{1,\dots,n\}$ we have
-        \begin{equation}
+        \begin{equation*}
             \mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}}) = \alpha.
-        \end{equation}
+        \end{equation*}
       \end{block}
 
       \begin{definition}
         Now, \textbf{Shamir's protocol} works as follows: $F=\mathbb{F}_q$ and
         \begin{itemize}
             \item $\mathsf{Gen}(\alpha, k, n)$: choose random $k_1,\dots,k_{t-1} \xleftarrow[]{R} \mathbb{F}_q$ and define the polynomial
-            \begin{equation}
+            \begin{equation*}
                 \omega(x) := \alpha + k_1x + k_2x^2 + \cdots + k_{t-1}x^{t-1} \in \mathbb{F}_q^{\leq (t-1)}[x],     
-            \end{equation}
+            \end{equation*}
             and then compute $\alpha_i \gets \omega(i) \in \mathbb{F}_q, \; i = 1,\dots,n$. 
         \end{itemize}
       \end{definition}
@@ -567,39 +529,46 @@
 
     \begin{frame}{Schwartz-Zippel Lemma}
         \begin{definition}
-        Let $\mathbb{F}$ be a field. Let $f(x_1, x_2, ..., x_n)$ be a polynomial of total degree $d$. Suppose that $f$ is not the zero polynomial. Let $S$ be
-        a finite subset of $\mathbb{F}$. Let $r_1, r_2, ... r_n$ be chosen at random uniformly and independently from $S$. Then the probability that 
-        $f(r_1, r_2, ..., r_n) = 0$ is $\le \frac{d}{|S|}$.
+        Let $\mathbb{F}$ be a field. Let $\mu(x_1, \dots, x_n) \in \mathbb{F}^{(\leq d)}[x_1,\dots,x_n]$ and $\mu \not\equiv 0$. Let $S \subseteq \mathbb{F}$ be some finite subset of $\mathbb{F}$. Then,
+        \begin{equation*}
+            \mathop{\text{Pr}}_{(r_1,\dots,r_n) \xleftarrow{R} S^n}[\mu(r_1,\dots,r_n) = 0] \le \frac{d}{|S|},
+        \end{equation*}
         \end{definition}
   
         \begin{figure}
           \centering
-          \includegraphics[width=0.5\textwidth]{images/lecture_2/Schwartz-Zippel-1.png}
+          \includegraphics[width=0.3\textwidth]{images/lecture_2/Schwartz-Zippel-1.png}
           \caption{Schwartz-Zippel Lemma. Polynomial}
           \label{fig:schwartz-1}
         \end{figure}
     \end{frame}
 
     \begin{frame}{Schwartz-Zippel Lemma}
-        \begin{definition}
-            Let $F = \mathbb{F}_3$, $f(x) = x^2 - 5x + 6$, $S = F$, $r \xleftarrow{R} \mathbb{F}_3$.
-            Schwartz-Zippel lemma says that the probability that $f(r) = 0$ is $\le \frac{2}{3}$.
-        \end{definition}
+        \begin{example}
+            Let $\mathbb{F} = \mathbb{F}_3$, $\mu(x) = x^2 - 5x + 6$, $S = \mathbb{F}$.
+            According to Schwatz-Zippel Lemma, $\mu(r) = 0$ is less than $\frac{2}{3}$ for $r \xleftarrow{R} \mathbb{F}_3$.
+        \end{example}
   
         \begin{figure}
           \centering
-          \includegraphics[width=0.5\textwidth]{images/lecture_2/Schwartz-Zippel-2.png}
+          \includegraphics[width=0.4\textwidth]{images/lecture_2/Schwartz-Zippel-2.png}
           \caption{Schwartz-Zippel Lemma. Polynomial}
           \label{fig:schwartz-2}
         \end{figure}
     \end{frame}
 
-    \begin{frame}{Schwartz-Zippel Lemma}
-        Given two polynomials $P, Q$ with  degree $d$ in a field $\mathbb{F}_p$, for $r \xleftarrow{R} \mathbb{F}_3$: $\Pr[P(r) == Q(r)] \le \frac{d}{p}$.
-        For large fields, where  $\frac{d}{p}$ is negligible, this property allows to succinctly check the equality of polynomials.
+    \begin{frame}{Polynomial Equality Test}
+    \begin{block}{Polynomial Equality Test}
+        Suppose $P$ and $Q$ are two polynomials with a maximum degree $d$ over the finite field $\mathbb{F}$. Then, 
+        \begin{equation*}
+            \mathop{\text{Pr}}_{r \xleftarrow{R} \mathbb{F}}[P(r) = Q(r)] \le \frac{d}{|\mathbb{F}|}.
+        \end{equation*}
+
+        As a consequence, for large fields, the probability of two polynomials being equal at a random point is negligible.
+    \end{block}
 
     \begin{proof}
-        Let $H(x) := P(x) - Q(x)$. Than for each $P(x) = Q(x) \rightarrow H(x) = 0$. Applying Schwartz-Zippel lemma, the probability of $H(x) = 0$ for $x \xleftarrow{R} \mathbb{F} $ is $\le \frac{d}{|S|}$.
+        Let $Z(x) := P(x) - Q(x)$. Of course, $\deg Z$ is at most $d$. Also note that $Z(r) = 0$ iff $P(r) = Q(r)$. Applying Schwartz-Zippel lemma, the probability of $Z(r) = 0$ for $r \xleftarrow{R} \mathbb{F} $ is bounded above by $d/|\mathbb{F}|$. QED.
     \end{proof}
         
     \end{frame}
@@ -720,8 +689,21 @@ For example, $gcd(26, 8) = gcd(18, 8) = gcd(10, 8) = gcd(2, 8)$ can be optimized
     \end{frame}
 
 
-    \begin{frame}{}
-        \centering \Large
-        \emph{Thanks for your attention!}
-      \end{frame}
+    \begin{frame}[plain, standout]
+        \centering
+        \LARGE
+        \textbf{Thank you for your attention} \\
+        
+        \vspace{0.2cm} \Huge \ding{170} \large \\
+        
+        \vspace{1cm}
+  
+        \href{https://zkdl-camp.github.io/}{\raisebox{-.1em}{\hspace{.025em}\faIcon{globe}}\hspace{.325em}zkdl-camp.github.io} \\
+  
+        \href{https://github.com/ZKDL-Camp}{\raisebox{-.1em}{\hspace{.025em}\faIcon{github}}\hspace{.325em}github.com/ZKDL-Camp}
+        
+        \begin{center}
+            \includegraphics[width=0.15\textwidth]{images/logo.png}
+        \end{center}
+    \end{frame}
 \end{document}

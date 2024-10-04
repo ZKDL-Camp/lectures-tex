@@ -1,21 +1,58 @@
 \documentclass{zkdl-template}
 
+\usepackage{opencolor}
+
 \title{\huge\sffamily\bfseries ZKDL Camp Lecture Notes}
 \author{\Large\sffamily Distributed Lab}
-\date{\sffamily \today}
-\titlepic{\includegraphics[width=0.2\textwidth]{lectures/images/common/logo.png}}
+%\date{\sffamily \today}
+%\titlepic{\includegraphics[width=0.2\textwidth]{lectures/images/common/logo.png}}
 
 \begin{document}
 
 \pagestyle{fancy}
 
-\maketitle
+% --- Drawing a book cover ---
+
+\colorlet{coverBackground}{oc-gray-0}
+\colorlet{coverBoxBackground}{oc-gray-7}
+
+\pagecolor{coverBackground}
+\begin{tcolorbox}[
+    standard jigsaw,
+    colframe=coverBoxBackground, 
+    colback=oc-gray-3,
+    width=\textwidth, 
+    halign=center, 
+    valign=center, 
+    %opacityback=0,
+    arc=1em,
+    shadow={4mm}{-3mm}{0mm}{black!30!white},
+    enhanced,
+    boxrule=5pt,
+    rightrule=9pt,
+    bottomrule=9pt]
+    \maketitle
+\end{tcolorbox}
+
+% Include figure below
+
+\vspace{1.5cm}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{lectures/images/cover-image-1.png}
+\end{figure}
 
 \pagebreak
+
+% --- Table of Contents ---
+
+\pagecolor{white}
 
 \tableofcontents
 
 \pagebreak
+
+% --- Content ---
 
 \section{Group Theory and Polynomials}
 
@@ -45,8 +82,16 @@
 
 \subfile{lectures/7-sigma}
 
-\section{Introduction to SNARKs. R1CS, QAP}
+\section{Introduction to SNARKs. Arithmetic Circuits. R1CS}
 
 \subfile{lectures/8-circuits}
+
+\section{Quadratic Arithmetic Program. Probabilistically Checkable Proofs}
+
+\subfile{lectures/9-qap-pcp}
+
+\section{Pairing-based SNARKs. Pinocchio and Groth16}
+
+\subfile{lectures/10-groth}
 
 \end{document}

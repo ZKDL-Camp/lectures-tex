@@ -1,61 +1,20 @@
-\documentclass[xcolor={usenames,dvipsnames}]{beamer}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
+\documentclass{zkdl-presentation-template}
 
-% -- Including some standard packages --
-\usepackage{graphicx}
-\usepackage{soul}
-\usepackage{hyperref}
-\usepackage{colortbl}
-\usepackage{dsfont}
-\usepackage{soul}
-
-% -- Choosing theme --
-
-\usetheme{Boadilla}
-\usecolortheme{spruce}
-\setbeamercolor{alerted text}{fg=purple} % Making alerted text non-red
-
-% Tikz
-\usepackage{tikz,tikz-3dplot,tikz-cd,tkz-tab,tkz-euclide,pgf,pgfplots}
-\usetikzlibrary{matrix,positioning,fit,backgrounds,intersections}
-
-% -- Cross signs --
-\usepackage{pifont} % http://ctan.org/pkg/pifont
-\newcommand{\cmark}{\ding{51}}%
-\newcommand{\xmark}{\ding{55}}%
-\newcommand{\xopt}{\ding{48}}%
-
-% -- Custom commands --
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
-
-\title[Introduction to ZK]{\textbf{Introduction to Zero-Knowledge Proofs}}
+\title[Commitment Schemes]{\textbf{Introduction to Zero-Knowledge Proofs}}
 \author{Distributed Lab}
 \date{August 22, 2024}
-\titlegraphic{
-    \includegraphics[width=\textwidth]{images/banner_wide.png}
-}
-
-\expandafter\def\expandafter\insertshorttitle\expandafter{%
-  \insertshorttitle\hfill%
-  \insertframenumber\,/\,\inserttotalframenumber}
-
-\AtBeginSection[]{
-  \begin{frame}
-  \vfill
-  \centering
-  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
-    \usebeamerfont{title}\insertsectionhead\par%
-  \end{beamercolorbox}
-  \vfill
-  \end{frame}
-}
+\homepage{zkdl-camp.github.io}
+\github{ZKDL-Camp}
 
 \begin{document}
-	\frame {
-		\titlepage
-	}
+    \frame {
+        \tikz [remember picture,overlay]
+        \node at
+            ([yshift=1.5cm,xshift=-1.5cm]current page.south east) 
+            %or: (current page.center)
+            {\includegraphics[width=60pt]{images/logo.png}};
+        \titlepage
+    }
  
 	\begin{frame}{Plan}
         \tableofcontents
@@ -63,7 +22,6 @@
 
 	\section{Introduction}
 
-    \subsection{Classical Proofs}
     \begin{frame}{Classical Proofs}
         \begin{columns}
             % Description
@@ -105,7 +63,6 @@
         \end{figure}
     \end{frame}
 
-    \subsection{Goal of the course}
     \begin{frame}{The most basic setting}
         \begin{itemize}
             \item We have a \textbf{prover} $\mathcal{P}$ and a \textbf{verifier} $\mathcal{V}$.
@@ -127,8 +84,8 @@
             \item \textbf{Completeness:} If $x$ is true, $\pi$ proofs the statement.
             \item \textbf{Soundness:} If $x$ is false, the prover $\mathcal{P}$ should not be able to convince the verifier $\mathcal{V}$ via any $\pi^*$.
             \item \textbf{Zero-knowledge:} $\pi$ does not reveal anything about $w$.
-            \item \textbf{Argument of knowledge:} Sometimes, the prover $\mathcal{P}$ should convince the verifier $\mathcal{V}$ that besides $x$ is true, he \textbf{knows} the witness $w$.
-            \item \textbf{Succinctness:} The proof should be short, ideally polylogarithmic in the size of the statement ($|\pi| = \mathsf{polylog}(|x|)$) + fast verification.
+            \item \textbf{Argument of knowledge:} $\mathcal{P}$ should convince $\mathcal{V}$ that besides $x$ is true, he \textbf{knows} the witness $w$.
+            \item \textbf{Succinctness:} The proof should be short, ideally polylogarithmic in $|x|$ ($|\pi| = \mathsf{polylog}(|x|)$) + fast verification.
             \item \textbf{Arithmetization:} We need to convert the statement $x$ into some algebraic form + make it relatively universal.
         \end{itemize}
 
@@ -175,11 +132,13 @@
     \begin{frame}{Language Example \#1: Semiprimes}
         \begin{example}[Product of Two Primes (Semiprimes)]
             \textbf{Claim:} number $n \in \mathbb{N}$ is the product of two prime numbers $w = (p,q) \in \mathbb{N} \times \mathbb{N}$. The \textbf{relation} is given by:
+            \vspace{-4.5pt}
             \begin{equation*}
                 \mathcal{R} = \{ (n, p, q) \in \mathbb{N}^3: n = p \cdot q \; \text{where $p,q$ are primes} \}
             \end{equation*}
         
             In this particular case, the \textbf{language of true statements} is defined as 
+            \vspace{-12.5pt}
             \begin{equation*}
                 \mathcal{L}_{\mathcal{R}} = \{n \in \mathbb{N}: \exists w=(p,q) \; \text{are primes such that}\; n = p\cdot q\}
             \end{equation*}
@@ -190,6 +149,7 @@
                 \item \textbf{Valid witness \#2:} $n=50252009 \in \mathcal{L}_{\mathcal{R}}$. Witness: $w=(5749,8741)$.
             \end{itemize}
         \end{example}
+        \vspace{-10pt}
 
         \textcolor{purple}{\textbf{Question:}} Is $n=27$ a true statement? What about $n=26$?
     \end{frame}
@@ -260,7 +220,6 @@
 
     \section{Interactive Proofs}
 
-    \subsection{Quadratic Residue Interactive Proof}
     \begin{frame}{Solution!}
         \begin{columns}
             % Description
@@ -281,13 +240,13 @@
                         \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]prover.south) -- ([yshift=-5.0cm]prover.south);
                         \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]verifier.south) -- ([yshift=-4.8cm]verifier.south);
                 
-                        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-1.5cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm, fill=white]{Send $m_1$};
+                        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-1.5cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm, fill=white, fill opacity=0.0, text opacity=1.0]{Send $m_1$};
                 
-                        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-2.25cm]verifier.south) coordinate (l2)--(l2-|prover) node[midway, above=1mm, fill=white]{Toss coin $r_1$, send query $q_1$};
+                        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-2.25cm]verifier.south) coordinate (l2)--(l2-|prover) node[midway, above=1mm, fill=white, fill opacity=0.0, text opacity=1.0]{Toss coin $r_1$, send query $q_1$};
                 
-                        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-3.5cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm, fill=white]{Send $m_2$};
+                        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-3.5cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm, fill=white, fill opacity=0.0, text opacity=1.0]{Send $m_2$};
                 
-                        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-4.25cm]verifier.south) coordinate (l2)--(l2-|prover) node[midway, above=1mm, fill=white]{Toss coin $r_2$, send query $q_2$};
+                        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-4.25cm]verifier.south) coordinate (l2)--(l2-|prover) node[midway, above=1mm, fill=white, fill opacity=0.0, text opacity=1.0]{Toss coin $r_2$, send query $q_2$};
                     \end{tikzpicture}
                 \end{figure}
             \end{column}
@@ -349,9 +308,7 @@
             The aforementioned protocol is \textbf{complete} and \textbf{sound}.
         \end{lemma}
 
-        \textbf{Completeness.} If $b=0$, then $z=r$ and thus $z^2=r^2=a$, check passes.
-
-        If $b=1$, then $z=rw$ and thus $z^2=r^2w^2=ax$, check passes.
+        \textbf{Completeness.} If $b=0$, then $z=r$ and thus $z^2=r^2=a$, check passes. If $b=1$, then $z=rw$ and thus $z^2=r^2w^2=ax$, check passes.
     \end{frame}
 
     \subsection{Completeness and Soundness}
@@ -371,7 +328,7 @@
     \end{frame}
 
     \begin{frame}{Interactive Protocol Definition}
-        \textcolor{gray}{$\langle \mathcal{P}, \mathcal{V} \rangle(x)$ reads as ``interaction between $\mathcal{P}$ and $\mathcal{V}$ on the statement $x$''.}
+        \textcolor{gray}{$\langle \mathcal{P}, \mathcal{V} \rangle(x)$ reads as ``interaction between $\mathcal{P}$ and $\mathcal{V}$ on statement $x$''.}
 
         \begin{definition}
             A pair of algorithms $(\mathcal{P},\mathcal{V})$ is called an \textbf{interactive proof} for a language $\mathcal{L}_{\mathcal{R}}$ if $\mathcal{V}$ is a polynomial-time verifier and the following two properties hold:
@@ -574,7 +531,7 @@
     \end{frame}
 
     \begin{frame}{Random Oracle (RO)}
-        One of the most popular cryptographic oracles is the \textbf{random oracle} $\mathcal{O}_{\text{R}}$. 
+        One popular cryptographic oracles is a \textbf{random oracle} $\mathcal{O}_{\text{R}}$. 
 
         \begin{definition}[Informal definition of RO]
             Suppose someone is inputting $x$ to the random oracle $\mathcal{O}_{\text{R}}: \mathcal{X} \to \mathcal{Y}$\footnote{Typically, RO works with a family of functions $f: \mathcal{X} \to \mathcal{Y}$, but we are not going too deep into the details.}. The oracle $\mathcal{O}_{\text{R}}$ does the following:
@@ -629,15 +586,28 @@
                 \draw[-{Stealth[length=3mm]},line width=0.4mm,color=blue!90!black] ([yshift=-6.75cm]hash.south) coordinate (l2)--(l2-|prover) node[midway, above=1mm]{$r_{\ell} \gets \mathcal{O}_{\text{R}}(x,m_1,\dots,m_{\ell})$};
                 
                 % Sending proof
-                \draw[-{Stealth[length=3mm]},line width=0.4mm,color=green!50!black] ([yshift=-8.5cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm, fill=white]{Send $\pi = (m_1,r_1,m_2,r_2,\dots,m_{\ell},r_{\ell})$};
+                \draw[-{Stealth[length=3mm]},line width=0.4mm,color=green!50!black] ([yshift=-8.5cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm, fill=white, fill opacity=0.0, text opacity=1.0]{Send $\pi = (m_1,r_1,m_2,r_2,\dots,m_{\ell},r_{\ell})$};
             \end{tikzpicture}
         
             \label{fig:fiat-shamir}
         \end{figure}
     \end{frame}
 
-	\begin{frame}{}
-      \centering \Large
-      \textbf{Thank you for your attention!}
+    \begin{frame}[plain, standout]
+        \centering
+        \LARGE
+        \textbf{Thank you for your attention} \\
+        
+        \vspace{0.2cm} \Huge \ding{170} \large \\
+        
+        \vspace{1cm}
+  
+        \href{https://zkdl-camp.github.io/}{\raisebox{-.1em}{\hspace{.025em}\faIcon{globe}}\hspace{.325em}zkdl-camp.github.io} \\
+  
+        \href{https://github.com/ZKDL-Camp}{\raisebox{-.1em}{\hspace{.025em}\faIcon{github}}\hspace{.325em}github.com/ZKDL-Camp}
+        
+        \begin{center}
+            \includegraphics[width=0.15\textwidth]{images/logo.png}
+        \end{center}
     \end{frame}
 \end{document}

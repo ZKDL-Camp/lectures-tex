@@ -1,60 +1,19 @@
-\documentclass{beamer}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-
-% -- Including some standard packages --
-\usepackage{graphicx}
-\usepackage{soul}
-\usepackage{hyperref}
-\usepackage{colortbl}
-\usepackage{dsfont}
-\usepackage{soul}
-
-% -- Choosing theme --
-
-\usetheme{Boadilla}
-\usecolortheme{spruce}
-\setbeamercolor{alerted text}{fg=purple} % Making alerted text non-red
-
-% Tikz
-\usepackage{tikz,tikz-3dplot,tikz-cd,tkz-tab,tkz-euclide,pgf,pgfplots}
-\usetikzlibrary{matrix,positioning,fit,backgrounds,intersections}
-
-% -- Cross signs --
-\usepackage{pifont} % http://ctan.org/pkg/pifont
-\newcommand{\cmark}{\ding{51}}%
-\newcommand{\xmark}{\ding{55}}%
-\newcommand{\xopt}{\ding{48}}%
-
-% -- Custom commands --
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
+\documentclass{zkdl-presentation-template}
 
 \title[Field Extensions and Elliptic Curves]{\textbf{Field Extensions and Elliptic Curves}}
 \author{Distributed Lab}
 \date{August 1, 2024}
-\titlegraphic{
-    \includegraphics[width=\textwidth]{images/banner_wide.png}
-}
-
-\expandafter\def\expandafter\insertshorttitle\expandafter{%
-  \insertshorttitle\hfill%
-  \insertframenumber\,/\,\inserttotalframenumber}
-
-\AtBeginSection[]{
-  \begin{frame}
-  \vfill
-  \centering
-  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
-    \usebeamerfont{title}\insertsectionhead\par%
-  \end{beamercolorbox}
-  \vfill
-  \end{frame}
-}
+\homepage{zkdl-camp.github.io}
+\github{ZKDL-Camp}
 
 \begin{document}
     \frame {
-      \titlepage
+        \tikz [remember picture,overlay]
+        \node at
+            ([yshift=1.5cm,xshift=-1.5cm]current page.south east) 
+            %or: (current page.center)
+            {\includegraphics[width=60pt]{images/logo.png}};
+        \titlepage
     }
   
     \begin{frame}{Plan}
@@ -258,7 +217,7 @@
             \begin{equation*}
                 \phi(a+b) = \phi(a) \times \phi(b)
             \end{equation*}
-            However, we claim that $\mathbb{R}/(x^2+1) \cong \mathbb{C}$, which are fields, not groups.
+            However, we claim that $\mathbb{R}/(x^2+1) \cong \mathbb{C}$, which are fields!
         \end{block}
 
         \begin{definition}
@@ -269,7 +228,7 @@
                 \item $\phi(1_{\mathbb{F}}) = 1_{\mathbb{K}}$
             \end{itemize}
 
-            But for now, ``congruence'' essentially means ``exhibit the same structure''. 
+            But for now, $\cong$ means ``exhibit the same structure''. 
         \end{definition}
     \end{frame}
 
@@ -402,19 +361,19 @@
     \begin{frame}{Algebraic Closure for Finite Fields}
         Recall that we are cryptographers, not mathematicials. So we are interested in $\overline{\mathbb{F}}_p$. So I have two news to you:
         \begin{itemize}
-            \item \textbf{Good news:} $\overline{\mathbb{F}}_p$ exists.
-            \item \textbf{Bad news:} $\overline{\mathbb{F}}_p$ is infinite.
+            \item \textcolor{oc-green-7}{\textbf{Good news:}} $\overline{\mathbb{F}}_p$ exists.
+            \item \textcolor{oc-red-7}{\textbf{Bad news:}} $\overline{\mathbb{F}}_p$ is infinite.
         \end{itemize}
 
         \begin{theorem}
             No finite field $\mathbb{F}$ is algebraically closed.
         \end{theorem}
         
-        \textbf{Proof.} Suppose $f_1,f_2,\dots,f_n \in \mathbb{F}$ are all elements of $\mathbb{F}$. Consider the following polynomial:
+        \textbf{Proof.} Suppose $a_1,a_2,\dots,a_n \in \mathbb{F}$ are all elements of $\mathbb{F}$. Consider
         \begin{equation*}
-            p(x) = \prod_{i=1}^n (x-f_i)+1 = (x-f_1)(x-f_2)\cdots(x-f_n)+1.
+            p(x) := \prod_{i=1}^n (x-a_i)+1 = (x-a_1)(x-a_2)\cdots(x-a_n)+1.
         \end{equation*}
-        Clearly, $p(x)$ is a non-constant polynomial and has no roots in $\mathbb{F}$, since for any $f \in \mathbb{F}$, one has $p(f)=1$. $\blacksquare$
+        Clearly, $p(x)$ is a non-constant polynomial and has no roots in $\mathbb{F}$, since for any $a \in \mathbb{F}$, one has $p(a)=1$. $\blacksquare$
     \end{frame}
 
     \begin{frame}{So what?}
@@ -466,6 +425,7 @@
             \label{fig:ec_2}
         \end{figure}
     \end{frame}
+    
 
     \begin{frame}{Real Elliptic Curves}
         But real elliptic curves are not that simple. Here how they look like\footnote{Figure taken from ``Moonmath''}:
@@ -610,8 +570,21 @@
         \end{block}
     \end{frame}
 
-    \begin{frame}{}
-        \centering \Large
-        \emph{Thank you for your attention!}
-      \end{frame}
+    \begin{frame}[plain, standout]
+        \centering
+        \LARGE
+        \textbf{Thank you for your attention} \\
+        
+        \vspace{0.2cm} \Huge \ding{170} \large \\
+        
+        \vspace{1cm}
+  
+        \href{https://zkdl-camp.github.io/}{\raisebox{-.1em}{\hspace{.025em}\faIcon{globe}}\hspace{.325em}zkdl-camp.github.io} \\
+  
+        \href{https://github.com/ZKDL-Camp}{\raisebox{-.1em}{\hspace{.025em}\faIcon{github}}\hspace{.325em}github.com/ZKDL-Camp}
+        
+        \begin{center}
+            \includegraphics[width=0.15\textwidth]{images/logo.png}
+        \end{center}
+    \end{frame}
 \end{document}

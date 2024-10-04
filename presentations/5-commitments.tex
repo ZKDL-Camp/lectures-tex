@@ -1,61 +1,20 @@
-\documentclass[xcolor={usenames,dvipsnames}]{beamer}
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
+\documentclass{zkdl-presentation-template}
 
-% -- Including some standard packages --
-\usepackage{graphicx}
-\usepackage{soul}
-\usepackage{hyperref}
-\usepackage{colortbl}
-\usepackage{dsfont}
-\usepackage{soul}
-
-% -- Choosing theme --
-
-\usetheme{Boadilla}
-\usecolortheme{spruce}
-\setbeamercolor{alerted text}{fg=purple} % Making alerted text non-red
-
-% Tikz
-\usepackage{tikz,tikz-3dplot,tikz-cd,tkz-tab,tkz-euclide,pgf,pgfplots}
-\usetikzlibrary{matrix,positioning,fit,backgrounds,intersections}
-
-% -- Cross signs --
-\usepackage{pifont} % http://ctan.org/pkg/pifont
-\newcommand{\cmark}{\ding{51}}%
-\newcommand{\xmark}{\ding{55}}%
-\newcommand{\xopt}{\ding{48}}%
-
-% -- Custom commands --
-\DeclareMathOperator*{\argmax}{arg\,max}
-\DeclareMathOperator*{\argmin}{arg\,min}
-
-\title[Commitment schemes]{\textbf{Commitment schemes}}
+\title[Commitment Schemes]{\textbf{Commitment Schemes}}
 \author{Distributed Lab}
 \date{August 20, 2024}
-\titlegraphic{
-    \includegraphics[width=\textwidth]{images/banner_wide.png}
-}
-
-\expandafter\def\expandafter\insertshorttitle\expandafter{%
-  \insertshorttitle\hfill%
-  \insertframenumber\,/\,\inserttotalframenumber}
-
-\AtBeginSection[]{
-  \begin{frame}
-  \vfill
-  \centering
-  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
-    \usebeamerfont{title}\insertsectionhead\par%
-  \end{beamercolorbox}
-  \vfill
-  \end{frame}
-}
+\homepage{zkdl-camp.github.io}
+\github{ZKDL-Camp}
 
 \begin{document}
-	\frame {
-		\titlepage
-	}
+    \frame {
+        \tikz [remember picture,overlay]
+        \node at
+            ([yshift=1.5cm,xshift=-1.5cm]current page.south east) 
+            %or: (current page.center)
+            {\includegraphics[width=60pt]{images/logo.png}};
+        \titlepage
+    }
  
 	\begin{frame}{Plan}
         \tableofcontents
@@ -109,9 +68,9 @@
                 \end{enumerate}
             \end{enumerate}
         \end{definition}
-        \begin{alertblock}{Note}
-            Perfect hiding and perfect binding cannot be achived at the same time
-        \end{alertblock}    
+        \vspace{-12.5pt}
+
+        \textbf{Note:} Perfect hiding and perfect binding cannot be achived simultaneously.
     \end{frame}
 
     \section{Hash-based Commitments}
@@ -221,19 +180,17 @@
     \end{frame}
 
     \begin{frame}{Pedersen Commitment Aggregation}
+        Pedersen commitment has a significant advantage over hash-based commitments:
+        the former are additively homomorphic and thus can be accumulated. Consider two pairs $(m_1, r_1), (m_2, r_2)$.
+        
+        \vspace{-25pt}
+        \begin{align*}
+            c_1 &=[m_1]G + [r_1]U, \\
+            c_2 &= [m_2]G + [r_2]U, \\
+            c_{\text{agg}} &= c_1 + c_2 = [m_1 + m_2]G + [r_1 + r_2]U.
+        \end{align*}
+        \vspace{-25pt}
 
-        Pedersen commitment have some advantages compared to hash-based commitments.
-        Additively homomorphic property allows to accumulate multiple commitments into one.
-        Consider two pairs: $(m_1, r_1), (m_2, r_2)$.
-        
-        \begin{center}
-            $c_2 = [m_1]G + [r_1]U$,
-        
-            $c_2 = [m_2]G + [r_2]U$,
-        
-            $c_a = c_1 + c_2 = [m_1 + m_2]G + [r_1 + r_2]U$
-        \end{center}
-        
         This works for any number of commitments, so we can encode as many points as we like in a single one.
 
         \begin{figure}
@@ -315,7 +272,7 @@
         compute it using values $([\tau^0]G, [\tau^1]G, \ldots, [\tau^d]G)$.
     \end{frame}
     
-    \begin{frame}{KZGCommitment}
+    \begin{frame}{KZG Commitment}
     
         \textit{Prove an evaluation}. Given evaluation $p(x_0) = y_0$ compute proof $q(\tau)$,
     
@@ -336,13 +293,22 @@
         Polynomial commiment schemes such as KZG are used in zero knowledge proof system to encode circuit constraints as a polynomial, 
         so that verifier could check random points to ensure that the constraints are met.
     \end{frame}
-
     
-
-
-    
-	\begin{frame}{}
-      \centering \Large
-      \emph{Thanks for your attention!}
+    \begin{frame}[plain, standout]
+        \centering
+        \LARGE
+        \textbf{Thank you for your attention} \\
+        
+        \vspace{0.2cm} \Huge \ding{170} \large \\
+        
+        \vspace{1cm}
+  
+        \href{https://zkdl-camp.github.io/}{\raisebox{-.1em}{\hspace{.025em}\faIcon{globe}}\hspace{.325em}zkdl-camp.github.io} \\
+  
+        \href{https://github.com/ZKDL-Camp}{\raisebox{-.1em}{\hspace{.025em}\faIcon{github}}\hspace{.325em}github.com/ZKDL-Camp}
+        
+        \begin{center}
+            \includegraphics[width=0.15\textwidth]{images/logo.png}
+        \end{center}
     \end{frame}
 \end{document}
