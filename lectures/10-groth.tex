@@ -12,7 +12,7 @@ Now, suppose during the setup phase, we have a trusted party that generated a ra
     \mathsf{com}(L) \triangleq g^{L(\tau)} = g^{\sum_{i=0}^d L_i \tau^i} = \prod_{i=0}^d (g^{\tau^i})^{L_i},
 \end{equation*}
 
-and the same goes for $g^{R(\tau)}, g^{O(\tau)}, g^{H(\tau)}, g^{Z(\tau)}$. Now, given these give points, how can we verify that the polynomial $M(x) = L(x)R(x) - O(x)$ is correct? Well, first notice that the check is equivalent to
+and the same goes for $g^{R(\tau)}, g^{O(\tau)}, g^{H(\tau)}, g^{Z(\tau)}$. Now, with these points, how can we verify that the polynomial $M(x) = L(x)R(x) - O(x)$ is correct? Well, first notice that the check is equivalent to
 \begin{equation*}
     L(\tau)R(\tau) = Z(\tau)H(\tau) + O(\tau).
 \end{equation*}
@@ -226,7 +226,7 @@ Oof, that was a long fix! Let us come back to the new version of the SNARK proto
         \item \textbf{Outputs} prover parameters $\mathsf{pp}$ and verification parameters $\mathsf{vp}$:
         \begin{align*}
             \mathsf{pp} &\gets \big\{\{g^{\tau^i}\}_{i \in [d]}, \textcolor{green!50!black}{\{g^{L_i(\tau)}, g^{\alpha L_i(\tau)}, g^{R_i(\tau)}, g^{\alpha R_i(\tau)}}, \\ 
-            & \textcolor{green!50!black}{g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, g^{\beta_LL(\tau)+\beta_RR(\tau)+\beta_OO(\tau)}\}_{i \in [n]}}\big\} \\
+            & \textcolor{green!50!black}{g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, g^{\beta_LL_i(\tau)+\beta_RR_i(\tau)+\beta_OO_i(\tau)}\}_{i \in [n]}}\big\} \\
             \mathsf{vp} &\gets \big\{ g^{Z(\tau)}, g^{\alpha}, \textcolor{green!50!black}{g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, g^{\beta_O\gamma}, g^{\gamma}} \big\}
         \end{align*}
         \item \textbf{Deletes} aforementioned random scalars (toxic waste).
@@ -267,7 +267,7 @@ the prover $\mathcal{P}$ wants to convince the verifier $\mathcal{V}$ that he kn
 such that the circuit $\Circ(\mathbf{x}, \mathbf{w}) = 0$. Up until now, we have been using 
 the extended witness $\widetilde{\mathbf{w}}$ to represent the trace of computation. 
 However, we can split the witness into two parts: the first part $\mathbf{w}_{\text{mid}}$ --- intermediate witness 
-that contains the private witness $\mathbf{w}$ and intermediate variables values, and 
+that contains the private witness $R\mathbf{w}$ and intermediate variables values, and 
 the second part $\mathbf{w}_{\text{io}}$ --- input/output witness that contains public 
 statement information (e.g., $\mathbf{x}$). Suppose for vector $\widetilde{\mathbf{w}} = (\widetilde{w}_1,\dots,\widetilde{w}_n)$ 
 we pick out the set of indeces $\mathcal{I}_{\text{mid}} \subset [n]$ to represent the intermediate witness 
@@ -316,7 +316,7 @@ Now, let us formulate the updated SNARK protocol with the extended witness split
         \item \textbf{Outputs} prover parameters $\mathsf{pp}$ and verification parameters $\mathsf{vp}$:
         \begin{align*}
             \mathsf{pp} &\gets \big\{\{g^{\tau^i}\}_{i \in [d]}, \{g^{L_i(\tau)}, g^{\alpha L_i(\tau)}, g^{R_i(\tau)}, g^{\alpha R_i(\tau)}, \\ 
-            & g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, g^{\beta_LL(\tau)+\beta_RR(\tau)+\beta_OO(\tau)}\}_{\textcolor{green!50!black}{i \in \mathcal{I}_{\text{mid}}}}\big\} \\
+            & g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, g^{\beta_LL_i(\tau)+\beta_RR_i(\tau)+\beta_OO_i(\tau)}\}_{\textcolor{green!50!black}{i \in \mathcal{I}_{\text{mid}}}}\big\} \\
             \mathsf{vp} &\gets \big\{ g^{Z(\tau)}, g^{\alpha}, g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, g^{\beta_O\gamma}, g^{\gamma}, \textcolor{green!50!black}{ \{g^{L_i(\tau)}, g^{R_i(\tau)}, g^{O_i(\tau)}\}_{i \in \mathcal{I}_{\text{io}}} } \big\}
         \end{align*}
         \item \textbf{Deletes} aforementioned random scalars (toxic waste).
