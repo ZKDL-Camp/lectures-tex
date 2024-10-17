@@ -437,7 +437,7 @@
         \scriptsize
 
         \textbf{Trusted Setup: }
-        $\tau \xleftarrow{R} \mathbb{F} \textbf{,} \quad \{g^{\tau^i}\}_{i \in [d]}\textbf{,} \quad$ \textbf{delete}($\tau$).
+        $\tau \xleftarrow{R} \mathbb{F} \textbf{,} \quad \{g^{\tau^i}\}_{i \in [d]}\textbf{,} \quad g^{Z(\tau)} \textbf{,} \quad \textbf{delete}(\tau)$.
         \vspace{10pt}
 
         \tikzset{
@@ -502,7 +502,7 @@
         \scriptsize
 
         \textbf{Trusted Setup: }
-        $\tau \xleftarrow{R} \mathbb{F} \textbf{,} \quad \{g^{\tau^i}\}_{i \in [d]}\textbf{,} \quad$ \textbf{delete}($\tau$).
+        $\tau \xleftarrow{R} \mathbb{F} \textbf{,} \quad \{g^{\tau^i}\}_{i \in [d]}\textbf{,} \quad g^{Z(\tau)}\textbf{,}$ \textbf{delete}($\tau$).
         \vspace{10pt}
 
         \tikzset{
@@ -558,7 +558,7 @@
         \scriptsize
 
         \textbf{Trusted Setup: }
-        $\tau, \textcolor{green!50!black}{\alpha} \xleftarrow{R} \mathbb{F} \textbf{,} \quad \{ \{g^{\tau^i}\}_{i \in [d]}\textbf{,} \quad \textcolor{green!50!black}{\{g^{\alpha \tau^i}\}_{i \in [d]}} \} \textbf{,} \quad$ \textbf{delete}($\tau, \textcolor{green!50!black}{\alpha}$).
+        $\tau, \textcolor{green!50!black}{\alpha} \xleftarrow{R} \mathbb{F} \textbf{,} \quad \{ \{g^{\tau^i}, \textcolor{green!50!black}{g^{\alpha \tau^i}}\}_{i \in [d]} \} \textbf{,} \quad \{g^{Z(\tau)}, \textcolor{green!50!black}{g^{\alpha}}\}\textbf{,} \quad \textbf{delete}(\tau, \textcolor{green!50!black}{\alpha})$.
         \vspace{10pt}
 
         \tikzset{
@@ -583,23 +583,23 @@
                                 KZG commitments: 
                                 \vspace{-8pt}
                                 \begin{align*}
-                                    \pi_L &\gets g^{L(\tau)}, \quad &\pi_L' &\gets g^{\alpha L(\tau)},\\[-2pt]
-                                    \pi_R &\gets g^{R(\tau)}, \quad &\pi_R' &\gets g^{\alpha R(\tau)},\\[-2pt]
-                                    \pi_O &\gets g^{O(\tau)}, \quad &\pi_O' &\gets g^{\alpha O(\tau)},\\[-2pt]
-                                    \pi_H &\gets g^{H(\tau)}, \quad &\pi_H' &\gets g^{\alpha H(\tau)}.
+                                    \pi_L &\gets g^{L(\tau)}, \quad & \textcolor{green!50!black}{\pi_L'} &\gets \textcolor{green!50!black}{g^{\alpha L(\tau)}},\\[-2pt]
+                                    \pi_R &\gets g^{R(\tau)}, \quad & \textcolor{green!50!black}{\pi_R'} &\gets g^{\alpha R(\tau)},\\[-2pt]
+                                    \pi_O &\gets g^{O(\tau)}, \quad & \textcolor{green!50!black}{\pi_O'} &\gets g^{\alpha O(\tau)},\\[-2pt]
+                                    \pi_H &\gets g^{H(\tau)}, \quad & \textcolor{green!50!black}{\pi_H'} &\gets g^{\alpha H(\tau)}.
                                 \end{align*}
                             }}
                         \end{itemize}}
                     \end{minipage}
                 };}
             
-                \onslide<4->{\draw[arrow] (prover) -- (verifier) node[midway, above=1mm] {$\boldsymbol{\pi} = (\pi_L,\pi_R,\pi_O,\pi_H)$};}
+                \onslide<4->{\draw[arrow] (prover) -- (verifier) node[midway, above=1mm] {$\boldsymbol{\pi} = (\pi_L,\pi_R,\pi_O,\pi_H,\textcolor{green!50!black}{\pi_L',\pi_R',\pi_O',\pi_H'})$};}
 
                 \onslide<5->{\node[inner sep=0pt, align=center] (vdata) at (5, -0.6) {
                     \begin{minipage}{4cm}
                         {\tiny\begin{itemize}[label=\ding{51}]
                             \item $e(\pi_L, \pi_R) ==\\ e(\mathsf{com}(Z), \pi_H) \cdot e(\pi_O, g)$.
-                            \onslide<6->{\item {
+                            \onslide<6->{\item \textcolor{green!50!black}{
                                 Proof of Exponent:
                                 \vspace{-8pt}
                                 \begin{align*}
@@ -675,19 +675,239 @@
     \end{frame}
 
     \begin{frame}{Witness Consistency Check}
-        \begin{block}{Problem}
-            Prover isn't forced to use the same witness while calculating commitments.
-        \end{block}
-        
+        \pause
         To prove that the same $\mathbf{w}$ is used in all commitments, we need some ``checksum''
         term that will somehow combine all polynomials $L(x)$, $R(x)$, and $O(x)$ with the witness
         $\mathbf{w}$.
 
         \pause
-        Hmm... Let's introduce one more coefficient:
+        We can do so by proving the next simple statement:
+        \vspace{-5pt}
         \begin{equation*}
-            \beta \xleftarrow{R} \mathbb{F}.
+            g^{L(\tau) + R(\tau) + O(\tau)} = \pause \prod_{i=1}^n {\left(g^{L_i(\tau) + R_i(\tau) + O_i(\tau)}\right)}^{w_i}
+            \vspace{-5pt}
         \end{equation*}
+        \pause
+        And we already know how to do that - POE!
+    \end{frame}
+
+    \begin{frame}{Witness Consistency Check}
+        Let's introduce one more coefficient...
+        \vspace{-5pt}
+        \begin{equation*}
+            \beta \xleftarrow{R} \mathbb{F}
+            \vspace{-5pt}
+        \end{equation*}
+        \pause
+        Extended trusted setup contains additional values:
+        \vspace{-5pt}
+        \begin{equation*}
+            g^{\beta}, \quad \{g^{\beta(L_i(\tau) + R_i(\tau) + O_i(\tau))}\}_{i \in \left[ n \right]}
+            \vspace{-5pt}
+        \end{equation*}
+        \pause
+        Prover needs to calculate $\pi_{\beta}$:
+        \vspace{-5pt}
+        \begin{equation*}
+            \pi_{\beta} \gets g^{\beta(L(\tau) + R(\tau) + O(\tau))} = \pause \prod_{i=1}^{n} g^{\beta(L_i(\tau) + R_i(\tau) + O_i(\tau))}g^{w_i}\
+        \end{equation*}
+        \pause
+        And easy check for verifier:
+        \vspace{-5pt}
+        \begin{equation*}
+            e(\pi_L\pi_R\pi_O, g^{\beta}) = e(\pi_{\beta}, g).
+        \end{equation*}
+    \end{frame}
+
+    \begin{frame}{One more time... that doesn't work}
+        If the witness is consistent, the following condition must hold:
+        \vspace{-3pt}
+        {\small \begin{equation*}
+            (w_{L,i}L_i(\tau) + w_{R,i}R_i(\tau) + w_{O,i}O_i(\tau))\beta = w_i\beta(L_i(\tau) + R_i(\tau) + O_i(\tau)) \quad \forall i \in [n]
+            \vspace{-10pt}
+        \end{equation*}}
+        
+        \pause
+        But, what if $L_i \equiv R_i$. Let's call them $q$, thus:
+        \vspace{-3pt}
+        \begin{equation*}
+            (w_{L,i} + w_{R,i})q + w_{O,i}O_i(\tau)= w_{\beta,i}(2q + O_i(\tau)) \quad \forall i \in [n]
+            \vspace{-10pt}
+        \end{equation*}
+
+        \pause
+        The adversary can choose $w_{L,i}$, $w_{R,i}$ and $w_{O,i}$ such that:
+        \vspace{-5pt}
+        \begin{equation*}
+            w_i := w_{O,i} \quad \text{and} \quad w_{L,i}=2w_{O,i} - w_{R,i}
+            \vspace{-5pt}
+        \end{equation*} 
+
+        \pause
+        \begin{example}
+            \begin{equation*}
+                w = w_O = 5, \quad w_L = 7, \quad w_R = 3
+                \vspace{-25pt}
+            \end{equation*}
+
+            \begin{align*}
+                (7 + 3)q + 5O(\tau) = 5(2q + O(\tau)) \\
+                10q + 5O(\tau) = 10q + 5O(\tau)
+            \end{align*}
+        \end{example}
+    \end{frame}
+
+    \begin{frame}{More coefficients!}
+        The main problem is that if $R_i \equiv L_i$ then $\beta R_i \equiv \beta L_i$.\pause
+
+        Let's fix that by introducing a separate $\beta$ coefficients for $L$, $R$ and $O$.
+        \begin{equation*}
+            \left( \beta_L, \beta_R, \beta_O \right) \xleftarrow{R} \mathbb{F}^3
+            \vspace{-5pt}
+        \end{equation*}
+        
+        \pause
+        Therefore, $\beta_R R_i \neq \beta_L L_i$ even if $R_i \equiv L_i$, so the previous hack doesn't work.\pause
+
+        So, finally, the trusted setup is updated with:
+        \vspace{-5pt}
+        \begin{equation*}
+            g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, \{g^{\left( \beta_LL_i(\tau) + \beta_RR_i(\tau) + \beta_OO_i(\tau) \right)}\}_{i \in \left[ n \right]}
+            \vspace{-5pt}
+        \end{equation*}
+
+        \pause
+        Verification:
+        \vspace{-5pt}
+        \begin{equation*}
+            e(\pi_L, g^{\beta_L}) \cdot e(\pi_R, g^{\beta_R}) \cdot e(\pi_O, g^{\beta_O}) = e(\pi_{\beta}, g)
+        \end{equation*}
+    \end{frame}
+
+    \begin{frame}{Even more coefficients!}
+        As the adversary has an access to the public $g^{\beta_L}$, $g^{\beta_R}$, $g^{\beta_O}$ he still can cheat verifier by calculating modified $\pi_{\beta}$.
+
+        \begin{example}
+            \small
+            Consider a constraint $w_1 \times w_1 = w_2$. Let's try to assign $2$ and $5$ for $w_1$ in a single constraint. As $2 \times 5 = 10$, the $w_2$ should contains value $10$.
+            \vspace{-5pt}
+            \begin{equation*}
+                \mathbf{w} = (w_1, w_2) = (2, 10)
+                \vspace{-5pt}
+            \end{equation*}
+            \pause
+            The next QAP can be built:
+            \vspace{-5pt}
+            \begin{align*}
+                L(x) &= 2L_1(x) + 10L_2(x) \\
+                R(x) &= 2R_1(x) + 3 + 10R_2(x) \\
+                O(x) &= 2O_1(x) + 10O_2(x)
+            \end{align*}
+            \pause
+            Compute $\pi_{\beta}$ as:
+            \vspace{-5pt}
+            \begin{equation*}
+                (g^{\left( \beta_LL_1(\tau) + \beta_RR_1(\tau) + \beta_OO_1(\tau) \right)})^2 \cdot (g^{\beta_R})^3 \cdot (g^{\left( \beta_LL_2(\tau) + \beta_RR_2(\tau) + \beta_OO_2(\tau) \right)})^{10} 
+            \end{equation*}
+        \end{example}
+    \end{frame}
+
+    \begin{frame}{Even more coefficients!}
+        To prevent this, let's introduce... one more coefficient!
+        \vspace{-5pt}
+
+        \begin{equation*}
+            \gamma \xleftarrow{R} \mathbb{F}
+            \vspace{-5pt}
+        \end{equation*}
+
+        \pause
+        So, finally... the trusted setup is updated with:
+        \vspace{-5pt}
+        \begin{equation*}
+            g^{\gamma}, g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, \{g^{\left( \beta_LL_i(\tau) + \beta_RR_i(\tau) + \beta_OO_i(\tau) \right)}\}_{i \in \left[ n \right]}
+            \vspace{-5pt}
+        \end{equation*}
+
+        \pause
+        Proving process isn't changed, unlike verification:
+        \begin{equation*}
+            e(\pi_L, g^{\beta_L\gamma}) \cdot e(\pi_R, g^{\beta_R\gamma}) \cdot e(\pi_O, g^{\beta_O\gamma}) = e(\pi_{\beta}, g^{\gamma})
+        \end{equation*}
+
+        That makes it unfeasible to cheat.
+    \end{frame}
+
+    \begin{frame}{Sound SNARK Protocol}
+        \scriptsize
+
+        \textbf{Trusted Setup: }
+        $\tau, \alpha, \textcolor{green!50!black}{\beta_L, \beta_R, \beta_O, \gamma} \xleftarrow{R} \mathbb{F} \textbf{,} \quad \{ \{g^{\tau^i}, g^{\alpha \tau^i} \}_{i \in [d]}\textbf{,} \quad \textcolor{green!50!black}{\{g^{\left( \beta_LL_i(\tau) + \beta_RR_i(\tau) + \beta_OO_i(\tau) \right)}\}_{i \in \left[ n \right]}} \} \textbf{,}$
+        $\{ g^{Z(\tau)}, g^{\alpha}, \textcolor{green!50!black}{g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, g^{\beta_O\gamma}, g^{\gamma}}\}\textbf{,} \quad \textbf{delete}(\tau, \alpha, \textcolor{green!50!black}{\beta_L, \beta_R, \beta_O, \gamma})$.
+        \vspace{10pt}
+
+        \tikzset{
+            arrow/.style={-latex, ultra thick}
+        }
+
+        \begin{center}
+            \begin{tikzpicture}
+                \node[inner sep=0pt, align=center] (prover) at (-3.5, -3) {
+                    \includegraphics[width=2cm]{images/common/prover.png}\\Prover $\mathcal{P}$
+                };
+
+                \node[inner sep=0pt, align=center] (verifier) at (4, -3) {
+                    \includegraphics[width=2cm]{images/common/verifier.png}\\Verifier $\mathcal{V}$
+                };
+                
+                \onslide<2->{\node[inner sep=0pt, align=center] (pdata) at (-3, 0) {
+                    \begin{minipage}{4cm}
+                        {\tiny\begin{itemize}[label=\ding{51}]
+                            \item $H(x) = \frac{L(x) \times R(x) - O(x)}{Z(x)}$.
+                            \onslide<3->{\item {
+                                KZG commitments: 
+                                \vspace{-8pt}
+                                \begin{align*}
+                                    \pi_L &\gets g^{L(\tau)}, \quad &\pi_L' &\gets g^{\alpha L(\tau)},\\[-2pt]
+                                    \pi_R &\gets g^{R(\tau)}, \quad &\pi_R' &\gets g^{\alpha R(\tau)},\\[-2pt]
+                                    \pi_O &\gets g^{O(\tau)}, \quad &\pi_O' &\gets g^{\alpha O(\tau)},\\[-2pt]
+                                    \pi_H &\gets g^{H(\tau)}, \quad &\pi_H' &\gets g^{\alpha H(\tau)}.
+                                \end{align*}
+                                \vspace{-16pt}
+                            }}
+                            \onslide<4->{\item \textcolor{green!50!black}{
+                                \vspace{-18pt}
+                                $\textcolor{green!50!black}{\pi_{\beta} \gets g^{\beta_LL(\tau) + \beta_RR(\tau) + \beta_OO(\tau)}}$
+                            }}
+                        \end{itemize}}
+                    \end{minipage}
+                };}
+            
+                \onslide<5->{\draw[arrow] (prover) -- (verifier) node[midway, above=1mm] {$\boldsymbol{\pi} = (\pi_L,\pi_R,\pi_O,\pi_H,\pi_L',\pi_R',\pi_O',\pi_H',\textcolor{green!50!black}{\pi_{\beta}})$};}
+
+                \onslide<6->{\node[inner sep=0pt, align=center] (vdata) at (5, -0.2) {
+                    \begin{minipage}{5cm}
+                        {\tiny\begin{itemize}[label=\ding{51}]
+                            \item $e(\pi_L, \pi_R) ==\\ e(\mathsf{com}(Z), \pi_H) \cdot e(\pi_O, g)$.
+                            \onslide<7->{\item {
+                                Proof of Exponent:
+                                \vspace{-8pt}
+                                \begin{align*}
+                                    e(\pi_L, g^{\alpha}) &= e(\pi_L', g), \qquad\qquad\qquad\\[-2pt] %quads are to adjust spacing on the slide
+                                    e(\pi_R, g^{\alpha}) &= e(\pi_R', g), \\[-2pt]
+                                    e(\pi_O, g^{\alpha}) &= e(\pi_O', g), \\[-2pt]
+                                    e(\pi_H, g^{\alpha}) &= e(\pi_H', g).
+                                \end{align*}
+                                \vspace{-16pt}
+                            }}
+                            \onslide<8->{\item \textcolor{green!50!black}{
+                                $e(\pi_L, g^{\gamma\beta_L}) \cdot e(\pi_R, g^{\gamma\beta_R}) \cdot \\ \cdot e(\pi_O, g^{\gamma\beta_O}) = e(\pi_{\beta}, g^{\gamma})$
+                            }}
+                        \end{itemize}}
+                    \end{minipage}
+                };}
+            \end{tikzpicture}
+        \end{center}
     \end{frame}
 
     \begin{frame}[plain, standout]
