@@ -638,8 +638,34 @@ Let us see the complete specification of the Pinocchio Protocol.
 
 \subsubsection{Groth16 Protocol}
 
-\begin{center}
-    To be done
-\end{center}
+Finally, Groth16 allows to reduce the number of pairings \textbf{down to 3}! This is done through a technique called \textbf{Generic Group Model} (GGM for short). Simply put, GGM allows the adversary to only make oracle requests to compute the group operations. For example, having a set $\{g^{\alpha R_i(\tau)}\}_{i \in [d]}$, adversary can compute only linear combinations of these values. In the particular case of Groth16, instead of considering $L_i(x)$, $R_i(x)$, and $O_i(x)$ separately, we construct their linear combinations as $Q_i(x) := \beta L_i(x) + \alpha R_i(x) + O_i(x)$, where $\alpha$ and $\beta$ are toxic parameters.
+
+Let us now concretely describe the Groth16 construction.
+
+\textcolor{gray!75!black}{\textbf{Asymmetric Pairing.}} One change which was made in Groth16 is using the asymmetric pairing function $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ over groups $\mathbb{G}_1$ and $\mathbb{G}_2$ (for more details, see \Cref{section:ecpairing}). Suppose respective group generators are $g_1 \in \mathbb{G}_1$ and $g_2 \in \mathbb{G}_2$. The primary reason for this is that calculating the pairing in asymmetric setting is more efficient than in symmetric setting. Other than that, Groth16 can be easily formulated using symmetric pairings.
+
+\textcolor{blue!75!gray}{\textbf{Setup Procedure.}} In Groth16, we need only five random scalars: $\alpha,\beta,\gamma,\delta,\tau \xleftarrow{R} \mathbb{F}$. Now, the prover key $\mathsf{pk}$ looks as follows:
+\begin{equation*}
+    \mathsf{pp} \gets \left(g_1^{\alpha},g_1^{\beta},g_1^{\delta},\left\{g_1^{\tau^i},\frac{\beta L_i(\tau) + \alpha R_i(\tau) + O_i(\tau)}{\gamma}, \frac{\tau^i Z(\tau)}{\delta}\right\}_{i \in [n]},g_2^{\beta}, g_2^{\delta}, g_2^{\gamma}, \{g_2^{\tau^i}\}_{i \in [d]}\right)
+\end{equation*}
+
+\textcolor{green!50!black}{\textbf{Proving.}} Sample random $\delta_L,\delta_R \xleftarrow{R} \mathbb{F}$ and compute the following values:
+\begin{gather*}
+    \pi_L \gets g_1^{\alpha + \sum_{i=1}^n w_iL_i(\tau) + \delta_L\delta}, \quad \pi_R \gets g_2^{\beta + \sum_{i=0}^n w_iR_i(\tau) + \delta_R\delta}, \quad \pi_O \gets g_1^{\frac{Q_{\text{mid}}(\tau)+H(\tau)Z(\tau)}{\delta} + L\delta_R + R\delta_L - \delta_L\delta_R\delta},
+\end{gather*}
+
+where we denoted $Q_{\text{mid}} := \sum_{i \in \mathcal{I}_{\text{mid}}}w_i(\beta L_i(\tau) + \alpha R_i(\tau) + O_i(\tau))$.
+
+\textcolor{purple}{\textbf{Verification.}} The verifier first calculates the following value:
+\begin{equation*}
+    \pi_{\text{io}} \gets g_1^{\sum_{i \in \mathcal{I}_{\text{io}}}w_i(\beta L_i(\tau) + \alpha R_i(\tau) + O_i(\tau))/\gamma},
+\end{equation*}
+
+and then checks the following single condition:
+\begin{equation*}
+    e(\pi_L, \pi_R) = e(g_1^{\alpha}, g_2^{\beta})e(\pi_{\text{io}},g_2^{\gamma})e(\pi_O,g_2^{\delta})
+\end{equation*}
+
+Note that $e(g_1^{\alpha}, g_2^{\beta})$ can be additionally hard-coded in the verifier, thus reducing the number of pairings to 3. Finally, the proof's size is now reduced to 3 group elements: two from $\mathbb{G}_1$, and one from $\mathbb{G}_2$.
 
 \end{document}
