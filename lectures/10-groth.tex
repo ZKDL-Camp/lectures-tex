@@ -12,7 +12,7 @@ Now, suppose during the setup phase, we have a trusted party that generated a ra
     \mathsf{com}(L) \triangleq g^{L(\tau)} = g^{\sum_{i=0}^d L_i \tau^i} = \prod_{i=0}^d (g^{\tau^i})^{L_i},
 \end{equation*}
 
-and the same goes for $g^{R(\tau)}, g^{O(\tau)}, g^{H(\tau)}, g^{Z(\tau)}$. Now, given these give points, how can we verify that the polynomial $M(x) = L(x)R(x) - O(x)$ is correct? Well, first notice that the check is equivalent to
+and the same goes for $g^{R(\tau)}, g^{O(\tau)}, g^{H(\tau)}, g^{Z(\tau)}$. Now, with these points, how can we verify that the polynomial $M(x) = L(x)R(x) - O(x)$ is correct? Well, first notice that the check is equivalent to
 \begin{equation*}
     L(\tau)R(\tau) = Z(\tau)H(\tau) + O(\tau).
 \end{equation*}
@@ -226,7 +226,7 @@ Oof, that was a long fix! Let us come back to the new version of the SNARK proto
         \item \textbf{Outputs} prover parameters $\mathsf{pp}$ and verification parameters $\mathsf{vp}$:
         \begin{align*}
             \mathsf{pp} &\gets \big\{\{g^{\tau^i}\}_{i \in [d]}, \textcolor{green!50!black}{\{g^{L_i(\tau)}, g^{\alpha L_i(\tau)}, g^{R_i(\tau)}, g^{\alpha R_i(\tau)}}, \\ 
-            & \textcolor{green!50!black}{g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, g^{\beta_LL(\tau)+\beta_RR(\tau)+\beta_OO(\tau)}\}_{i \in [n]}}\big\} \\
+            & \textcolor{green!50!black}{g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, g^{\beta_LL_i(\tau)+\beta_RR_i(\tau)+\beta_OO_i(\tau)}\}_{i \in [n]}}\big\} \\
             \mathsf{vp} &\gets \big\{ g^{Z(\tau)}, g^{\alpha}, \textcolor{green!50!black}{g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, g^{\beta_O\gamma}, g^{\gamma}} \big\}
         \end{align*}
         \item \textbf{Deletes} aforementioned random scalars (toxic waste).
@@ -267,7 +267,7 @@ the prover $\mathcal{P}$ wants to convince the verifier $\mathcal{V}$ that he kn
 such that the circuit $\Circ(\mathbf{x}, \mathbf{w}) = 0$. Up until now, we have been using 
 the extended witness $\widetilde{\mathbf{w}}$ to represent the trace of computation. 
 However, we can split the witness into two parts: the first part $\mathbf{w}_{\text{mid}}$ --- intermediate witness 
-that contains the private witness $\mathbf{w}$ and intermediate variables values, and 
+that contains the private witness $R\mathbf{w}$ and intermediate variables values, and 
 the second part $\mathbf{w}_{\text{io}}$ --- input/output witness that contains public 
 statement information (e.g., $\mathbf{x}$). Suppose for vector $\widetilde{\mathbf{w}} = (\widetilde{w}_1,\dots,\widetilde{w}_n)$ 
 we pick out the set of indeces $\mathcal{I}_{\text{mid}} \subset [n]$ to represent the intermediate witness 
@@ -316,7 +316,7 @@ Now, let us formulate the updated SNARK protocol with the extended witness split
         \item \textbf{Outputs} prover parameters $\mathsf{pp}$ and verification parameters $\mathsf{vp}$:
         \begin{align*}
             \mathsf{pp} &\gets \big\{\{g^{\tau^i}\}_{i \in [d]}, \{g^{L_i(\tau)}, g^{\alpha L_i(\tau)}, g^{R_i(\tau)}, g^{\alpha R_i(\tau)}, \\ 
-            & g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, g^{\beta_LL(\tau)+\beta_RR(\tau)+\beta_OO(\tau)}\}_{\textcolor{green!50!black}{i \in \mathcal{I}_{\text{mid}}}}\big\} \\
+            & g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, g^{\beta_LL_i(\tau)+\beta_RR_i(\tau)+\beta_OO_i(\tau)}\}_{\textcolor{green!50!black}{i \in \mathcal{I}_{\text{mid}}}}\big\} \\
             \mathsf{vp} &\gets \big\{ g^{Z(\tau)}, g^{\alpha}, g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, g^{\beta_O\gamma}, g^{\gamma}, \textcolor{green!50!black}{ \{g^{L_i(\tau)}, g^{R_i(\tau)}, g^{O_i(\tau)}\}_{i \in \mathcal{I}_{\text{io}}} } \big\}
         \end{align*}
         \item \textbf{Deletes} aforementioned random scalars (toxic waste).
@@ -638,8 +638,34 @@ Let us see the complete specification of the Pinocchio Protocol.
 
 \subsubsection{Groth16 Protocol}
 
-\begin{center}
-    To be done
-\end{center}
+Finally, Groth16 allows to reduce the number of pairings \textbf{down to 3}! This is done through a technique called \textbf{Generic Group Model} (GGM for short). Simply put, GGM allows the adversary to only make oracle requests to compute the group operations. For example, having a set $\{g^{\alpha R_i(\tau)}\}_{i \in [d]}$, adversary can compute only linear combinations of these values. In the particular case of Groth16, instead of considering $L_i(x)$, $R_i(x)$, and $O_i(x)$ separately, we construct their linear combinations as $Q_i(x) := \beta L_i(x) + \alpha R_i(x) + O_i(x)$, where $\alpha$ and $\beta$ are toxic parameters.
+
+Let us now concretely describe the Groth16 construction.
+
+\textcolor{gray!75!black}{\textbf{Asymmetric Pairing.}} One change which was made in Groth16 is using the asymmetric pairing function $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ over groups $\mathbb{G}_1$ and $\mathbb{G}_2$ (for more details, see \Cref{section:ecpairing}). Suppose respective group generators are $g_1 \in \mathbb{G}_1$ and $g_2 \in \mathbb{G}_2$. The primary reason for this is that calculating the pairing in asymmetric setting is more efficient than in symmetric setting. Other than that, Groth16 can be easily formulated using symmetric pairings.
+
+\textcolor{blue!75!gray}{\textbf{Setup Procedure.}} In Groth16, we need only five random scalars: $\alpha,\beta,\gamma,\delta,\tau \xleftarrow{R} \mathbb{F}$. Now, the prover key $\mathsf{pk}$ looks as follows:
+\begin{equation*}
+    \mathsf{pp} \gets \left(g_1^{\alpha},g_1^{\beta},g_1^{\delta},\left\{g_1^{\tau^i},\frac{\beta L_i(\tau) + \alpha R_i(\tau) + O_i(\tau)}{\gamma}, \frac{\tau^i Z(\tau)}{\delta}\right\}_{i \in [n]},g_2^{\beta}, g_2^{\delta}, g_2^{\gamma}, \{g_2^{\tau^i}\}_{i \in [d]}\right)
+\end{equation*}
+
+\textcolor{green!50!black}{\textbf{Proving.}} Sample random $\delta_L,\delta_R \xleftarrow{R} \mathbb{F}$ and compute the following values:
+\begin{gather*}
+    \pi_L \gets g_1^{\alpha + \sum_{i=1}^n w_iL_i(\tau) + \delta_L\delta}, \quad \pi_R \gets g_2^{\beta + \sum_{i=0}^n w_iR_i(\tau) + \delta_R\delta}, \quad \pi_O \gets g_1^{\frac{Q_{\text{mid}}(\tau)+H(\tau)Z(\tau)}{\delta} + L\delta_R + R\delta_L - \delta_L\delta_R\delta},
+\end{gather*}
+
+where we denoted $Q_{\text{mid}} := \sum_{i \in \mathcal{I}_{\text{mid}}}w_i(\beta L_i(\tau) + \alpha R_i(\tau) + O_i(\tau))$.
+
+\textcolor{purple}{\textbf{Verification.}} The verifier first calculates the following value:
+\begin{equation*}
+    \pi_{\text{io}} \gets g_1^{\sum_{i \in \mathcal{I}_{\text{io}}}w_i(\beta L_i(\tau) + \alpha R_i(\tau) + O_i(\tau))/\gamma},
+\end{equation*}
+
+and then checks the following single condition:
+\begin{equation*}
+    e(\pi_L, \pi_R) = e(g_1^{\alpha}, g_2^{\beta})e(\pi_{\text{io}},g_2^{\gamma})e(\pi_O,g_2^{\delta})
+\end{equation*}
+
+Note that $e(g_1^{\alpha}, g_2^{\beta})$ can be additionally hard-coded in the verifier, thus reducing the number of pairings to 3. Finally, the proof's size is now reduced to 3 group elements: two from $\mathbb{G}_1$, and one from $\mathbb{G}_2$.
 
 \end{document}

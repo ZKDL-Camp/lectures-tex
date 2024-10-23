@@ -22,6 +22,7 @@
 \RequirePackage{hyperref}
 \RequirePackage{colortbl}
 \RequirePackage{dsfont}
+\RequirePackage{extarrows}
 
 % --- Tikz ---
 \RequirePackage{tikz}
