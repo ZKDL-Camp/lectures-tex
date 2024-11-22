@@ -9,6 +9,9 @@
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 
+% --- Listing settings ---
+\RequirePackage{listings, ../listings-circom}
+
 % --- Setting the theme ---
 \usetheme{altarguelles}
 \setbeamertemplate{sections/subsections in toc}[square]

@@ -1,7 +1,6 @@
 \documentclass{zkdl-presentation-template}
-
-\usepackage{changepage}
-\usepackage{cancel}
+\usepackage{blkarray}
+\usepackage{blkarray}
 
 \title[Circom]{\textbf{Kek Circom}}
 \author{Distributed Lab}
@@ -13,8 +12,8 @@
     \frame {
         \tikz [remember picture,overlay]
         \node at
-            ([yshift=1.5cm,xshift=-1.5cm]current page.south east)
-            %or: (current page.center)
+        ([yshift=1.5cm,xshift=-1.5cm]current page.south east)
+    %or: (current page.center)
             {\includegraphics[width=60pt]{images/logo.png}};
 
         \titlepage
@@ -24,39 +23,165 @@
         \tableofcontents
     \end{frame}
 
+
     \section{Introduction}
-    \begin{frame}{Introduction}
-        \begin{itemize}
-            \item Circom is a DSL for writing circuits.
-            \item It is used to create circuits for zk-SNARKs.
-            \item It is a part of the zk-SNARK toolkit.
-        \end{itemize}
+
+    \begin{frame}{Why ZK?}
+        \pause
+
+        \begin{block}{Why do we need ZK?}
+            \begin{enumerate}
+                \item Solution to privacy
+                \item Solution to scalability
+            \end{enumerate}
+        \end{block}
+
+        \pause
+
+        \begin{example}
+            \begin{enumerate}
+                \item \textit{I know the private key that corresponds to this public key}
+                \item \textit{I know a private key that corresponds to a public key from this list}
+                \item \textit{I know the preimage of this hash value}
+                \item \textit{This is the hash of a blockchain block that does not produce negative balances}
+            \end{enumerate}
+        \end{example}
     \end{frame}
 
-    \begin{frame}[fragile]{Code Snippet}
-        \begin{lstlisting}[language=Python, numbers=none, autogobble=true, xleftmargin=10pt]
-        // LICENSE: MIT
-        pragma circom 2.1.6;
-        
-        include "templates/IdentityAuth.circom";
-        
-        component main = IdentityAuth();
+    \begin{frame}{Using ZKP}
+        \only<1>{\includegraphics[width=\linewidth]{images/lecture_11/process_start}}
+        \only<2>{\includegraphics[width=\linewidth]{images/lecture_11/process_1}}
+        \only<3>{\includegraphics[width=\linewidth]{images/lecture_11/process_2}}
+        \only<4>{\includegraphics[width=\linewidth]{images/lecture_11/process_3}}
+        \only<5>{\includegraphics[width=\linewidth]{images/lecture_11/process_4}}
+        \only<6>{\includegraphics[width=\linewidth]{images/lecture_11/process_5}}
+        \only<7>{\includegraphics[width=\linewidth]{images/lecture_11/process_6}}
+        \only<8>{\includegraphics[width=\linewidth]{images/lecture_11/process_7}}
+        \only<9>{\includegraphics[width=\linewidth]{images/lecture_11/process_8}}
+        \only<10>{\includegraphics[width=\linewidth]{images/lecture_11/process_9}}
+        \only<11>{\includegraphics[width=\linewidth]{images/lecture_11/process_10}}
+        \only<12>{\includegraphics[width=\linewidth]{images/lecture_11/process_end}}
+    \end{frame}
+
+    \begin{frame}{Toolchain}
+        \only<1>{\includegraphics[width=\linewidth]{images/lecture_11/flow_start}}
+        \only<2>{\includegraphics[width=\linewidth]{images/lecture_11/flow_1}}
+        \only<3>{\includegraphics[width=\linewidth]{images/lecture_11/flow_2}}
+        \only<4>{\includegraphics[width=\linewidth]{images/lecture_11/flow_3}}
+        \only<5>{\includegraphics[width=\linewidth]{images/lecture_11/flow_end}}
+    \end{frame}
+
+    \section{Circom}
+
+    \begin{frame}{It looks good, as long as all I need is to look at it.}
+        \scriptsize
+
+        \textbf{Trusted Setup: }
+        $\tau, \alpha, \beta_L, \beta_R, \beta_O, \gamma \xleftarrow{R} \mathbb{F} \textbf{,} \quad \{ \{g^{\tau^i}, g^{\alpha \tau^i} \}_{i \in [d]}\textbf{,} \quad \{\textcolor{black!50!black}{g^{\beta_LL_i(\tau)}, g^{\beta_RR_i(\tau)}, g^{\beta_OO_i(\tau)}}\}_{i \in \left[ n \right]} \} \textbf{,}$
+        $\{ g^{Z(\tau)}, g^{\alpha}, g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, g^{\beta_O\gamma}, g^{\gamma}\}\textbf{,} \quad \textbf{delete}(\tau, \alpha, \beta_L, \beta_R, \beta_O, \gamma)$.
+        \vspace{10pt}
+
+        \tikzset{
+            arrow/.style={-latex, ultra thick}
+        }
+
+        \begin{center}
+            \begin{tikzpicture}
+                \node[inner sep=0pt, align=center] (prover) at (-3.5, -3) {
+                    \includegraphics[width=2cm]{images/common/prover.png}\\Prover $\mathcal{P}$
+                };
+
+                \node[inner sep=0pt, align=center] (verifier) at (4, -3) {
+                    \includegraphics[width=2cm]{images/common/verifier.png}\\Verifier $\mathcal{V}$
+                };
+
+                \node[inner sep=0pt, align=center] (pdata) at (-3, 0) {
+                    \begin{minipage}{4cm}
+                    {\tiny\begin{itemize}[label=\ding{51}]
+                              \item $H(x) = \frac{L(x) \times R(x) - O(x)}{Z(x)}$.
+                              \item {
+                                  Sample $\delta_L,\delta_R,\delta_O \xleftarrow{R} \mathbb{F}$, compute:
+                                  \vspace{-8pt}
+                                  \begin{align*}
+                                      \pi_L \gets g^{L(\tau)}\textcolor{black!50!black}{(g^{Z(\tau)})^{\delta_L}}, \pi_L' \gets g^{\alpha L(\tau)}\textcolor{black!50!black}{(g^{\alpha Z(\tau)})^{\delta_L}},\\[-2pt]
+                                      \pi_R \gets g^{R(\tau)}\textcolor{black!50!black}{(g^{Z(\tau)})^{\delta_R}}, \pi_R' \gets g^{\alpha R(\tau)}\textcolor{black!50!black}{(g^{\alpha Z(\tau)})^{\delta_R}},\\[-2pt]
+                                      \pi_O \gets g^{O(\tau)}\textcolor{black!50!black}{(g^{Z(\tau)})^{\delta_O}}, \pi_O' \gets g^{\alpha O(\tau)}\textcolor{black!50!black}{(g^{\alpha Z(\tau)})^{\delta_O}},\\[-2pt]
+                                      \pi_H \gets g^{H(\tau)}\textcolor{black!50!black}{(g^{\delta_O})(g^{R(\tau)})^{\delta_L}(g^{L(\tau)})^{\delta_R}(g^{Z(\tau)})^{\delta_L\delta_R}}
+                                  \end{align*}
+                                  \vspace{-16pt}
+                              }
+
+                              \vspace{-5pt}
+                              $\pi_{\beta} = \dots$
+
+                    \end{itemize}}
+                    \end{minipage}
+                };
+
+                \draw[arrow] (prover) -- (verifier) node[midway, above=1mm] {$\boldsymbol{\pi} = (\pi_L,\pi_R,\pi_O,\pi_H,\pi_L',\pi_R',\pi_O',\pi_H',\pi_{\beta})$};
+
+                \node[inner sep=0pt, align=center] (vdata) at (5, -0.2) {
+                    \begin{minipage}{5cm}
+                    {\tiny\begin{itemize}[label=\ding{51}]
+                              \item $e(\pi_L, \pi_R) \xlongequal{?}\\ e(\mathsf{com}(Z), \pi_H) \cdot e(\pi_O, g)$.
+                              \item {
+                                  Proof of Exponent:
+                                  \vspace{-8pt}
+                                  \begin{align*}
+                                      e(\pi_L, g^{\alpha}) &= e(\pi_L', g), \qquad\qquad\qquad\\[-2pt] %quads are to adjust spacing on the slide
+                                      e(\pi_R, g^{\alpha}) &= e(\pi_R', g), \\[-2pt]
+                                      e(\pi_O, g^{\alpha}) &= e(\pi_O', g), \\[-2pt]
+                                      e(\pi_H, g^{\alpha}) &= e(\pi_H', g).
+                                  \end{align*}
+                                  \vspace{-16pt}
+                              }
+                              \item $e(\pi_L, g^{\gamma\beta_L}) \cdot e(\pi_R, g^{\gamma\beta_R}) \cdot \\ \cdot e(\pi_O, g^{\gamma\beta_O}) = e(\pi_{\beta}, g^{\gamma})$
+                    \end{itemize}}
+                    \end{minipage}
+                };
+            \end{tikzpicture}
+        \end{center}
+    \end{frame}
+
+    \begin{frame}[fragile]{Something we can touch.}
+        \begin{lstlisting}[language=Circom,numbers=none,label={lst:lstlisting1}]
+pragma circom 2.1.6;
+
+template Math() {
+    signal output res;
+
+    signal input a;
+    signal input b;
+    signal input c;
+
+    signal mul1 <== a * b;
+    signal mul2 <== a * c;
+    signal res1 <== mul1 * mul2;
+
+    signal add1 <== (1 - a) * b;
+    signal add2 <== (1 - a) * c;
+    signal res2 <== add1 + add2;
+
+    res1 + res2 ==> res;
+}
         \end{lstlisting}
     \end{frame}
+
+    \section{Practice}
 
     \begin{frame}[plain, standout]
         \centering
         \LARGE
         \textbf{Thank you for your attention} \\
-        
+
         \vspace{0.2cm} \Huge \ding{170} \large \\
-        
+
         \vspace{1cm}
-  
+
         \href{https://zkdl-camp.github.io/}{\raisebox{-.1em}{\hspace{.025em}\faIcon{globe}}\hspace{.325em}zkdl-camp.github.io} \\
-  
+
         \href{https://github.com/ZKDL-Camp}{\raisebox{-.1em}{\hspace{.025em}\faIcon{github}}\hspace{.325em}github.com/ZKDL-Camp}
-        
+
         \begin{center}
             \includegraphics[width=0.15\textwidth]{images/logo.png}
         \end{center}
