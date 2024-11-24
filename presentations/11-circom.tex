@@ -4,7 +4,7 @@
 
 \title[Circom]{\textbf{Circom}}
 \author{Distributed Lab}
-\date{October 22, 2024}
+\date{November 28, 2024}
 \homepage{zkdl-camp.github.io}
 \github{ZKDL-Camp}
 
@@ -26,14 +26,11 @@
 
     \section{Introduction}
 
-    \begin{frame}{Why ZK?}
+    \begin{frame}{Why do we need ZK?}
         \pause
 
-        \begin{block}{Why do we need ZK?}
-            \begin{enumerate}
-                \item Solution to privacy
-                \item Solution to scalability
-            \end{enumerate}
+        \begin{block}{Option}
+            Solution to privacy
         \end{block}
 
         \pause
@@ -42,9 +39,19 @@
             \begin{enumerate}
                 \item \textit{I know the private key that corresponds to this public key}
                 \item \textit{I know a private key that corresponds to a public key from this list}
-                \item \textit{I know the preimage of this hash value}
-                \item \textit{This is the hash of a blockchain block that does not produce negative balances}
             \end{enumerate}
+        \end{example}
+
+        \pause
+
+        \begin{block}{Option}
+            Solution to scalability
+        \end{block}
+
+        \pause
+
+        \begin{example}
+            \textit{This is the hash of a blockchain block that does not produce negative balances}
         \end{example}
     \end{frame}
 
@@ -70,6 +77,7 @@
         \only<4>{\includegraphics[width=\linewidth]{images/lecture_11/flow_3}}
         \only<5>{\includegraphics[width=\linewidth]{images/lecture_11/flow_end}}
     \end{frame}
+
 
     \section{Circom}
 
@@ -166,6 +174,7 @@ template Math() {
 }
         \end{lstlisting}
     \end{frame}
+
 
     \section{Practice}
 
