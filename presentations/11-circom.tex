@@ -1,10 +1,8 @@
 \documentclass{zkdl-presentation-template}
-\usepackage{blkarray}
-\usepackage{blkarray}
 
 \title[Circom]{\textbf{Circom}}
 \author{Distributed Lab}
-\date{November 28, 2024}
+\date{December 05, 2024}
 \homepage{zkdl-camp.github.io}
 \github{ZKDL-Camp}
 
@@ -78,105 +76,89 @@
         \only<5>{\includegraphics[width=\linewidth]{images/lecture_11/flow_end}}
     \end{frame}
 
-
     \section{Circom}
 
-    \begin{frame}{It looks good, as long as all I need is to look at it.}
-        \scriptsize
-
-        \textbf{Trusted Setup: }
-        $\tau, \alpha, \beta_L, \beta_R, \beta_O, \gamma \xleftarrow{R} \mathbb{F} \textbf{,} \quad \{ \{g^{\tau^i}, g^{\alpha \tau^i} \}_{i \in [d]}\textbf{,} \quad \{\textcolor{black!50!black}{g^{\beta_LL_i(\tau)}, g^{\beta_RR_i(\tau)}, g^{\beta_OO_i(\tau)}}\}_{i \in \left[ n \right]} \} \textbf{,}$
-        $\{ g^{Z(\tau)}, g^{\alpha}, g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, g^{\beta_O\gamma}, g^{\gamma}\}\textbf{,} \quad \textbf{delete}(\tau, \alpha, \beta_L, \beta_R, \beta_O, \gamma)$.
-        \vspace{10pt}
-
-        \tikzset{
-            arrow/.style={-latex, ultra thick}
-        }
-
-        \begin{center}
-            \begin{tikzpicture}
-                \node[inner sep=0pt, align=center] (prover) at (-3.5, -3) {
-                    \includegraphics[width=2cm]{images/common/prover.png}\\Prover $\mathcal{P}$
-                };
-
-                \node[inner sep=0pt, align=center] (verifier) at (4, -3) {
-                    \includegraphics[width=2cm]{images/common/verifier.png}\\Verifier $\mathcal{V}$
-                };
-
-                \node[inner sep=0pt, align=center] (pdata) at (-3, 0) {
-                    \begin{minipage}{4cm}
-                    {\tiny\begin{itemize}[label=\ding{51}]
-                              \item $H(x) = \frac{L(x) \times R(x) - O(x)}{Z(x)}$.
-                              \item {
-                                  Sample $\delta_L,\delta_R,\delta_O \xleftarrow{R} \mathbb{F}$, compute:
-                                  \vspace{-8pt}
-                                  \begin{align*}
-                                      \pi_L \gets g^{L(\tau)}\textcolor{black!50!black}{(g^{Z(\tau)})^{\delta_L}}, \pi_L' \gets g^{\alpha L(\tau)}\textcolor{black!50!black}{(g^{\alpha Z(\tau)})^{\delta_L}},\\[-2pt]
-                                      \pi_R \gets g^{R(\tau)}\textcolor{black!50!black}{(g^{Z(\tau)})^{\delta_R}}, \pi_R' \gets g^{\alpha R(\tau)}\textcolor{black!50!black}{(g^{\alpha Z(\tau)})^{\delta_R}},\\[-2pt]
-                                      \pi_O \gets g^{O(\tau)}\textcolor{black!50!black}{(g^{Z(\tau)})^{\delta_O}}, \pi_O' \gets g^{\alpha O(\tau)}\textcolor{black!50!black}{(g^{\alpha Z(\tau)})^{\delta_O}},\\[-2pt]
-                                      \pi_H \gets g^{H(\tau)}\textcolor{black!50!black}{(g^{\delta_O})(g^{R(\tau)})^{\delta_L}(g^{L(\tau)})^{\delta_R}(g^{Z(\tau)})^{\delta_L\delta_R}}
-                                  \end{align*}
-                                  \vspace{-16pt}
-                              }
-
-                              \vspace{-5pt}
-                              $\pi_{\beta} = \dots$
-
-                    \end{itemize}}
-                    \end{minipage}
-                };
-
-                \draw[arrow] (prover) -- (verifier) node[midway, above=1mm] {$\boldsymbol{\pi} = (\pi_L,\pi_R,\pi_O,\pi_H,\pi_L',\pi_R',\pi_O',\pi_H',\pi_{\beta})$};
-
-                \node[inner sep=0pt, align=center] (vdata) at (5, -0.2) {
-                    \begin{minipage}{5cm}
-                    {\tiny\begin{itemize}[label=\ding{51}]
-                              \item $e(\pi_L, \pi_R) \xlongequal{?}\\ e(\mathsf{com}(Z), \pi_H) \cdot e(\pi_O, g)$.
-                              \item {
-                                  Proof of Exponent:
-                                  \vspace{-8pt}
-                                  \begin{align*}
-                                      e(\pi_L, g^{\alpha}) &= e(\pi_L', g), \qquad\qquad\qquad\\[-2pt] %quads are to adjust spacing on the slide
-                                      e(\pi_R, g^{\alpha}) &= e(\pi_R', g), \\[-2pt]
-                                      e(\pi_O, g^{\alpha}) &= e(\pi_O', g), \\[-2pt]
-                                      e(\pi_H, g^{\alpha}) &= e(\pi_H', g).
-                                  \end{align*}
-                                  \vspace{-16pt}
-                              }
-                              \item $e(\pi_L, g^{\gamma\beta_L}) \cdot e(\pi_R, g^{\gamma\beta_R}) \cdot \\ \cdot e(\pi_O, g^{\gamma\beta_O}) = e(\pi_{\beta}, g^{\gamma})$
-                    \end{itemize}}
-                    \end{minipage}
-                };
-            \end{tikzpicture}
-        \end{center}
-    \end{frame}
-
-    \begin{frame}[fragile]{Something we can touch.}
-        \begin{lstlisting}[language=Circom,numbers=none,label={lst:lstlisting1}]
-pragma circom 2.1.6;
-
-template Math() {
-    signal output res;
-
-    signal input a;
-    signal input b;
-    signal input c;
-
-    a * (1 - a) === 0;
-
-    signal mul1 <== a * b;
-    signal mul2 <== a * c;
-    signal res1 <== mul1 * mul2;
-
-    signal res2 <== (1 - a) * (b + c);
-
-    res1 + res2 ==> res;
-}
+    \begin{frame}[fragile]{Previously on ZKDL Camp}
+        Probably you can recall the function
+        \begin{lstlisting}[language=Python,numbers=none]
+        def r(x1: F, x2: F, x3: F) -> F:
+            return x2 * x3 if x1 else x2 + x3
         \end{lstlisting}
+        \vspace{-10pt}
+        \pause That can be expressed as:
+        \begin{equation*}
+            r = x_1 \times (x_2 \times x_3) + (1 - x_1) \times (x_2 + x_3)
+        \end{equation*}
+
+        \pause
+        \begin{alertblock}{}
+            We need a boolean restriction for $x_1$:
+            \vspace{-8pt}
+            \begin{equation*}
+                x_1 \times (1 - x_1) = 0
+            \end{equation*}
+        \end{alertblock}
+
+        \pause
+        Thus, the next constraints can be build:
+        \vspace{-5pt}
+        \begin{align*}
+            x_1 \times x_1 &= x_1 \quad \text{(binary check)} \tag{1} \\
+            x_2 \times x_3 &= \mathsf{mult} \tag{2} \\
+            x_1 \times \mathsf{mult} &= \mathsf{selectMult} \tag{3} \\
+            (1 - x_1) \times (x_2 + x_3) &= r - \mathsf{selectMult} \tag{4}
+        \end{align*}
     \end{frame}
 
+    \begin{frame}[fragile]{Previously on ZKDL Camp}
+        The witness vector: $\boldsymbol{w} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult})$.
+        \pause The coefficients vectors:
 
-    \section{Practice}
+        \vspace{-20pt}\small
+
+        \begin{align*}
+            \boldsymbol{a}_1 &= (0, 0, 1, 0, 0, 0, 0), & \boldsymbol{b}_1 &= (0, 0, 1, 0, 0, 0, 0), & \boldsymbol{c}_1 &= (0, 0, 1, 0, 0, 0, 0) \\
+            \boldsymbol{a}_2 &= (0, 0, 0, 1, 0, 0, 0), & \boldsymbol{b}_2 &= (0, 0, 0, 0, 1, 0, 0), & \boldsymbol{c}_2 &= (0, 0, 0, 0, 0, 1, 0) \\
+            \boldsymbol{a}_3 &= (0, 0, 1, 0, 0, 0, 0), & \boldsymbol{b}_3 &= (0, 0, 0, 0, 0, 1, 0), & \boldsymbol{c}_3 &= (0, 0, 0, 0, 0, 0, 1) \\
+            \boldsymbol{a}_4 &= (1, 0, -1, 0, 0, 0, 0), & \boldsymbol{b}_4 &= (0, 0, 0, 1, 1, 0, 0), & \boldsymbol{c}_4 &= (0, 1, 0, 0, 0, 0, -1)
+        \end{align*}\normalsize
+
+        \pause \vspace{-10pt}
+
+        Using the arithmetic in a large $\mathbb{F}_p$, consider the following values:
+
+        \vspace{-15pt}
+        \begin{equation*}
+            x_1 = 1, \quad x_2 = 3, \quad x_3 = 4
+            \vspace{-5pt}
+        \end{equation*}
+
+        Verifying the constraints:
+        \begin{enumerate}
+            \item \( x_1 \times x_1 = x_1 \quad (1 \times 1 = 1) \)
+            \item \( x_2 \times x_3 = \mathsf{mult} \quad (3 \times 4 = 12) \)
+            \item \( x_1 \times \mathsf{mult} = \mathsf{selectMult} \quad (1 \times 12 = 12) \)
+            \item \( (1 - x_1) \times (x_2 + x_3) = r - \mathsf{selectMult} \quad (0 \times 7 = 12 - 12) \)
+        \end{enumerate}
+    \end{frame}
+
+    \begin{frame}{Previously on ZKDL Camp}
+        By Groth16 Protocol the verifier \only<1>{...}\pause should check the following condition:
+        \begin{equation*}
+            e(\pi_L, \pi_R) = e(g_1^{\alpha}, g_2^{\beta})e(\pi_{\text{io}},g_2^{\gamma})e(\pi_O,g_2^{\delta})
+        \end{equation*}
+
+        \pause
+
+        \begin{alertblock}{Recall}
+            For BN254 (BN128), we have:
+            \begin{itemize}
+                \item Left inputs to $e$ is of form $(x,y) \in \mathbb{G}_1$ --- regular curve.
+                \item Right inputs to $e$ is of form $((x_1,y_1),(x_2,y_2)) \in \mathbb{G}_2$ --- ``complex'' curve, consisting of two $\mathbb{F}_{p^2}$ coordinates.
+                \item $e(g_1^{\alpha}, g_2^{\beta})$ is of form $(x_1,\dots,x_{12}) \in \mathbb{F}_{p^{12}}$
+            \end{itemize}
+        \end{alertblock}
+    \end{frame}
 
     \begin{frame}[plain, standout]
         \centering
