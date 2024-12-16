@@ -2,4 +2,81 @@
 
 \begin{document}
 
+\subsection{Plonk Arithmetization}
+
+Assume that we have a certain arithmetic circuit \(C\) with a \(|C|\) number of gates and \(|I|\ = |I_x| + |I_w|\) number of inputs. We encode this circuit, recording its computation trace in a table, where rows represent the state per each gate, while columns are of the form \((a, b, c)\), where \(a\) and \(b\) are left and right inputs, and \(c\) is the output of the gate. In this manner, the output of the last gate corresponds to the output of the circuit.
+
+\subsubsection{Encoding the trace as a polynomial}
+
+Let \(d = 3|C| + |I|\) and \(\Omega = \{1, \omega^1, \omega^2, \dots, \omega^\(d-1\)\}\). Then we would like to interpolate a polynomial \(T \in \mathbb{F}_p^{(\leq d)}[X]\) to encode the entire computation trace in a succinct, processing-prone form.
+
+\begin{enumerate}
+    \item \(T\) \textbf{encodes all inputs:} \( T(\omega^{-j}) = \text{input \#} j \text{for } j = 1, \dots, |I| \)
+    \item \(T\) \textbf{encodes all wires:} \( \forall \ell = 0, \dots, |C| - 1: \)
+    \begin{itemize}
+        \item \( T(\omega^{3\ell}) \): left input to gate \#\( \ell \)
+        \item \( T(\omega^{3\ell+1}) \): right input to gate \#\( \ell \)
+        \item \( T(\omega^{3\ell+2}) \): output of gate \#\( \ell \)
+    \end{itemize}
+\end{enumerate}
+
+\begin{remark}
+In this way, we obtain the polynomial \(T\) in evaluation form. It is possible to compute coefficients of \(T\) using FFT in \(O(d\log(d))\).
+\end{remark}
+
+\subsection{Proving the validity of \(T\)}
+
+After prover \(P(S_p, x, w)\) has constructed \(T\), it commits it and sends to the verifier \(V(S_v, x)\). Latter must verify (meaning former must prove) four points about the validity of constructed \(T\), which we will describe in next sections.
+
+\subsubsection{\(T\) encodes the correct inputs}
+Both prover and verifier interpolate a polynomial \(\nu(X) \in \mathbb{F}_p^{(\leq d)}[X] \) that encodes the \(x\)-th input to the \(C\):
+\[\text{for } j = 1, \dots, |I_x| : \nu(\bar{\omega}^j) = \text{input } \#j\]
+
+\begin{remark}
+Constructing \(\nu(X)\) takes proportional to the size of input \(x\).
+\end{remark}
+
+Let \(\Omega_{\text{inp}} := \{ \omega^{-1}, \omega^{-2}, ..., \omega^{-|I_x|} \} \subseteq \Omega\), then proving \textit{1.2.1} is done with \textit{ZeroTest} on \Omega_{\text{inp}}:
+
+\[T(y) - v(y) = 0 \quad \forall y \in \Omega_{\text{inp}}\]
+
+\subsubsection{Every gate is evaluated correctly}
+
+Encode gate types using a \textit{selector} polynomial \(S(X)\):
+\(S(X) \in \mathbb{F}_p^{\leq d}[X]\) such that \(\forall \, l = 0, ..., |C| - 1\): 
+\begin{itemize}
+    \item \(S(\omega^{3l}) = 1\) if gate \(\#l\) is an addition gate 
+    \item \(S(\omega^{3l}) = 0\) if gate \(\#l\) is a multiplication gate 
+\end{itemize}
+
+Then, \(\forall \, y \in \Omega_{\text{gates}} := \{ 1, \omega^3, \omega^6, \omega^9, ..., \omega^{3(|C|-1)} \}\):
+
+\[S(y) \cdot [T(y) + T(\omega y)] + (1 - S(y)) \cdot T(y) \cdot T(\omega y) = T(\omega^2 y)\]
+where \(T(y)\) and \(T(\omega y)\) are left and right inputs correspondingly.
+
+This means, that once again we can narrow our check down to \textit{ZeroTest} for \(\forall \, y \in \Omega_{\text{gates}}\):
+
+\[S(y) \cdot [T(y) + T(\omega y)] + (1 - S(y)) \cdot T(y) \cdot T(\omega y) - T(\omega^2 y) = 0\]
+
+\subsubsection{The wiring is implemented correctly}
+In this part, we need to encode the wires of \(C\) to prove connection of inputs and outputs in gates. For example:
+
+\begin{enumerate}
+    \item \(T(\omega^{-2}) = T(\omega^{1}) = T(\omega^{3})\)
+    \item \(T(\omega^{-1}) = T(\omega^{0})\)
+\end{enumerate}
+
+For that matter, define a polynomial \(W = \Omega \to \Omega\) that implements a rotation:
+
+\[W(\omega^{-2}, \omega^{1}, \omega^{3}) = (\omega^{1}, \omega^{3}, \omega^{-2}), \quad W(\omega^{-1}, \omega^{0}) = (\omega^{0}, \omega^{-1})\]
+
+\begin{remark}
+Lemma: \(\forall \, y \in \Omega : T(y) = T(W(y)) =>\) wire constraints are satisfied. This may be proven using \textit{prescribed permutation check}.
+\end{remark}
+
+\subsubsection{Output of the last gate conforms with expected}
+
+Let \(\alpha\) be the expected output of \(C\). Then, apply \textit{ZeroTest} on:
+\[T(\omega^{3 |C| - 1}) - \alpha = 0\]
+
 \end{document}
