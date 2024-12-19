@@ -1,14 +1,113 @@
 \documentclass[../lecture-notes.tex]{subfiles}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{fix-cm}
+\pgfplotsset{compat=1.18}
 
 \begin{document}
+
+\subsection{Preliminaries}
+
+Before delving into Plonk, let's first consider a few useful proving system gadgets.
+
+Let $\Omega$ be some subset of $\mathbb{F}_p$ of size $k$.
+Let $f \in \mathbb{F}_p^{(\leq d)}[X] \qquad (d \geq k)$ \hfill \begin{tabular}{|c|}\hline Verifier has $f$ \\ \hline \end{tabular} 
+
+Now we need to construct efficient Poly-IOPs for two tasks described in below sections.
+
+\subsubsection{ZeroTest}
+
+Prove that $f$ is identically zero on $\Omega$.
+
+\begin{enumerate}
+    \item Prover computes: \( q(X) \leftarrow \frac{f(X)}{Z_{\Omega}(X)} \quad q \in \mathbb{F}_p^{(\leq d)}[X] \)
+    \item Prover sends commitment \(\left[ q \right]\) to the verifier
+    \item Verifier generates random \(r \leftarrow\mathbb{F}_p^{(\leq d)} \)
+    \item Verifier queries from the prover \(q(X)\) and \(f(X)\) at \(r\)
+    \item Verifier accepts if $f(r) = q(r) \cdot Z_{\Omega}(r)$ (implies that $f(X) = q(X) \cdot Z_{\Omega}(X)$ with high probability).
+\end{enumerate}
+
+\begin{lemma}
+    $f$ is zero on $\Omega$ if and only if $f(X)$ is divisible by $Z_{\Omega}(X)$.
+\end{lemma}
+
+\begin{remark}
+This protocol is complete and sound, assuming $d/p$ is negligible.
+\end{remark}
+
+\subsubsection{Prescribed Permutation Check}
+
+\begin{definition}
+\(W : \Omega \rightarrow \Omega\) is a permutation of \(\Omega\) if \(\forall i \in [k], W(\omega^i) = \omega^{j}\) is a bijection.
+\end{definition}
+
+\begin{example}
+\text{Example } $(k=3): \quad W(\omega^0) = \omega^2, \quad W(\omega^1) = \omega^0, \quad W(\omega^2) = \omega^1$
+\end{example}
+
+Let \(f\) and \(g\) be polynomials in \(\mathbb{F}_p^{(\leq d)}[X]\). Verifier has commitments \([f]\), \([g]\), \([W]\).
+
+\underline{Goal:} prover wants to prove that \(f(y) = g(W(y))\) for all \(y \in \Omega\), equivalent to \(g(\Omega)\) is the same as \(f(\Omega)\), permuted by the prescribed \(W\).
+
+Naive way of doing this is by running \textbf{ZeroTest} on \(f(y) - g(W(y)) = 0\) on \(\Omega\), however that would result in proving needing to manipulate polynomials of degree \(k^2\), resulting in quadratic prover time. We can reduce this to a product-check on a polynomial of degree \(2k\).
+
+\begin{remark}
+Observation: If \((W(\alpha), f(\alpha))_{\alpha \in \Omega}\) is a permutation of \((\alpha, g(\alpha))_{\alpha \in \Omega}\) then \(f(y) = g(W(y))\) for all \(y \in \Omega \).
+\end{remark}
+
+\begin{example}
+\[
+\text{Proof by example: } W(\omega^0) = \omega^2, \quad W(\omega^1) = \omega^0, \quad W(\omega^2) = \omega^1 
+\]
+\[
+\text{Right tuple: } (\omega^0, g(\omega^0)), (\omega^1, g(\omega^1)), (\omega^2, g(\omega^2))
+\]
+\[
+\text{Left tuple: } (\omega^2, f(\omega^0)), (\omega^0, f(\omega^1)), (\omega^1, f(\omega^2))
+\]
+\end{example}
+
+Let \(\hat{f}(X,Y) = \prod_{\alpha \in \Omega} (X - Y \cdot W(\alpha) - f(\alpha))\) and
+\(\hat{g}(X,Y) = \prod_{a \in \Omega} (X - Y \cdot a - g(a))\) (bivariate polynomials of total degree \(k\)).
+
+\begin{lemma}
+\(\hat{f}(X,Y) = \hat{g}(X,Y) \iff \left( W(\alpha), f(\alpha) \right)_{\alpha \in \Omega}\) is a permutation of \(\left( \alpha, g(\alpha) \right)_{\alpha \in \Omega}\).
+
+To prove, use the fact that \(\mathbb{F}_p[X,Y]\) is a unique factorization domain.
+\end{lemma}
+
+\paragraph{The complete protocol.}
+\begin{enumerate}
+    \item Verifier generates random \(r, g \leftarrow\mathbb{F}_p^{(\leq d)} \)
+    \item Run \textbf{ProductCheck} on \(\hat{f}(r, s) = \hat{g}(r, s): \prod_{a \in \Omega} \left( \frac{r - s \cdot W(a) - f(a)}{r - s \cdot a - g(a)} \right) = 1\)
+\end{enumerate}
+
+This would imply that \(\hat{f}(X,Y) = \hat{g}(X,Y)\) with high probability due to Schwartz-Zippel.
+
+\begin{remark}
+Complete and sound, assuming \(2d/p\) is negligible.
+\end{remark}
 
 \subsection{Plonk Arithmetization}
 
 Assume that we have a certain arithmetic circuit \(C\) with a \(|C|\) number of gates and \(|I|\ = |I_x| + |I_w|\) number of inputs. We encode this circuit, recording its computation trace in a table, where rows represent the state per each gate, while columns are of the form \((a, b, c)\), where \(a\) and \(b\) are left and right inputs, and \(c\) is the output of the gate. In this manner, the output of the last gate corresponds to the output of the circuit.
 
+\begin{example}
+Consider this circuit: \((x_1 + x_2)*(x_1 + w_1)\). Suppose we set \(x_1 = 5, x_2 = 6, w_1 = 1\). Then the computation trace would be following:
+
+\begin{tabular}{l rrr}
+  inputs: & 5, & 6, & 1 \\ \hline
+  Gate 0: & 5, & 6, & 11 \\
+  Gate 1: & 6, & 1, & 7 \\
+  Gate 2: & 11, & 7, & 77 \\ 
+\end{tabular}
+
+\end{example}
+
 \subsubsection{Encoding the trace as a polynomial}
 
-Let \(d = 3|C| + |I|\) and \(\Omega = \{1, \omega^1, \omega^2, \dots, \omega^\(d-1\)\}\). Then we would like to interpolate a polynomial \(T \in \mathbb{F}_p^{(\leq d)}[X]\) to encode the entire computation trace in a succinct, processing-prone form.
+Let \(d = 3|C| + |I|\) and \(\Omega = \{1, \omega^1, \omega^2, \dots, \omega^{d-1}\}\). Then we would like to interpolate a polynomial \(T \in \mathbb{F}_p^{(\leq d)}[X]\) to encode the entire computation trace in a succinct, processing-prone form.
 
 \begin{enumerate}
     \item \(T\) \textbf{encodes all inputs:} \( T(\omega^{-j}) = \text{input \#} j \text{for } j = 1, \dots, |I| \)
@@ -24,11 +123,23 @@ Let \(d = 3|C| + |I|\) and \(\Omega = \{1, \omega^1, \omega^2, \dots, \omega^\(d
 In this way, we obtain the polynomial \(T\) in evaluation form. It is possible to compute coefficients of \(T\) using FFT in \(O(d\log(d))\).
 \end{remark}
 
-\subsection{Proving the validity of \(T\)}
+\begin{example}
+For our example circuit, we have \(|C| = 3\) and \(|I| = 3\), therefore \(degree(T) = 11\). The prover interpolates the polynomial \(T(X)\) such that:
+\\
+\begin{tabular}{l l l l}
+  inputs: & $T(\omega^{-1}) = 5$, & $T(\omega^{-2}) = 6$, & $T(\omega^{-3}) = 1$, \\ \hline
+  gate 0: & $T(\omega^{0}) = 5$, & $T(\omega^{1}) = 6$, & $T(\omega^{2}) = 11$, \\
+  gate 1: & $T(\omega^{3}) = 6$, & $T(\omega^{4}) = 1$, & $T(\omega^{5}) = 7$, \\
+  gate 2: & $T(\omega^{6}) = 11$, & $T(\omega^{7}) = 7$, & $T(\omega^{8}) = 77$ \\ 
+\end{tabular}
+
+\end{example}
+
+\subsection{Proving the validity of \texorpdfstring{\(T\)}{T}}
 
 After prover \(P(S_p, x, w)\) has constructed \(T\), it commits it and sends to the verifier \(V(S_v, x)\). Latter must verify (meaning former must prove) four points about the validity of constructed \(T\), which we will describe in next sections.
 
-\subsubsection{\(T\) encodes the correct inputs}
+\subsubsection{\texorpdfstring{\(T\)} encodes the correct inputs}
 Both prover and verifier interpolate a polynomial \(\nu(X) \in \mathbb{F}_p^{(\leq d)}[X] \) that encodes the \(x\)-th input to the \(C\):
 \[\text{for } j = 1, \dots, |I_x| : \nu(\bar{\omega}^j) = \text{input } \#j\]
 
@@ -36,9 +147,13 @@ Both prover and verifier interpolate a polynomial \(\nu(X) \in \mathbb{F}_p^{(\l
 Constructing \(\nu(X)\) takes proportional to the size of input \(x\).
 \end{remark}
 
-Let \(\Omega_{\text{inp}} := \{ \omega^{-1}, \omega^{-2}, ..., \omega^{-|I_x|} \} \subseteq \Omega\), then proving \textit{1.2.1} is done with \textit{ZeroTest} on \Omega_{\text{inp}}:
+Let \(\Omega_{\text{inp}} := \{ \omega^{-1}, \omega^{-2}, ..., \omega^{-|I_x|} \} \subseteq \Omega\), then proving \textit{1.2.1} is done with \textit{ZeroTest} on \(\Omega_{\text{inp}}\):
 
 \[T(y) - v(y) = 0 \quad \forall y \in \Omega_{\text{inp}}\]
+
+\begin{example}
+In our example, \(\nu(\omega^{-1})=5\), \(\nu(\omega^{-2})=6\).
+\end{example}
 
 \subsubsection{Every gate is evaluated correctly}
 
@@ -58,25 +173,62 @@ This means, that once again we can narrow our check down to \textit{ZeroTest} fo
 
 \[S(y) \cdot [T(y) + T(\omega y)] + (1 - S(y)) \cdot T(y) \cdot T(\omega y) - T(\omega^2 y) = 0\]
 
-\subsubsection{The wiring is implemented correctly}
-In this part, we need to encode the wires of \(C\) to prove connection of inputs and outputs in gates. For example:
+\begin{example}
 
-\begin{enumerate}
-    \item \(T(\omega^{-2}) = T(\omega^{1}) = T(\omega^{3})\)
-    \item \(T(\omega^{-1}) = T(\omega^{0})\)
-\end{enumerate}
+That is, in our \(C\), since gates 0 and 1 are addition and 2 gate is multiplication, we have the following encoding for selector polynomial:
+
+\begin{tabular}{l ccc | c}
+  inputs: & 5, & 6, & 1 & $S(X)$ \\ \hline
+  Gate 0 ($\omega^0$): & 5, & 6, & 11 & 1 \\
+  Gate 1 ($\omega^3$): & 6, & 1, & 7 & 1 \\
+  Gate 2 ($\omega^6$): & 11, & 7, & 77 & 0 \\ 
+\end{tabular}
+
+You can see by substituting \(S(y)\) with actual values from the table, that if a selector polynomial evaluates as \(1\), then multiplication part of the proved constraint is leveling out - vice versa for \(0\).
+
+\end{example}
+
+\subsubsection{The wiring is implemented correctly}
+In this part, we need to encode the wires of \(C\) to prove connection of inputs and outputs in gates. 
+
+\begin{example}
+For our table:
+\begin{tabular}{l ccc}
+  $\omega^{-1}$, $\omega^{-2}$, $\omega^{-3}$: & 5, & \textcolor{violet}{6}, & \textcolor{red}{1} \\ \hline
+  0: $\omega^{0}$, $\omega^{1}$, $\omega^{2}$: & 5, & \textcolor{violet}{6}, & \textcolor{green}{11} \\
+  1: $\omega^{3}$, $\omega^{4}$, $\omega^{5}$: & \textcolor{violet}{6}, & \textcolor{red}{1}, & \textcolor{gray}{7} \\
+  2: $\omega^{6}$, $\omega^{7}$, $\omega^{8}$: & \textcolor{green}{11}, & \textcolor{gray}{7}, & 77 \\ 
+\end{tabular}
+\\
+We need following constraints:
+\begin{align}
+    T(\omega^{-2}) &= T(\omega^{1}) = T(\omega^{3}) \\
+    T(\omega^{-1}) &= T(\omega^{0}) \\
+    T(\omega^{2})  &= T(\omega^{6}) \\
+    T(\omega^{-3}) &= T(\omega^{4})
+\end{align}
 
 For that matter, define a polynomial \(W = \Omega \to \Omega\) that implements a rotation:
 
-\[W(\omega^{-2}, \omega^{1}, \omega^{3}) = (\omega^{1}, \omega^{3}, \omega^{-2}), \quad W(\omega^{-1}, \omega^{0}) = (\omega^{0}, \omega^{-1})\]
+\[W(\omega^{-2}, \omega^{1}, \omega^{3}) = (\omega^{1}, \omega^{3}, \omega^{-2}), \quad W(\omega^{-1}, \omega^{0}) = (\omega^{0}, \omega^{-1}), \quad \dots\]
 
-\begin{remark}
+\end{example}
+
+\begin{lemma}
 Lemma: \(\forall \, y \in \Omega : T(y) = T(W(y)) =>\) wire constraints are satisfied. This may be proven using \textit{prescribed permutation check}.
-\end{remark}
+\end{lemma}
 
 \subsubsection{Output of the last gate conforms with expected}
 
 Let \(\alpha\) be the expected output of \(C\). Then, apply \textit{ZeroTest} on:
 \[T(\omega^{3 |C| - 1}) - \alpha = 0\]
+
+\subsection{Setup procedure}
+
+Not accounting for the details of selected poly-commit scheme (i.e KZG, FRI, etc.) the setup procedure preprocesses the circuit \(C\) and outputs for the prover selector and wiring polynomials \(S\) and \(W\), and for the verifier respective commitments \([S]\) and \([W]\).
+
+\begin{remark}
+This setup procedure is untrusted.
+\end{remark}
 
 \end{document}
