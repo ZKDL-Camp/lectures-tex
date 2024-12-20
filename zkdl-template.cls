@@ -70,6 +70,8 @@
 % --- Linter settings ---
 \RequirePackage{listings, listings-rust}
 \RequirePackage{listings, listings-circom}
+\RequirePackage{listings, listings-json}
+\RequirePackage{listings, listings-ts}
 
 % --- Ticks and crosses ---
 \usepackage{pifont} % http://ctan.org/pkg/pifont

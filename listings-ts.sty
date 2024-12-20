@@ -1,0 +1,66 @@
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{listings-rust}[2018/01/23 Custom Package]
+
+\RequirePackage{color}
+\RequirePackage{listings}
+
+\lstdefinelanguage{TypeScript}{
+  sensitive=true,
+  morecomment=[l]{//},
+  morecomment=[s]{/*}{*/},
+  morestring=[b]{"},
+  alsoletter={:},                % For highlighting things like `something: type`
+  % Control flow and other JS keywords
+  keywordstyle=\bfseries\color{blue},
+  keywordsprefix={},
+  keywords={break,case,class,catch,const,continue,debugger,default,delete,do,else,enum,export,extends,false,finally,for,function,if,import,in,instanceof,interface,let,new,null,return,super,switch,this,throw,true,try,typeof,var,void,while,with,yield,declare,abstract,as,asserts,any,readonly,private,protected,public,static,get,set,never,async,await,unknown,type,from},
+  % We could add a separate keyword class for built-ins or type primitives if needed.
+}
+
+\lstdefinestyle{colouredTypeScript}{%
+  language=TypeScript,
+  basicstyle=\ttfamily,
+  commentstyle=\color[gray]{0.4},
+  stringstyle=\color[rgb]{0,0,0.5},
+  keywordstyle=\bfseries\color{blue},
+  columns=flexible,
+  keepspaces=true,
+  showspaces=false,
+  showtabs=false,
+  showstringspaces=false,
+}
+
+\lstdefinestyle{boxedTypeScript}{%
+  style=colouredTypeScript,
+  numbers=left,
+  firstnumber=auto,
+  numberblanklines=true,
+  frame=single,
+  numberstyle=\tiny,
+  numbersep=7pt,
+  framesep=5pt,
+  framerule=1pt,
+  xleftmargin=15pt,
+  backgroundcolor=\color[gray]{0.97},
+  rulecolor=\color[gray]{0.90},
+}
+
+% Usage example:
+% \begin{lstlisting}[style=boxedJson]
+% {
+%   "name": "example",
+%   "active": true,
+%   "data": null
+% }
+% \end{lstlisting}
+%
+% \begin{lstlisting}[style=boxedTypeScript]
+% interface Person {
+%   name: string;
+%   age: number;
+%   active: boolean;
+% }
+%
+% const alice: Person = { name: "Alice", age: 30, active: true };
+% console.log(alice);
+% \end{lstlisting}
