@@ -20,13 +20,44 @@ Now we need to construct efficient Poly-IOPs for two tasks described in below se
 
 Prove that $f$ is identically zero on $\Omega$.
 
-\begin{enumerate}
-    \item Prover computes: \( q(X) \leftarrow \frac{f(X)}{Z_{\Omega}(X)} \quad q \in \mathbb{F}_p^{(\leq d)}[X] \)
-    \item Prover sends commitment \(\left( com(q) \right)\) to the verifier
-    \item Verifier generates random \(r \leftarrow\mathbb{F}_p^{(\leq d)} \)
-    \item Verifier queries from the prover \(q(X)\) and \(f(X)\) at \(r\)
-    \item Verifier accepts if $f(r) = q(r) \cdot Z_{\Omega}(r)$ (implies that $f(X) = q(X) \cdot Z_{\Omega}(X)$ with high probability).
-\end{enumerate}
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+      \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$}; 
+      \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$}; 
+
+      \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]prover.south) -- ([yshift=-10cm]prover.south);
+      \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]verifier.south) -- ([yshift=-10cm]verifier.south);
+
+      \node[align=center,fill=white!5,thick,below=0.5cm of prover](prover-compute){
+      \noindent\rule{3.5cm}{0.8pt}\\
+      Compute: \( q(X) \leftarrow \frac{f(X)}{Z_{\Omega}(X)} \) \\ \( q \in \mathbb{F}_p^{(\leq d)}[X] \) \\
+      \noindent\rule{3.5cm}{0.8pt}};
+
+      \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-3cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm]{Send \(com(q)\)};
+
+      \node[align=center,fill=white!5,thick,below=3.5cm of verifier](verifier-random){
+      \noindent\rule{3.5cm}{0.8pt}\\
+      Generate random \(r \xleftarrow{R}\mathbb{F}_p^{(\leq d)} \) \\
+      \noindent\rule{3.5cm}{0.8pt}};
+
+      \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-5.5cm]verifier.south) coordinate (l2)--(l2-|prover) node[midway, above=0mm]{Query \(q\) and \(f\) at $r$};
+
+      \node[align=center,fill=white!5,thick,below=6.0cm of prover](prover-query){
+      \noindent\rule{3.5cm}{0.8pt}\\
+      Compute: $q(r), f(r)$ \\
+      \noindent\rule{3.5cm}{0.8pt}};
+
+      \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-8cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm]{Send \(q(r), f(r)\)};
+
+      \node[align=center,fill=white!5,thick,below=8.5cm of verifier](verifier-accept){
+      \noindent\rule{3.5cm}{0.8pt}\\
+      Accept if $f(r) = q(r) \cdot Z_{\Omega}(r)$ \\
+      \noindent\rule{3.5cm}{0.8pt}};
+  \end{tikzpicture}
+  \caption{Protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$ for ZeroTest.}
+  \label{fig:polynomial_commitment}
+\end{figure}
 
 \begin{lemma}
     $f$ is zero on $\Omega$ if and only if $f(X)$ is divisible by $Z_{\Omega}(X)$.
