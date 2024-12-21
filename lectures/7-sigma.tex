@@ -2,7 +2,7 @@
 
 \begin{document}
 
-\subsection{Schnorr's Identification Protocol}
+\section{Schnorr's Identification Protocol}
 
 To better illustrate the Fiat-Shamir Transformation in practice, let us consider one of the most basic Sigma protocols: non-interactive Schnorr Identification Protocol. It is a simple and elegant protocol that allows one party to prove to another party that it knows a discrete logarithm of a given element. It is also quite straightforward to generalize it to a signature scheme.
 
@@ -116,7 +116,7 @@ Now, notice that the provided protocol is a public-coin protocol. Therefore, we 
 
 Now, notice that $e$ might not be included in the proof since the verifier can compute it by himself. Therefore, the final proof $\pi$ can be reduced to $(a,\sigma) \in \mathbb{G} \times \mathbb{Z}_q$ and its computation does not need any interaction with the verifier. Moreover, it is still complete, sound, and proof of knowledge due to the Fiat-Shamir transformation. It is also (not easy to prove) zero-knowledge.
 
-\subsection{Schnorr's Signature Scheme}
+\section{Schnorr's Signature Scheme}
 
 Now, turning the Schnorr's Identification Protocol into a signature scheme is quite straightforward. The only modification to the non-interactive proof described in the previous section is that we include the message $m \in \mathcal{M}$ instead of our statement $u \in \mathbb{G}$ in the computation of the challenge $e$. Additionally, suppose we use the hash function $H$ as a random oracle from the previous section. Now, let us give a formal definition.
 
@@ -133,7 +133,7 @@ Now, turning the Schnorr's Identification Protocol into a signature scheme is qu
     Typically, one also uses a so-called ``\textit{key-prefixed}'' variant of the scheme, where the challenge $e$ is computed as $e \gets H(\mathsf{pk}, m, a)$ for a random oracle $H: \mathbb{G} \times \mathcal{M} \times \mathbb{G} \to \mathbb{Z}_q$. It was argued that such variant has a better multi-user security bound than the classical one.
 \end{remark}
 
-\subsection{Sigma Protocols}
+\section{Sigma Protocols}
 
 Now, the Schnorr Protocol is just one of the many examples of a so-called \textbf{Sigma Protocol}. Sigma protocols are a class of interactive proof systems that are used to prove the knowledge of a witness to a statement. They are quite general and can be used to prove the knowledge of a witness to any effective relation $\mathcal{R} \subseteq \mathcal{X} \times \mathcal{W}$, where $\mathcal{X}$ is the set of public statements and $\mathcal{W}$ is the set of witnesses. Let us define them formally.
 
@@ -181,9 +181,9 @@ Similarly to interactive protocols, Sigma protocols also have a property called 
 
 Now, let us consider some more examples of Sigma protocols.
 
-\subsection{More Sigma Protocol Examples}
+\section{More Sigma Protocol Examples}
 
-\subsubsection{Okamoto's Protocol for Representations}
+\subsection{Okamoto's Protocol for Representations}
 
 Again, let $\mathbb{G}$ be a cyclic group of prime order $q$ with a generator $g \in \mathbb{G}$ and let $h \in \mathbb{G}$ an arbitrary group element (for example, it might be yet another group generator). While considering Pedersen Commitments, you already encountered form $g^{\alpha}h^{\beta}$. Now, let us generalize this concept a bit.
 
@@ -235,7 +235,7 @@ We can divide the former by the latter to obtain:
 
 from which the extractor $\mathcal{E}$ can efficiently compute witness as follows: $\alpha \gets (\alpha_z - \alpha_z')\big/(c-c')$ and $\beta \gets (\beta_z - \beta_z')\big/(c-c')$.
 
-\subsubsection{Chaum-Pedersen protocol for DH-triplets}
+\subsection{Chaum-Pedersen protocol for DH-triplets}
 
 As with previous examples, suppose we are given the cyclic group $\mathbb{G}$ or prime order $q$ and generator $g \in \mathbb{G}$. Recall that \textit{the Diffie-Hellman Triple} (or, \textit{DH-triple}) is a triple $(g^{\alpha},g^{\beta},g^{\gamma})$ with $\gamma=\alpha\beta$. Now, this definition is not really convenient for us, so we will reformulate the DH-triple using the proposition below.
 
@@ -285,7 +285,7 @@ Divide left equations by the right ones to obtain:
 
 Consider the first equation. Since $v=g^{\beta}$ we derive $(\beta_z-\beta_z') = \beta(c-c')$, from which $\mathcal{E}$ outputs $\beta = \frac{\beta_z-\beta_z'}{c-c'}$. The same value can be extracted from the second equation.
 
-\subsection{Generalizing Sigma Protocols}
+\section{Generalizing Sigma Protocols}
 
 Now, the most interesting part! Probably, you have noticed, that all protocols above (Schnorr, Okamoto, Chaum-Pedersen) have a similar structure. So is there any way to generalize them? The answer is yes and moreover, this done in a very elegant way.
 
@@ -319,7 +319,7 @@ Now, we formulate the general Sigma protocol for the relation $\mathcal{R}$ over
     \end{enumerate}
 \end{definition}
 
-\subsection{Combining Sigma Protocols}
+\section{Combining Sigma Protocols}
 
 Now, suppose we have the Sigma interactive protocol $(\mathcal{P}_0,\mathcal{V}_0)$ for one relation $\mathcal{R}_0 \subseteq \mathcal{W}_0 \times \mathcal{X}_0$ and another Sigma interactive protocol $(\mathcal{P}_1,\mathcal{V}_1)$ for another relation $\mathcal{R}_1 \subseteq \mathcal{W}_1 \times \mathcal{X}_1$. Now, we want to combine these two protocols into a single one. Namely, we want our prover to be able to convince the verifier that:
 \begin{enumerate}
@@ -329,7 +329,7 @@ Now, suppose we have the Sigma interactive protocol $(\mathcal{P}_0,\mathcal{V}_
 
 Among two, the second one is a bit more interesting since it allows us to prove the knowledge of a witness to either of the statements. This is called the \textit{OR-composition} of Sigma protocols.
 
-\subsubsection{The AND Sigma Protocol}
+\subsection{The AND Sigma Protocol}
 
 Now, let the prover $\mathcal{P}$ prove the witness knowledge of the following relation:
 \begin{equation*}
@@ -350,7 +350,7 @@ We define the following protocol.
 
 However, such protocol is not very interesting since what we did essentially is just running two protocols separately: one for $(\mathcal{P}_0,\mathcal{V}_0)$, and the other for $(\mathcal{P}_1,\mathcal{V}_1)$. The only difference is that we use the single challenge for both protocols.
 
-\subsubsection{The OR Sigma Protocol}
+\subsection{The OR Sigma Protocol}
 
 The less trivial example is the following: define the relation
 \begin{equation*}
@@ -373,7 +373,7 @@ Now, we describe the algorithm.
     \end{enumerate}
 \end{definition}
 
-\subsection{Exercises}
+\section{Exercises}
 
 \begin{tcolorbox}[colback=gray!10!white,fonttitle=\bfseries,colframe=purple!80!black,title=Exercises 1-5. In search of correct Schnorr's Identification Protocol\ldots]
     \textit{You are given the protocol and five ways to implement it. Most of them lack the crucial properties. For each attempt, you need to determine whether the protocol is correct and, if not, specify which of the properties are violated.}

@@ -2,8 +2,8 @@
 
 \begin{document}
 
-\subsection{Quadratic Arithmetic Program}
-\subsubsection{R1CS in Matrix Form}
+\section{Quadratic Arithmetic Program}
+\subsection{R1CS in Matrix Form}
 
 While the Rank-1 Constraint System provides a powerful way to represent computations, it is not 
 succinct at all, since the number of constraints depends linearly on the complexity of the problem 
@@ -142,7 +142,7 @@ Therefore, $A\mathbf{w} \odot B\mathbf{w} = C\mathbf{w}$ is equivalent to the sy
     \end{equation*}
 \end{example}
 
-\subsubsection{Polynomial Interpolation}
+\subsection{Polynomial Interpolation}
 
 OK, now is the time to define how we are going to build polynomials! Notice that the columns of these matrices (say, column $(a_{1,i},a_{2,i},a_{3,i},a_{4,i})$ in matrix $A$ from example above) represent the mappings from constraint number $i$ to the corresponding
 coefficient of the $j$ element in the witness vector!
@@ -320,7 +320,7 @@ coefficients matrices:
     The degree of the coefficient polynomials does not exceed $m - 1$, which follows from the Lagrange interpolation properties.
 \end{remark}
 
-\subsubsection{Putting All Together!}
+\subsection{Putting All Together!}
 
 Now, using coefficients encoded with polynomials, a constraint number $X \in \{1, \dots\ m\}$, from
 a constraint system with a witness vector $\mathbf{w}$ can be built in the next way:
@@ -389,7 +389,7 @@ All in all, let us give the definition of a \textbf{Quadratic Arithmetic Program
 This was our final step in representing a high-level programming language to some math primitive.
 We have managed to encode our computation to a single polynomial!
 
-\subsubsection*{Remark on operations between polynomials}
+\subsection*{Remark on operations between polynomials}
 
 \begin{remark}
     Some pretty obvious property should be noted. In the theorem ~\ref{thm:polynomials-degree-op}
@@ -508,7 +508,7 @@ We have managed to encode our computation to a single polynomial!
     \label{fig:example-polynomial-addition}
 \end{figure}
 
-\subsection{Probabilistically Checkable Proofs}
+\section{Probabilistically Checkable Proofs}
 
 Before going further we should get acquainted with one more concept from the computational 
 complexity theory, that have an important application in zk-SNARK and provides the theoretical 
@@ -672,7 +672,7 @@ While IOPs will be later used for PLONK and zk-STARKs, we will focus on Linear P
 
 Of course, the above example cannot be used as it is: at the very least, we have not specified how the prover commits to the extended witness $\mathbf{w}$ and coefficients $\mathbf{h}$ and then ensures consistency of $\pi_1,\dots,\pi_4$ with these commitments. For that reason, we need some more tools to make it work which we learned in the previous lectures.
 
-\subsection{QAP as a Linear PCP}
+\section{QAP as a Linear PCP}
 
 When constructing a Quadratic Arithmetic Program (QAP) for a circuit $\Circ$, we represented the whole circuit's 
 computation using the following relation:

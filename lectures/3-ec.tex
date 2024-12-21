@@ -2,9 +2,9 @@
 
 \begin{document}
 
-\subsection{Finite Field Extensions}
+\section{Finite Field Extensions}
 
-\subsubsection{General Definition}
+\subsection{General Definition}
 
 Previously, our discussion resolved around the finite field $\mathbb{F}_p$ for a prime $p$. However, many protocols
 need more than just a prime field. For example, elliptic curve pairings and certain STARK constructions require
@@ -62,7 +62,7 @@ Despite just a simplicity of the definition, the field extensions are a very pow
     One might have defined $\mathbb{Q}(\sqrt{2}, i) = \{x+\sqrt{2}y: x,y \in \mathbb{Q}(i)\}$ instead. Indeed, $\mathbb{Q}(\sqrt{2})(i) = \mathbb{Q}(i)(\sqrt{2}) = \mathbb{Q}(\sqrt{2}, i)$.
 \end{remark}
 
-\subsubsection{Polynomial Quotient Ring}
+\subsection{Polynomial Quotient Ring}
 
 Now, we present a more general way to construct field extensions. Notice that when constructing $\mathbb{C}$, we used the magical element $i$ that satisfies $i^2=-1$. But here is another way how to think of it.
 
@@ -174,7 +174,7 @@ Now, in the subsequent sections, we would need to extend $\mathbb{F}_p$ at least
     $\mathbb{F}_{p^2} = \mathbb{F}_p[u]/(u^2+1)$ is a valid prime field extension for odd primes $p$ satisfying $p \equiv 3 \pmod{4}$. In this case, extended elements are of the form $c_0+c_1u$ where $c_0,c_1 \in \mathbb{F}_p$ and $u^2=-1$.
 \end{corollary}
 
-\subsubsection{Multiplicative Group of a Finite Field}
+\subsection{Multiplicative Group of a Finite Field}
 
 The non-zero elements of $\mathbb{F}_p$, denoted as $\mathbb{F}_p^{\times}$, form a multiplicative cyclic group. In other words, there exist elements $g \in \mathbb{F}_p^{\times}$, called \textit{generators}, such that
 \begin{equation}
@@ -212,7 +212,7 @@ Yet, let us give the broader definition, including the finite fields case.
 
 Note that such $\omega$ exists if and only if $n \mid (p-1)$. 
 
-\subsubsection{Algebraic Closure}
+\subsection{Algebraic Closure}
 
 Consider the following interesting question: suppose we have a field $\mathbb{F}$. Is there an extension $\mathbb{K}/\mathbb{F}$ such that $\mathbb{K}$ contains all roots of any polynomial in $\mathbb{F}[X]$? The answer is yes, and such a field is called the \textbf{algebraic closure} of $\mathbb{F}$, although not always this algebraic closure has a nice form. But first, let us define what it means for field $\mathbb{F}$ to be algebraically closed.
 
@@ -250,9 +250,9 @@ But what form does the $\overline{\mathbb{F}}_{p}$ have? Well, it is a union of 
     But this definition is super counter-intuitive! So here how we usually interpret it. Suppose I tell you that polynomial $q(x)$ has a root in $\overline{\mathbb{F}}_p$. What that means is that there exists some extension $\mathbb{F}_{p^m}$ such that for some $\alpha \in \mathbb{F}_{p^m}$, $q(\alpha)=0$. We do not know how large this $m$ is, but we know that it exists. For that reason, $\overline{\mathbb{F}}_p$ is defined as an infinite union of all possible field extensions.
 \end{remark}
 
-\subsection{Elliptic Curves}
+\section{Elliptic Curves}
 
-\subsubsection{Classical Definition}
+\subsection{Classical Definition}
 
 Probably, there is no need to explain the importance of elliptic curves. Essentially, the main group being used for cryptographic 
 protocols is the group of points on an elliptic curve. If elliptic curve is ``good enough'', then the discrete logarithm problem assumption,
@@ -379,7 +379,7 @@ Finally, let us define the scalar multiplication operation.
 
 \textbf{Question.} Why do we restrict $\alpha$ to $\mathbb{Z}_r$ and not to $\mathbb{Z}$?
 
-\subsubsection{Discrete Logarithm Problem on Elliptic Curves}
+\subsection{Discrete Logarithm Problem on Elliptic Curves}
 Finally, as defined in the previous section, the \textbf{discrete logarithm} problem on the elliptic curve is the following: typically, $E(\mathbb{F}_p)$ is cyclic, meaning there exist some point $G \in E(\mathbb{F}_p)$, called the \textbf{generator}, such that $\langle G \rangle = E(\mathbb{F}_p)$. Given $P \in E(\mathbb{F}_p)$, the problem consists in finding such a scalar $\alpha \in \mathbb{Z}_r$ such that $[\alpha]G = P$. 
 
 Now, if the curve is ``good'', then the discrete logarithm problem is hard. In fact, the best-known algorithms have a complexity $O(\sqrt{r})$. However, there are certain cases when the discrete log problem is much easier.
@@ -389,8 +389,8 @@ Now, if the curve is ``good'', then the discrete logarithm problem is hard. In f
     \item Suppose that there is some small integer $\tau>0$ such that $r \mid (p^{\tau}-1)$. The discrete log in that case reduces to the discrete log in the finite field $\mathbb{F}_{p^{\tau}}$, which is typically not hard for small enough $\tau$.
 \end{enumerate}
 
-\subsection{Exercises}
-\subsubsection*{Warmup (Oleksandr in search of perfect field extension)}
+\section{Exercises}
+\subsection*{Warmup (Oleksandr in search of perfect field extension)}
 
 \textbf{Exercise 1.} Oleksandr decided to build $\mathbb{F}_{49}$ as $\mathbb{F}_7[i]/(i^2+1)$. Compute $(3+i)(4+i)$. 
 
@@ -488,7 +488,7 @@ Now, if the curve is ``good'', then the discrete logarithm problem is hard. In f
     \end{tabular}
 \end{center}
 
-\subsubsection*{Elliptic Curves}
+\subsection*{Elliptic Curves}
 \textbf{Exercise 10.} Suppose that elliptic curve is defined as $E/\mathbb{F}_{7}: y^2=x^3+b$. Suppose $(2,3)$ lies on the curve. What is the value of $b$?
 
 \textbf{Exercise 11.} Sum of which of the following pairs of points on the elliptic curve $E/\mathbb{F}_{11}$ is equal to the point at infinity $\mathcal{O}$ for any valid curve equation?

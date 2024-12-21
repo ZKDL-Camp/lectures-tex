@@ -4,7 +4,7 @@
 % --- Defining the basic article style ---
 \providecommand\mtfntsize{12pt}
 \ProcessOptions\relax
-\LoadClass[a4paper,\mtfntsize]{extarticle}
+\LoadClass[a4paper,\mtfntsize]{extbook}
 \usepackage{titlepic} % For the image on the title page
 
 % --- Required packages ---
@@ -243,15 +243,16 @@
 \newenvironment{talign*}{\let\displaystyle\textstyle\csname align*\endcsname}{\endalign}
 
 \usepackage[explicit]{titlesec}
-\titleformat{\section}{\fontsize{20}{22}\sffamily\bfseries}{\thesection}{20pt}{#1}
-\titleformat{\subsection}{\fontsize{16}{18}\sffamily\bfseries}{\thesubsection}{12pt}{#1}
-\titleformat{\subsubsection}{\fontsize{10}{12}\sffamily\large\bfseries}{\thesubsubsection}{8pt}{#1}
+\titleformat{\chapter}{\fontsize{22}{24}\bfseries}{\thesection}{20pt}{#1}
+\titleformat{\section}{\fontsize{20}{22}\bfseries}{\thesection}{20pt}{#1}
+\titleformat{\subsection}{\fontsize{16}{18}\bfseries}{\thesubsection}{12pt}{#1}
+\titleformat{\subsubsection}{\fontsize{10}{12}\large\bfseries}{\thesubsubsection}{8pt}{#1}
 
 \titlespacing*{\section}{0pt}{5pt}{5pt}
 \titlespacing*{\subsection}{0pt}{5pt}{5pt}
 \titlespacing*{\subsubsection}{0pt}{5pt}{5pt}
 
-\newcommand{\sectionbreak}{\clearpage} % Start every section on a new page
+% \newcommand{\sectionbreak}{\clearpage} % Start every section on a new page
 % \newcommand{\subsectionbreak}{\clearpage} % Start every subsection on a new page
 
 \newcommand{\Disp}{\displaystyle}

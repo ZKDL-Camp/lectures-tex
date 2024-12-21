@@ -2,7 +2,7 @@
 
 \begin{document}
 
-\subsection{Relations}
+\section{Relations}
 
 Before delving into the projective coordinates and further zero-knowledge topics, let us first discuss the concept of relations, which will be intensively used from now on. Now, what is a relation? The definition is incredibly concise.
 
@@ -135,8 +135,8 @@ Now, as we have said before, a set of all equivalence classes form a partition o
 
 The primary reason we considered equivalence relations is that we will define the projective space as a set of equivalence classes. Besides this, when defining proofs of knowledge, argument of knowledge and zero-knowledge protocols, we will use the concept of relations and equivalence relations intensively.
 
-\subsection{Elliptic Curve in Projective Coordinates}
-\subsubsection{Projective Space}
+\section{Elliptic Curve in Projective Coordinates}
+\subsection{Projective Space}
 
 Recall that we defined the elliptic curve as 
 \begin{equation}    
@@ -202,7 +202,7 @@ Now, projective coordinates are not that useful unless we can come back to the a
     Similarly, all \textcolor{blue}{\textbf{blue line}} points get mapped to the point $B'=(-2/3,1,1)$, while all \textcolor{green!60!black}{\textbf{green line}} points get mapped to the point $C'=(0.2,-0.4,1)$\footnote{One can verify that based on the equations provided from the previous example}.
 \end{example}
 
-\subsubsection{Elliptic Curve Equation in Projective Form}
+\subsection{Elliptic Curve Equation in Projective Form}
 
 Now, quite an interesting question is following: how to represent (basically, rewrite) the ``affine'' elliptic curve equation\footnote{Further, we will use notation $E_{\mathbb{A}}$ to represent the elliptic curve equation in the affine form, and $E_{\mathbb{P}}$ to represent the elliptic curve in the projective form.}
 \begin{equation}
@@ -245,7 +245,7 @@ Finally, let us summarize what we have observed so far.
     Points $P'\approx (0:2.165:1.25)$ and $P'' \approx (0:1.3:0.75)$ in projective form both lie on the curve and get mapped to the same point $P \approx (0,1.732)$ in affine coordinates.
 \end{example}
 
-\subsubsection{General Projective Coordinates}
+\subsection{General Projective Coordinates}
 Hold on, but why did we use the term \textit{homogenous}? The reason why is because we defined equivalence as follows: $(X:Y:Z) \sim (\lambda X: \lambda Y: \lambda Z)$ for some $\lambda \in \overline{\mathbb{K}}$, called \textbf{homogenous coordinates}. However, this is not the only way to define equivalence. Consider a more general form of equivalence relation:
 \begin{equation}
     (X:Y:Z) \sim (X':Y':Z') \;\; \text{iff} \;\; \exists \lambda \in \overline{\mathbb{K}}: (X,Y,Z) = (\lambda^n X', \lambda^m Y', \lambda Z')
@@ -271,7 +271,7 @@ In this case, to come back to the affine form, we need to use the map $\phi: (X:
     Notice that now, under the map $(X:Y:Z) \mapsto (X/Z^2,Y/Z^3)$, points in the same equivalence class (in $\mathbb{R}^3$) do not lie on the same line, but rather on the same \textit{curve}. Namely, equivalence class has a form $[(x_0,y_0,z_0)] = \{t^2x_0,t^3y_0,tz_0: t \in \mathbb{R} \setminus \{0\}\}$.
 \end{example}
 
-\subsubsection{Fast Addition}
+\subsection{Fast Addition}
 
 Let us come back to the affine case and assume that the underlying field is the prime field $\mathbb{F}_p$. Recall that for adding two points $P=(x_P,y_P)$ and $Q=(x_Q,y_Q)$ to get $R=(x_R,y_R) \gets P \oplus Q$ one used the following formulas (there is no need to understand the derivation fully, just take it as a fact):
 \begin{equation}
@@ -322,7 +322,7 @@ The only inversion which is unavoidable in the projective form is the inversion 
     \end{center}
 \end{proposition}
 
-\subsubsection{Scalar Multiplication Basic Implementation}
+\subsection{Scalar Multiplication Basic Implementation}
 
 Now, the question is: how do we implement the scalar multiplication $[k]P$ for the given scalar $k \in \mathbb{Z}_r$ and point $P \in E(\overline{\mathbb{F}}_q)$? 
 
@@ -359,7 +359,7 @@ we cannot do much better than that. However, the main advantages of other, more 
 
 Moreover, here we can use projective coordinates to make the addition and doubling operation more efficient! After all, typically the number of operations is even more than $300$, so making $300$ inversions in affine form is not an option.
 
-\subsection{Elliptic Curve Pairing}\label{section:ecpairing}
+\section{Elliptic Curve Pairing}\label{section:ecpairing}
 
 Pairing is the core object used in threshold signatures, zk-SNARKs constructions, and other cryptographic applications. 
 
@@ -371,7 +371,7 @@ However, a more interesting use-case which we are going to use in SNARKs is that
 
 So what is pairing?
 
-\subsubsection{Definition}
+\subsection{Definition}
 
 \begin{definition}
     \textbf{Pairing} is a bilinear, non-degenerate, efficiently computable map $e: \textcolor{red}{\mathbb{G}_1} \times \textcolor{blue}{\mathbb{G}_2} \to \textcolor{ForestGreen}{\mathbb{G}_T}$, where $\textcolor{red}{\mathbb{G}_1},\textcolor{blue}{\mathbb{G}_2}$ are two groups (typically, elliptic curve groups) and $\textcolor{ForestGreen}{\mathbb{G}_T}$ is a target group (typically, a set of scalars). Let us decipher the definition:
@@ -451,7 +451,7 @@ which is 254-bit long. For that reason, it is natural to define the term \textit
     \textbf{Interesting fact:} this condition is specified in the \texttt{ecpairing} precompile standard used in Ethereum.
 \end{remark}
 
-\subsubsection{Case Study: BLS Signature}
+\subsection{Case Study: BLS Signature}
 
 One of the most elegant applications of pairings is the BLS Signature scheme. Compared to ECDSA or other signature schemes, BLS can be formulated in three lines.
 
@@ -478,7 +478,7 @@ As we see, the verification equation holds.
 
 This scheme is also quite famous for its aggregation properties, which we are not going to consider today.
 
-\subsubsection{Case Study: Verifying Quadratic Equations}
+\subsection{Case Study: Verifying Quadratic Equations}
 
 \begin{example}
     Suppose Alice wants to convince Bob that he knows such $\alpha,\beta$ such that $\alpha + \beta = 2$, but she does not want to reveal $\alpha,\beta$. She can do the following trick:
@@ -519,7 +519,7 @@ This scheme is also quite famous for its aggregation properties, which we are no
     Now, if this is $1$, then $x_1^2+x_1x_2=x_2$, which was exactly what we wanted to prove.
 \end{example}
 
-\subsection{Exercises}
+\section{Exercises}
 
 \textbf{Exercise 1.} What is \textbf{not} a valid equivalence relation $\sim$ over a set $\mathcal{X}$?
 \begin{enumerate}[(A)]

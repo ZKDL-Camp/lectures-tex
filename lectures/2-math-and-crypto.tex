@@ -2,13 +2,13 @@
 
 \begin{document}
 
-\subsection{Basics of Security Analysis}
+\section{Basics of Security Analysis}
 
 In many cases, technical papers include the analysis on the key question: ``How secure is this cryptographic algorithm?'' or rather ``Why this cryptographic algorithm is secure?''. In this section, we will shortly describe the notation and typical construction for justifying the security of cryptographic algorithms.
 
 Typically, the cryptographic security is defined in a form of a game between the adversary (who we call $\mathcal{A}$) and the challenger (who we call $\mathcal{C}h$). The adversary is trying to break the security of the cryptographic algorithm using arbitrary (but still efficient) protocol, while the challenger is following a simple, fixed protocol. The game is played in a form of a challenge, where the adversary is given some information and is asked to perform some task. The security of the cryptographic algorithm is defined based on the probability of the adversary to win the game.
 
-\subsubsection{Cipher Semantic Security}
+\subsection{Cipher Semantic Security}
 Let us get into specifics. Suppose that we want to specify that the encryption scheme is secure. Recall that cipher $\mathcal{E} = (E,D)$ over the space $(\mathcal{K}, \mathcal{M}, \mathcal{C})$ (here, $\mathcal{K}$ is the space containing all possible keys, $\mathcal{M}$ -- all possible messages and $\mathcal{C}$ -- all possible ciphers) consists of two efficiently computable methods:
 \begin{itemize}
     \item $E: \mathcal{K} \times \mathcal{M} \to \mathcal{C}$ -- encryption method, that based on the provided message $m \in \mathcal{M}$ and key $k \in \mathcal{K}$ outputs the cipher $c = E(k,m) \in \mathcal{C}$.
@@ -117,7 +117,7 @@ Do not be afraid of such complex notation, it is quite simple. Notation $\text{P
 
 Let us see some more examples of how to define the security of certain crypographic objects.
 
-\subsubsection{Discrete Logarithm Assumption (DL)}
+\subsection{Discrete Logarithm Assumption (DL)}
 
 Now, let us define the fundamental assumption used in cryptography formally: the \textbf{Discrete Logarithm Assumption} (DL).
 
@@ -138,7 +138,7 @@ Now, let us define the fundamental assumption used in cryptography formally: the
 
 Informally, this assumption means that given $u$, it is very hard to find $\alpha$ such that $u = g^{\alpha}$. But now we can write down this formally!
 
-\subsubsection{Computational Diffie-Hellman (CDH)}
+\subsection{Computational Diffie-Hellman (CDH)}
 
 Another fundamental problem in cryptography is the \textbf{Computational Diffie-Hellman} (CDH) problem. It states that given $g^{\alpha},g^{\beta}$ it is hard to find $g^{\alpha\beta}$. This property is frequently used in the construction of cryptographic protocols such as the Diffie-Hellman key exchange.
 
@@ -159,7 +159,7 @@ Let us define this problem formally.
     The \textbf{Computational Diffie-Hellman Assumption} holds in the group $\mathbb{G}$ if for any efficient adversary $\mathcal{A}$ the advantage $\text{CDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$ is negligible.
 \end{definition}
 
-\subsection{Decisional Diffie-Hellman (DDH)}
+\section{Decisional Diffie-Hellman (DDH)}
 
 Now, we loosen the requirements a bit. The \textbf{Decisional Diffie-Hellman} (DDH) problem states that given $g^{\alpha},g^{\beta},g^{\alpha\beta}$ it is ``hard'' to distinguish $g^{\alpha\beta}$ from a random element in $\mathbb{G}$. Formally, we define this problem as follows.
 
@@ -210,19 +210,19 @@ Now, we can construct our adversary $\mathcal{A}$ as follows. Suppose $\mathcal{
 
 Suppose $\gamma$ is indeed $\alpha \times \beta$. Then, condition $p_{\gamma}'=p_{\gamma}$ will always hold. If $\gamma$ is a random element, then the probability that $p_{\gamma}'=p_{\gamma}$ is $1/2$. Therefore, the probability that $\mathcal{A}$ will guess the bit $b$ correctly is $3/4$, and the advantage is $1/4$ therefore. $\blacksquare$
 
-\subsubsection{Why this is needed?}
+\subsection{Why this is needed?}
 
 Typically, it is impossible to prove the predicate ``for every efficient adversary $\mathcal{A}$ this probability is negligible'' and therefore we need to make assumptions, such as the Discrete Logarithm Assumption or the Computational Diffie-Hellman Assumption. In turn, proving the statement ``if $X$ is secure then $Y$ is also secure'' is manageable and does not require solving any fundamental problems. So, for example,
 knowing that the probability of the adversary to break the Diffie-Hellman assumption is negligible, we can prove that the Diffie-Hellman key exchange is secure. 
 
-\subsection{Basic Number Theory}
+\section{Basic Number Theory}
 
-\subsubsection{Primes}
+\subsection{Primes}
 
 Primes are often used when doing almost any cryptographic computation. A prime number is a natural number ($\mathbb{N}$) that is not a product
 of two smaller natural number. In other words, the prime number is divisible only by itself and 1. The first primes are: 2, 3, 5, 7, 11...
 
-\subsubsection{Deterministic prime tests}
+\subsection{Deterministic prime tests}
 
 A primality test is deterministic if it outputs $\mathtt{True}$ when the number is a prime and $\mathtt{False}$ when the input is composite with probability 1.
 An example of a deterministic prime test is $\mathtt{Trial\_Division\_Test}$. Here is an example implementation in Rust: 
@@ -247,7 +247,7 @@ While further optimizations are possible, they do not change the overall asympto
 In cryptography, $N$ can be extremely large — $256$ bits, $512$ bits, or even $6144$ bits. 
 An algorithm is impractical when dealing with such large numbers.
 
-\subsubsection{Probabilistic prime tests}
+\subsection{Probabilistic prime tests}
 
 A primality test is probabilistic if it outputs $\mathtt{True}$ when the number is a prime and $\mathtt{False}$ when the input is composite with probability less than 1. Such test is often called a pseudoprimality test.
 Fermat Primality and Miller-Rabin Primality Tests are examples of probabilistic primality test. Both of them use the idea of \textbf{Fermat's Little Theorem}:
@@ -287,7 +287,7 @@ def is_prime(n, k):
 Miller-Rabin primality test, is a more advanced form of Fermat primality test. The main difference is it is not vulnerable to \textit{Carmichael numbers},
 which makes it much better to use in practice.
 
-\subsubsection{Greatest Common Divisor}
+\subsection{Greatest Common Divisor}
 
 Greatest common divisor (GCD) of two or more integers, which are not all zero, is the largest positive integer that divides each of the integers. 
 
@@ -313,7 +313,7 @@ Algorithm can be implemented using recursion. Base of the recursion is $gcd(a, 0
 
 Provided algorithm work with $O(log(N))$ asymptotic complexity.
 
-\subsubsection{Least common multiple}
+\subsection{Least common multiple}
 
 Least common multiple (LCM) of two integers $a$ and $b$, is the smallest positive integer that is divisible by both $a$ and $b$.
 
@@ -325,7 +325,7 @@ $lcm(a, b) = \frac{|ab|}{gcd(a,b)}$
      return a * (b / gcd(a, b))
  \end{lstlisting}
 
- \subsubsection{Modular inverse}
+ \subsection{Modular inverse}
 
 Modular multiplicative inverse of an integer $a$ is an integer $b$ such that $a \cdot b \equiv 1 \pmod{m}$. 
 In prime fields it is commonly used as a division operation.
@@ -342,7 +342,7 @@ $a^{m-2} \equiv a^{-1} \pmod{m}$.
     a_inverse = powmod(a, m-2, m) # where powmod(base, power, modulus)
 \end{lstlisting}
 
-\subsubsection{Reed-Solomon codes}
+\subsection{Reed-Solomon codes}
 
 Reed-Solomon codes allows to restore lost or corrupted data, implement threshold secret sharing and is used in some ZK protocols.
 Given a vector of data $V$ a polynomial $P$ is constructed using Lagrange interpolation.
@@ -354,7 +354,7 @@ The error-correcting ability of a Reed-Solomon code is $n-k$, the measure of red
 If the locations of the error symbols are not known in advance, then a Reed-Solomon code can correct up to
 $n-k/2$ erroneous symbols, i.e., it can correct half as many errors as there are redundant symbols added to the block.
 
-\subsubsection{Schwartz-Zippel Lemma}
+\subsection{Schwartz-Zippel Lemma}
 
 \begin{lemma}\label{lemma:sz}
 Let $\mathbb{F}$ be a field. Let $f(x_1, x_2, ..., x_n)$ be a polynomial of total degree $d$. Suppose that $f$ is not the zero polynomial. Let $S$ be
@@ -373,7 +373,7 @@ For large fields, where  $\frac{d}{p}$ is negligible, this property allows to su
 Let $H(x) := P(x) - Q(x)$. Than for each $P(x) = Q(x) \rightarrow H(x) = 0$. Applying Schwartz-Zippel lemma, 
 the probability of $H(x) = 0$ for $x \xleftarrow{R} \mathbb{F} $ is $\le \frac{d}{|S|}$.
 
-\subsection{Exercises}
+\section{Exercises}
 
 \textbf{Exercise 1.} Suppose that for the given cipher with a security parameter $\lambda$, the adversary $\mathcal{A}$ can deduce the least significant bit of the plaintext from the ciphertext. Recall that the advantage 
 of a bit-guessing game is defined as $\text{SS}\mathsf{Adv}[\mathcal{A}] = \left|\Pr[b=\hat{b}] - \frac{1}{2}\right|$, where $b$ is the randomly chosen bit of a challenger, while 

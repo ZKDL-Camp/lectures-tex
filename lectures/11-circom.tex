@@ -2,7 +2,7 @@
 
 \begin{document}
 
-    \subsection{Circom Walkthrough}
+    \section{Circom Walkthrough}
 
     In this final lecture, we bridge the gap between the theoretical concepts presented in previous lectures and their practical realization using the \textbf{Circom} framework.
 
@@ -12,12 +12,12 @@
 
     Throughout this lecture, we will walk through how concepts like R1CS, witness, trusted setup, and verification keys appear in actual code and practice.
 
-    \subsubsection{Journey Begins}
+    \subsection{Journey Begins}
 
     In the previous lectures, we covered a variety of theoretical concepts: zk-SNARKs, trusted setup, arithmetic circuits, constraints, witnesses, and the Rank-1 Constraint System (R1CS) representation.
     Now, let's see how these appear in practice.
 
-    \subsubsection{From Theory to Practice: Circom Basics}
+    \subsection{From Theory to Practice: Circom Basics}
 
     We learned that a circuit can represent a complex arithmetic computation over a finite field.
     Circom allows us to write these circuits in a high-level syntax.
@@ -81,7 +81,7 @@ component main {public [a, b, c]} = Circuit();
     The order of the public signals that should be passed to the verifier is as follows:
     \[ (\texttt{o2}, \texttt{o1}, \texttt{c}, \texttt{a}, \texttt{b}) \]
 
-    \subsubsection{Arguments, Functions, and Vars}
+    \subsection{Arguments, Functions, and Vars}
 
     Sometimes we need to calculate some values as constants for our circuit.
     For example, if you want your circuit to be a multi-tool that, based on provided arguments, can work with different cases.
@@ -144,7 +144,7 @@ component main = Math();
         the constraints that the division should satisfy.
     \end{remark}
 
-    \subsubsection{Theoretical Recap: Using the Learned Concepts}
+    \subsection{Theoretical Recap: Using the Learned Concepts}
 
     Next, let us apply the learned concepts to a more complex examples. We start 
     with the \texttt{if} statement logic.
@@ -296,7 +296,7 @@ template Math() {
         \end{enumerate}
     \end{remark}
 
-    \subsubsection{From R1CS to Proof Generation}
+    \subsection{From R1CS to Proof Generation}
 
     Now, let us break down everything that is happening during the proof
     generation process. After compilation, you will find the following files in
@@ -373,7 +373,7 @@ template Math() {
     The initial \texttt{1} in the witness is a constant to facilitate the usage of constants inside the circuit.
     This corresponds to the fact that $w_0=1$ is often used to handle constant terms in R1CS.
 
-    \subsubsection{Generating and Verifying Proofs}
+    \subsection{Generating and Verifying Proofs}
 
     Now, it is time to look at proof generation and verification.
     In this chapter, our main focus will be on the code from \texttt{test/Math.circuit.ts}.

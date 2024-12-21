@@ -2,9 +2,9 @@
 
 \begin{document}
 
-\subsection{What is zk-SNARK?}
+\section{What is zk-SNARK?}
 
-\subsubsection{Informal Overview}
+\subsection{Informal Overview}
 
 Finally, we've reached the most interesting part of the course, where we will consider various zk-SNARK constructions we are using on the daily basis. Again, recall that we have the presence of two parties:
 \begin{itemize}
@@ -74,7 +74,7 @@ But the problems that we want to solve are in a slightly different format. We ca
 the verifier. Our goal is to prove that we've executed a specific program on a set of data that 
 resolves a specific challenge or gives us a particular result.
 
-\subsubsection{Formal Definition}
+\subsection{Formal Definition}
 
 In this section, we will provide a more formal definition of zk-SNARKs. In case you do not want to
 dive into the technical details, you can skip this part and move to the next sections where we will
@@ -162,9 +162,9 @@ Although having a proof size and verification time lower than linear is nice, th
     \end{itemize}
 \end{example}
 
-\subsection{Arithmetic Circuits}
+\section{Arithmetic Circuits}
 
-\subsubsection{What is Arithmetic Circuit?}
+\subsection{What is Arithmetic Circuit?}
 The cryptographic tools we have learned in the previous lectures operate with numbers or certain 
 primitives above them (like finite field extensions or elliptic curves), so the first question is: how do we convert a program into a mathematical 
 language? Additionally, we need to do this in a way that can be further (a) made succinct, (b) allows us to prove 
@@ -329,7 +329,7 @@ That being said, we can do the same with \textbf{arithmetic circuits} to verify 
 verbosity due to a binary arithmetic, where we had to perceive all intermediate
 values as binary $\{0,1\}$.
 
-\subsubsection{More advanced examples}
+\subsection{More advanced examples}
 
 Let us take a look at some examples of programs and how can we translate them to the arithmetic
 circuits. 
@@ -486,7 +486,7 @@ Corresponding equations for the circuit are:
 
 With the witness vector: $\mathbf{w} = (r, r_1, r_2, r_3, r_4, r_5, a , b, c)$. One example of a valid witness is $(6, 6, 5, 0, 6, 0, 1, 2, 3)$.
 
-\subsubsection{Circuit Satisfability Problem}
+\subsection{Circuit Satisfability Problem}
 
 Now, let us generalize what we have constructed so far. First, we begin with the arithmetic circuit.
 
@@ -571,7 +571,7 @@ Now, as with any other previously considered proving systems, suppose we are not
 
 Proposition above motivates us to look for more advanced techniques to prove the satisfiability of the arithmetic circuits. In the next section, we introduce the Rank-1 Constraint System, which is a more flexible and general way to describe the arithmetic circuits, allowing to further encode the constraints in a more succinct way.
 
-\subsection{Rank-1 Constraint System}
+\section{Rank-1 Constraint System}
 
 Almost any program written in high-level programming language can be translated (compiled) into
 arithmetic circuits, that are really powerfull tool. But for the ZK proof we need slightly different
@@ -579,7 +579,7 @@ format of it --- \textbf{Rank-1 Constraint System}, where the simpliest term is 
 This offers a more flexible and general way to describe these parts. However, we need a bit of 
 Linear Algebra to be comfortable with this concept.
 
-\subsubsection{Linear Algebra Basics}
+\subsection{Linear Algebra Basics}
 
 Although we will not dive deep into the Linear Algebra, we need to understand some basic concepts to
 be able to work with the Rank-1 Constraint System.
@@ -837,7 +837,7 @@ Finally, the final ingredient is the \textbf{outer product} and some of its prop
     outer product, that the resulting matrix has a rank of 1.
 \end{example}
 
-\subsubsection{Constraint Definition}
+\subsection{Constraint Definition}
 With knowledge of the inner product of two vectors, we can now formulate a definition of the 
 constraint in the context of an R1CS.
 
@@ -926,7 +926,7 @@ computation by ensuring that every step, from inputs through intermediates to ou
 the defined relationships, thus encoding the entire computational process in the form of a system
 of rank-1 quadratic equations.
 
-\subsubsection{Why Rank-1?}
+\subsection{Why Rank-1?}
 The last unresolved question is where the ``rank-1`` comes from. Using the outer product we can express the constraint in another form.
 
 \begin{lemma}

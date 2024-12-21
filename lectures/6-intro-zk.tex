@@ -2,7 +2,7 @@
 
 \begin{document}
 
-\subsection{Motivation}
+\section{Motivation}
 
 Finally, we came to the most interesting part of the course: zero-knowledge proofs. Before we start with SNARKs, 
 STARKs, Bulletproofs, and other zero-knowledge proof systems, let us first define what the zero-knowledge is. But even before 
@@ -24,7 +24,7 @@ Let us describe the typical setup. We have two parties: \textbf{prover} $\mathca
     \end{itemize}
 \end{example}
 
-\subsection{Relations and Languages}\label{section:relations_and_languages}
+\section{Relations and Languages}\label{section:relations_and_languages}
 Recall that \textbf{relation} $\mathcal{R}$ is just a subset of $\mathcal{X} \times \mathcal{Y}$ for two arbitrary sets $\mathcal{X}$ and $\mathcal{Y}$. Now, we are going to introduce the notion of a \emph{language of true statements} based on $\mathcal{R}$.
 
 \begin{definition}[Language of true statements]
@@ -73,7 +73,7 @@ However, we want to limit ourselves to languages that has reasonably efficient v
 
 However, this construction on its own is not helpful to us. In particular, without having any randomness and no interaction, building practical proving systems is very hard. Therefore, we need some more ingredients to make proving NP statements easier.
 
-\subsection{Interactive Probabilistic Proofs}
+\section{Interactive Probabilistic Proofs}
 
 As mentioned above, we will bring two more ingredients to the table: \textbf{randomness} and \textbf{interaction}:
 \begin{itemize}
@@ -87,7 +87,7 @@ As mentioned above, we will bring two more ingredients to the table: \textbf{ran
 
 Now, one of the drastic changes is the following: if $x \not\in \mathcal{L}_{\mathcal{R}}$, then the verifier $\mathcal{V}$ should reject the claim with overwhelming\footnote{Some technicality: as you know from the Lecture 2, the value $\varepsilon = \mathsf{negl}(\lambda)$ is called negligible since it is very close to $0$. In turn, the value $1-\varepsilon$ is called \textit{overwhelming} since it is close to $1$.} probability (in contrast to strict probability of $1$). Let us consider the concrete example.
 
-\subsubsection{Example: Quadratic Residue Test}\label{section:quadratic_residue_test}
+\subsection{Example: Quadratic Residue Test}\label{section:quadratic_residue_test}
 
 Again, suppose for relation $\mathcal{R} = \{(x,w) \in (\mathbb{Z}_N^{\times})^2: x \equiv w^2 \pmod{N}\}$ and corresponding language $\mathcal{L}_{\mathcal{R}} = \{x \in \mathbb{Z}_N^{\times}: \exists w \in \mathbb{Z}_N^{\times} \; \text{such that} \; x \equiv w^2 \pmod{N}\}$ the prover $\mathcal{P}$ wants to convince the verifier that the given $x$ is in language $\mathcal{L}_{\mathcal{R}}$. Again, sending $w$ is not an option, as we want to avoid revealing the witness. So how can we proceed? The idea is that the prover $\mathcal{P}$ should prove that he \textit{could} prove it if he felt like it. 
 
@@ -182,7 +182,7 @@ To denote the interaction between algorithms $\mathcal{P}$ and $\mathcal{V}$ on 
     \end{equation*}
 \end{definition}
 
-\subsection{Zero-Knowledge}
+\section{Zero-Knowledge}
 
 Turns out that defining the zero-knowledge to even such a simplistic interactive proof system is not that easy. Informally, we give the following definition.
 
@@ -200,7 +200,7 @@ Basically, the specified interaction is a \textbf{proof}! The prover $\mathcal{P
     The above definition is very informal and, for the most part, complete for the purposes of this course. If you do not want to dive into the formalities, you can skip the next part of this section. However, if you are curious about some technicalities, feel free to continue reading.
 \end{remark}
 
-\subsubsection{The Verifier's View}
+\subsection{The Verifier's View}
 Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended with the successful verification. What has $\mathcal{V}$ learned? Well, first things first, he has learned that the statement is true, that is $x \in \mathcal{L}_{\mathcal{R}}$. However, he has also learned something more: he has learned the transcript of the interaction, that is the sequence of messages between $\mathcal{P}$ and $\mathcal{V}$.
 
 \begin{definition}
@@ -259,7 +259,7 @@ Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended w
     One final note that is essential for the further discussion: variable $\mathsf{view}_{\mathcal{V}}(\mathcal{P}, \mathcal{V})[x]$ is a random variable. For example, for our particular case, both bits could be $0$ or both bits could be $1$. 
 \end{example}
 
-\subsubsection{The Simulation Paradigm}
+\subsection{The Simulation Paradigm}
 
 The key idea is the following: $\mathsf{view}_{\mathcal{V}}(\mathcal{V}, \mathcal{P})[x]$ gives nothing new to the verifier $\mathcal{V}$ about the witness $w$. But it gives nothing new, if he could have \textit{simulated} this view on his own, without even running the interaction. In other words, the ``simulated'' and ``real'' views should be \textit{computationally-indistinguishable}. But let us define the computational indistinguishability first.
 
@@ -297,7 +297,7 @@ However, the condition that verifier might be arbitrary is rather strong. Theref
     \end{equation*}
 \end{definition}
 
-\subsection{Proof of Knowledge}
+\section{Proof of Knowledge}
 
 Now, the main issue with the above definition is that \textit{we have proven the statement correctness, but we have not proven that the prover \textbf{knows} the witness}. These are completely two different things. Let us demonstrate why.
 
@@ -336,9 +336,9 @@ The extractor $\mathcal{E}$ will always output $w$ if $x \in \mathcal{L}_{\mathc
     Note that extractor is given much more than the verifier: he can call the prover multiple times and he can also rewind the prover. This is the main difference between the verifier and the extractor.    
 \end{remark}
 
-\subsection{Fiat-Shamir Heuristic}
+\section{Fiat-Shamir Heuristic}
 
-\subsubsection{Random Oracle}
+\subsection{Random Oracle}
 
 In cryptography, one frequently encounters the term \textit{cryptographic oracle}. In this section, we are not going to dive into the technical details of what that is, yet it is useful to have a general understanding of what it is.
 
@@ -364,7 +364,7 @@ Suppose someone is inputting $x$ to the random oracle $\mathcal{O}_{\text{R}}$. 
     Of course, the sudden appearance of the random oracle is not a magic trick. In practice, the random oracle is typically implemented as a hash function. Of course, formally, the hash function is not a random oracle, yet it is a very good approximation and it is reasonable to assume that the hash function behaves like a random oracle.
 \end{remark}
 
-\subsubsection{Fiat-Shamir Transformation}
+\subsection{Fiat-Shamir Transformation}
 
 Now, the main issue with the interactive proofs is that they are\ldots Well, \textit{interactive}. Ideally, we simply want to accumulate a proof $\pi$, publish it (say, in blockchain) so that anyone (essentially, being the verifier) could check its validity. So we need some tools to make \textit{some} interactive protocols non-interactive. This is, of course, not always possible, but there are some ways to achieve this.
 
@@ -438,7 +438,7 @@ The reason why such transformation works is that the random oracle $\mathcal{O}_
     Suppose that $(\mathcal{P},\mathcal{V})$ is a public-coin interactive argument of knowledge for some language $\mathcal{L}_{\mathcal{R}}$ with a negligible soundness error. Then, the Fiat-Shamir transformation of $(\mathcal{P}^{\mathcal{O}_{\text{R}}},\mathcal{V}^{\mathcal{O}_{\text{R}}})$ is a non-interactive argument for $\mathcal{L}_{\mathcal{R}}$ with negligible soundness error in the random oracle model $\mathcal{O}_{\text{R}}$.
 \end{theorem}
 
-\subsection{Exercises}
+\section{Exercises}
 
 \textbf{Exercise 1.} When dealing with RSA protocol, one frequently encounters the following relation where $e$ is a prime number and $n \in \mathbb{N}$:
 \begin{equation*}
