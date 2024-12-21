@@ -4,7 +4,7 @@
 
     \subsection{Circom Walkthrough}
 
-    In this final lecture, we bridge the gap between the theoretical concepts presented in previous lectures and their practical realization using the \textbf{Circom} framework.
+    In this final lecture, we bridge the gap between the theoretical concepts presented in previous lectures and their practical realization using the \textbf{Circom} DSL.
 
     \begin{definition}
         \textbf{Circom} is a domain-specific language for building arithmetic circuits that can be used to produce zk-SNARK proofs.
@@ -126,18 +126,16 @@ template Math() {
 }
 
 component main = Math();
-        \end{lstlisting}
+        \end{lstlisting}\label{code:division-example}
 
         In this case, no constraints are generated with the $x$ input, and it does not even participate in the witness directly.
-    \end{remark}
 
-    \begin{remark}
-        This is the main difference between Circom and other languages. When you 
+        This is the main difference between Circom and other languages. When you
         write a function evaluation $y = f(x)$ in any other language (say, Python or Rust),
-        you are specifying the set of instructions to compute $y$ from $x$ (commonly 
-        sequentially). In Circom (or in any other R1CS language) you are merely asserting 
-        the \textbf{correctness} of the computation and therefore of all 
-        intermediate computations. This way, if your task would have been to compute 
+        you are specifying the set of instructions to compute $y$ from $x$ (commonly
+        sequentially). In Circom (or in any other R1CS language) you are merely asserting
+        the \textbf{correctness} of the computation and therefore of all
+        intermediate computations. This way, if your task would have been to compute
         $y = \frac{1}{x}$, you could simply ask $y$ to be the result of the division
         (that can be computed out of circuit) and then asserting that $x \times y = 1$
         with $x \neq 0$. This way, you are not writing the division itself, but
@@ -146,11 +144,11 @@ component main = Math();
 
     \subsubsection{Theoretical Recap: Using the Learned Concepts}
 
-    Next, let us apply the learned concepts to a more complex examples. We start 
+    Next, let us apply the learned concepts to a more complex examples. We start
     with the \texttt{if} statement logic.
 
     \begin{example}
-      Recall the complex example we analyzed in earlier lectures:
+        Recall the complex example we analyzed in earlier lectures:
 
         \begin{lstlisting}[language=Python,numbers=none]
 def r(x1: bool, x2: F, x3: F) -> F:
@@ -186,7 +184,7 @@ def r(x1: bool, x2: F, x3: F) -> F:
             \colorlet{gate2 area}{orange!20}
             \colorlet{gate3 edge}{blue!50!black}
             \colorlet{gate3 area}{blue!20}
-            
+
             \tikzset{
                 var/.style={circle, draw=circle edge, fill=circle area, very thick, minimum size=1cm, text centered},
                 gate1/.style={circle, draw=gate1 edge, fill=gate1 area, ultra thick, minimum size=1cm, text centered},
@@ -274,12 +272,12 @@ template Math() {
 
             \node[inner sep=2pt, align=center, minimum size=3cm] (circomside) at (4.5,0) {
                 \hspace{-120px}\textbf{Circom Representation:} \\
-\hspace{-250px}\begin{lstlisting}[language=Circom,numbers=none]
+                \hspace{-250px}\begin{lstlisting}[language=Circom,numbers=none]
 <@\colorbox{blue!10!white}{x1 * x1 === x1;}@>
 <@\colorbox{green!10!white}{\textbf{\textcolor{blue!80!black}{signal}} x1 * x1 === x1;}@>
 <@\colorbox{orange!10!white}{\textbf{\textcolor{blue!80!black}{signal}} selectMult <== x2 * x3;}@>
 <@\colorbox{purple!10!white}{(1 - x1) * (x2 + x3) + selectMult ==> r;}
-\end{lstlisting}
+                \end{lstlisting}
             };
         \end{tikzpicture}
     \end{center}
@@ -372,6 +370,110 @@ template Math() {
 
     The initial \texttt{1} in the witness is a constant to facilitate the usage of constants inside the circuit.
     This corresponds to the fact that $w_0=1$ is often used to handle constant terms in R1CS.
+
+    The Circom also provides a named representation of all witness elements, which is stored in the \texttt{.sym} file and looks as follows:
+
+    \begin{lstlisting}[language=Circom,numbers=none,basicstyle=\ttfamily\scriptsize,escapechar=^]
+1,1,0,^main^.r
+2,2,0,^main^.x1
+3,3,0,^main^.x2
+4,4,0,^main^.x3
+5,5,0,^main^.mult
+6,6,0,^main^.selectMult
+    \end{lstlisting}
+
+    It not only tells us the names of all signals, but also includes information about the optimized signals.
+
+    Recall the previous example where we used division and \texttt{<-{-}} to store it in the intermediate signal.
+    The generated \texttt{.sym} file would look like this:
+
+    \begin{lstlisting}[language=Circom,numbers=none,basicstyle=\ttfamily\scriptsize,escapechar=^]
+1,1,0,^main^.r
+2,^\textcolor{purple}{-1}^,0,^main^.x
+3,2,0,^main^.y
+4,3,0,^main^.b
+    \end{lstlisting}
+
+    As we can see, the $-1$ was added to the signal $x$ to indicate that it is not used in the witness.
+
+    Also, according to the documentation of Circom, there are three levels of optimization (ref: \url{https://docs.circom.io/getting-started/compilation-options}).
+
+    In the \texttt{2.1.9} version of Circom, the default optimization was \texttt{O2}, but it was lowered to \texttt{O1} in following versions because \texttt{O2} was too aggressive leading to vulnerable circuits.
+
+    \begin{remark}
+        In addition, all linear constraints are optimized on the \texttt{O2} optimization.
+    \end{remark}
+
+    Now, let's examine what the third column in the \texttt{.sym} file means.
+
+    Consider the following circuit:
+
+    \begin{lstlisting}[language=Circom,numbers=none,basicstyle=\ttfamily\scriptsize]
+template BinaryCheck() {
+    signal input x1;
+
+    x1 * x1 === x1;
+}
+
+template SelectMult() {
+    signal input x1;
+
+    signal input x2;
+    signal input x3;
+
+    signal mult <== x2 * x3;
+
+    signal output out <== x1 * mult;
+}
+
+template Math() {
+    signal output r;
+
+    signal input x1;
+
+    signal input x2;
+    signal input x3;
+
+    component binCheck = BinaryCheck();
+    binCheck.x1 <== x1;
+
+    component selectMult = SelectMult();
+    selectMult.x1 <== x1;
+    selectMult.x2 <== x2;
+    selectMult.x3 <== x3;
+
+    (1 - x1) * (x2 + x3) + selectMult.out ==> r;
+}
+    \end{lstlisting}
+
+    We split the circuit into three parts, and the \texttt{.sym} file will look like this:
+
+    \begin{lstlisting}[language=Circom,numbers=none,basicstyle=\ttfamily\scriptsize,escapechar=^]
+1,1,^\textcolor{purple}{2}^,^main^.r
+2,2,^\textcolor{purple}{2}^,^main^.x1
+3,3,^\textcolor{purple}{2}^,^main^.x2
+4,4,^\textcolor{purple}{2}^,^main^.x3
+5,-1,^\textcolor{red}{0}^,^main^.binCheck.x1
+6,5,^\textcolor{blue}{1}^,^main^.selectMult.out
+7,-1,^\textcolor{blue}{1}^,^main^.selectMult.x1
+8,-1,^\textcolor{blue}{1}^,^main^.selectMult.x2
+9,-1,^\textcolor{blue}{1}^,^main^.selectMult.x3
+10,6,^\textcolor{blue}{1}^,^main^.selectMult.mult
+    \end{lstlisting}
+
+    As we can see, the third column indicates the locality of the signal.
+    Essentially, it tells us which signals are grouped together under the same template.
+
+    Another interesting aspect is the order: $0$ represents the first component, $1$ represents the second component used during computation, and the last component used is the actual `main`.
+
+    \begin{remark}
+        Pay attention to the difference between the modified \texttt{Math} circuit's \texttt{.sym} file and the original one.
+        Even though we added more signals (i.e., constraints), they were actually optimized by Circom back to the original state.
+    \end{remark}
+
+    And the last column is the full name of the constraint, including the path to where it is defined in the code.
+
+    With this, we have covered all the important files generated by Circom.
 
     \subsubsection{Generating and Verifying Proofs}
 
@@ -551,9 +653,9 @@ const proof = await circuit.generateProof(inputs);
 
     \begin{remark}[On representing $\mathbb{F}_{p^{12}}$ element]
         One might wonder: why is the element from $\mathbb{F}_{p^{12}}$ is represented as a pair of two arrays,
-        each consisting of three pairs of prime field elements? The primary reason is that the most convenient 
-        way to construct $\mathbb{F}_{p^{12}}$ element is to use the so-called \textbf{tower of extensions}: we represent 
-        an element from $\mathbb{F}_{p^{12}}$ as a pair of two $\mathbb{F}_{p^6}$ elements, while each $\mathbb{F}_{p^6}$ 
+        each consisting of three pairs of prime field elements? The primary reason is that the most convenient
+        way to construct $\mathbb{F}_{p^{12}}$ element is to use the so-called \textbf{tower of extensions}: we represent
+        an element from $\mathbb{F}_{p^{12}}$ as a pair of two $\mathbb{F}_{p^6}$ elements, while each $\mathbb{F}_{p^6}$
         consists of a triplet of $\mathbb{F}_{p^2}$ elements. For more details, see \Cref{section:field_extensions}
     \end{remark}
 
