@@ -10,11 +10,17 @@
   morecomment=[s]{/*}{*/},
   morestring=[b]{"},
   alsoletter={:},                % For highlighting things like `something: type`
-  % Control flow and other JS keywords
   keywordstyle=\bfseries\color{blue},
+  keywordstyle=[2]\color[rgb]{0, 0.5, 0}, % [2] Signal types
   keywordsprefix={},
-  keywords={break,case,class,catch,const,continue,debugger,default,delete,do,else,enum,export,extends,false,finally,for,function,if,import,in,instanceof,interface,let,new,null,return,super,switch,this,throw,true,try,typeof,var,void,while,with,yield,declare,abstract,as,asserts,any,readonly,private,protected,public,static,get,set,never,async,await,unknown,type,from},
-  % We could add a separate keyword class for built-ins or type primitives if needed.
+  % Control flow keywords
+  morekeywords={%
+    break,case,class,catch,const,continue,debugger,default,delete,do,else,enum,export,extends,false,finally,for,function,if,import,in,instanceof,interface,let,new,null,return,super,switch,this,throw,true,try,typeof,var,void,while,with,yield,declare,abstract,as,asserts,any,readonly,private,protected,public,static,get,set,never,async,await,unknown,type,from
+  },%
+  % Signal types
+  morekeywords=[2]{%
+    expect,to,equal,deep,be
+  }
 }
 
 \lstdefinestyle{colouredTypeScript}{%
@@ -22,7 +28,8 @@
   basicstyle=\ttfamily,
   commentstyle=\color[gray]{0.4},
   stringstyle=\color[rgb]{0,0,0.5},
-  keywordstyle=\bfseries\color{blue},
+  keywordstyle=\bfseries\color{red},
+  keywordstyle=[2]{\color[rgb]{0.75,0.75,0}}, % [2] Signal types
   columns=flexible,
   keepspaces=true,
   showspaces=false,

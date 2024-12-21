@@ -12,7 +12,7 @@
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[english]{babel}
 \RequirePackage{cmbright}
-
+\RequirePackage{blkarray}
 \RequirePackage{graphicx}
 \RequirePackage{framed}
 \RequirePackage{dsfont}
@@ -67,12 +67,6 @@
 \let\@ifnextchar\new@ifnextchar
 \array{#1}}
 
-% --- Linter settings ---
-\RequirePackage{listings, listings-rust}
-\RequirePackage{listings, listings-circom}
-\RequirePackage{listings, listings-json}
-\RequirePackage{listings, listings-ts}
-
 % --- Ticks and crosses ---
 \usepackage{pifont} % http://ctan.org/pkg/pifont
 \newcommand{\cmark}{\textcolor{green!65!black}{\ding{51}}}%
@@ -98,8 +92,14 @@
     breakatwhitespace=true,
     tabsize=2,
     extendedchars=false,
-    postbreak=\mbox{\hspace{-1.4em}\textcolor{purple}{$\hookrightarrow$}\space}
+    postbreak=\mbox{\hspace{-1.4em}\textcolor{purple}{$\hookrightarrow$}\space},
+    escapeinside={<@}{@>}
 }
+% --- Linter settings ---
+\RequirePackage{listings, listings-rust}
+\RequirePackage{listings, listings-circom}
+\RequirePackage{listings, listings-json}
+\RequirePackage{listings, listings-ts}
 
 \newcommand{\remind}[1]{\textcolor{red}{\textbf{#1}}} % To remind me of unfinished work to fix later
 \newcommand{\hide}[1]{} % To hide large blocks of code without using % symbols

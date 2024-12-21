@@ -1,22 +1,4 @@
 \documentclass[../lecture-notes.tex]{subfiles}
-\usepackage{blkarray}
-
-\colorlet{circle edge}{gray!50!black}
-\colorlet{circle area}{gray!20}
-\colorlet{gate1 edge}{green!50!black}
-\colorlet{gate1 area}{green!20}
-\colorlet{gate2 edge}{orange!50!black}
-\colorlet{gate2 area}{orange!20}
-\colorlet{gate3 edge}{blue!50!black}
-\colorlet{gate3 area}{blue!20}
-
-\tikzset{
-    var/.style={circle, draw=circle edge, fill=circle area, very thick, minimum size=1cm, text centered},
-    gate1/.style={circle, draw=gate1 edge, fill=gate1 area, ultra thick, minimum size=1cm, text centered},
-    gate2/.style={circle, draw=gate2 edge, fill=gate2 area, ultra thick, minimum size=1cm, text centered},
-    gate3/.style={circle, draw=gate3 edge, fill=gate3 area, ultra thick, minimum size=1cm, text centered},
-    arrow/.style={-Stealth, ultra thick}
-}
 
 \begin{document}
 
@@ -25,7 +7,7 @@
     In this final lecture, we bridge the gap between the theoretical concepts presented in previous lectures and their practical realization using the \textbf{Circom} framework.
 
     \begin{definition}
-        Circom is a domain-specific language for building arithmetic circuits that can be used to produce zk-SNARK proofs.
+        \textbf{Circom} is a domain-specific language for building arithmetic circuits that can be used to produce zk-SNARK proofs.
     \end{definition}
 
     Throughout this lecture, we will walk through how concepts like R1CS, witness, trusted setup, and verification keys appear in actual code and practice.
@@ -97,7 +79,7 @@ component main {public [a, b, c]} = Circuit();
     \end{lstlisting}
 
     The order of the public signals that should be passed to the verifier is as follows:
-    \[ o2, o1, c, a, b \]
+    \[ (\texttt{o2}, \texttt{o1}, \texttt{c}, \texttt{a}, \texttt{b}) \]
 
     \subsubsection{Arguments, Functions, and Vars}
 
@@ -123,15 +105,15 @@ template Math(padding) {
 component main {public [x]} = Math(12);
     \end{lstlisting}
 
-    Here, \texttt{var elementsNumber} and the function \texttt{transformNumber} are evaluated at compile time.
-
-    Remember that assignments using `var` and functions do not produce constraints by themselves.
-    Only `<==`, `==>`, or `===` and actual arithmetic on signals produce constraints reflected in R1CS.
+    Here, \texttt{var elementsNumber} and the function \texttt{transformNumber}
+    are evaluated at compile time. Remember that assignments using \texttt{var} and
+    functions do not produce constraints by themselves. Only \texttt{<==},
+    \texttt{==>}, or \texttt{===} and actual arithmetic on signals produce
+    constraints reflected in R1CS.
 
     \begin{remark}
-        Sometimes you need to perform operations like division or non-quadratic multiplication on the signal.
-        For this purpose, you can use the `-->` and `<--` notations.
-        For example:
+        Sometimes, one needs to perform operations like division or non-quadratic multiplication on the signal.
+        For this purpose, you can use the \texttt{{-}->} and \texttt{<-{-}} notations to compute the values ``out-of-circuit''. For example:
 
         \begin{lstlisting}[language=Circom,numbers=none]
 template Math() {
@@ -149,11 +131,27 @@ component main = Math();
         In this case, no constraints are generated with the $x$ input, and it does not even participate in the witness directly.
     \end{remark}
 
+    \begin{remark}
+        This is the main difference between Circom and other languages. When you 
+        write a function evaluation $y = f(x)$ in any other language (say, Python or Rust),
+        you are specifying the set of instructions to compute $y$ from $x$ (commonly 
+        sequentially). In Circom (or in any other R1CS language) you are merely asserting 
+        the \textbf{correctness} of the computation and therefore of all 
+        intermediate computations. This way, if your task would have been to compute 
+        $y = \frac{1}{x}$, you could simply ask $y$ to be the result of the division
+        (that can be computed out of circuit) and then asserting that $x \times y = 1$
+        with $x \neq 0$. This way, you are not writing the division itself, but
+        the constraints that the division should satisfy.
+    \end{remark}
+
     \subsubsection{Theoretical Recap: Using the Learned Concepts}
 
-    Recall the complex example we analyzed in earlier lectures:
+    Next, let us apply the learned concepts to a more complex examples. We start 
+    with the \texttt{if} statement logic.
 
     \begin{example}
+      Recall the complex example we analyzed in earlier lectures:
+
         \begin{lstlisting}[language=Python,numbers=none]
 def r(x1: bool, x2: F, x3: F) -> F:
     return x2 * x3 if x1 else x2 + x3
@@ -180,6 +178,23 @@ def r(x1: bool, x2: F, x3: F) -> F:
     \begin{figure}[h!]
         \centering
         \begin{tikzpicture}
+            \colorlet{circle edge}{gray!50!black}
+            \colorlet{circle area}{gray!20}
+            \colorlet{gate1 edge}{green!50!black}
+            \colorlet{gate1 area}{green!20}
+            \colorlet{gate2 edge}{orange!50!black}
+            \colorlet{gate2 area}{orange!20}
+            \colorlet{gate3 edge}{blue!50!black}
+            \colorlet{gate3 area}{blue!20}
+            
+            \tikzset{
+                var/.style={circle, draw=circle edge, fill=circle area, very thick, minimum size=1cm, text centered},
+                gate1/.style={circle, draw=gate1 edge, fill=gate1 area, ultra thick, minimum size=1cm, text centered},
+                gate2/.style={circle, draw=gate2 edge, fill=gate2 area, ultra thick, minimum size=1cm, text centered},
+                gate3/.style={circle, draw=gate3 edge, fill=gate3 area, ultra thick, minimum size=1cm, text centered},
+                arrow/.style={-Stealth, ultra thick}
+            }
+
             % Nodes
             \node[var] (c) at (0, -3) {$c$};
             \node[var] (b) at (0, -1.5) {$b$};
@@ -245,27 +260,26 @@ template Math() {
     In our case, we have an additional output signal, so we can \texttt{"}return\texttt{"} it from the circuit.
     Now, let's compare the mathematical and Circom representations.
 
+    % FIXME (@ZamDimon): Spacing below is freaking awful. Please fix it later.
     \begin{center}
         \begin{tikzpicture}
-            \node[inner sep=0pt, align=left] (mathside) at (-4,0) {
+            \node[inner sep=0pt, align=left] (mathside) at (-4.5,0) {
                 \\
                 \textbf{Mathematical Constraints:} \\
-                $x_1 \times x_1 = x_1$ \\
-                $x_2 \times x_3 = \mathsf{mult}$ \\
-                $x_1 \times \mathsf{mult} = \mathsf{selectMult}$ \\
-                $(1 - x_1) \times (x_2 + x_3) = r - \mathsf{selectMult}$ \\
+                \colorbox{blue!10!white}{$x_1 \times x_1 = x_1$} \\
+                \colorbox{green!10!white}{$x_2 \times x_3 = \mathsf{mult}$} \\
+                \colorbox{orange!10!white}{$x_1 \times \mathsf{mult} = \mathsf{selectMult}$} \\
+                \colorbox{purple!10!white}{$(1 - x_1) \times (x_2 + x_3) = r - \mathsf{selectMult}$} \\
             };
 
-            \node[inner sep=2pt, align=center] (circomside) at (2,-4) {
-                \textbf{Circom Representation:} \\
-                \begin{lstlisting}[language=Circom,numbers=none]
-                     x1 * x1 === x1;
-
-                     signal mult <== x2 * x3;
-                     signal selectMult <== x1 * mult;
-
-                     (1 - x1) * (x2 + x3) + selectMult ==> r;
-                \end{lstlisting}
+            \node[inner sep=2pt, align=center, minimum size=3cm] (circomside) at (4.5,0) {
+                \hspace{-120px}\textbf{Circom Representation:} \\
+\hspace{-250px}\begin{lstlisting}[language=Circom,numbers=none]
+<@\colorbox{blue!10!white}{x1 * x1 === x1;}@>
+<@\colorbox{green!10!white}{\textbf{\textcolor{blue!80!black}{signal}} x1 * x1 === x1;}@>
+<@\colorbox{orange!10!white}{\textbf{\textcolor{blue!80!black}{signal}} selectMult <== x2 * x3;}@>
+<@\colorbox{purple!10!white}{(1 - x1) * (x2 + x3) + selectMult ==> r;}
+\end{lstlisting}
             };
         \end{tikzpicture}
     \end{center}
@@ -284,9 +298,10 @@ template Math() {
 
     \subsubsection{From R1CS to Proof Generation}
 
-    Now, let's break down everything that happened.
-    After compilation, you will find the following files in the `zkit/artifacts/circuits` folder (starting from the project root):
-
+    Now, let us break down everything that is happening during the proof
+    generation process. After compilation, you will find the following files in
+    the \texttt{zkit/artifacts/circuits} folder (starting from the project
+    root):
     \begin{itemize}
         \item \texttt{.r1cs} file: The Rank-1 Constraint System representation of the circuit.
         \item \texttt{.wasm and *.js} files: The code to compute the witness from the given inputs.
@@ -294,9 +309,9 @@ template Math() {
         \item \texttt{.sym} file: Symbolic reference for signals.
     \end{itemize}
 
-    Let's start with the R1CS file.
-
-    In Lecture 8, we defined the following coefficient vectors (in simple constraints) for our task:
+    Let us start with the \texttt{.r1cs} file. In \Cref{section:circuits},
+    we defined the following coefficient vectors (in simple constraints) for our
+    task:
     \begin{align*}
         \mathbf{a}_1 &= (0, 0, 1, 0, 0, 0, 0) & \quad \mathbf{b}_1 &= (0, 0, 1, 0, 0, 0, 0) & \quad \mathbf{c}_1 &= (0, 0, 1, 0, 0, 0, 0) \\
         \mathbf{a}_2 &= (0, 0, 0, 1, 0, 0, 0) & \quad \mathbf{b}_2 &= (0, 0, 0, 0, 1, 0, 0) & \quad \mathbf{c}_2 &= (0, 0, 0, 0, 0, 1, 0) \\
@@ -304,9 +319,9 @@ template Math() {
         \mathbf{a}_4 &= (1, 0, -1, 0, 0, 0, 0) & \quad \mathbf{b}_4 &= (0, 0, 0, 1, 1, 0, 0) & \quad \mathbf{c}_4 &= (0, 1, 0, 0, 0, 0, -1)
     \end{align*}
 
-    On the other hand, using the test from the `test/Math.witness.test.ts` file and reading the R1CS file, we can see:
+    On the other hand, using the test from the \texttt{test/Math.witness.test.ts} file and reading the R1CS file, we can see:
 
-    \begin{lstlisting}[language=TypeScript,numbers=none,basicstyle=\footnotesize\ttfamily\scriptsize]
+    \begin{lstlisting}[language=TypeScript,numbers=none,basicstyle=\scriptsize\ttfamily\scriptsize]
     expect(constraint1[0]).to.deep.equal([ 0n, 0n, 1n, 0n, 0n, 0n, 0n ]);
     expect(constraint1[1]).to.deep.equal([ 0n, 0n, 1n, 0n, 0n, 0n, 0n ]);
     expect(constraint1[2]).to.deep.equal([ 0n, 0n, 1n, 0n, 0n, 0n, 0n ]);
@@ -329,26 +344,23 @@ template Math() {
     Mostly, the structure generated by Circom aligns with what we had devised, except for the last constraint.
     The difference occurs because of Circom's optimization to make proof generation and verification more efficient.
 
-    Now, let's take a closer look at how the witness is computed. In Lecture 8, we had:
+    Now, let's take a closer look at how the witness is computed. In \Cref{section:circuits}, we had:
     \[ \mathbf{w} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult}) \]
 
-    Given the inputs:
-    \[
-        x_1 = 1, x_2 = 3, x_3 = 4,
-    \]
-
-    We can quickly do the math and find out that the actual witness should look like this:
-    \[ \mathbf{w} = (1, 12, 1, 3, 4, 12, 12) \]
-    based on:
+    Given the inputs: $x_1 = 1, x_2 = 3, x_3 = 4$, we can quickly do the math
+    and find out that the actual witness should look like this: $\mathbf{w} =
+    (1, 12, 1, 3, 4, 12, 12)$ based on:
     \begin{gather*}
         \mathsf{mult} = 3 \times 4 = 12 \\
         \mathsf{selectMult} = 1 \times 12 = 12 \\
         r = 1 \times (3 \times 4) + (1 - 1) \times (3 + 4) = 12 + 0 = 12
     \end{gather*}
 
-    Indeed, it aligns with the test from `test/Math.witness.test.ts`:
+    Indeed, it aligns with the test from \texttt{test/Math.witness.test.ts}:
 
-    \begin{lstlisting}[language=TypeScript,numbers=none,basicstyle=\footnotesize\ttfamily\scriptsize]
+    \newpage
+
+    \begin{lstlisting}[language=TypeScript,numbers=none,basicstyle=\ttfamily\scriptsize]
     expect(witness[0]).to.equal(1n);
     expect(witness[1]).to.equal(12n); // r
     expect(witness[2]).to.equal(1n);  // x1
@@ -358,24 +370,22 @@ template Math() {
     expect(witness[6]).to.equal(12n); // selectMult
     \end{lstlisting}
 
-    \vspace{0.5cm}
-
-    The initial `1` in the witness is a constant to facilitate the usage of constants inside the circuit.
-    This directly corresponds to the theory that $w_0=1$ is often used to handle constant terms in R1CS.
+    The initial \texttt{1} in the witness is a constant to facilitate the usage of constants inside the circuit.
+    This corresponds to the fact that $w_0=1$ is often used to handle constant terms in R1CS.
 
     \subsubsection{Generating and Verifying Proofs}
 
     Now, it is time to look at proof generation and verification.
-    In this chapter, our main focus will be on the code from `test/Math.circuit.ts`.
+    In this chapter, our main focus will be on the code from \texttt{test/Math.circuit.ts}.
 
-    To generate a proof, we need to call the `generateProof` method on the circuit object:
+    To generate a proof, we need to call the \texttt{generateProof} method on the circuit object:
 
-    \begin{lstlisting}[language=Python,numbers=none]
+    \begin{lstlisting}[language=TypeScript,numbers=none]
 const proof = await circuit.generateProof(inputs);
     \end{lstlisting}
 
     The actual proof looks like this:
-    \begin{lstlisting}[language=JSON,numbers=none,basicstyle=\footnotesize\ttfamily\tiny]
+    \begin{lstlisting}[language=JSON,numbers=none,basicstyle=\scriptsize\ttfamily\tiny]
 {
  "proof": {
   "pi_a": [
@@ -426,12 +436,12 @@ const proof = await circuit.generateProof(inputs);
         When submitting the proof, we have to swap elements inside the arrays of the b point, so that the proof can be verified correctly.
     \end{remark}
 
-    These points are used by the verifier:
+    These three points $\pi_L$, $\pi_R$, $\pi_O$ are used by the verifier to check the equality:
     \[
         e(\pi_L, \pi_R) = e(g_1^\alpha, g_2^\beta)e(\pi_{\text{io}},g_2^\gamma)e(\pi_O,g_2^\delta).
     \]
 
-    Other constants needed for the verifier are defined in the `zkit/artifacts/circuits/Math.circom/Math.vkey.json` file:
+    Other constants needed for the verifier (for example, verification keys $g_1^{\alpha}$ or $g_2^{\beta}$) are defined in the following file: \texttt{zkit/artifacts/circuits/Math.circom/Math.vkey.json}. See below:
     \begin{lstlisting}[language=JSON,numbers=none,basicstyle=\footnotesize\ttfamily\tiny]
 {
   "protocol": "groth16",
@@ -531,12 +541,21 @@ const proof = await circuit.generateProof(inputs);
 
     \vspace{0.5cm}
 
-    Quick reminder about the structure of points in the proof:
+    Quick reminder about the structure of points in the proof for BN254 (BN128) curve:
     \begin{itemize}
-        \item Left inputs to $e$ are of the form $(x,y) \in \mathbb{G}_1$ --- a regular curve.
-        \item Right inputs to $e$ are of the form $((x_1,y_1),(x_2,y_2)) \in \mathbb{G}_2$ --- a ``complex'' curve, consisting of two $\mathbb{F}_{p^2}$ coordinates.
-        \item $e(g_1^{\alpha}, g_2^{\beta})$ is of the form $(x_1,\dots,x_{12}) \in \mathbb{F}_{p^{12}}$.
+        \item Each point is either from the regular curve $\mathbb{G}_1: y^2=x^3+b$ over $\mathbb{F}_p$ or from the quadratic extension curve $\mathbb{G}_2: y'^2=x'^3+b'$ over $\mathbb{F}_{p^2}$. For BN254, the quadratic extension is defined as $\mathbb{F}_{p^2} = \mathbb{F}_p(i)$ with $i^2+1$. Curve coefficients are $b=3 \in \mathbb{F}_p$ and $b'=\frac{3}{9+i} \in \mathbb{F}_{p^2}$.
+        \item Left inputs to the pairing function $e$ are the points on the regular curve $\mathbb{G}_1$. They are specified in the form of two field elements $(x,y) \in \mathbb{G}_1$, where $x, y \in \mathbb{F}_p$ are the coordinates.
+        \item Right inputs to the pairing function $e$ are the points over the quadratic extension curve $\mathbb{G}_2$. They are specified of the form of four prime field elements $(x_{1}, y_{1}, x_{2}, y_2) \in \mathbb{G}_2$, where the coordinates are $x_1+iy_1$, $x_2+iy_2 \in \mathbb{F}_{p^2}$.
+        \item $e(g_1^{\alpha}, g_2^{\beta})$ is the element from the multiplicative group $\mathbb{F}_{p^{12}}^{\times}$. Therefore, we need 12 prime field elements to represent it.
     \end{itemize}
+
+    \begin{remark}[On representing $\mathbb{F}_{p^{12}}$ element]
+        One might wonder: why is the element from $\mathbb{F}_{p^{12}}$ is represented as a pair of two arrays,
+        each consisting of three pairs of prime field elements? The primary reason is that the most convenient 
+        way to construct $\mathbb{F}_{p^{12}}$ element is to use the so-called \textbf{tower of extensions}: we represent 
+        an element from $\mathbb{F}_{p^{12}}$ as a pair of two $\mathbb{F}_{p^6}$ elements, while each $\mathbb{F}_{p^6}$ 
+        consists of a triplet of $\mathbb{F}_{p^2}$ elements. For more details, see \Cref{section:field_extensions}
+    \end{remark}
 
     Thus, we have covered all the information about the internal structure of the Circom files needed for proof generation and verification.
 
