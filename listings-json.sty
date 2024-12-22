@@ -1,0 +1,46 @@
+\NeedsTeXFormat{LaTeX2e}[1994/06/01]
+\ProvidesPackage{listings-rust}[2018/01/23 Custom Package]
+
+\RequirePackage{color}
+\RequirePackage{listings}
+
+\lstdefinelanguage{JSON}{
+  basicstyle=\ttfamily,
+  comment=[l]{//},         % Though JSON doesn't allow comments, this is just for completeness
+  commentstyle=\color[gray]{0.4},
+  showstringspaces=false,
+  string=[s]{"}{"},
+  morestring=[b]',
+  % Highlight true, false, null as special keywords:
+  literate=
+    *{true}{{{\color{blue}true}}}4
+     {false}{{{\color{blue}false}}}5
+     {null}{{{\color{blue}null}}}4,
+}
+
+\lstdefinestyle{colouredJson}{%
+  language=Json,
+  basicstyle=\ttfamily,
+  commentstyle=\color[gray]{0.4},
+  stringstyle=\color[rgb]{0,0,0.5},
+  columns=flexible,
+  keepspaces=true,
+  showspaces=false,
+  showtabs=false,
+  showstringspaces=false,
+}
+
+\lstdefinestyle{boxedJson}{%
+  style=colouredJson,
+  numbers=left,
+  firstnumber=auto,
+  numberblanklines=true,
+  frame=single,
+  numberstyle=\tiny,
+  numbersep=7pt,
+  framesep=5pt,
+  framerule=1pt,
+  xleftmargin=15pt,
+  backgroundcolor=\color[gray]{0.97},
+  rulecolor=\color[gray]{0.90},
+}
