@@ -320,16 +320,16 @@ def r(x1: bool, x2: F, x3: F) -> F:
     On the other hand, using the test from the \texttt{test/Math.witness.test.ts} file and reading the R1CS file, we can see:
 
     \begin{center}
-      \begin{tcolorbox}[enhanced,
-        width=1.0\textwidth,
-        title={\textbf{test/Math.witness.test.ts}},
-        coltitle=gray!25!black,
-        attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
-        boxed title style={size=small,colframe=gray!75!black,
-        colback=Green!30!white,boxrule=1.5pt},
-        top=-0.3cm,
-        bottom=-0.3cm]
-    \begin{lstlisting}[language=TypeScript,numbers=none,basicstyle=\scriptsize\ttfamily\scriptsize]
+        \begin{tcolorbox}[enhanced,
+            width=1.0\textwidth,
+            title={\textbf{test/Math.witness.test.ts}},
+            coltitle=gray!25!black,
+            attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
+            boxed title style={size=small,colframe=gray!75!black,
+            colback=Green!30!white,boxrule=1.5pt},
+            top=-0.3cm,
+            bottom=-0.3cm]
+            \begin{lstlisting}[language=TypeScript,numbers=none,basicstyle=\scriptsize\ttfamily\scriptsize]
     expect(constraint1[0]).to.deep.equal([ 0n, 0n, 1n, 0n, 0n, 0n, 0n ]);
     expect(constraint1[1]).to.deep.equal([ 0n, 0n, 1n, 0n, 0n, 0n, 0n ]);
     expect(constraint1[2]).to.deep.equal([ 0n, 0n, 1n, 0n, 0n, 0n, 0n ]);
@@ -345,9 +345,9 @@ def r(x1: bool, x2: F, x3: F) -> F:
     expect(constraint4[0]).to.deep.equal([ babyJub.F.negone, 0n, 0n, 0n, 0n, 0n, 0n ]);
     expect(constraint4[1]).to.deep.equal([ 0n, 0n, 0n, 1n, 0n, 0n, 0n ]);
     expect(constraint4[2]).to.deep.equal([ 0n, babyJub.F.negone, 0n, 0n, 0n, 0n, 0n ]);
-    \end{lstlisting}
-  \end{tcolorbox}
-\end{center}
+            \end{lstlisting}
+        \end{tcolorbox}
+    \end{center}
 
     \vspace{0.5cm}
 
@@ -371,16 +371,16 @@ def r(x1: bool, x2: F, x3: F) -> F:
     \newpage
 
     \begin{center}
-      \begin{tcolorbox}[enhanced,
-        width=0.75\textwidth,
-        title={\textbf{test/Math.witness.test.ts}},
-        coltitle=gray!25!black,
-        attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
-        boxed title style={size=small,colframe=gray!75!black,
-        colback=Green!30!white,boxrule=1pt},
-        top=-0.3cm,
-        bottom=-0.3cm]
-    \begin{lstlisting}[language=TypeScript,numbers=none,basicstyle=\ttfamily\footnotesize]
+        \begin{tcolorbox}[enhanced,
+            width=0.75\textwidth,
+            title={\textbf{test/Math.witness.test.ts}},
+            coltitle=gray!25!black,
+            attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
+            boxed title style={size=small,colframe=gray!75!black,
+            colback=Green!30!white,boxrule=1pt},
+            top=-0.3cm,
+            bottom=-0.3cm]
+            \begin{lstlisting}[language=TypeScript,numbers=none,basicstyle=\ttfamily\footnotesize]
     expect(witness[0]).to.equal(1n);
     expect(witness[1]).to.equal(12n); // r
     expect(witness[2]).to.equal(1n);  // x1
@@ -388,9 +388,9 @@ def r(x1: bool, x2: F, x3: F) -> F:
     expect(witness[4]).to.equal(4n);  // x3
     expect(witness[5]).to.equal(12n); // mult
     expect(witness[6]).to.equal(12n); // selectMult
-    \end{lstlisting}
-  \end{tcolorbox}
-\end{center}
+            \end{lstlisting}
+        \end{tcolorbox}
+    \end{center}
 
     The initial \texttt{1} in the witness is a constant to facilitate the usage of constants inside the circuit.
     This corresponds to the fact that $w_0=1$ is often used to handle constant terms in R1CS.
@@ -398,25 +398,25 @@ def r(x1: bool, x2: F, x3: F) -> F:
     The Circom also provides a named representation of all witness elements, which is stored in the \texttt{.sym} file and looks as follows:
 
     \begin{center}
-      \begin{tcolorbox}[enhanced,
-        width=0.5\textwidth,
-        title=\textbf{.sym file for $x_1? \; x_2 \times x_3: x_2+x_3$},
-        coltitle=gray!25!black,
-        attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
-        boxed title style={size=small,colframe=gray!75!black,
-        colback=blue!30!white,boxrule=1pt},
-        top=-0.35cm,
-        bottom=-0.35cm]
-        \begin{lstlisting}[language=Circom,numbers=none,basicstyle=\ttfamily\footnotesize,escapechar=^]
+        \begin{tcolorbox}[enhanced,
+            width=0.5\textwidth,
+            title=\textbf{.sym file for $x_1? \; x_2 \times x_3: x_2+x_3$},
+            coltitle=gray!25!black,
+            attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
+            boxed title style={size=small,colframe=gray!75!black,
+            colback=blue!30!white,boxrule=1pt},
+            top=-0.35cm,
+            bottom=-0.35cm]
+            \begin{lstlisting}[language=Circom,numbers=none,basicstyle=\ttfamily\footnotesize,escapechar=^]
 1,1,0,^main^.r
 2,2,0,^main^.x1
 3,3,0,^main^.x2
 4,4,0,^main^.x3
 5,5,0,^main^.mult
 6,6,0,^main^.selectMult
-      \end{lstlisting}
-    \end{tcolorbox}
-  \end{center}
+            \end{lstlisting}
+        \end{tcolorbox}
+    \end{center}
 
     It not only tells us the names of all signals, but also includes information about the optimized signals.
 
@@ -424,23 +424,23 @@ def r(x1: bool, x2: F, x3: F) -> F:
     The generated \texttt{.sym} file would look like this:
 
     \begin{center}
-      \begin{tcolorbox}[enhanced,
-        width=0.5\textwidth,
-        title=\textbf{.sym file for $b \;\texttt{<-{-}}\; x/y, r \;\texttt{<==}\; by$},
-        coltitle=gray!25!black,
-        attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
-        boxed title style={size=small,colframe=gray!75!black,
-        colback=blue!30!white,boxrule=1pt},
-        top=-0.35cm,
-        bottom=-0.35cm]
-    \begin{lstlisting}[language=Circom,numbers=none,basicstyle=\ttfamily\footnotesize,escapechar=^]
+        \begin{tcolorbox}[enhanced,
+            width=0.5\textwidth,
+            title=\textbf{.sym file for $b \;\texttt{<-{-}}\; x/y, r \;\texttt{<==}\; by$},
+            coltitle=gray!25!black,
+            attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
+            boxed title style={size=small,colframe=gray!75!black,
+            colback=blue!30!white,boxrule=1pt},
+            top=-0.35cm,
+            bottom=-0.35cm]
+            \begin{lstlisting}[language=Circom,numbers=none,basicstyle=\ttfamily\footnotesize,escapechar=^]
 1,1,0,^main^.r
 2,^\textcolor{purple}{-1}^,0,^main^.x
 3,2,0,^main^.y
 4,3,0,^main^.b
-    \end{lstlisting}
-  \end{tcolorbox}
-\end{center}
+            \end{lstlisting}
+        \end{tcolorbox}
+    \end{center}
 
     As we can see, the $-1$ was added to the signal $x$ to indicate that it is not used in the witness.
 
@@ -497,16 +497,16 @@ template Math() {
     We split the circuit into three parts, and the \texttt{.sym} file will look like this:
 
     \begin{center}
-      \begin{tcolorbox}[enhanced,
-        width=0.5\textwidth,
-        title=\textbf{\footnotesize.sym file for $x_1? \; x_2 \times x_3 : x_2+x_3$ with templates},
-        coltitle=gray!25!black,
-        attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
-        boxed title style={size=small,colframe=gray!75!black,
-        colback=blue!30!white,boxrule=1pt},
-        top=-0.35cm,
-        bottom=-0.35cm]
-    \begin{lstlisting}[language=Circom,numbers=none,basicstyle=\ttfamily\footnotesize,escapechar=^]
+        \begin{tcolorbox}[enhanced,
+            width=0.5\textwidth,
+            title=\textbf{\footnotesize.sym file for $x_1? \; x_2 \times x_3 : x_2+x_3$ with templates},
+            coltitle=gray!25!black,
+            attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
+            boxed title style={size=small,colframe=gray!75!black,
+            colback=blue!30!white,boxrule=1pt},
+            top=-0.35cm,
+            bottom=-0.35cm]
+            \begin{lstlisting}[language=Circom,numbers=none,basicstyle=\ttfamily\footnotesize,escapechar=^]
 1,1,^\textcolor{purple}{2}^,^main^.r
 2,2,^\textcolor{purple}{2}^,^main^.x1
 3,3,^\textcolor{purple}{2}^,^main^.x2
@@ -517,9 +517,9 @@ template Math() {
 8,-1,^\textcolor{blue}{1}^,^main^.selectMult.x2
 9,-1,^\textcolor{blue}{1}^,^main^.selectMult.x3
 10,6,^\textcolor{blue}{1}^,^main^.selectMult.mult
-    \end{lstlisting}
-  \end{tcolorbox}
-\end{center}
+            \end{lstlisting}
+        \end{tcolorbox}
+    \end{center}
 
     As we can see, the third column indicates the locality of the signal.
     Essentially, it tells us which signals are grouped together under the same template.
@@ -531,7 +531,63 @@ template Math() {
         Even though we added more signals (i.e., constraints), they were actually optimized by Circom back to the original state.
     \end{remark}
 
-    And the last column is the full name of the constraint, including the path to where it is defined in the code. With this, we have covered all the important files generated by Circom.
+    And the last column is the full name of the constraint, including the path to where it is defined in the code.
+
+    \subsubsection{Parallel and Custom Keywords}
+
+    In Circom, there are two special keywords designed to address specific use cases: \texttt{custom} and \texttt{parallel}.
+
+    The \texttt{custom} keyword introduces \emph{custom templates} that do not emit R1CS constraints directly.
+    Instead, they delegate logic to \texttt{snarkjs} or other libraries at a later stage.
+    Consequently, \texttt{custom} templates \textbf{cannot} declare subcomponents or add R1CS constraints within their bodies.
+
+    The \texttt{custom} keyword is used as follows:
+
+    \begin{lstlisting}[language=Circom,basicstyle=\ttfamily\footnotesize]
+pragma circom 2.0.6;
+pragma custom_templates;
+
+template custom MyCustomGate() {
+    // Custom template's code
+    // No R1CS constraints or subcomponents can be desclared here
+    // Logic will be handled by snarkjs as a PLONK custom gates
+}
+    \end{lstlisting}
+
+    \begin{remark}
+        At the moment of writing the document the \texttt{snarkjs} does not support any custom gates (as stated in their documentation).
+        Also, they can be used only in turbo-PLONK or UltraPlonk schemes.
+        Nevertheless, you can find an example of how they have been used here: \url{https://github.com/zkFHE/circomlib-fhe/tree/main}.
+    \end{remark}
+
+    Meanwhile, the \texttt{parallel} keyword (available from Circom 2.0.8 onward) can be applied at either the template or
+    the component instantiation level to parallelize witness generation for independent computations, thereby accelerating large circuits.
+    Parallelism is \emph{only} applied to the C++ witness generator; it does not affect the constraints themselves.
+
+    This keyword will be useful in the structures as below:
+
+    \begin{lstlisting}[language=Circom,basicstyle=\ttfamily\footnotesize]
+template parallel ParallelExample(n) {
+    signal input in[n];
+    signal output out[n];
+
+    // Each iteration is independent, so we can parallelize
+    for (var i = 0; i < n; i++) {
+        out[i] <== in[i] * 2;
+    }
+}
+    \end{lstlisting}
+
+    In summary, you should use the \texttt{custom} keyword whenever you want to define a template handled \textbf{only} by turbo-PLONK or UltraPlonk schemes.
+    You can also find the exact section in the R1CS binary format where custom gates are stored for later processing by the library here:
+    \url{https://github.com/iden3/r1csfile/blob/master/doc/r1cs_bin_format.md#custom-gates-list-section-plonk}
+
+    The \texttt{parallel} keyword is helpful when dealing with large or repetitive computations, as it can speed up witness generation.
+    However, in small circuits or wherever computation is inherently sequential (i.e., where the output of one part is the input to another), \texttt{parallel} has no effect.
+
+    You can find additional examples of the \texttt{parallel} keyword usage here: \url{https://github.com/zkFHE/circomlib-fhe/tree/main}.
+
+    With this, we have covered all the important files generated by Circom.
 
     \subsubsection{Generating and Verifying Proofs}
 
@@ -546,16 +602,16 @@ template Math() {
 
     The actual proof looks like this:
     \begin{center}
-      \begin{tcolorbox}[enhanced,
-        width=0.925\textwidth,
-        title=\textbf{proof.json},
-        coltitle=gray!25!black,
-        attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
-        boxed title style={size=small,colframe=gray!75!black,
-        colback=purple!30!white,boxrule=1pt},
-        top=-0.35cm,
-        bottom=-0.35cm]
-    \begin{lstlisting}[language=JSON,numbers=none,basicstyle=\ttfamily\scriptsize]
+        \begin{tcolorbox}[enhanced,
+            width=0.925\textwidth,
+            title=\textbf{proof.json},
+            coltitle=gray!25!black,
+            attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
+            boxed title style={size=small,colframe=gray!75!black,
+            colback=purple!30!white,boxrule=1pt},
+            top=-0.35cm,
+            bottom=-0.35cm]
+            \begin{lstlisting}[language=JSON,numbers=none,basicstyle=\ttfamily\scriptsize]
 {
  "proof": {
   "pi_a": [
@@ -589,9 +645,9 @@ template Math() {
   "r": "18"
  }
 }
-    \end{lstlisting}
-  \end{tcolorbox}
-\end{center}
+            \end{lstlisting}
+        \end{tcolorbox}
+    \end{center}
 
     \vspace{0.5cm}
 
@@ -614,19 +670,19 @@ template Math() {
     \]
 
     Other constants needed for the verifier (for example, points $g_1^{\alpha}$ or $g_2^{\beta}$) are defined in the following file: \texttt{zkit/artifacts/circuits/Math.circom/Math.vkey.json} --- see \Cref{fig:vkey-json}.
- 
-  \begin{figure}
-    \begin{center}
-      \begin{tcolorbox}[enhanced,
-        width=0.75\textwidth,
-        title=\textbf{vkey.json},
-        coltitle=gray!25!black,
-        attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
-        boxed title style={size=small,colframe=gray!75!black,
-        colback=purple!30!white,boxrule=1pt},
-        top=-0.35cm,
-        bottom=-0.35cm]
-    \begin{lstlisting}[language=JSON,numbers=none,basicstyle=\footnotesize\ttfamily\tiny]
+
+    \begin{figure}
+        \begin{center}
+            \begin{tcolorbox}[enhanced,
+                width=0.75\textwidth,
+                title=\textbf{vkey.json},
+                coltitle=gray!25!black,
+                attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
+                boxed title style={size=small,colframe=gray!75!black,
+                colback=purple!30!white,boxrule=1pt},
+                top=-0.35cm,
+                bottom=-0.35cm]
+                \begin{lstlisting}[language=JSON,numbers=none,basicstyle=\footnotesize\ttfamily\tiny]
 {
   "protocol": "groth16",
   "curve": "bn128",
@@ -712,12 +768,12 @@ template Math() {
     ]
   ]
 }
-    \end{lstlisting}
-  \end{tcolorbox}
-\end{center}
-\caption{Verification key for the proof stored in the generated \texttt{vkey.json} file.}
-\label{fig:vkey-json}
-\end{figure}
+                \end{lstlisting}
+            \end{tcolorbox}
+        \end{center}
+        \caption{Verification key for the proof stored in the generated \texttt{vkey.json} file.}
+        \label{fig:vkey-json}
+    \end{figure}
 
     Quick reminder about the structure of points in the proof for BN254 (BN128) curve:
     \begin{itemize}
