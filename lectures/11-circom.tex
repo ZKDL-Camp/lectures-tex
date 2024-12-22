@@ -25,17 +25,17 @@
 
     It can be represented in Circom syntax as follows:
 
-    \begin{lstlisting}[language=Circom,numbers=none]
-pragma circom 2.1.6;
+    \begin{lstlisting}[language=Circom]
+    pragma circom 2.1.6;
 
-template Math() {
-    signal input x;
-    signal input y;
+    template Math() {
+        signal input x;
+        signal input y;
 
-    signal output r <== x * y;
-}
+        signal output r <== x * y;
+    }
 
-component main = Math();
+    component main = Math();
     \end{lstlisting}
 
     Here, we see how easy it is to define a circuit that takes two inputs $x,y$ and outputs their product $r$.
@@ -50,7 +50,7 @@ component main = Math();
     You may also define public inputs by specifying them in the main component, for example:
 
     \begin{lstlisting}[language=Circom,numbers=none]
-component main {public [x]} = Math();
+    component main {public [x]} = Math();
     \end{lstlisting}
 
     This means $x$ is a public input and will appear in the verification context.
@@ -59,23 +59,23 @@ component main {public [x]} = Math();
     \newpage
 
     For example, if your circuit looks like this:
-    \begin{lstlisting}[language=Circom,numbers=none]
-template Circuit() {
-    signal x;
+    \begin{lstlisting}[language=Circom]
+    template Circuit() {
+        signal x;
 
-    signal output o2;
+        signal output o2;
 
-    signal input c;
-    signal input a;
+        signal input c;
+        signal input a;
 
-    signal k1;
+        signal k1;
 
-    signal input b;
+        signal input b;
 
-    signal output o1;
-}
+        signal output o1;
+    }
 
-component main {public [a, b, c]} = Circuit();
+    component main {public [a, b, c]} = Circuit();
     \end{lstlisting}
 
     The order of the public signals that should be passed to the verifier is as follows:
@@ -87,22 +87,22 @@ component main {public [a, b, c]} = Circuit();
     For example, if you want your circuit to be a multi-tool that, based on provided arguments, can work with different cases.
     For this purpose, we can declare \textit{functions} and \textit{vars} inside the circuit, as shown below:
 
-    \begin{lstlisting}[language=Circom,numbers=none]
-function transformNumber(value) {
-    return value ** 2;
-}
+    \begin{lstlisting}[language=Circom]
+    function transformNumber(value) {
+        return value ** 2;
+    }
 
-template Math(padding) {
-    signal input x;
-    signal input y;
+    template Math(padding) {
+        signal input x;
+        signal input y;
 
-    var elementsNumber = transformNumber(padding);
-    signal b <== x * elementsNumber;
+        var elementsNumber = transformNumber(padding);
+        signal b <== x * elementsNumber;
 
-    signal output r <== b * y;
-}
+        signal output r <== b * y;
+    }
 
-component main {public [x]} = Math(12);
+    component main {public [x]} = Math(12);
     \end{lstlisting}
 
     Here, \texttt{var elementsNumber} and the function \texttt{transformNumber}
@@ -130,7 +130,7 @@ component main = Math();
 
         In this case, no constraints are generated with the $x$ input, and it does not even participate in the witness directly.
 
-        This is the main difference between Circom and other languages. When you
+        \textcolor{green!50!black}{\textbf{Notice!}} This is the main difference between Circom and other languages. When you
         write a function evaluation $y = f(x)$ in any other language (say, Python or Rust),
         you are specifying the set of instructions to compute $y$ from $x$ (commonly
         sequentially). In Circom (or in any other R1CS language) you are merely asserting
@@ -244,15 +244,15 @@ def r(x1: bool, x2: F, x3: F) -> F:
     \end{figure}
 
     The inputs can be directly transformed into signals like below:
-    \begin{lstlisting}[language=Circom,numbers=none]
-template Math() {
-    signal output r;
+    \begin{lstlisting}[language=Circom]
+    template Math() {
+        signal output r;
 
-    signal input x1;
+        signal input x1;
 
-    signal input x2;
-    signal input x3;
-}
+        signal input x2;
+        signal input x3;
+    }
     \end{lstlisting}
 
     In our case, we have an additional output signal, so we can \texttt{"}return\texttt{"} it from the circuit.
@@ -289,7 +289,7 @@ template Math() {
         If you wish to follow along with the explanations in the following chapters:
         \begin{enumerate}
             \item Clone the repository \url{https://github.com/ZKDL-Camp/hardhat-zkit-template}.
-            \item Run \textit{npm install} to install dependencies and \textit{npx hardhat zkit make}
+            \item Run \texttt{npm install} to install dependencies and \texttt{npx hardhat zkit make}
             to compile Circom circuits and generate the necessary artifacts.
         \end{enumerate}
     \end{remark}
@@ -307,7 +307,7 @@ template Math() {
         \item \texttt{.sym} file: Symbolic reference for signals.
     \end{itemize}
 
-    Let us start with the \texttt{.r1cs} file. In \Cref{section:circuits},
+    \textbf{R1CS File.} Let us start with the \texttt{.r1cs} file. In \Cref{section:circuits},
     we defined the following coefficient vectors (in simple constraints) for our
     task:
     \begin{align*}
@@ -319,6 +319,16 @@ template Math() {
 
     On the other hand, using the test from the \texttt{test/Math.witness.test.ts} file and reading the R1CS file, we can see:
 
+    \begin{center}
+      \begin{tcolorbox}[enhanced,
+        width=1.0\textwidth,
+        title={\textbf{test/Math.witness.test.ts}},
+        coltitle=gray!25!black,
+        attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
+        boxed title style={size=small,colframe=gray!75!black,
+        colback=Green!30!white,boxrule=1.5pt},
+        top=-0.3cm,
+        bottom=-0.3cm]
     \begin{lstlisting}[language=TypeScript,numbers=none,basicstyle=\scriptsize\ttfamily\scriptsize]
     expect(constraint1[0]).to.deep.equal([ 0n, 0n, 1n, 0n, 0n, 0n, 0n ]);
     expect(constraint1[1]).to.deep.equal([ 0n, 0n, 1n, 0n, 0n, 0n, 0n ]);
@@ -336,6 +346,8 @@ template Math() {
     expect(constraint4[1]).to.deep.equal([ 0n, 0n, 0n, 1n, 0n, 0n, 0n ]);
     expect(constraint4[2]).to.deep.equal([ 0n, babyJub.F.negone, 0n, 0n, 0n, 0n, 0n ]);
     \end{lstlisting}
+  \end{tcolorbox}
+\end{center}
 
     \vspace{0.5cm}
 
@@ -358,7 +370,17 @@ template Math() {
 
     \newpage
 
-    \begin{lstlisting}[language=TypeScript,numbers=none,basicstyle=\ttfamily\scriptsize]
+    \begin{center}
+      \begin{tcolorbox}[enhanced,
+        width=0.75\textwidth,
+        title={\textbf{test/Math.witness.test.ts}},
+        coltitle=gray!25!black,
+        attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
+        boxed title style={size=small,colframe=gray!75!black,
+        colback=Green!30!white,boxrule=1pt},
+        top=-0.3cm,
+        bottom=-0.3cm]
+    \begin{lstlisting}[language=TypeScript,numbers=none,basicstyle=\ttfamily\footnotesize]
     expect(witness[0]).to.equal(1n);
     expect(witness[1]).to.equal(12n); // r
     expect(witness[2]).to.equal(1n);  // x1
@@ -367,32 +389,58 @@ template Math() {
     expect(witness[5]).to.equal(12n); // mult
     expect(witness[6]).to.equal(12n); // selectMult
     \end{lstlisting}
+  \end{tcolorbox}
+\end{center}
 
     The initial \texttt{1} in the witness is a constant to facilitate the usage of constants inside the circuit.
     This corresponds to the fact that $w_0=1$ is often used to handle constant terms in R1CS.
 
     The Circom also provides a named representation of all witness elements, which is stored in the \texttt{.sym} file and looks as follows:
 
-    \begin{lstlisting}[language=Circom,numbers=none,basicstyle=\ttfamily\scriptsize,escapechar=^]
+    \begin{center}
+      \begin{tcolorbox}[enhanced,
+        width=0.5\textwidth,
+        title=\textbf{.sym file for $x_1? \; x_2 \times x_3: x_2+x_3$},
+        coltitle=gray!25!black,
+        attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
+        boxed title style={size=small,colframe=gray!75!black,
+        colback=blue!30!white,boxrule=1pt},
+        top=-0.35cm,
+        bottom=-0.35cm]
+        \begin{lstlisting}[language=Circom,numbers=none,basicstyle=\ttfamily\footnotesize,escapechar=^]
 1,1,0,^main^.r
 2,2,0,^main^.x1
 3,3,0,^main^.x2
 4,4,0,^main^.x3
 5,5,0,^main^.mult
 6,6,0,^main^.selectMult
-    \end{lstlisting}
+      \end{lstlisting}
+    \end{tcolorbox}
+  \end{center}
 
     It not only tells us the names of all signals, but also includes information about the optimized signals.
 
     Recall the previous example where we used division and \texttt{<-{-}} to store it in the intermediate signal.
     The generated \texttt{.sym} file would look like this:
 
-    \begin{lstlisting}[language=Circom,numbers=none,basicstyle=\ttfamily\scriptsize,escapechar=^]
+    \begin{center}
+      \begin{tcolorbox}[enhanced,
+        width=0.5\textwidth,
+        title=\textbf{.sym file for $b \;\texttt{<-{-}}\; x/y, r \;\texttt{<==}\; by$},
+        coltitle=gray!25!black,
+        attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
+        boxed title style={size=small,colframe=gray!75!black,
+        colback=blue!30!white,boxrule=1pt},
+        top=-0.35cm,
+        bottom=-0.35cm]
+    \begin{lstlisting}[language=Circom,numbers=none,basicstyle=\ttfamily\footnotesize,escapechar=^]
 1,1,0,^main^.r
 2,^\textcolor{purple}{-1}^,0,^main^.x
 3,2,0,^main^.y
 4,3,0,^main^.b
     \end{lstlisting}
+  \end{tcolorbox}
+\end{center}
 
     As we can see, the $-1$ was added to the signal $x$ to indicate that it is not used in the witness.
 
@@ -408,7 +456,7 @@ template Math() {
 
     Consider the following circuit:
 
-    \begin{lstlisting}[language=Circom,numbers=none,basicstyle=\ttfamily\scriptsize]
+    \begin{lstlisting}[language=Circom,basicstyle=\ttfamily\footnotesize]
 template BinaryCheck() {
     signal input x1;
 
@@ -448,7 +496,17 @@ template Math() {
 
     We split the circuit into three parts, and the \texttt{.sym} file will look like this:
 
-    \begin{lstlisting}[language=Circom,numbers=none,basicstyle=\ttfamily\scriptsize,escapechar=^]
+    \begin{center}
+      \begin{tcolorbox}[enhanced,
+        width=0.5\textwidth,
+        title=\textbf{\footnotesize.sym file for $x_1? \; x_2 \times x_3 : x_2+x_3$ with templates},
+        coltitle=gray!25!black,
+        attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
+        boxed title style={size=small,colframe=gray!75!black,
+        colback=blue!30!white,boxrule=1pt},
+        top=-0.35cm,
+        bottom=-0.35cm]
+    \begin{lstlisting}[language=Circom,numbers=none,basicstyle=\ttfamily\footnotesize,escapechar=^]
 1,1,^\textcolor{purple}{2}^,^main^.r
 2,2,^\textcolor{purple}{2}^,^main^.x1
 3,3,^\textcolor{purple}{2}^,^main^.x2
@@ -460,6 +518,8 @@ template Math() {
 9,-1,^\textcolor{blue}{1}^,^main^.selectMult.x3
 10,6,^\textcolor{blue}{1}^,^main^.selectMult.mult
     \end{lstlisting}
+  \end{tcolorbox}
+\end{center}
 
     As we can see, the third column indicates the locality of the signal.
     Essentially, it tells us which signals are grouped together under the same template.
@@ -471,9 +531,7 @@ template Math() {
         Even though we added more signals (i.e., constraints), they were actually optimized by Circom back to the original state.
     \end{remark}
 
-    And the last column is the full name of the constraint, including the path to where it is defined in the code.
-
-    With this, we have covered all the important files generated by Circom.
+    And the last column is the full name of the constraint, including the path to where it is defined in the code. With this, we have covered all the important files generated by Circom.
 
     \subsubsection{Generating and Verifying Proofs}
 
@@ -483,11 +541,21 @@ template Math() {
     To generate a proof, we need to call the \texttt{generateProof} method on the circuit object:
 
     \begin{lstlisting}[language=TypeScript,numbers=none]
-const proof = await circuit.generateProof(inputs);
+    const proof = await circuit.generateProof(inputs);
     \end{lstlisting}
 
     The actual proof looks like this:
-    \begin{lstlisting}[language=JSON,numbers=none,basicstyle=\scriptsize\ttfamily\tiny]
+    \begin{center}
+      \begin{tcolorbox}[enhanced,
+        width=0.925\textwidth,
+        title=\textbf{proof.json},
+        coltitle=gray!25!black,
+        attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
+        boxed title style={size=small,colframe=gray!75!black,
+        colback=purple!30!white,boxrule=1pt},
+        top=-0.35cm,
+        bottom=-0.35cm]
+    \begin{lstlisting}[language=JSON,numbers=none,basicstyle=\ttfamily\scriptsize]
 {
  "proof": {
   "pi_a": [
@@ -522,13 +590,15 @@ const proof = await circuit.generateProof(inputs);
  }
 }
     \end{lstlisting}
+  \end{tcolorbox}
+\end{center}
 
     \vspace{0.5cm}
 
     Also, at the end of the proof, we have the public signals.
 
     \begin{remark}
-        Usually, public signals are represented by an array of elements, but when using the hardhat-zkit plugin,
+        Usually, public signals are represented by an array of elements, but when using the \texttt{hardhat-zkit} plugin,
         they are typed, and we have actual names for them.
     \end{remark}
 
@@ -543,7 +613,19 @@ const proof = await circuit.generateProof(inputs);
         e(\pi_L, \pi_R) = e(g_1^\alpha, g_2^\beta)e(\pi_{\text{io}},g_2^\gamma)e(\pi_O,g_2^\delta).
     \]
 
-    Other constants needed for the verifier (for example, verification keys $g_1^{\alpha}$ or $g_2^{\beta}$) are defined in the following file: \texttt{zkit/artifacts/circuits/Math.circom/Math.vkey.json}. See below:
+    Other constants needed for the verifier (for example, points $g_1^{\alpha}$ or $g_2^{\beta}$) are defined in the following file: \texttt{zkit/artifacts/circuits/Math.circom/Math.vkey.json} --- see \Cref{fig:vkey-json}.
+ 
+  \begin{figure}
+    \begin{center}
+      \begin{tcolorbox}[enhanced,
+        width=0.75\textwidth,
+        title=\textbf{vkey.json},
+        coltitle=gray!25!black,
+        attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
+        boxed title style={size=small,colframe=gray!75!black,
+        colback=purple!30!white,boxrule=1pt},
+        top=-0.35cm,
+        bottom=-0.35cm]
     \begin{lstlisting}[language=JSON,numbers=none,basicstyle=\footnotesize\ttfamily\tiny]
 {
   "protocol": "groth16",
@@ -563,10 +645,7 @@ const proof = await circuit.generateProof(inputs);
       "10505242626370262277552901082094356697409835680220590971873171140371331206856",
       "21847035105528745403288232691147584728191162732299865338377159692350059136679"
     ],
-    [
-      "1",
-      "0"
-    ]
+    [ "1", "0" ]
   ],
   "vk_gamma_2": [
     [
@@ -577,10 +656,7 @@ const proof = await circuit.generateProof(inputs);
       "8495653923123431417604973247489272438418190587263600148770280649306958101930",
       "4082367875863433681332203403145435568316851327593401208105741076214120093531"
     ],
-    [
-      "1",
-      "0"
-    ]
+    [ "1", "0" ]
   ],
   "vk_delta_2": [
     [
@@ -591,10 +667,7 @@ const proof = await circuit.generateProof(inputs);
       "8495653923123431417604973247489272438418190587263600148770280649306958101930",
       "4082367875863433681332203403145435568316851327593401208105741076214120093531"
     ],
-    [
-      "1",
-      "0"
-    ]
+    [ "1", "0" ]
   ],
   "vk_alphabeta_12": [
     [
@@ -640,8 +713,11 @@ const proof = await circuit.generateProof(inputs);
   ]
 }
     \end{lstlisting}
-
-    \vspace{0.5cm}
+  \end{tcolorbox}
+\end{center}
+\caption{Verification key for the proof stored in the generated \texttt{vkey.json} file.}
+\label{fig:vkey-json}
+\end{figure}
 
     Quick reminder about the structure of points in the proof for BN254 (BN128) curve:
     \begin{itemize}
