@@ -274,8 +274,8 @@ def r(x1: bool, x2: F, x3: F) -> F:
                 \hspace{-120px}\textbf{Circom Representation:} \\
                 \hspace{-250px}\begin{lstlisting}[language=Circom,numbers=none]
 <@\colorbox{blue!10!white}{x1 * x1 === x1;}@>
-<@\colorbox{green!10!white}{\textbf{\textcolor{blue!80!black}{signal}} x1 * x1 === x1;}@>
-<@\colorbox{orange!10!white}{\textbf{\textcolor{blue!80!black}{signal}} selectMult <== x2 * x3;}@>
+<@\colorbox{green!10!white}{\textbf{\textcolor{blue!80!black}{signal}} mult <== x2 * x3;}@>
+<@\colorbox{orange!10!white}{\textbf{\textcolor{blue!80!black}{signal}} selectMult <== x1 * mult;}@>
 <@\colorbox{purple!10!white}{(1 - x1) * (x2 + x3) + selectMult ==> r;}
                 \end{lstlisting}
             };
