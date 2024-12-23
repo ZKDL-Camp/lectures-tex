@@ -25,13 +25,10 @@
     \section{Introduction}
 
     \begin{frame}{Why do we need ZK?}
-        \pause
 
         \begin{block}{Option}
             Solution to privacy
-        \end{block}
-
-        \pause
+        \end{block}        
 
         \begin{example}
             \begin{enumerate}
@@ -40,13 +37,9 @@
             \end{enumerate}
         \end{example}
 
-        \pause
-
         \begin{block}{Option}
             Solution to scalability
         \end{block}
-
-        \pause
 
         \begin{example}
             \textit{This is the hash of a blockchain block that does not produce negative balances}
@@ -54,26 +47,11 @@
     \end{frame}
 
     \begin{frame}{Using ZKP}
-        \only<1>{\includegraphics[width=\linewidth]{images/lecture_11/process_start}}
-        \only<2>{\includegraphics[width=\linewidth]{images/lecture_11/process_1}}
-        \only<3>{\includegraphics[width=\linewidth]{images/lecture_11/process_2}}
-        \only<4>{\includegraphics[width=\linewidth]{images/lecture_11/process_3}}
-        \only<5>{\includegraphics[width=\linewidth]{images/lecture_11/process_4}}
-        \only<6>{\includegraphics[width=\linewidth]{images/lecture_11/process_5}}
-        \only<7>{\includegraphics[width=\linewidth]{images/lecture_11/process_6}}
-        \only<8>{\includegraphics[width=\linewidth]{images/lecture_11/process_7}}
-        \only<9>{\includegraphics[width=\linewidth]{images/lecture_11/process_8}}
-        \only<10>{\includegraphics[width=\linewidth]{images/lecture_11/process_9}}
-        \only<11>{\includegraphics[width=\linewidth]{images/lecture_11/process_10}}
-        \only<12>{\includegraphics[width=\linewidth]{images/lecture_11/process_end}}
+        \includegraphics[width=\linewidth]{images/lecture_11/process_end}
     \end{frame}
 
     \begin{frame}{Toolchain}
-        \only<1>{\includegraphics[width=\linewidth]{images/lecture_11/flow_start}}
-        \only<2>{\includegraphics[width=\linewidth]{images/lecture_11/flow_1}}
-        \only<3>{\includegraphics[width=\linewidth]{images/lecture_11/flow_2}}
-        \only<4>{\includegraphics[width=\linewidth]{images/lecture_11/flow_3}}
-        \only<5>{\includegraphics[width=\linewidth]{images/lecture_11/flow_end}}
+        \includegraphics[width=\linewidth]{images/lecture_11/flow_end}
     \end{frame}
 
     \section{Circom}
@@ -85,12 +63,11 @@
             return x2 * x3 if x1 else x2 + x3
         \end{lstlisting}
         \vspace{-10pt}
-        \pause That can be expressed as:
+         That can be expressed as:
         \begin{equation*}
             r = x_1 \times (x_2 \times x_3) + (1 - x_1) \times (x_2 + x_3)
         \end{equation*}
 
-        \pause
         \begin{alertblock}{}
             We need a boolean restriction for $x_1$:
             \vspace{-8pt}
@@ -98,8 +75,7 @@
                 x_1 \times (1 - x_1) = 0
             \end{equation*}
         \end{alertblock}
-
-        \pause
+        
         Thus, the next constraints can be build:
         \vspace{-5pt}
         \begin{align*}
@@ -112,7 +88,7 @@
 
     \begin{frame}[fragile]{Previously on ZKDL Camp}
         The witness vector: $\boldsymbol{w} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult})$.
-        \pause The coefficients vectors:
+         The coefficients vectors:
 
         \vspace{-20pt}\small
 
@@ -123,7 +99,7 @@
             \boldsymbol{a}_4 &= (1, 0, -1, 0, 0, 0, 0), & \boldsymbol{b}_4 &= (0, 0, 0, 1, 1, 0, 0), & \boldsymbol{c}_4 &= (0, 1, 0, 0, 0, 0, -1)
         \end{align*}\normalsize
 
-        \pause \vspace{-10pt}
+         \vspace{-10pt}
 
         Using the arithmetic in a large $\mathbb{F}_p$, consider the following values:
 
@@ -143,12 +119,10 @@
     \end{frame}
 
     \begin{frame}{Previously on ZKDL Camp}
-        By Groth16 Protocol the verifier \only<1>{...}\pause should check the following condition:
+        By Groth16 Protocol the verifier should check the following condition:
         \begin{equation*}
             e(\pi_L, \pi_R) = e(g_1^{\alpha}, g_2^{\beta})e(\pi_{\text{io}},g_2^{\gamma})e(\pi_O,g_2^{\delta})
         \end{equation*}
-
-        \pause
 
         \begin{alertblock}{Recall}
             For BN254 (BN128), we have:
