@@ -1,0 +1,180 @@
+\documentclass{zkdl-presentation-template}
+
+\title[Circom]{\textbf{Circom}}
+\author{Distributed Lab}
+\date{December 05, 2024}
+\homepage{zkdl-camp.github.io}
+\github{ZKDL-Camp}
+
+\begin{document}
+    \frame {
+        \tikz [remember picture,overlay]
+        \node at
+        ([yshift=1.5cm,xshift=-1.5cm]current page.south east)
+    %or: (current page.center)
+            {\includegraphics[width=60pt]{images/logo.png}};
+
+        \titlepage
+    }
+
+    \begin{frame}{Plan}
+        \tableofcontents
+    \end{frame}
+
+
+    \section{Introduction}
+
+    \begin{frame}{Why do we need ZK?}
+        \pause
+
+        \begin{block}{Option}
+            Solution to privacy
+        \end{block}
+
+        \pause
+
+        \begin{example}
+            \begin{enumerate}
+                \item \textit{I know the private key that corresponds to this public key}
+                \item \textit{I know a private key that corresponds to a public key from this list}
+            \end{enumerate}
+        \end{example}
+
+        \pause
+
+        \begin{block}{Option}
+            Solution to scalability
+        \end{block}
+
+        \pause
+
+        \begin{example}
+            \textit{This is the hash of a blockchain block that does not produce negative balances}
+        \end{example}
+    \end{frame}
+
+    \begin{frame}{Using ZKP}
+        \only<1>{\includegraphics[width=\linewidth]{images/lecture_11/process_start}}
+        \only<2>{\includegraphics[width=\linewidth]{images/lecture_11/process_1}}
+        \only<3>{\includegraphics[width=\linewidth]{images/lecture_11/process_2}}
+        \only<4>{\includegraphics[width=\linewidth]{images/lecture_11/process_3}}
+        \only<5>{\includegraphics[width=\linewidth]{images/lecture_11/process_4}}
+        \only<6>{\includegraphics[width=\linewidth]{images/lecture_11/process_5}}
+        \only<7>{\includegraphics[width=\linewidth]{images/lecture_11/process_6}}
+        \only<8>{\includegraphics[width=\linewidth]{images/lecture_11/process_7}}
+        \only<9>{\includegraphics[width=\linewidth]{images/lecture_11/process_8}}
+        \only<10>{\includegraphics[width=\linewidth]{images/lecture_11/process_9}}
+        \only<11>{\includegraphics[width=\linewidth]{images/lecture_11/process_10}}
+        \only<12>{\includegraphics[width=\linewidth]{images/lecture_11/process_end}}
+    \end{frame}
+
+    \begin{frame}{Toolchain}
+        \only<1>{\includegraphics[width=\linewidth]{images/lecture_11/flow_start}}
+        \only<2>{\includegraphics[width=\linewidth]{images/lecture_11/flow_1}}
+        \only<3>{\includegraphics[width=\linewidth]{images/lecture_11/flow_2}}
+        \only<4>{\includegraphics[width=\linewidth]{images/lecture_11/flow_3}}
+        \only<5>{\includegraphics[width=\linewidth]{images/lecture_11/flow_end}}
+    \end{frame}
+
+    \section{Circom}
+
+    \begin{frame}[fragile]{Previously on ZKDL Camp}
+        Probably you can recall the function
+        \begin{lstlisting}[language=Python,numbers=none]
+        def r(x1: F, x2: F, x3: F) -> F:
+            return x2 * x3 if x1 else x2 + x3
+        \end{lstlisting}
+        \vspace{-10pt}
+        \pause That can be expressed as:
+        \begin{equation*}
+            r = x_1 \times (x_2 \times x_3) + (1 - x_1) \times (x_2 + x_3)
+        \end{equation*}
+
+        \pause
+        \begin{alertblock}{}
+            We need a boolean restriction for $x_1$:
+            \vspace{-8pt}
+            \begin{equation*}
+                x_1 \times (1 - x_1) = 0
+            \end{equation*}
+        \end{alertblock}
+
+        \pause
+        Thus, the next constraints can be build:
+        \vspace{-5pt}
+        \begin{align*}
+            x_1 \times x_1 &= x_1 \quad \text{(binary check)} \tag{1} \\
+            x_2 \times x_3 &= \mathsf{mult} \tag{2} \\
+            x_1 \times \mathsf{mult} &= \mathsf{selectMult} \tag{3} \\
+            (1 - x_1) \times (x_2 + x_3) &= r - \mathsf{selectMult} \tag{4}
+        \end{align*}
+    \end{frame}
+
+    \begin{frame}[fragile]{Previously on ZKDL Camp}
+        The witness vector: $\boldsymbol{w} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult})$.
+        \pause The coefficients vectors:
+
+        \vspace{-20pt}\small
+
+        \begin{align*}
+            \boldsymbol{a}_1 &= (0, 0, 1, 0, 0, 0, 0), & \boldsymbol{b}_1 &= (0, 0, 1, 0, 0, 0, 0), & \boldsymbol{c}_1 &= (0, 0, 1, 0, 0, 0, 0) \\
+            \boldsymbol{a}_2 &= (0, 0, 0, 1, 0, 0, 0), & \boldsymbol{b}_2 &= (0, 0, 0, 0, 1, 0, 0), & \boldsymbol{c}_2 &= (0, 0, 0, 0, 0, 1, 0) \\
+            \boldsymbol{a}_3 &= (0, 0, 1, 0, 0, 0, 0), & \boldsymbol{b}_3 &= (0, 0, 0, 0, 0, 1, 0), & \boldsymbol{c}_3 &= (0, 0, 0, 0, 0, 0, 1) \\
+            \boldsymbol{a}_4 &= (1, 0, -1, 0, 0, 0, 0), & \boldsymbol{b}_4 &= (0, 0, 0, 1, 1, 0, 0), & \boldsymbol{c}_4 &= (0, 1, 0, 0, 0, 0, -1)
+        \end{align*}\normalsize
+
+        \pause \vspace{-10pt}
+
+        Using the arithmetic in a large $\mathbb{F}_p$, consider the following values:
+
+        \vspace{-15pt}
+        \begin{equation*}
+            x_1 = 1, \quad x_2 = 3, \quad x_3 = 4
+            \vspace{-5pt}
+        \end{equation*}
+
+        Verifying the constraints:
+        \begin{enumerate}
+            \item \( x_1 \times x_1 = x_1 \quad (1 \times 1 = 1) \)
+            \item \( x_2 \times x_3 = \mathsf{mult} \quad (3 \times 4 = 12) \)
+            \item \( x_1 \times \mathsf{mult} = \mathsf{selectMult} \quad (1 \times 12 = 12) \)
+            \item \( (1 - x_1) \times (x_2 + x_3) = r - \mathsf{selectMult} \quad (0 \times 7 = 12 - 12) \)
+        \end{enumerate}
+    \end{frame}
+
+    \begin{frame}{Previously on ZKDL Camp}
+        By Groth16 Protocol the verifier \only<1>{...}\pause should check the following condition:
+        \begin{equation*}
+            e(\pi_L, \pi_R) = e(g_1^{\alpha}, g_2^{\beta})e(\pi_{\text{io}},g_2^{\gamma})e(\pi_O,g_2^{\delta})
+        \end{equation*}
+
+        \pause
+
+        \begin{alertblock}{Recall}
+            For BN254 (BN128), we have:
+            \begin{itemize}
+                \item Left inputs to $e$ is of form $(x,y) \in \mathbb{G}_1$ --- regular curve.
+                \item Right inputs to $e$ is of form $((x_1,y_1),(x_2,y_2)) \in \mathbb{G}_2$ --- ``complex'' curve, consisting of two $\mathbb{F}_{p^2}$ coordinates.
+                \item $e(g_1^{\alpha}, g_2^{\beta})$ is of form $(x_1,\dots,x_{12}) \in \mathbb{F}_{p^{12}}$
+            \end{itemize}
+        \end{alertblock}
+    \end{frame}
+
+    \begin{frame}[plain, standout]
+        \centering
+        \LARGE
+        \textbf{Thank you for your attention} \\
+
+        \vspace{0.2cm} \Huge \ding{170} \large \\
+
+        \vspace{1cm}
+
+        \href{https://zkdl-camp.github.io/}{\raisebox{-.1em}{\hspace{.025em}\faIcon{globe}}\hspace{.325em}zkdl-camp.github.io} \\
+
+        \href{https://github.com/ZKDL-Camp}{\raisebox{-.1em}{\hspace{.025em}\faIcon{github}}\hspace{.325em}github.com/ZKDL-Camp}
+
+        \begin{center}
+            \includegraphics[width=0.15\textwidth]{images/logo.png}
+        \end{center}
+    \end{frame}
+\end{document}
