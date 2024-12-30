@@ -7,18 +7,25 @@
 \pgfplotsset{compat=1.18}
 
 \begin{document}
+
 \subsection{Preliminaries}
-Before delving into Plonk, let's first consider a few useful proving system gadgets.
+In order to build Plonk, let us at first consider several useful proving system gadgets.
 
-Let $\Omega$ be some multiplicative cyclic subgroup (recall the \ref{section:mult-group-finite-field}) of $\mathbb{F}_p$ of size $k$. 
+Let: cyclic $\Omega \leq \mathbb{F}_p^\times, \quad \ |\Omega| = k , \quad f \in \mathbb{F}_p^{(\leq d)}[X] (d \geq k)$.
 
-Let $f \in \mathbb{F}_p^{(\leq d)}[X] \qquad (d \geq k)$ \begin{tabular}{|c|}\hline Verifier has $f$ \\ \hline \end{tabular} 
+Now, we would like to be able to prove certain properties about $f$:
 
-Now we need to construct efficient Poly-IOPs for two tasks described in below sections.
+\begin{enumerate}
+    \item \textbf{Zero Test:} $f$ is identically zero on $\Omega$
+    \item \textbf{Product Check:} $\prod_{a \in \Omega} f(a) = 1$
+\end{enumerate}
 
-\subsubsection{ZeroTest}
+In order to do that, we will apply public coin protocol. Verifier has $com(f)$ for the scoped polynomial, serving as a binding factor.
 
-Prove that $f$ is identically zero on $\Omega$.
+\subsubsection{Zero Test}
+
+Prove that $f$ is identically zero on $\Omega$. Recall the vanishing polynomial \ref{section:qap-acc}. 
+If the group is cyclic, then $Z_{\Omega}(X) = X^{|\Omega|} - 1$: for $r \in \mathbb{F}_p$, evaluating $Z_\Omega(r)$ takes $\leq 2 \log_2 k$ field operations.
 
 \begin{figure}[H]
   \centering
@@ -55,7 +62,7 @@ Prove that $f$ is identically zero on $\Omega$.
       Accept if $f(r) = q(r) \cdot Z_{\Omega}(r)$ \\
       \noindent\rule{3.5cm}{0.8pt}};
   \end{tikzpicture}
-  \caption{Protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$ for ZeroTest.}
+  \caption{Protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$ for Zero Test.}
   \label{fig:polynomial_commitment}
 \end{figure}
 
@@ -66,6 +73,86 @@ Prove that $f$ is identically zero on $\Omega$.
 \begin{remark}
 This protocol is complete and sound, assuming $d/p$ is negligible due to Schwartz-Zippel Lemma.
 \end{remark}
+
+\subsubsection{Product Check}
+
+Prove that $\prod_{a \in \Omega} f(a) = 1$.
+
+For that, let's define an auxiliary polynomial inductively so that it captures prefix-products:
+
+\[t(1) = f(1), \quad t(\omega^s) = \prod_{i=0}^{s} f(\omega^i) \quad \text{for } s = 1, ..., k-1\]
+
+Ultimately,  \(t(\omega) = f(1) \cdot f(\omega)\),  \(t(\omega^2) = f(1) \cdot f(\omega) \cdot f(\omega^2)\), \(\dots\), \(t(\omega^{k-1}) = \prod_{a \in \Omega} f(a) = 1\). Then \(t(\omega \cdot x) = t(x) \cdot f(\omega \cdot x)\) for all \(x \in \Omega\) (including at \(x = \omega^{k-1} \text{)}\).
+
+\begin{lemma}
+\(\forall x \in \Omega \  (t(\omega^{k-1}) = 1  \land (t(\omega \cdot x) - t(x) \cdot f(\omega \cdot x) = 0)) \implies \prod_{a \in \Omega} f(a) = 1\)
+\end{lemma}
+
+\begin{figure}[H]
+    \centering
+    \begin{tikzpicture}
+        \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}(f)$}; 
+        \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}(f)$}; 
+
+        \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]prover.south) -- ([yshift=-14cm]prover.south);
+        \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]verifier.south) -- ([yshift=-14cm]verifier.south);
+
+        \node[align=center, fill=white!5, thick, below=0.5cm of prover] (prover-compute) {
+            \noindent\rule{5cm}{0.8pt}\\
+            Compute: $t(X) \in \mathbb{F}_p^{(\leq k)}$ \\ 
+            $t_1(X) = t(\omega \cdot X) - t(X)f(\omega \cdot X)$ \\
+            $q(X) = t_1(X)/(X^k - 1) \in \mathbb{F}_p^{(\leq d)}$ \\
+            \noindent\rule{5cm}{0.8pt}
+        };
+
+        \draw[-{Stealth[length=3mm]}, line width=0.4mm] 
+            ([yshift=-3.5cm]prover.south) coordinate (l2) --
+            (l2-|verifier) node[midway, above=0mm]{Send \(com(t)\), \(com(q)\)};
+
+        \node[align=center, fill=white!5, thick, below=4cm of verifier] (verifier-random) {
+            \noindent\rule{5cm}{0.8pt}\\
+            Generate random $r \xleftarrow{R}\mathbb{F}_p$ \\
+            \noindent\rule{5cm}{0.8pt}
+        };
+
+        \draw[-{Stealth[length=3mm]}, line width=0.4mm] 
+            ([yshift=-6cm]verifier.south) coordinate (l2) --
+            (l2-|prover) node[midway, above=0mm]{Query $t(X)$ at $\omega^{k-1}, r, \omega r$};
+
+        \node[align=center, fill=white!5, thick, below=6.5cm of prover] (prover-query-t) {
+            \noindent\rule{5cm}{0.8pt}\\
+            Compute: $t(\omega^{k-1}), t(r), t(\omega r)$ \\
+            \noindent\rule{5cm}{0.8pt}
+        };
+
+        \draw[-{Stealth[length=3mm]}, line width=0.4mm] 
+            ([yshift=-8.5cm]prover.south) coordinate (l3) --
+            (l3-|verifier) node[midway, above=0mm]{Send $t(\omega^{k-1}), t(r), t(\omega r)$};
+
+        \draw[-{Stealth[length=3mm]}, line width=0.4mm] 
+            ([yshift=-9.5cm]verifier.south) coordinate (l4) --
+            (l4-|prover) node[midway, above=0mm]{Query $q(X)$ at $r$, and $f(X)$ at $\omega r$};
+
+        \node[align=center, fill=white!5, thick, below=10cm of prover] (prover-query-qf) {
+            \noindent\rule{5cm}{0.8pt}\\
+            Compute: $q(r), f(\omega r)$ \\
+            \noindent\rule{5cm}{0.8pt}
+        };
+
+        \draw[-{Stealth[length=3mm]}, line width=0.4mm] 
+            ([yshift=-12cm]prover.south) coordinate (l5) --
+            (l5-|verifier) node[midway, above=0mm]{Send $q(r), f(\omega r)$};
+
+        \node[align=center, fill=white!5, thick, below=12.5cm of verifier] (verifier-accept) {
+            \noindent\rule{5cm}{0.8pt}\\
+            Accept if $t(\omega^{k-1}) = 1$ and \\ 
+            $t(\omega r) - t(r)f(\omega r) = q(r)(r^k - 1)$ \\
+            \noindent\rule{5cm}{0.8pt}
+        };
+    \end{tikzpicture}
+    \caption{Protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$ for Product Check.}
+    \label{fig:polyn}
+\end{figure}
 
 \subsubsection{Prescribed Permutation Check}
 
@@ -81,7 +168,7 @@ Let \(f\) and \(g\) be polynomials in \(\mathbb{F}_p^{(\leq d)}[X]\). Verifier h
 
 \underline{Goal:} prover wants to prove that \(f(y) = g(W(y))\) for all \(y \in \Omega\), equivalent to \(g(\Omega)\) is the same as \(f(\Omega)\), permuted by the prescribed \(W\).
 
-Naive way of doing this is by running \textbf{ZeroTest} on \(f(y) - g(W(y)) = 0\) on \(\Omega\), however that would result in proving needing to manipulate polynomials of degree \(k^2\), resulting in quadratic prover time. We can reduce this to a product-check on a polynomial of degree \(2k\).
+Naive way of doing this is by running \textbf{Zero Test} on \(f(y) - g(W(y)) = 0\) on \(\Omega\), however that would result in proving needing to manipulate polynomials of degree \(k^2\), resulting in quadratic prover time. We can reduce this to a product-check on a polynomial of degree \(2k\).
 
 \begin{remark}
 Observation: If \((W(\alpha), f(\alpha))_{\alpha \in \Omega}\) is a permutation of \((\alpha, g(\alpha))_{\alpha \in \Omega}\) then \(f(y) = g(W(y))\) for all \(y \in \Omega \).
@@ -117,7 +204,7 @@ To prove, use the fact that \(\mathbb{F}_p[X,Y]\) is a unique factorization doma
 \paragraph{The complete protocol.}
 \begin{enumerate}
     \item Verifier generates random \(r, g \leftarrow\mathbb{F}_p^{(\leq d)} \)
-    \item Run \textbf{ProductCheck} on \(\hat{f}(r, s) = \hat{g}(r, s): \prod_{a \in \Omega} \left( \frac{r - s \cdot W(a) - f(a)}{r - s \cdot a - g(a)} \right) = 1\)
+    \item Run \textbf{Product Check} on \(\hat{f}(r, s) = \hat{g}(r, s): \prod_{a \in \Omega} \left( \frac{r - s \cdot W(a) - f(a)}{r - s \cdot a - g(a)} \right) = 1\)
 \end{enumerate}
 
 This would imply that \(\hat{f}(X,Y) = \hat{g}(X,Y)\) with high probability due to Schwartz-Zippel Lemma.
@@ -185,7 +272,7 @@ Both prover and verifier interpolate a polynomial \(\nu(X) \in \mathbb{F}_p^{(\l
 Constructing \(\nu(X)\) is linear in \(|x| \left( O_\lambda(|x|) \right)\).
 \end{remark}
 
-Let \(\Omega_{\text{inp}} := \{ \omega^{-1}, \omega^{-2}, ..., \omega^{-|\mathcal{I}_x|} \} \subseteq \Omega\), then proving polynomial \(T\) encoding is done with \textit{ZeroTest} on \(\Omega_{\text{inp}}\):
+Let \(\Omega_{\text{inp}} := \{ \omega^{-1}, \omega^{-2}, ..., \omega^{-|\mathcal{I}_x|} \} \subseteq \Omega\), then proving polynomial \(T\) encoding is done with \textit{Zero Test} on \(\Omega_{\text{inp}}\):
 
 \[T(y) - \nu(y) = 0 \quad \forall y \in \Omega_{\text{inp}}\]
 
@@ -207,7 +294,7 @@ Then, \(\forall \, y \in \Omega_{\text{gates}} := \{ 1, \omega^3, \omega^6, \ome
 \[S(y) \cdot [T(y) + T(\omega y)] + (1 - S(y)) \cdot T(y) \cdot T(\omega y) = T(\omega^2 y)\]
 where \(T(y)\) and \(T(\omega y)\) are left and right inputs correspondingly.
 
-This means, that once again we can narrow our check down to \textit{ZeroTest} for \(\forall \, y \in \Omega_{\text{gates}}\):
+This means, that once again we can narrow our check down to \textit{Zero Test} for \(\forall \, y \in \Omega_{\text{gates}}\):
 
 \[S(y) \cdot [T(y) + T(\omega y)] + (1 - S(y)) \cdot T(y) \cdot T(\omega y) - T(\omega^2 y) = 0\]
 
@@ -260,7 +347,7 @@ Lemma: \(\forall \, y \in \Omega : T(y) = T(W(y)) \implies\) wire constraints ar
 
 \subsubsection{Output of the last gate conforms with expected}
 
-Let \(\alpha\) be the expected output of \(\texttt{C}\). Then, apply \textit{ZeroTest} on:
+Let \(\alpha\) be the expected output of \(\texttt{C}\). Then, apply \textit{Zero Test} on:
 \[T(\omega^{3 |\texttt{C}| - 1}) - \alpha = 0\]
 
 \subsection{Setup procedure}
