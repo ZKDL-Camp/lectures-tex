@@ -159,7 +159,7 @@ Let us define this problem formally.
     The \textbf{Computational Diffie-Hellman Assumption} holds in the group $\mathbb{G}$ if for any efficient adversary $\mathcal{A}$ the advantage $\text{CDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$ is negligible.
 \end{definition}
 
-\subsection{Decisional Diffie-Hellman (DDH)}
+\subsubsection{Decisional Diffie-Hellman (DDH)}
 
 Now, we loosen the requirements a bit. The \textbf{Decisional Diffie-Hellman} (DDH) problem states that given $g^{\alpha},g^{\beta},g^{\alpha\beta}$ it is ``hard'' to distinguish $g^{\alpha\beta}$ from a random element in $\mathbb{G}$. Formally, we define this problem as follows.
 
@@ -210,149 +210,224 @@ Now, we can construct our adversary $\mathcal{A}$ as follows. Suppose $\mathcal{
 
 Suppose $\gamma$ is indeed $\alpha \times \beta$. Then, condition $p_{\gamma}'=p_{\gamma}$ will always hold. If $\gamma$ is a random element, then the probability that $p_{\gamma}'=p_{\gamma}$ is $1/2$. Therefore, the probability that $\mathcal{A}$ will guess the bit $b$ correctly is $3/4$, and the advantage is $1/4$ therefore. $\blacksquare$
 
-\subsubsection{Why this is needed?}
+\vspace{10pt}
 
-Typically, it is impossible to prove the predicate ``for every efficient adversary $\mathcal{A}$ this probability is negligible'' and therefore we need to make assumptions, such as the Discrete Logarithm Assumption or the Computational Diffie-Hellman Assumption. In turn, proving the statement ``if $X$ is secure then $Y$ is also secure'' is manageable and does not require solving any fundamental problems. So, for example,
+Why is this necessary? Typically, it is impossible to prove the predicate ``for every efficient adversary $\mathcal{A}$ this probability is negligible'' and therefore we need to make assumptions, such as the Discrete Logarithm Assumption or the Computational Diffie-Hellman Assumption. In turn, proving the statement ``if $X$ is secure then $Y$ is also secure'' is manageable and does not require solving any fundamental problems. So, for example,
 knowing that the probability of the adversary to break the Diffie-Hellman assumption is negligible, we can prove that the Diffie-Hellman key exchange is secure. 
 
 \subsection{Basic Number Theory}
 
-\subsubsection{Primes}
+% todo add some intro word 
+some intro word
 
-Primes are often used when doing almost any cryptographic computation. A prime number is a natural number ($\mathbb{N}$) that is not a product
-of two smaller natural number. In other words, the prime number is divisible only by itself and 1. The first primes are: 2, 3, 5, 7, 11...
+\subsubsection{Introduction to number theory}
 
-\subsubsection{Deterministic prime tests}
+\begin{definition}
+    An integer $a$ is divisible by a nonzero integer $b$, denoted $b \mid a$, or b is divisor of a, if and only if there exists an integer $k \in \mathbb{Z}$ such that $a = k \cdot b$.
+\end{definition}
 
-A primality test is deterministic if it outputs $\mathtt{True}$ when the number is a prime and $\mathtt{False}$ when the input is composite with probability 1.
-An example of a deterministic prime test is $\mathtt{Trial\_Division\_Test}$. Here is an example implementation in Rust: 
+\begin{lemma}[Divisibility properties]
+    For all $a, b, c \in \mathbb{Z}:$
+    \hfill
+    \begin{enumerate}
+        \item $1 \mid a$
+        \item $a \neq 0$, $a \mid a$
+        \item $a \neq 0$, $a \mid 0$
+        \item $b \mid a$, $c \mid b \Rightarrow c \mid a$
+        \item $b \mid a \iff b \cdot c \mid a \cdot c$, $c > 0$
+        \item $c \mid a$, $c \mid b  \Rightarrow c \mid (\alpha \cdot a \pm \beta \cdot b)$, $\text{for any } \alpha, \beta \in \mathbb{Z}$
+    \end{enumerate}
+\end{lemma}
 
-\begin{lstlisting}[language=Rust]
-    fn is_prime(n: u32) -> bool {
-        let square_root = (n as f64).sqrt() as u32;
-
-        for i in 2.. = square_root {
-            if n % i == 0 {
-                return false;
-            }
-        }
-
-        true
-    }
-\end{lstlisting}
-
-Deterministic tests often lack efficiency. For instance, even with square root optimization, the asymptotic complexity is $O(\sqrt{N})$. 
-While further optimizations are possible, they do not change the overall asymptotic complexity.
-
-In cryptography, $N$ can be extremely large — $256$ bits, $512$ bits, or even $6144$ bits. 
-An algorithm is impractical when dealing with such large numbers.
-
-\subsubsection{Probabilistic prime tests}
-
-A primality test is probabilistic if it outputs $\mathtt{True}$ when the number is a prime and $\mathtt{False}$ when the input is composite with probability less than 1. Such test is often called a pseudoprimality test.
-Fermat Primality and Miller-Rabin Primality Tests are examples of probabilistic primality test. Both of them use the idea of \textbf{Fermat's Little Theorem}:
+You might wonder if there are cases where a number is not divisible by any integer, meaning there is no integer $k$ that satisfies the condition. Well, in such cases, a new theorem comes into play.
 
 \begin{theorem}
-    Let $p$ be a prime number and $a$ be an integer not divisible by $p$. Then $a ^ {p-1} - 1$ is always divisible by $p$:  $a^{p-1} \equiv 1 \pmod{p}$
+    $\forall a, b \in \mathbb{Z}:$ $\exists!\, q, r$, where $q \in \mathbb{Z}$, $r \in \mathbb{N}$, $0 \leq r < |b|$, that $a = b \cdot q + r$.
 \end{theorem}
 
-The key idea behind the Fermat Primality Test is that if for some $a$ not divisible by $n$ we have $a^{n-1} \not\equiv 1 \pmod{n}$ then $n$ is definitely NOT prime.
-Athough, with such an approach, we might get a false positive, as you cannot state for sure that $n$ is prime. For example, consider $n = 15$ and $a = 4$.
-$4^{15-1} \equiv 1 \pmod{15}$, but $n = 15 = 3 \cdot 5$ is composite. To solve this issue, $a$ is picked many times, decreasing the chances of a false positive.
-The probability that a composite number is mistakenly called prime for $k$ iterations is $2^{-k}$ = $\dfrac{1}{2^k}$.
+To prove this theorem, all we need to prove is the existence and uniqueness of such a decomposition. Basically, this new theorem allows to define new operation that accept two integers and return two integers $q = \left\lfloor \frac{a}{b} \right\rfloor$, $r = a - b \cdot \left\lfloor \frac{a}{b} \right\rfloor$. Thus, $a \, \text{mod} \, b$ represents the remainder when $a$ is divided by $b$.
 
-There exists a problem with such an algorithm in the form of \textbf{Carmichael numbers}, which are numbers that are Fermat pseudoprime to all bases. To put it simply,
-no matter how many times you check whether the number is prime using this type of primality test, it will always stay positive, even though the number is
-composite. The good thing is that Carmichael numbers are pretty rare. The bad thing is that there are infinitely many of them. 
+\vspace{10pt}
 
-Even though this algorithm is probabilistic (which does not guarantee the correctness of the output) and has a vulnerability in the form of \textit{Carmichael numbers},
-it runs with an asymptotic complexity $O(\log^3{n})$. This is much better for large numbers and is often used in cryptography. Here is a pseudocode implementation of this algorithm:
+In division operations, it is common to check for any shared factors between two numbers. This is where the concept of the greatest common divisor (gcd) comes into.
 
-\begin{lstlisting}[language=Python]
-# n = number to be tested for primality
-# k = number of times the test will be repeated
-def is_prime(n, k):
-    i = 1
-    while i <= k:
-        a = rand(2, n - 1)
+\begin{definition}
+    $\forall a, b \in \mathbb{Z}, \gcd(a, b) = d$ such that:
+    \begin{enumerate}
+        \item $d \mid a$, $d \mid b$
+        \item $d  \in \mathbb{N}$ is a maximal integer that satisfies the first condition
+    \end{enumerate}
+\end{definition}
 
-        if a^(n - 1) != 1 (mod n):
-            return False
+\begin{definition}
+    Two numbers $a$ and $b$ \textbf{coprime} if and only if $\gcd(a, b) = 1$.
+\end{definition}
 
-        i++
+\begin{lemma} [Greatest common divisor properties]
+    \hfil
+    \begin{enumerate}
+        \item $\gcd(a, b) = b \iff b \mid a$
+        \item $a \neq 0$, $\gcd(a, 0) = a$
+        \item $\exists \delta$: $\delta \mid a, \delta \mid b \Rightarrow \delta \mid \gcd(a, b)$
+        \item $c > 0$, $\gcd(a \cdot c, b \cdot c) = c \cdot \gcd(a, b)$
+        \item $d = \gcd(a, b) \Rightarrow \gcd(\frac{a}{d}, \frac{b}{d}) = 1$
+    \end{enumerate}
+\end{lemma}
 
-    return True
-\end{lstlisting}
+\begin{lemma}
+    $\gcd(a, b) = \gcd(b, a - b)$
+\end{lemma}
 
-Miller-Rabin primality test, is a more advanced form of Fermat primality test. The main difference is it is not vulnerable to \textit{Carmichael numbers},
-which makes it much better to use in practice.
+\begin{corollary}
+    $\gcd(a, b) = \gcd(b, a \mod b)$
+\end{corollary}
 
-\subsubsection{Greatest Common Divisor}
+All these properties are interesting and useful, but you may wonder how to actually find $gcd(a, b)$. Euclidean algorithm is an efficient method for computing the greatest common divisor, and we will describe extended version, but later.
 
-Greatest common divisor (GCD) of two or more integers, which are not all zero, is the largest positive integer that divides each of the integers. 
+While the greatest common divisor (gcd) focuses on finding the largest shared factor between two numbers, the least common multiple (lcm) deals with finding the smallest multiple that both numbers have in common. The LCM is particularly useful when we need to synchronize cycles or work with fractions.
 
-\begin{example}
-    $gcd(8, 12) = 4$, 
-    $gcd(3, 15) = 3$, 
-    $gcd(15, 10) = 5$.
+\begin{definition}
+    $\forall a, b \in \mathbb{Z}, lcm(a, b) = m$ such that:
+    \begin{enumerate}
+        \item $a \mid m$, $a \mid m$
+        \item $m \in \mathbb{N}$ is a maximal integer that satisfies the first condition 
+    \end{enumerate}
+\end{definition}
+
+\begin{lemma} [Least common multiple properties]
+    \hfil
+    \begin{enumerate}
+        \item $\lcm(a, 0)$ - undefined
+        \item $\lcm(a, b) = a \iff b \mid a$
+        \item $a, b$ - coprime $\Rightarrow \lcm(a, b) = a \cdot b$
+        \item Any common divisor of $a$ and $b$ $\delta \mid \lcm(a, b)$
+        \item $\forall c > 0: \lcm(a \cdot c, b \cdot b) =  c \cdot \lcm(a, b)$
+        \item $\frac{\lcm(a, b)}{a}$ and $\frac{\lcm(a, b)}{b}$ - are coprime
+    \end{enumerate}
+\end{lemma}
+
+\begin{theorem}
+    $\forall a, b \in \mathbb{N}: \gcd(a, b) \cdot \lcm(a, b) = a \cdot b$
+\end{theorem}
+
+This theorem states that no additional algorithm is required for $\text{lcm}(a, b)$.
+
+\begin{theorem}
+    $\forall a, b \in \mathbb{N}: \gcd(a, b, c) = \gcd(\gcd(a, b), c) = \gcd(a, \gcd(a, b))$
+\end{theorem}
+
+\begin{theorem}
+    $\forall a, b \in \mathbb{N}: \lcm(a, b, c) = \lcm(\lcm(a, b), c) = \lcm(a, \lcm(a, b))$
+\end{theorem}
+
+In conclusion, from these two theorems, we already know that there is no necessity for specific algorithms for $\gcd$ and $\lcm$ when dealing with many arguments. There are more specialized algorithms for each when considering a specific number of arguments, but unfortunately, such topics are beyond the scope of this book.
+
+\subsubsection{Extended Euclidean algorithm}
+
+In this section, we will introduce the Extended Euclidean Algorithm and an important lemma related to the GCD. You might have reasonable question why extended version. The simple answer is that it will later help us find inverse elements, which will be introduced in a subsequent section.
+
+\begin{lemma} [Bezout identity]
+    For all $a, b \in \mathbb{N}, d = \gcd(a, b) \; \exists u, v \in \mathbb{Z}, d = a \cdot u + b \cdot v$
+\end{lemma}
+
+\begin{corollary} [From Bezout identity]
+    \hfill
+    \begin{enumerate}
+        \item $d = au + bv$, where one of the numbers is necessarily non-negative and the other is non-positive.
+        \item $d = \gcd(a_1, a_2, \dots, a_n) \Rightarrow \exists \, u_1, u_2, \dots, u_n \in \mathbb{Z}: \, d = u_2 a_1 + u_2 a_2 + \dots + u_n a_n$
+        \item For all $i \in \mathbb{N} \;\exists \, u_i, v_i \in \mathbb{Z}: r_i = a u_i + b v_i$
+    \end{enumerate}    
+\end{corollary}
+
+The integers $u$ and $v$ are called coefficients Bezout. The first corollary seems obvious, because if all coefficients are non-negative, the result will be much larger than necessary, and if they are non-positive, the result must be negative, but the GCD $ \in \mathbb{N} $. The second consequence follows from the fact that we can decompose gcd thus sequentially derive this sequence. The last one stand that we can find coefficients Bezout on each euclidean algorithm step.
+
+The extended Euclidean algorithm finds the Bezout coefficients together with the GCD.
+
+\begin{algorithm}
+    \caption{Extended Euclidean algorithm} \label{extended_euclidean_algorithm}
+    \Input{$a, b \in \mathbb{N}, a \geq b$}
+    \Output{$(gcd(a, b), \, u, \, v)$}
+        
+    $r_{0} \gets a; \, r_{1} \gets b$ \\ % todo fix format
+    $u_{0} \gets 1; \, u_{1} \gets 0$ \\
+    $v_{0} \gets 0; \, v_{1} \gets 1$ \\
+
+    \For{$i \in \{1, \dots , \log(b) \}$}{
+        $q_i \gets \lfloor r_{i-1} \, / \, r_{i} \rfloor$ \\
+        $u_{i+1} \gets u_{i-1} - u_{i} q_i$ \\
+        $v_{i+1} \gets v_{i-1} - v_{i} q_i$ \\
+        $r_{i+1} \gets  a u_{i+1} + b v_{i}$ \\
+
+        \If{$r_{i+1} = 0$}{
+            \textbf{return} $(r_i, u_i, v_i)$
+        }
+    }
+\end{algorithm}
+
+Hence, we already know how the Extended Euclidean Algorithm works, but this method is not human-friendly. Next, example of a easy way to find the GCD.
+
+% todo improve style
+\begin{example} [Extended Euclidean algorithm example]
+    \hfill
+
+    First, we you need to find d = gcd(a,b), then, knowing this sequence of expansions, find the coefficients of Bezout, although this can be done simultaneously.
+
+    \hfill
+
+    \begin{minipage}{0.4\textwidth}
+        \raggedright
+        \vspace*{\fill}
+            \begin{enumerate}
+                \item $125 = 93 \cdot 1 + 32$
+                \item $93 = 32 \cdot 2 + 29$
+                \item $32 = 29 \cdot 1 + 3$
+                \item $29 = 3 \cdot 9 + 2$
+                \item $3 = 2 \cdot 1 + 1$
+                \item $2 = 1 \cdot 2 + 0$        
+            \end{enumerate}
+        \vspace*{\fill}
+    \end{minipage}
+    \begin{minipage}{0.7\textwidth}
+        \resizebox{0.7\textwidth}{!}{
+            \begin{tabular}{|c|c|c|c|c|c|c|c|}
+                \hline
+                
+                $i$   & $0$      & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ \\
+                
+                \hline
+                \hline
+
+                $q_i$ & $\times$ & $1$ & $2$ & $1$ & $9$ & $1$ & $2$ \\
+                
+                \hline
+                
+                $u_i$ & $1$      & $0$ & $1$ & $-2$ & $3$ & $-29$ & $32$ \\
+                \hline
+                $v_i$ & $0$      & $1$ & $-1$ & $3$ & $-4$ & $ $ & $ $ \\
+                
+                \hline
+            \end{tabular}
+        }
+    \end{minipage}
+
+    \hfill
+    
+    Each corresponding cell is calculated with the following formula: \\
+    $u_{i-1} - q_i u_i = u_{i+1}$ \\
+    $v_{i-1} - q_i v_i = v_{i+1}$ 
+
+    Knowing that, try to  finish this example. After finding $v_6$ and be sure to check yourself.
 \end{example}
 
-Computing $GCD$ using Euclid's algorithm. 
-The is based on the fact that, given two positive integers $a$ and $b$ such that $a > b$, 
-the common divisors of $a$ and $b$ are the same as the common divisors of $a - b$ and $b$. 
-It can be observed, that it can be further optimized, by using $a mod b$, instead of $a - b$. 
-For example, $gcd(26, 8) = gcd(18, 8) = gcd(10, 8) = gcd(2, 8)$ can be optimized to $gcd(26, 8) = gcd(26 \pmod{8}, 8) => gcd(2, 8)$
-Algorithm can be implemented using recursion. Base of the recursion is $gcd(a, 0) = a$.
+\subsubsection{Prime numbers}
 
-\begin{lstlisting}[]
-   int gcd(a, b):
-    if (b == 0):
-        return a
-    return gcd(b, a % b)
-\end{lstlisting}
+\subsubsection{Fundamental theorem of arithmetic}
 
-Provided algorithm work with $O(log(N))$ asymptotic complexity.
+\subsubsection{Linear congruence}
 
-\subsubsection{Least common multiple}
+\subsubsection{Modular multiplicative inverse}
 
-Least common multiple (LCM) of two integers $a$ and $b$, is the smallest positive integer that is divisible by both $a$ and $b$.
-
-The least common multiple can be computed from the greatest common divisor with the formula:
-$lcm(a, b) = \frac{|ab|}{gcd(a,b)}$
-
-\begin{lstlisting}[]
-    int lcm(a, b):
-     return a * (b / gcd(a, b))
- \end{lstlisting}
-
- \subsubsection{Modular inverse}
-
-Modular multiplicative inverse of an integer $a$ is an integer $b$ such that $a \cdot b \equiv 1 \pmod{m}$. 
-In prime fields it is commonly used as a division operation.
-
-One of the ways to compute the modular inverse is by using Euler`s theorem:
-
-$a^{\phi(m)} \equiv 1 \pmod{m}$, where $\phi$ is Euler's totient function. 
-
-For prime numbers, where $\phi(m) = m-1$:
-
-$a^{m-2} \equiv a^{-1} \pmod{m}$.
-
-\begin{lstlisting}[language=Python]
-    a_inverse = powmod(a, m-2, m) # where powmod(base, power, modulus)
-\end{lstlisting}
-
-\subsubsection{Reed-Solomon codes}
-
-Reed-Solomon codes allows to restore lost or corrupted data, implement threshold secret sharing and is used in some ZK protocols.
-Given a vector of data $V$ a polynomial $P$ is constructed using Lagrange interpolation.
-Polynomial with degree $n$ can be uniquely defined using $(n+1)$ unique points. Defining more points on the same polynomial add a redundancy,
-which can be used to restore the polynomial even if some points are missing.
-Common choices for a set of evaluation points include ${0, 1, 2, ..., n - 1}$.
-
-The error-correcting ability of a Reed-Solomon code is $n-k$, the measure of redundancy in the block. 
-If the locations of the error symbols are not known in advance, then a Reed-Solomon code can correct up to
-$n-k/2$ erroneous symbols, i.e., it can correct half as many errors as there are redundant symbols added to the block.
+\subsubsection{Chinese remainder theorem}
 
 \subsubsection{Schwartz-Zippel Lemma}
 
