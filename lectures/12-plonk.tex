@@ -264,7 +264,7 @@ $Q_L$ & $Q_R$ & $Q_M$ & $Q_o$ & $Q_c$ \\
 \end{example}
 
 \begin{definition}
-Matrix $T$ with columns $A$, $B$ and $C$ encodes correct execution of the program, if:
+Matrix $T$ with columns $A$, $B$ and $C$ encodes correct execution of the program, if the following two conditions hold:
 \begin{enumerate}
     \item \(\forall i: A_i Q_{Li} + B_i Q_{Ri} + A_i B_i Q_{Mi} + C_i Q_{Oi} + Q_{ci} + \Pi_i = 0\)
     \item \(\forall i, j, k, l: (V_{i,j} = V_{k,l}) \Rightarrow (T_{i,j} = T_{k,l})\)
@@ -277,7 +277,7 @@ Now we can traduce the sets of constraints on matrices to just a few equations
 on polynomials, as we have already done for Groth16. Let $\omega$ be a primitive
 $N$-th root of unity and let $\Omega = \{\omega^j: 0 \le j < N\}$. Let \(a, b, c,
 q_L, q_R, q_M, q_O, q_C, \pi\) be polynomials of degree at most $N$ that
-interpolate corresponding columns from matrices at the domain $H$. This means,
+interpolate corresponding columns from matrices at the domain $\Omega$. This means,
 that \(\forall j: a(\omega^j) = A_j\) and the same for other columns.
 
 Now we can reduce down our first condition to checking valid execution trace
@@ -318,7 +318,7 @@ L & R & O \\
 \[\sigma((0,3)) = (0,1), \sigma((2,1)) = (0,0), \sigma((3,1)) = (2,2)\]
 \end{example}
 
-Having defined permutation, we can now reduce a condition $2$ of valid execution trace matrix into the following check:
+\textcolor{blue!80!black}{\textbf{Permutation Check.}} Having defined permutation, we can now reduce a condition $2$ of valid execution trace matrix into the following check:
 \[\forall (i, j) \in \mathcal{I}: T_{i,j} = T_{\sigma(i,j)}\]
 
 You may have noticed how this can be reformulated as equality of $A$ and $B$:
@@ -329,21 +329,23 @@ We can reduce this check down to polynomial equations.
 
 Suppose we have sets \(A = \{a_0, a_1\}\) and \(B = \{b_0, b_1\}\). We can consider polynomials \(A' = \{a_0 + X, a_1 + X\}, B' = \{b_0 + X, b_1 + X\}\). 
 \\
-So, \(A' = B'\), only if \((a_0 + X)(a_1 + X) = (b_0 + X)(b_1 + X)\). This is true because of linear polynomial unique factorization property, working as prime factors. Now, we can utilize Schwartz-Zippel lemma to replace the latter formula with \((a_0 + \gamma)(a_1 + \gamma) = (b_0 + \gamma)(b_1 + \gamma)\) for some random $\gamma$ with high probability
-If we wish to generalize this for sets \(A = \{a_0, \ldots, a_{k-1}\}\) and \(B = \{b_0, \ldots, b_{k-1}\}\):
+So, \(A' = B'\), only if \((a_0 + X)(a_1 + X) = (b_0 + X)(b_1 + X)\). This is
+true because of linear polynomial unique factorization property, working as
+prime factors. Now, we can utilize Schwartz-Zippel lemma to replace the latter
+formula with \((a_0 + \gamma)(a_1 + \gamma) = (b_0 + \gamma)(b_1 + \gamma)\) for
+some random $\gamma$ with overwhelming probability. If we wish to generalize this
+for arbitrary sets \(A = \{a_0, \ldots, a_{k-1}\}\) and \(B = \{b_0, \ldots, b_{k-1}\}\), apply the following check:
 
 \[\prod_{i=0}^{k-1} (a_i + \gamma) = \prod_{i=0}^{k-1} (b_i + \gamma)\]
 
-Let $H$ be a domain of the form \(\{1, \omega, \dots, \omega^{k-1}\}\) for some $k$-th root of unity $\omega$. Let $f$ and $g$ be polynomials that interpolate the following values at $H$:
+Let $\Omega$ be a domain of the form \(\{1, \omega, \dots, \omega^{k-1}\}\) for some $k$-th root of unity $\omega$. Let $f$ and $g$ be polynomials that interpolate the following values at $\Omega$:
 
 \[f: (a_0 + \gamma, \ldots, a_{k-1} + \gamma)\]
 \[g: (b_0 + \gamma, \ldots, b_{k-1} + \gamma)\]
 
-Then \(\prod_{i=0}^{k-1} (a_i + \gamma) = \prod_{i=0}^{k-1} (b_i + \gamma)\) if only if: \(\exists Z \forall h \in H: Z(\omega^{0}) = 1\) and  \(Z(h)f(h) = g(h)Z(\omega h)\).
+Then \(\prod_{i=0}^{k-1} (a_i + \gamma) = \prod_{i=0}^{k-1} (b_i + \gamma)\) if and only if exists a polynomial $Z \in \mathbb{F}[X]$ such that for all $h \in \Omega$ we have $Z(\omega^{0}) = 1$ and $Z(h)f(h) = g(h)Z(\omega h)$.
 
-Now that we can encode equality of sets of field elements, let's expand this to sets of tuples of field elements.
-
-Let \(A = \{(a_0, a_1), (a_2, a_3)\}\) and \(B = \{(b_0, b_1), (b_2, b_3)\}\), then, similarly to the previous:
+Now that we can encode equality of sets of field elements, let's expand this to sets of tuples of field elements. Let \(A = \{(a_0, a_1), (a_2, a_3)\}\) and \(B = \{(b_0, b_1), (b_2, b_3)\}\), then, similarly:
 \[A' = \{a_0 + a_1Y + X, a_2 + a_3Y + X\}\]
 \[B' = \{b_0 + b_1Y + X, b_2 + b_3Y + X\}\]
 \[A = B \leftrightarrow A' = B'\]
@@ -354,33 +356,32 @@ As before, we can leverage Schwartz-Zippel lemma to reduce this down into sampli
 \\
 Now, if we would go back into condition 2 which we are trying to formulate in polynomial domain, it will become clear that first if we somehow encode inner indices tuple $(i, j)$ into a one field element, we can use the above fact.
 Recall that $i \in [0; N-1]$ and $j \in [0; 2]$; we can take $3N$-th primitive root of unity $\eta$ and define our field element as \(a_0 = \eta^{3i + j}\):
-\[A = \{(\eta^{3i+j}, T_{i,j}) : (i, j) \in I\}\]
-\[B = \{(\eta^{3k+l}, T_{i,j}) : (i, j) \in I, \sigma((i, j)) = (k, l)\}\]
+\[A = \{(\eta^{3i+j}, T_{i,j}) : (i, j) \in \mathcal{I}\}\]
+\[B = \{(\eta^{3k+l}, T_{i,j}) : (i, j) \in \mathcal{I}, \sigma((i, j)) = (k, l)\}\]
 
 Then, summarizing:
-Let $\eta$ be a $3N$-th primitive root of unity, $\beta$ and $\gamma$ random field elements. Let $D = \{1, \eta, \eta^2, \ldots, \eta^{3N-1}\}$. Then let $f$ and $g$ interpolate at $D$:
+Let $\eta$ be a $3N$-th primitive root of unity, $\beta$ and $\gamma$ random field elements. Let $\mathcal{D} = \{1, \eta, \eta^2, \ldots, \eta^{3N-1}\}$. Then let $f$ and $g$ interpolate at $\mathcal{D}$:
+\begin{align*}
+    f: & \{T_{i,j} + \eta^{3i+j}\beta + \gamma : (i, j) \in \mathcal{I}\} \\
+    g: & \{T_{i,j} + \eta^{3k+l}\beta + \gamma : (i, j) \in \mathcal{I}, \sigma((i, j)) = (k, l)\}
+\end{align*}
 
-\[f: \{T_{i,j} + \eta^{3i+j}\beta + \gamma : (i, j) \in I\}\]
-\[g: \{T_{i,j} + \eta^{3k+l}\beta + \gamma : (i, j) \in I, \sigma((i, j)) = (k, l)\}\]
+So, $\exists Z \in \mathbb{F}[X]$ s.t. $\forall h \in \Omega$ we have $Z(\eta^{0}) = 1$ and $Z(h)f(h) = g(h)Z(\eta h) \leftrightarrow A = B$ w.h.p.
 
-So, \(\exists Z \forall h \in H: Z(\eta^{0}) = 1\) and  \(Z(h)f(h) = g(h)Z(\eta h) \leftrightarrow A = B\) w.h.p.
-
-Notice, that $\omega = \eta^3$ is a primitive $N$-th root of unity. Let \(H = \{1, \omega, \omega^2, \ldots, \omega^{N-1}\}\). 
+Notice, that $\omega = \eta^3$ is a primitive $N$-th root of unity. Let \(\Omega = \{1, \omega, \omega^2, \ldots, \omega^{N-1}\}\). 
 We will define three polynomials, which interpolate following sets:
-\[S_{\sigma 1}: \{\eta^{3k+l} : (i, 0) \in I, \sigma((i, 0)) = (k, l)\}\]
-\[S_{\sigma 2}: \{\eta^{3k+l} : (i, 1) \in I, \sigma((i, 0)) = (k, l)\}\]
-\[S_{\sigma 3}: \{\eta^{3k+l} : (i, 2) \in I, \sigma((i, 0)) = (k, l)\}\]
+\[S_{\sigma 1}: \{\eta^{3k+l} : (i, 0) \in \mathcal{I}, \sigma((i, 0)) = (k, l)\}\]
+\[S_{\sigma 2}: \{\eta^{3k+l} : (i, 1) \in \mathcal{I}, \sigma((i, 0)) = (k, l)\}\]
+\[S_{\sigma 3}: \{\eta^{3k+l} : (i, 2) \in \mathcal{I}, \sigma((i, 0)) = (k, l)\}\]
 \\
-Let $\omega$ be an $N$-th root of unity. Let $H = \{1, \omega, \omega^2, \ldots, \omega^{N-1}\}$. Let $k_1$ and $k_2$ be two field elements such that $\omega^i \neq \omega^j k_1 \neq \omega^l k_2$ for all $i, j, l$. Let $\beta$ and $\gamma$ be random field elements. Let $f$ and $g$ be the polynomials that interpolate, respectively, the following values at $H$:
+Let $\omega$ be an $N$-th root of unity. Let $\Omega = \{1, \omega, \omega^2, \ldots, \omega^{N-1}\}$. Let $k_1$ and $k_2$ be two field elements such that $\omega^i \neq \omega^j k_1 \neq \omega^l k_2$ for all $i, j, l$. Let $\beta$ and $\gamma$ be random field elements. Let $f$ and $g$ be the polynomials that interpolate, respectively, the following values at $\Omega$:
 
 \[f: \left\{\left(T_{0,j} + \omega^i \beta + \gamma\right)\left(T_{1,j} + \omega^i k_1 \beta + \gamma\right)\left(T_{2,j} + \omega^i k_2 \beta + \gamma\right) : 0 \leq i < N\right\}\]
 \[g: \left\{\left(T_{0,j} + S_{0,1}(\omega^i) \beta + \gamma\right)\left(T_{0,j} + S_{0,2}(\omega^i) \beta + \gamma\right)\left(T_{0,j} + S_{0,3}(\omega^i) \beta + \gamma\right) : 0 \leq i < N\right\}\]
 
-So, \(\exists Z \forall h \in D: Z(\omega^{0}) = 1\) and  \(Z(d)f(d) = g(d)Z(\omega d) \leftrightarrow A = B\) w.h.p.
-
-So, we now can encode our program using 8 polynomials mentioned at the beginning:
+So, $\exists Z \in \mathbb{F}[X]$ such that $\forall d \in \mathcal{D}$ we have $Z(\omega^{0}) = 1$ and $Z(d)f(d) = g(d)Z(\omega d) \leftrightarrow A = B$ w.h.p. That being said, we now can encode our program using 8 polynomials mentioned at the very beginning:
 \[q_L, q_R, q_M, q_O, q_C, S_{01}, S_{02}, S_{03}\]
-These are called \textit{common preprocessed input}.
+These are called \textbf{common preprocessed input}.
 
 \subsubsection{Summary}
 Having a program for relation $\mathcal{R}$, we saw how it can be represented as
@@ -418,7 +419,7 @@ We can reduce every needed check down to one equation, if we introduce randomnes
 Let $\alpha$ be a random field element, then: 
 \[
     \begin{aligned}
-        z_Ht &= aq_L + bq_R + abq_M + cq_O + q_C + \pi \\
+        z_{\Omega}t &= aq_L + bq_R + abq_M + cq_O + q_C + \pi \\
         &= \alpha(gz' - fz) \\
         &= \alpha^2(z - 1)L_1
     \end{aligned}
