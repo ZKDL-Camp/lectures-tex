@@ -1,400 +1,392 @@
 \documentclass[../lecture-notes.tex]{subfiles}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
-\usepackage{xcolor}
-\usepackage{fix-cm}
-\usepackage{amssymb}
 \pgfplotsset{compat=1.18}
 
 \begin{document}
 
-\subsection{Preliminaries}
-In order to build Plonk, let us at first consider several useful proving system gadgets.
+\subsection{Plonk Arithmetization}
 
-Let: cyclic $\Omega \leq \mathbb{F}_p^\times, \quad \ |\Omega| = k , \quad f \in \mathbb{F}_p^{(\leq d)}[X] (d \geq k)$.
+Consider we have a certain program $P$, which we would like to write down into a processing-prone format. For that reason, we would arithmetize it into a set of 8 polynomials.
 
-Now, we would like to be able to prove certain properties about $f$:
+\begin{example}
+To begin with, observe this simple example $P$:
 
-\begin{enumerate}
-    \item \textbf{Zero Test:} $f$ is identically zero on $\Omega$
-    \item \textbf{Product Check:} $\prod_{a \in \Omega} f(a) = 1$
-\end{enumerate}
+\begin{center}
+Input: x
 
-In order to do that, we will apply public coin protocol. Verifier has $com(f)$ for the scoped polynomial, serving as a binding factor.
+Private input: e
 
-\subsubsection{Zero Test}
+Output: e * x + x - 1
+\end{center}
+\end{example}
 
-Prove that $f$ is identically zero on $\Omega$. Recall the vanishing polynomial \ref{section:qap-acc}. 
-If the group is cyclic, then $Z_{\Omega}(X) = X^{|\Omega|} - 1$: for $r \in \mathbb{F}_p$, evaluating $Z_\Omega(r)$ takes $\leq 2 \log_2 k$ field operations.
+\subsubsection{Execution Trace}
 
-\begin{figure}[H]
-  \centering
-  \begin{tikzpicture}
-      \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$}; 
-      \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$}; 
+Standard Plonk is defined as a system with two types of gates for addition and multiplication. We would explain how to build custom gates later.
+So, let us consider our program in terms of gates with left, right operands and output. 
 
-      \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]prover.south) -- ([yshift=-10cm]prover.south);
-      \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]verifier.south) -- ([yshift=-10cm]verifier.south);
+\begin{example}
+    \begin{enumerate}
+        \item Gate: left $e$, right $x$, output \(u = e \times x\)
+        \item Gate: left $u$, right $x$, output \(\upsilon = u \times x\)
+        \item Gate: left $\upsilon$, right $x$, output \(w = \upsilon + (-1)\)
+    \end{enumerate}
+\end{example}
 
-      \node[align=center,fill=white!5,thick,below=0.5cm of prover](prover-compute){
-      \noindent\rule{3.5cm}{0.8pt}\\
-      Compute: \( q(X) \leftarrow \frac{f(X)}{Z_{\Omega}(X)} \) \\ \( q \in \mathbb{F}_p^{(\leq d)}[X] \) \\
-      \noindent\rule{3.5cm}{0.8pt}};
+You might have glanced the intuitive formation of what is called \textit{execution trace table} - a matrix $T$ with columns $L$, $R$ and $O$ (it is common to denote those as $A, B, C$ to distinguish from another matrix we will discuss later).
 
-      \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-3cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm]{Send \(com(q)\)};
+\begin{example}
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+A & B & C \\ \hline
+2 & 3 & 6 \\ \hline
+6 & 3 & 9 \\ \hline
+9 &  & 8 \\ \hline
+\end{tabular}
+\end{center}
 
-      \node[align=center,fill=white!5,thick,below=3.5cm of verifier](verifier-random){
-      \noindent\rule{3.5cm}{0.8pt}\\
-      Generate random \(r \xleftarrow{R}\mathbb{F}_p^{(\leq d)} \) \\
-      \noindent\rule{3.5cm}{0.8pt}};
+Notice how the last row has no value in $B$ column - this is reasoned by the fact it is not a variable, but rather a constant, meaning it doesn't depend on execution.
+\end{example}
 
-      \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-5.5cm]verifier.south) coordinate (l2)--(l2-|prover) node[midway, above=0mm]{Query \(q\) and \(f\) at $r$};
+\subsubsection{Encode the program}
 
-      \node[align=center,fill=white!5,thick,below=6.0cm of prover](prover-query){
-      \noindent\rule{3.5cm}{0.8pt}\\
-      Compute: $q(r), f(r)$ \\
-      \noindent\rule{3.5cm}{0.8pt}};
-
-      \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-8cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm]{Send \(q(r), f(r)\)};
-
-      \node[align=center,fill=white!5,thick,below=8.5cm of verifier](verifier-accept){
-      \noindent\rule{3.5cm}{0.8pt}\\
-      Accept if $f(r) = q(r) \cdot Z_{\Omega}(r)$ \\
-      \noindent\rule{3.5cm}{0.8pt}};
-  \end{tikzpicture}
-  \caption{Protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$ for Zero Test.}
-  \label{fig:polynomial_commitment}
-\end{figure}
-
-\begin{lemma}
-    $f$ is zero on $\Omega$ if and only if $f(X)$ is divisible by $Z_{\Omega}(X)$.
-\end{lemma}
-
-\begin{remark}
-This protocol is complete and sound, assuming $d/p$ is negligible due to Schwartz-Zippel Lemma.
-\end{remark}
-
-\subsubsection{Product Check}
-
-Prove that $\prod_{a \in \Omega} f(a) = 1$.
-
-For that, let's define an auxiliary polynomial inductively so that it captures prefix-products:
-
-\[t(1) = f(1), \quad t(\omega^s) = \prod_{i=0}^{s} f(\omega^i) \quad \text{for } s = 1, ..., k-1\]
-
-Ultimately,  \(t(\omega) = f(1) \cdot f(\omega)\),  \(t(\omega^2) = f(1) \cdot f(\omega) \cdot f(\omega^2)\), \(\dots\), \(t(\omega^{k-1}) = \prod_{a \in \Omega} f(a) = 1\). Then \(t(\omega \cdot x) = t(x) \cdot f(\omega \cdot x)\) for all \(x \in \Omega\) (including at \(x = \omega^{k-1} \text{)}\).
-
-\begin{lemma}
-\(\forall x \in \Omega \  (t(\omega^{k-1}) = 1  \land (t(\omega \cdot x) - t(x) \cdot f(\omega \cdot x) = 0)) \implies \prod_{a \in \Omega} f(a) = 1\)
-\end{lemma}
-
-\begin{figure}[H]
-    \centering
-    \begin{tikzpicture}
-        \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}(f)$}; 
-        \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}(f)$}; 
-
-        \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]prover.south) -- ([yshift=-14cm]prover.south);
-        \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]verifier.south) -- ([yshift=-14cm]verifier.south);
-
-        \node[align=center, fill=white!5, thick, below=0.5cm of prover] (prover-compute) {
-            \noindent\rule{5cm}{0.8pt}\\
-            Compute: $t(X) \in \mathbb{F}_p^{(\leq k)}$ \\ 
-            $t_1(X) = t(\omega \cdot X) - t(X)f(\omega \cdot X)$ \\
-            $q(X) = t_1(X)/(X^k - 1) \in \mathbb{F}_p^{(\leq d)}$ \\
-            \noindent\rule{5cm}{0.8pt}
-        };
-
-        \draw[-{Stealth[length=3mm]}, line width=0.4mm] 
-            ([yshift=-3.5cm]prover.south) coordinate (l2) --
-            (l2-|verifier) node[midway, above=0mm]{Send \(com(t)\), \(com(q)\)};
-
-        \node[align=center, fill=white!5, thick, below=4cm of verifier] (verifier-random) {
-            \noindent\rule{5cm}{0.8pt}\\
-            Generate random $r \xleftarrow{R}\mathbb{F}_p$ \\
-            \noindent\rule{5cm}{0.8pt}
-        };
-
-        \draw[-{Stealth[length=3mm]}, line width=0.4mm] 
-            ([yshift=-6cm]verifier.south) coordinate (l2) --
-            (l2-|prover) node[midway, above=0mm]{Query $t(X)$ at $\omega^{k-1}, r, \omega r$};
-
-        \node[align=center, fill=white!5, thick, below=6.5cm of prover] (prover-query-t) {
-            \noindent\rule{5cm}{0.8pt}\\
-            Compute: $t(\omega^{k-1}), t(r), t(\omega r)$ \\
-            \noindent\rule{5cm}{0.8pt}
-        };
-
-        \draw[-{Stealth[length=3mm]}, line width=0.4mm] 
-            ([yshift=-8.5cm]prover.south) coordinate (l3) --
-            (l3-|verifier) node[midway, above=0mm]{Send $t(\omega^{k-1}), t(r), t(\omega r)$};
-
-        \draw[-{Stealth[length=3mm]}, line width=0.4mm] 
-            ([yshift=-9.5cm]verifier.south) coordinate (l4) --
-            (l4-|prover) node[midway, above=0mm]{Query $q(X)$ at $r$, and $f(X)$ at $\omega r$};
-
-        \node[align=center, fill=white!5, thick, below=10cm of prover] (prover-query-qf) {
-            \noindent\rule{5cm}{0.8pt}\\
-            Compute: $q(r), f(\omega r)$ \\
-            \noindent\rule{5cm}{0.8pt}
-        };
-
-        \draw[-{Stealth[length=3mm]}, line width=0.4mm] 
-            ([yshift=-12cm]prover.south) coordinate (l5) --
-            (l5-|verifier) node[midway, above=0mm]{Send $q(r), f(\omega r)$};
-
-        \node[align=center, fill=white!5, thick, below=12.5cm of verifier] (verifier-accept) {
-            \noindent\rule{5cm}{0.8pt}\\
-            Accept if $t(\omega^{k-1}) = 1$ and \\ 
-            $t(\omega r) - t(r)f(\omega r) = q(r)(r^k - 1)$ \\
-            \noindent\rule{5cm}{0.8pt}
-        };
-    \end{tikzpicture}
-    \caption{Protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$ for Product Check.}
-    \label{fig:polyn}
-\end{figure}
-
-\subsubsection{Prescribed Permutation Check}
+It is important to distinguish between definition of the program, and it's specific evaluation for the sake of simplicity and efficiency - once having established encoding for the program, you might apply it for any reasonable inputs.
+Therefore, let us at first focus on what defines whether execution trace table will be considered valid for our circuit, because having a table by itself does not tell much, since it can be populated with any values. \\
+For that reason, we would define two matrices - $Q$ and $V$.
 
 \begin{definition}
-\(W : \Omega \rightarrow \Omega\) is a permutation of \(\Omega\) if \(\forall i \in [k], W(\omega^i) = \omega^{j}\) is a bijection.
+$Q$ matrix has one row per each gate with columns $Q_L$, $Q_R$, $Q_O$, $Q_M$, $Q_C$. If columns $A$, $B$ and $C$ of the execution trace table form valid evaluation of the circuit, 
+\[A_i Q_{Li} + B_i Q_{Ri} + A_i B_i Q_{Mi} + C_i Q_{Oi} + Q_{ci} = 0\]
 \end{definition}
 
 \begin{example}
-\text{Example } $(k=3): \quad W(\omega^0) = \omega^2, \quad W(\omega^1) = \omega^0, \quad W(\omega^2) = \omega^1$
+
+For our program, we would have a following $Q$ table:
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+$Q_L$ & $Q_R$ & $Q_M$ & $Q_o$ & $Q_c$ \\ 
+\hline
+0 & 0 & 1 & -1 & 0 \\ 
+\hline
+1 & 1 & 0 & -1 & 0 \\ 
+\hline
+1 & 0 & 0 & -1 & -1 \\ 
+\hline
+\end{tabular}
+\end{center}
+
+You can verify that our claim holds for aforementioned trace matrix:
+\begin{align*}
+  2 \times 0 + 3 \times 0 + 2 \times 3 \times 1 + 6 \times (-1) + 0 &= 0 \\
+  6 \times 1 + 3 \times 1 + 6 \times 3 \times 0 + 9 \times (-1) + 0 &= 0 \\
+  9 \times 1 + 0 \times 0 + 9 \times 0 \times 0 + 8 \times (-1) + (-1) &= 0 
+\end{align*}
 \end{example}
 
-Let \(f\) and \(g\) be polynomials in \(\mathbb{F}_p^{(\leq d)}[X]\). Verifier has commitments \(com(f)\), \(com(g)\), \(com(W)\).
+Now, we do have a way of encoding gates separately, yet in order to guarantee how result of one gate is carried in as input of the other (\textit{wirings}), we need another matrix - $V$.
 
-\underline{Goal:} prover wants to prove that \(f(y) = g(W(y))\) for all \(y \in \Omega\), equivalent to \(g(\Omega)\) is the same as \(f(\Omega)\), permuted by the prescribed \(W\).
-
-Naive way of doing this is by running \textbf{Zero Test} on \(f(y) - g(W(y)) = 0\) on \(\Omega\), however that would result in proving needing to manipulate polynomials of degree \(k^2\), resulting in quadratic prover time. We can reduce this to a product-check on a polynomial of degree \(2k\).
-
-\begin{remark}
-Observation: If \((W(\alpha), f(\alpha))_{\alpha \in \Omega}\) is a permutation of \((\alpha, g(\alpha))_{\alpha \in \Omega}\) then \(f(y) = g(W(y))\) for all \(y \in \Omega \).
-\end{remark}
+\begin{definition}
+$V$ consists of indices of all inputs and intermediate values, so that if $T$ is a valid trace,
+\[\forall i, j, k, l: (V_{i,j} = V_{k,l}) \Rightarrow (T_{i,j} = T_{k,l})\]
+\end{definition}
 
 \begin{example}
-\[
-\text{Proof by example: } W(\omega^0) = \omega^2, \quad W(\omega^1) = \omega^0, \quad W(\omega^2) = \omega^1 
-\]
-\[
-\text{Right tuple: } (\tikzmark{r1}\omega^0, g(\omega^0)), (\tikzmark{r2}\omega^1, g(\omega^1)), (\tikzmark{r3}\omega^2, g(\omega^2))
-\]
-\[
-\text{Left tuple: } (\tikzmark{l1}\omega^2, f(\omega^0)), (\tikzmark{l2}\omega^0, f(\omega^1)), (\tikzmark{l3}\omega^1, f(\omega^2))
-\]
-
-You can see that the tuple on the right is formed by \((\alpha, g(\alpha))_{\alpha \in \Omega}\) and in the tuple on the left the first part is a permuted by \(W\) image of \(\alpha\). Meaning, that if, for example, \(\omega_0\) is mapped to \(\omega_2\), then the only way \((\omega^2, g(\omega^2)) = (\omega^2, f(\omega^0))\) is if \(g(\omega^2) = f(\omega^0)\). And the same thing holds for all other pairs, resulting in requirement for \(f(y) = g(W(y))\) for all \(y \in \Omega \).
+For our program, $V$ would look like following:
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+L & R & O \\
+\hline
+0 & 1 & 2 \\
+\hline
+2 & 1 & 3 \\
+\hline
+3 &  & 4 \\
+\hline
+\end{tabular}
+\end{center}
+Here $0$ is an index of $e$, $1$ is an index of $x$, 2 - $u$, 3 - $\upsilon$ and $4$ - output $w$.
 \end{example}
 
-\begin{lemma}
-Let:
-    \begin{enumerate}
-        \item \(\hat{f}(X,Y) = \prod_{\alpha \in \Omega} (X - Y \cdot W(\alpha) - f(\alpha))\)
-        \item \(\hat{g}(X,Y) = \prod_{a \in \Omega} (X - Y \cdot a - g(a))\)
-    \end{enumerate}
-- (bivariate polynomials).  
+\subsubsection{Custom Gates}
+In order to reach beyond classical operations such as addition and multiplication, one may consider composing a custom gate. The main streamliner of this functionality is a matrix $Q$, using $5$ basic columns of which, you already may build custom logic.
 
-\(\hat{f}(X,Y) = \hat{g}(X,Y) \iff \left( W(\alpha), f(\alpha) \right)_{\alpha \in \Omega}\) is a permutation of \(\left( \alpha, g(\alpha) \right)_{\alpha \in \Omega}\).
+\begin{example}
+Our entire program may be encoded as one custom gate.
+\begin{center}
+$Q$: 
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+$Q_L$ & $Q_R$ & $Q_M$ & $Q_o$ & $Q_c$ \\ 
+\hline
+0 & 1 & 1 & -1 & -1 \\ 
+\hline
+\end{tabular}
+\quad $V$:
+\begin{tabular}{|c|c|c|}
+\hline
+L & R & O \\
+\hline
+0 & 1 & 2 \\
+\hline
+\end{tabular}
+\quad $T$:
+\begin{tabular}{|c|c|c|}
+\hline
+A & B & C \\
+\hline
+2 & 3 & 8 \\
+\hline
+\end{tabular}
 
-To prove, use the fact that \(\mathbb{F}_p[X,Y]\) is a unique factorization domain: \(\hat{f}\) and \(\hat{g}\) factor uniquely, so if these are identical, their prime factors are identical, for which the lemma falls very easily.
-\end{lemma}
+\[2 \times 0 + 3 \times 1 + 2 \times 3 \times 1 + 8 \times (-1) + (-1) = 0\]
+\end{center}
+As you can see, custom gates can optimize quite a lot.
+\end{example}
 
-\paragraph{The complete protocol.}
+\begin{remark}
+Real-world Plonk applications commonly have additional columns in the $Q$ matrix, enabling an even broader set of custom functionality.
+\end{remark}
+
+\subsubsection{Public Inputs}
+With current design, there is no way to demonstrate that appropriate inputs are used in our program. One way of doing this is by incorporating them in three matrices.
+
+\begin{example}
+Consider, as if we added new \textit{selector} rows to $Q$ and tied them in $V$ and $T$:
+
+\begin{center}
+$Q$: 
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+$Q_L$ & $Q_R$ & $Q_M$ & $Q_o$ & $Q_c$ \\ 
+\hline
+-1 & 0 & 0 & 0 & 3 \\ 
+\hline
+-1 & 0 & 0 & 0 & 8 \\ 
+\hline
+1 & 1 & 1 & -1 & 1 \\ 
+\hline
+1 & -1 & 0 & 0 & 0 \\ 
+\hline
+\end{tabular}
+\quad $V$:
+\begin{tabular}{|c|c|c|}
+\hline
+L & R & O \\
+\hline
+0 &  &  \\
+\hline
+1 &  &  \\
+\hline
+2 & 0 & 3 \\
+\hline
+1 & 3 &  \\
+\hline
+\end{tabular}
+\quad $T$:
+\begin{tabular}{|c|c|c|}
+\hline
+A & B & C \\
+\hline
+3 &  &  \\
+\hline
+8 &  &  \\
+\hline
+2 & 3 & 8 \\
+\hline
+8 & 8 &  \\
+\hline
+\end{tabular}
+\end{center}
+\end{example}
+
+The problem with this approach, is that now we have lost agnosticism in $Q$ and $V$ of concrete evaluations. In order to resolve this, we would define a separate one-column matrix named $PI$ (public inputs).
+
+\begin{example}
+\centering With only $Q$ modified, we have:
+\begin{center}
+\begin{tabular}{|c|}
+\hline
+$PI$ \\ 
+\hline
+3 \\ 
+\hline
+8 \\ 
+\hline
+0 \\ 
+\hline
+0 \\ 
+\hline
+\end{tabular}
+$Q$: 
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+$Q_L$ & $Q_R$ & $Q_M$ & $Q_o$ & $Q_c$ \\ 
+\hline
+-1 & 0 & 0 & 0 & 0 \\ 
+\hline
+-1 & 0 & 0 & 0 & 0 \\ 
+\hline
+1 & 1 & 1 & -1 & 1 \\ 
+\hline
+1 & -1 & 0 & 0 & 0 \\ 
+\hline
+\end{tabular}
+\end{center}
+\end{example}
+
+\begin{definition}
+Matrix $T$ with columns $A$, $B$ and $C$ encodes correct execution of the program, if:
 \begin{enumerate}
-    \item Verifier generates random \(r, g \leftarrow\mathbb{F}_p^{(\leq d)} \)
-    \item Run \textbf{Product Check} on \(\hat{f}(r, s) = \hat{g}(r, s): \prod_{a \in \Omega} \left( \frac{r - s \cdot W(a) - f(a)}{r - s \cdot a - g(a)} \right) = 1\)
+    \item \(\forall i: A_i Q_{Li} + B_i Q_{Ri} + A_i B_i Q_{Mi} + C_i Q_{Oi} + Q_{ci} + PI_i = 0\)
+    \item \(\forall i, j, k, l: (V_{i,j} = V_{k,l}) \Rightarrow (T_{i,j} = T_{k,l})\)
 \end{enumerate}
+\end{definition}
 
-This would imply that \(\hat{f}(X,Y) = \hat{g}(X,Y)\) with high probability due to Schwartz-Zippel Lemma.
+\subsubsection{Matrices to Polynomials}
 
-\begin{remark}
-Complete and sound, assuming \(2d/p\) is negligible.
-\end{remark}
-
-\subsection{Plonk Arithmetization}
-
-Assume that we have a certain arithmetic circuit \texttt{C} with a \(|\texttt{C}|\) number of gates and \(|\mathcal{I}|\ = |\mathcal{I}_x| + |\mathcal{I}_w|\) number of inputs. We encode this circuit, recording its computation trace in a table, where rows represent the state per each gate, while columns are of the form \((a, b, c)\), where \(a\) and \(b\) are left and right inputs, and \(c\) is the output of the gate. In this manner, the output of the last gate corresponds to the output of the circuit.
-
-\begin{example}
-Consider this circuit: \((x_1 + x_2)\times(x_1 + w_1)\). Suppose we set \(x_1 = 5, x_2 = 6, w_1 = 1\). Then, the computation trace would be following:
-
-\begin{center}
-\begin{tabular}{l rrr}
-  inputs: & 5, & 6, & 1 \\ \hline
-  Gate 0: & 5, & 6, & 11 \\
-  Gate 1: & 6, & 1, & 7 \\
-  Gate 2: & 11, & 7, & 77 \\ 
-\end{tabular}
-\end{center}
-\end{example}
-
-\subsubsection{Encoding the trace as a polynomial}
-
-Let \(d = 3|C| + |\mathcal{I}|\) and \(\Omega = \{1, \omega^1, \omega^2, \dots, \omega^{d-1}\}\). Then we would like to interpolate a polynomial \(T \in \mathbb{F}_p^{(\leq d)}[X]\) to encode the entire computation trace in a succinct, processing-prone form.
-
-\begin{enumerate}
-    \item \(T\) \textbf{encodes all inputs:} \( T(\omega^{-j}) = \text{input \#} j\) for \(j = 1, \dots, |\mathcal{I}| \)
-    \item \(T\) \textbf{encodes all wires:} \( \forall \ell = 0, \dots, |\texttt{C}| - 1: \)
-    \begin{itemize}
-        \item \( T(\omega^{3\ell}) \): left input to gate \#\( \ell \)
-        \item \( T(\omega^{3\ell+1}) \): right input to gate \#\( \ell \)
-        \item \( T(\omega^{3\ell+2}) \): output of gate \#\( \ell \)
-    \end{itemize}
-\end{enumerate}
-
-\begin{remark}
-In this way, we obtain the polynomial \(T\) in evaluation form. It is possible to compute coefficients of \(T\) using FFT in \(O(d\log(d))\). More on that in the subsequent lectures.
-\end{remark}
-
-\begin{example}
-For our example circuit, we have \(|\texttt{C}| = 3\) and \(|\mathcal{I}| = 3\), therefore \(\text{deg}(T) = 11\). The prover interpolates the polynomial \(T(X)\) such that:
-\begin{center}
-\begin{tabular}{l l l l}
-  inputs: & $T(\omega^{-1}) = 5$, & $T(\omega^{-2}) = 6$, & $T(\omega^{-3}) = 1$, \\ \hline
-  gate 0: & $T(\omega^{0}) = 5$, & $T(\omega^{1}) = 6$, & $T(\omega^{2}) = 11$, \\
-  gate 1: & $T(\omega^{3}) = 6$, & $T(\omega^{4}) = 1$, & $T(\omega^{5}) = 7$, \\
-  gate 2: & $T(\omega^{6}) = 11$, & $T(\omega^{7}) = 7$, & $T(\omega^{8}) = 77$ \\ 
-\end{tabular}
-\end{center}
-\end{example}
-
-\subsection{Proving the validity of \texorpdfstring{\(T\)}{T}}
-
-After prover \(\mathcal{P}(pp, x, w)\) has constructed \(T\), it commits it and sends to the verifier \(\mathcal{V}(vp, x)\). Latter must verify (meaning former must prove) four points about the validity of constructed \(T\), which we will describe in next sections.
-
-\subsubsection{Trace Polynomial encodes the correct inputs}
-Both prover and verifier interpolate a polynomial \(\nu(X) \in \mathbb{F}_p^{(\leq d)}[X] \) that encodes the \(x\)-th input to the \(\texttt{C}\):
-\[\text{for } j = 1, \dots, |\mathcal{I}_x| : \nu(\bar{\omega}^j) = \text{input } \#j\]
-
-\begin{remark}
-Constructing \(\nu(X)\) is linear in \(|x| \left( O_\lambda(|x|) \right)\).
-\end{remark}
-
-Let \(\Omega_{\text{inp}} := \{ \omega^{-1}, \omega^{-2}, ..., \omega^{-|\mathcal{I}_x|} \} \subseteq \Omega\), then proving polynomial \(T\) encoding is done with \textit{Zero Test} on \(\Omega_{\text{inp}}\):
-
-\[T(y) - \nu(y) = 0 \quad \forall y \in \Omega_{\text{inp}}\]
-
-\begin{example}
-In our example, \(\nu(\omega^{-1})=5\), \(\nu(\omega^{-2})=6\).
-\end{example}
-
-\subsubsection{Every gate is evaluated correctly}
-
-Encode gate types using a \textit{selector} polynomial \(S(X)\):
-\(S(X) \in \mathbb{F}_p^{\leq d}[X]\) such that \(\forall \, \ell = 0, ..., |\texttt{C}| - 1\): 
-\begin{itemize}
-    \item \(S(\omega^{3l}) = 1\) if gate \(\# \ell\) is an addition gate 
-    \item \(S(\omega^{3l}) = 0\) if gate \(\# \ell\) is a multiplication gate 
-\end{itemize}
-
-Then, \(\forall \, y \in \Omega_{\text{gates}} := \{ 1, \omega^3, \omega^6, \omega^9, ..., \omega^{3(|C|-1)} \}\):
-
-\[S(y) \cdot [T(y) + T(\omega y)] + (1 - S(y)) \cdot T(y) \cdot T(\omega y) = T(\omega^2 y)\]
-where \(T(y)\) and \(T(\omega y)\) are left and right inputs correspondingly.
-
-This means, that once again we can narrow our check down to \textit{Zero Test} for \(\forall \, y \in \Omega_{\text{gates}}\):
-
-\[S(y) \cdot [T(y) + T(\omega y)] + (1 - S(y)) \cdot T(y) \cdot T(\omega y) - T(\omega^2 y) = 0\]
-
-\begin{example}
-
-That is, in our \(\texttt{C}\), since gates 0 and 1 are addition and 2 gate is multiplication, we have the following encoding for selector polynomial:
-
-\begin{center}
-\begin{tabular}{l ccc | c}
-  inputs: & 5, & 6, & 1 & $S(X)$ \\ \hline
-  Gate 0 ($\omega^0$): & 5, & 6, & 11 & 1 \\
-  Gate 1 ($\omega^3$): & 6, & 1, & 7 & 1 \\
-  Gate 2 ($\omega^6$): & 11, & 7, & 77 & 0 \\ 
-\end{tabular}
-\end{center}
-
-You can see by substituting \(S(y)\) with actual values from the table, that if a selector polynomial evaluates as \(1\), then multiplication part of the proved constraint is leveling out - vice versa for \(0\).
-
-\end{example}
-
-\subsubsection{The wiring is implemented correctly}
-In this part, we need to encode the wires of \(\texttt{C}\) to prove connection of inputs and outputs in gates. 
-
-\begin{example}
-For our table:
-\begin{tabular}{l ccc}
-  $\omega^{-1}$, $\omega^{-2}$, $\omega^{-3}$: & 5, & \textcolor{violet}{6}, & \textcolor{red}{1} \\ \hline
-  0: $\omega^{0}$, $\omega^{1}$, $\omega^{2}$: & 5, & \textcolor{violet}{6}, & \textcolor{green}{11} \\
-  1: $\omega^{3}$, $\omega^{4}$, $\omega^{5}$: & \textcolor{violet}{6}, & \textcolor{red}{1}, & \textcolor{gray}{7} \\
-  2: $\omega^{6}$, $\omega^{7}$, $\omega^{8}$: & \textcolor{green}{11}, & \textcolor{gray}{7}, & 77 \\ 
-\end{tabular}
+Now we can traduce the sets of constraints on matrices to just a few equations on polynomials. Let $w$ be a primitive $N$-th root of unity and let $H = w^i: 0 \le i < N$. Let \(a, b, c, q_L, q_R, q_M, q_O, q_C, pi\) be polynomials of degree at most $N$ that interpolate corresponding columns from matrices at the domain $H$. This means, that \(\forall i: a(w^i) = A_i\) and the same for other columns.
 \\
-We need following constraints:
-\begin{align}
-    T(\omega^{-2}) &= T(\omega^{1}) = T(\omega^{3}) \\
-    T(\omega^{-1}) &= T(\omega^{0}) \\
-    T(\omega^{2})  &= T(\omega^{6}) \\
-    T(\omega^{-3}) &= T(\omega^{4})
-\end{align}
-
-For that matter, define a polynomial \(W = \Omega \to \Omega\) that implements a rotation:
-
-\[W(\omega^{-2}, \omega^{1}, \omega^{3}) = (\omega^{1}, \omega^{3}, \omega^{-2}), \quad W(\omega^{-1}, \omega^{0}) = (\omega^{0}, \omega^{-1}), \quad \dots\]
-
-\end{example}
-
-\begin{lemma}
-Lemma: \(\forall \, y \in \Omega : T(y) = T(W(y)) \implies\) wire constraints are satisfied. This may be proven using \textit{prescribed permutation check}.
-\end{lemma}
-
-\subsubsection{Output of the last gate conforms with expected}
-
-Let \(\alpha\) be the expected output of \(\texttt{C}\). Then, apply \textit{Zero Test} on:
-\[T(\omega^{3 |\texttt{C}| - 1}) - \alpha = 0\]
-
-\subsection{Setup procedure}
-
-Not accounting for the details of selected poly-commit scheme (i.e KZG, FRI, etc.) the setup procedure preprocesses the circuit \(C\) and outputs for the prover selector and wiring polynomials \(S\) and \(W\), and for the verifier respective commitments \(com(S)\) and \(com(W)\).
+Now we can reduce down our first condition to checking valid execution trace into the following claim over polynomials:
+\[\exists t: aq_L + bq_R + abq_M + cq_O + q_C + pi = z_H t,\]
+where $z_H$ is the vanishing polynomial $X^n - 1$.
+\\
+The next step is to shrink the second condition imposed by the $V$ matrix. This may be achieved by introducing the concept of permutation. 
 
 \begin{remark}
-This setup procedure is untrusted.
+Permutation of the set is commonly denoted as $\sigma$.
 \end{remark}
 
-\subsection{Summary}
-\begin{tcolorbox}[title=Plonk,
-    colback=blue!5!white,
-    colframe=blue!75!black,
-    colbacktitle=blue!25!white,
-    coltitle=blue!20!black,
-    fonttitle=\bfseries,
-    boxrule=1.25pt,
-    subtitle style={boxrule=0pt,
-    colback=blue!20!white,
-    colupper=blue!75!gray}]
+\begin{example}
+A permutation is a rearrangement of the set, which is in our case: 
+\[I = \{(i, j) : \text{such that } 0 \leq i < N, \text{ and } 0 \leq j < 3\}\]
+The matrix $V$ induces a permutation of this set where $\sigma((i,j))$ is equal to the indices of the next occurrence of the value at position $(i,j)$. So, for our example:
 
-\small Arithmetic circuit \texttt{C} with standard addition and multiplication gates with fan-in 2.
-
-\tcbsubtitle{$\mathsf{Review}$}
-\begin{itemize}[label=\ding{51}]
-    \item \(T \in \mathbb{F}_p^{(\leq d)}[X]\) - Computation trace encoding polynomial.
-    \item \(S \in \mathbb{F}_p^{(\leq d)}[X]\) - Selector polynomial encoding the gates.
-    \item \(W = \Omega \to \Omega\) - Wiring polynomial connecting values in the computation trace table.
-\end{itemize}
-
-\tcbsubtitle{$\mathsf{Setup}$}
 \begin{center}
-\begin{itemize}[label=\ding{51}]
-    \item \(\mathcal{P}(pp, x, w) \leftarrow S, W\)
-    \item \(\mathcal{V}(vp, x) \leftarrow com(S), com(W)\)
-\end{itemize}
+\quad $V$:
+\begin{tabular}{|c|c|c|}
+\hline
+L & R & O \\
+\hline
+0 &  &  \\
+\hline
+1 &  &  \\
+\hline
+2 & 0 & 3 \\
+\hline
+1 & 3 &  \\
+\hline
+\end{tabular}
 \end{center}
 
-\tcbsubtitle{$\mathsf{\mathcal{P}(pp, x, w) \rightleftarrows \mathcal{V}(vp, x)}$}
-\begin{enumerate}
-    \item Gates: \( S(y)\cdot[T(y) + T(\omega y)] + (1-S(y))\cdot T(y)\cdot T(\omega y) - T(\omega^{2}y) = 0 \hfill \forall y \in \Omega_{\text{gates}} \)
-    \item Inputs: \( T(y) - v(y) = 0 \hfill \forall y \in \Omega_{\text{inp}} \)
-    \item Wires: \( T(y) - T(W(y)) = 0 \quad \text{(using prescribed perm. check)} \hfill \forall y \in \Omega \)
-    \item Output: \( T(\omega^{3|C|-1}) = 0 \quad \text{(output of last gate = 0)} \)
-\end{enumerate}
+\[\sigma((0,0)) = (2,1), \sigma((0,1)) = (0,3), \sigma((0,2)) = (0,2)\]
+\[\sigma((0,3)) = (0,1), \sigma((2,1)) = (0,0), \sigma((3,1)) = (2,2)\]
+\end{example}
 
-\end{tcolorbox}
+Having defined permutation, we can now reduce a condition $2$ of valid execution trace matrix into the following check:
+\[\forall (i, j) \in I: T_{i,j} = T_{\sigma(i,j)}\]
+
+You may have noticed how this can be reformulated as equality of $A$ and $B$:
+\[A = \{((i, j), T_{i,j}) : (i, j) \in I\}\]
+\[B = \{(\sigma((i, j)), T_{i,j}) : (i, j) \in I\}\]
+
+We can reduce this check down to polynomial equations.
+
+Suppose we have sets \(A = \{a_0, a_1\}\) and \(B = \{b_0, b_1\}\). We can consider polynomials \(A' = \{a_0 + X, a_1 + X\}, B' = \{b_0 + X, b_1 + X\}\). 
+\\
+So, \(A' = B'\), only if \((a_0 + X)(a_1 + X) = (b_0 + X)(b_1 + X)\). This is true because of linear polynomial unique factorization property, working as prime factors. Now, we can utilize Schwartz-Zippel lemma to replace the latter formula with \((a_0 + \gamma)(a_1 + \gamma) = (b_0 + \gamma)(b_1 + \gamma)\) for some random $\gamma$ with high probability
+If we wish to generalize this for sets \(A = \{a_0, \ldots, a_{k-1}\}\) and \(B = \{b_0, \ldots, b_{k-1}\}\):
+
+\[\prod_{i=0}^{k-1} (a_i + \gamma) = \prod_{i=0}^{k-1} (b_i + \gamma)\]
+
+Let $H$ be a domain of the form \(\{1, \omega, \dots, \omega^{k-1}\}\) for some $k$-th root of unity $\omega$. Let $f$ and $g$ be polynomials that interpolate the following values at $H$:
+
+\[f: (a_0 + \gamma, \ldots, a_{k-1} + \gamma)\]
+\[g: (b_0 + \gamma, \ldots, b_{k-1} + \gamma)\]
+
+Then \(\prod_{i=0}^{k-1} (a_i + \gamma) = \prod_{i=0}^{k-1} (b_i + \gamma)\) if only if: \(\exists Z \forall h \in H: Z(\omega^{0}) = 1\) and  \(Z(h)f(h) = g(h)Z(\omega h)\).
+
+Now that we can encode equality of sets of field elements, let's expand this to sets of tuples of field elements.
+
+Let \(A = \{(a_0, a_1), (a_2, a_3)\}\) and \(B = \{(b_0, b_1), (b_2, b_3)\}\), then, similarly to the previous:
+\[A' = \{a_0 + a_1Y + X, a_2 + a_3Y + X\}\]
+\[B' = \{b_0 + b_1Y + X, b_2 + b_3Y + X\}\]
+\[A = B \leftrightarrow A' = B'\]
+
+As before, we can leverage Schwartz-Zippel lemma to reduce this down into sampling random $\beta$ and $\gamma$ and checking equality of:
+
+\[(a_0 + \beta a_1 + \gamma)(a_2 + \beta a_3 + \gamma) = (b_0 + \beta b_1 + \gamma)(b_2 + \beta b_3 + \gamma)\]
+\\
+Now, if we would go back into condition 2 which we are trying to formulate in polynomial domain, it will become clear that first if we somehow encode inner indices tuple $(i, j)$ into a one field element, we can use the above fact.
+Recall that $i \in [0; N-1]$ and $j \in [0; 2]$; we can take $3N$-th primitive root of unity $\eta$ and define our field element as \(a_0 = \eta^{3i + j}\):
+\[A = \{(\eta^{3i+j}, T_{i,j}) : (i, j) \in I\}\]
+\[B = \{(\eta^{3k+l}, T_{i,j}) : (i, j) \in I, \sigma((i, j)) = (k, l)\}\]
+
+Then, summarizing:
+Let $\eta$ be a $3N$-th primitive root of unity, $\beta$ and $\gamma$ random field elements. Let $D = \{1, \eta, \eta^2, \ldots, \eta^{3N-1}\}$. Then let $f$ and $g$ interpolate at $D$:
+
+\[f: \{T_{i,j} + \eta^{3i+j}\beta + \gamma : (i, j) \in I\}\]
+\[g: \{T_{i,j} + \eta^{3k+l}\beta + \gamma : (i, j) \in I, \sigma((i, j)) = (k, l)\}\]
+
+So, \(\exists Z \forall h \in H: Z(\eta^{0}) = 1\) and  \(Z(h)f(h) = g(h)Z(\eta h) \leftrightarrow A = B\) w.h.p.
+
+Notice, that $\omega = \eta^3$ is a primitive $N$-th root of unity. Let \(H = \{1, \omega, \omega^2, \ldots, \omega^{N-1}\}\). 
+We will define three polynomials, which interpolate following sets:
+\[S_{\sigma 1}: \{\eta^{3k+l} : (i, 0) \in I, \sigma((i, 0)) = (k, l)\}\]
+\[S_{\sigma 2}: \{\eta^{3k+l} : (i, 1) \in I, \sigma((i, 0)) = (k, l)\}\]
+\[S_{\sigma 3}: \{\eta^{3k+l} : (i, 2) \in I, \sigma((i, 0)) = (k, l)\}\]
+\\
+Let $\omega$ be an $N$-th root of unity. Let $H = \{1, \omega, \omega^2, \ldots, \omega^{N-1}\}$. Let $k_1$ and $k_2$ be two field elements such that $\omega^i \neq \omega^j k_1 \neq \omega^l k_2$ for all $i, j, l$. Let $\beta$ and $\gamma$ be random field elements. Let $f$ and $g$ be the polynomials that interpolate, respectively, the following values at $H$:
+
+\[f: \left\{\left(T_{0,j} + \omega^i \beta + \gamma\right)\left(T_{1,j} + \omega^i k_1 \beta + \gamma\right)\left(T_{2,j} + \omega^i k_2 \beta + \gamma\right) : 0 \leq i < N\right\}\]
+\[g: \left\{\left(T_{0,j} + S_{0,1}(\omega^i) \beta + \gamma\right)\left(T_{0,j} + S_{0,2}(\omega^i) \beta + \gamma\right)\left(T_{0,j} + S_{0,3}(\omega^i) \beta + \gamma\right) : 0 \leq i < N\right\}\]
+
+So, \(\exists Z \forall h \in D: Z(\omega^{0}) = 1\) and  \(Z(d)f(d) = g(d)Z(\omega d) \leftrightarrow A = B\) w.h.p.
+
+So, we now can encode our program using 8 polynomials mentioned at the beginning:
+\[q_L, q_R, q_M, q_O, q_C, S_{01}, S_{02}, S_{03}\]
+These are called \textit{common preprocessed input}.
+
+\subsubsection{Summary}
+Having a program $P$ we saw how it can be represented as a sequence of gates with left, right operands and output. 
+\\
+The circuit may be encoded using two matrices $Q$ - for capturing gates, and $V$ for encoding value carries (\textit{wirings}).
+\\
+Upon execution, we get trace execution matrix $T$ and $PI$ for public inputs.
+
+\begin{definition}
+Let $T$ be a $N \times 3$ matrix with columns $A, B, C$ and $PI$ a $N \times 1$ matrix. They correspond to a valid execution instance with public input given by $PI$ if and only if:
+
+\begin{enumerate}
+    \item \(\forall i: A_iQ_{Li} + B_iQ_{Ri} + A_iB_iQ_{Mi} + C_iQ_{Oi} + Q_{Ci} + PI_i = 0\)
+    \item \(\forall i, j, k, l: V_{i,j} = V_{k,l} \implies T_{i,j} = T_{k,l}\)
+    \item \(\forall i > n: PI_i = 0\)
+\end{enumerate}
+\end{definition}
+
+When, we encode those conditions in terms of polynomials.
+
+\begin{definition}
+Let $z_H = X^N - 1$. Let $T$ be a $N \times 3$ matrix with columns $A, B, C$ and $PI$ a $N \times 1$ matrix. They correspond to a valid execution instance with public input given by $PI$ if and only if:
+
+\begin{enumerate}
+    \item \(\exists t_1: aq_L + bq_R + abq_M + cq_O + q_C + pi = z_Ht_1\)
+    \item \(\exists t_2, t_3, z: zf - gz' = z_Ht_2\) and \((z-1)L_1 = z_Ht_3\), where $z'(X) = z(X\omega)$.
+\end{enumerate}
+\end{definition}
+\begin{remark}
+We can reduce every needed check down to one equation, if we introduce randomness.
+Let $\alpha$ be a random field element, then: 
+\[
+    \begin{aligned}
+        z_Ht &= aq_L + bq_R + abq_M + cq_O + q_C + pi \\
+        &= \alpha(gz' - fz) \\
+        &= \alpha^2(z - 1)L_1
+    \end{aligned}
+\]
+\end{remark}
 
 \end{document}
