@@ -1,60 +1,83 @@
 \documentclass[../lecture-notes.tex]{subfiles}
 \usepackage[T1]{fontenc}
-\usepackage{lmodern}
+
 \pgfplotsset{compat=1.18}
 
 \begin{document}
 
 \subsection{Plonk Arithmetization}
 
-Consider we have a certain program $P$, which we would like to write down into a processing-prone format. For that reason, we would arithmetize it into a set of 8 polynomials.
+Consider we have a certain relation $\mathcal{R}$, which we would like to write
+down into a processing-prone format. Plonk arithmetizes this relation into a set
+of 8 polynomials, which are then used to verify the witness knowledge. Let us 
+start with the concrete example.
 
 \begin{example}
-To begin with, observe this simple example $P$:
+To begin with, observe this fairly simple relation
+$\mathcal{R}_{\text{example}}$: suppose we have a public input $x \in
+\mathbb{F}$ and public output $y \in \mathbb{F}$, and we want to prove the knowledge of $e \in
+\mathbb{F}$ such that $e \times x + x - 1 = y$. Formally, we have the following relation:
+\begin{equation*}
+    \mathcal{R}_{\text{example}} = \left\{ \begin{matrix}
+        \textbf{Public Statement:} & x, y \in \mathbb{F} \\
+        \textbf{Witness}: & e \in \mathbb{F}
+    \end{matrix} \; \Big| \; e \times x + x - 1 = y \right\}
+\end{equation*}
 
-\begin{center}
-Input: x
-
-Private input: e
-
-Output: e * x + x - 1
-\end{center}
 \end{example}
+
+\begin{remark}
+    Note that of course, from $x$ and $y$, it is fairly simple to find $e$: simply take $\frac{1 - x + y}{x}$. However, the Plonk arithmetization 
+    is not limited to this simple example, and can be applied to more complex relations, such as hash function pre-image knowledge or any NP statement.
+\end{remark}
 
 \subsubsection{Execution Trace}
 
-Standard Plonk is defined as a system with two types of gates for addition and multiplication. We would explain how to build custom gates later.
-So, let us consider our program in terms of gates with left, right operands and output. 
+Standard Plonk is defined as a system with two types of gates: \textbf{addition}
+and \textbf{multiplication}. We would explain how to build custom gates later.
+So, let us consider our program in terms of gates with left, right operands and
+output. 
 
 \begin{example}
+    We need \textbf{three gates} to encode our program:
     \begin{enumerate}
-        \item Gate: left $e$, right $x$, output \(u = e \times x\)
-        \item Gate: left $u$, right $x$, output \(\upsilon = u \times x\)
-        \item Gate: left $\upsilon$, right $x$, output \(w = \upsilon + (-1)\)
+        \item \textbf{Gate \#1}: left $e$, right $x$, output \(u = e \times x\)
+        \item \textbf{Gate \#2}: left $u$, right $x$, output \(\upsilon = u \times x\)
+        \item \textbf{Gate \#3}: left $\upsilon$, right $x$, output \(w = \upsilon + (-1)\)
     \end{enumerate}
 \end{example}
 
-You might have glanced the intuitive formation of what is called \textit{execution trace table} - a matrix $T$ with columns $L$, $R$ and $O$ (it is common to denote those as $A, B, C$ to distinguish from another matrix we will discuss later).
+You might have glanced the intuitive formation of what is called \textit{execution trace table} --- a matrix $T$ with columns $L$, $R$ and $O$ (it is common to denote those as $A, B, C$ to distinguish from another matrix we will discuss later).
 
 \begin{example}
+We might visualize the execution trace table $T$ for the example program as follows:
+
 \begin{center}
 \begin{tabular}{|c|c|c|}
 \hline
 A & B & C \\ \hline
 2 & 3 & 6 \\ \hline
 6 & 3 & 9 \\ \hline
-9 &  & 8 \\ \hline
+9 & \xmark & 8 \\ \hline
 \end{tabular}
 \end{center}
 
-Notice how the last row has no value in $B$ column - this is reasoned by the fact it is not a variable, but rather a constant, meaning it doesn't depend on execution.
+Notice how the last row has no value in $B$ column (marked by \xmark) --- this is reasoned by the fact it is not a variable, but rather a constant, meaning it doesn't depend on execution.
 \end{example}
+
+\begin{remark}
+    As you might notice, in contrast to classic R1CS (which we used for Groth16), the standard Plonk arithmetization as is
+    only allows two input values to be processed at a time. This way, if Groth16 requires only one constraint 
+    for verifying $x_1(x_2+x_3+x_4) = x_5$, Plonk would need three constraints to verify the same statement. 
+    Custom gates partially solve this problem as we will see later, but it is important to keep in mind.
+\end{remark}
 
 \subsubsection{Encode the program}
 
-It is important to distinguish between definition of the program, and it's specific evaluation for the sake of simplicity and efficiency - once having established encoding for the program, you might apply it for any reasonable inputs.
-Therefore, let us at first focus on what defines whether execution trace table will be considered valid for our circuit, because having a table by itself does not tell much, since it can be populated with any values. \\
-For that reason, we would define two matrices - $Q$ and $V$.
+It is essential to distinguish the definition of the program and its specific evaluation for the sake of simplicity and efficiency --- once having established encoding for the program, you might apply it for any reasonable inputs.
+Therefore, let us at first focus on what defines whether execution trace table will be considered valid for our circuit, because having a table by itself does not tell much, since it can be populated with any values. 
+
+For that reason, we would define two matrices --- $Q \in \mathbb{F}^{|T| \times 5}$ and $V \in \mathbb{F}^{|T| \times 3}$ where $|T|$ is the number of gates in the program.
 
 \begin{definition}
 $Q$ matrix has one row per each gate with columns $Q_L$, $Q_R$, $Q_O$, $Q_M$, $Q_C$. If columns $A$, $B$ and $C$ of the execution trace table form valid evaluation of the circuit, 
@@ -67,13 +90,13 @@ For our program, we would have a following $Q$ table:
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|}
 \hline
-$Q_L$ & $Q_R$ & $Q_M$ & $Q_o$ & $Q_c$ \\ 
+$Q_L$ & $Q_R$ & $Q_M$ & $Q_O$ & $Q_c$ \\ 
 \hline
-0 & 0 & 1 & -1 & 0 \\ 
+0 & 0 & 1 & $-1$ & 0 \\ 
 \hline
-1 & 1 & 0 & -1 & 0 \\ 
+1 & 1 & 0 & $-1$ & 0 \\ 
 \hline
-1 & 0 & 0 & -1 & -1 \\ 
+1 & 0 & 0 & $-1$ & $-1$ \\ 
 \hline
 \end{tabular}
 \end{center}
@@ -86,7 +109,7 @@ You can verify that our claim holds for aforementioned trace matrix:
 \end{align*}
 \end{example}
 
-Now, we do have a way of encoding gates separately, yet in order to guarantee how result of one gate is carried in as input of the other (\textit{wirings}), we need another matrix - $V$.
+Now, we do have a way of encoding gates separately, yet in order to guarantee how result of one gate is carried in as input of the other (\textit{wirings}), we need another matrix --- $V$.
 
 \begin{definition}
 $V$ consists of indices of all inputs and intermediate values, so that if $T$ is a valid trace,
@@ -108,7 +131,7 @@ L & R & O \\
 \hline
 \end{tabular}
 \end{center}
-Here $0$ is an index of $e$, $1$ is an index of $x$, 2 - $u$, 3 - $\upsilon$ and $4$ - output $w$.
+Here $0$ is an index of $e$, $1$ is an index of $x$, 2 --- $u$, 3 --- $\upsilon$ and $4$ --- output $w$.
 \end{example}
 
 \subsubsection{Custom Gates}
@@ -122,7 +145,7 @@ $Q$:
 \hline
 $Q_L$ & $Q_R$ & $Q_M$ & $Q_o$ & $Q_c$ \\ 
 \hline
-0 & 1 & 1 & -1 & -1 \\ 
+0 & 1 & 1 & $-1$ & $-1$ \\ 
 \hline
 \end{tabular}
 \quad $V$:
@@ -203,14 +226,16 @@ A & B & C \\
 \end{center}
 \end{example}
 
-The problem with this approach, is that now we have lost agnosticism in $Q$ and $V$ of concrete evaluations. In order to resolve this, we would define a separate one-column matrix named $PI$ (public inputs).
+The problem with this approach, is that now we have lost agnosticism in $Q$ and $V$ of concrete evaluations. In order to resolve this, we would define a separate one-column matrix named $\Pi$ (public inputs).
 
 \begin{example}
-\centering With only $Q$ modified, we have:
+With only $Q$ modified, we have:
+
+\centering 
 \begin{center}
 \begin{tabular}{|c|}
 \hline
-$PI$ \\ 
+$\Pi$ \\ 
 \hline
 3 \\ 
 \hline
@@ -220,7 +245,7 @@ $PI$ \\
 \hline
 0 \\ 
 \hline
-\end{tabular}
+\end{tabular} \hspace{1cm}
 $Q$: 
 \begin{tabular}{|c|c|c|c|c|}
 \hline
@@ -241,20 +266,27 @@ $Q_L$ & $Q_R$ & $Q_M$ & $Q_o$ & $Q_c$ \\
 \begin{definition}
 Matrix $T$ with columns $A$, $B$ and $C$ encodes correct execution of the program, if:
 \begin{enumerate}
-    \item \(\forall i: A_i Q_{Li} + B_i Q_{Ri} + A_i B_i Q_{Mi} + C_i Q_{Oi} + Q_{ci} + PI_i = 0\)
+    \item \(\forall i: A_i Q_{Li} + B_i Q_{Ri} + A_i B_i Q_{Mi} + C_i Q_{Oi} + Q_{ci} + \Pi_i = 0\)
     \item \(\forall i, j, k, l: (V_{i,j} = V_{k,l}) \Rightarrow (T_{i,j} = T_{k,l})\)
 \end{enumerate}
 \end{definition}
 
 \subsubsection{Matrices to Polynomials}
 
-Now we can traduce the sets of constraints on matrices to just a few equations on polynomials. Let $w$ be a primitive $N$-th root of unity and let $H = w^i: 0 \le i < N$. Let \(a, b, c, q_L, q_R, q_M, q_O, q_C, pi\) be polynomials of degree at most $N$ that interpolate corresponding columns from matrices at the domain $H$. This means, that \(\forall i: a(w^i) = A_i\) and the same for other columns.
-\\
-Now we can reduce down our first condition to checking valid execution trace into the following claim over polynomials:
-\[\exists t: aq_L + bq_R + abq_M + cq_O + q_C + pi = z_H t,\]
-where $z_H$ is the vanishing polynomial $X^n - 1$.
-\\
-The next step is to shrink the second condition imposed by the $V$ matrix. This may be achieved by introducing the concept of permutation. 
+Now we can traduce the sets of constraints on matrices to just a few equations
+on polynomials, as we have already done for Groth16. Let $\omega$ be a primitive
+$N$-th root of unity and let $\Omega = \{\omega^j: 0 \le j < N\}$. Let \(a, b, c,
+q_L, q_R, q_M, q_O, q_C, \pi\) be polynomials of degree at most $N$ that
+interpolate corresponding columns from matrices at the domain $H$. This means,
+that \(\forall j: a(\omega^j) = A_j\) and the same for other columns.
+
+Now we can reduce down our first condition to checking valid execution trace
+into the following claim over polynomials:
+\[\exists t \in \mathbb{F}[X]: \; aq_L + bq_R + abq_M + cq_O + q_C + \pi = z_{\Omega} t,\]
+where $z_{\Omega}(X)$ is the vanishing polynomial $X^N - 1$.
+
+The next step is to shrink the second condition imposed by the $V$ matrix. This
+may be achieved by introducing the concept of permutation. 
 
 \begin{remark}
 Permutation of the set is commonly denoted as $\sigma$.
@@ -262,7 +294,7 @@ Permutation of the set is commonly denoted as $\sigma$.
 
 \begin{example}
 A permutation is a rearrangement of the set, which is in our case: 
-\[I = \{(i, j) : \text{such that } 0 \leq i < N, \text{ and } 0 \leq j < 3\}\]
+\[\mathcal{I} = \{(i, j) : \text{such that } 0 \leq i < N, \text{ and } 0 \leq j < 3\}\]
 The matrix $V$ induces a permutation of this set where $\sigma((i,j))$ is equal to the indices of the next occurrence of the value at position $(i,j)$. So, for our example:
 
 \begin{center}
@@ -287,11 +319,11 @@ L & R & O \\
 \end{example}
 
 Having defined permutation, we can now reduce a condition $2$ of valid execution trace matrix into the following check:
-\[\forall (i, j) \in I: T_{i,j} = T_{\sigma(i,j)}\]
+\[\forall (i, j) \in \mathcal{I}: T_{i,j} = T_{\sigma(i,j)}\]
 
 You may have noticed how this can be reformulated as equality of $A$ and $B$:
-\[A = \{((i, j), T_{i,j}) : (i, j) \in I\}\]
-\[B = \{(\sigma((i, j)), T_{i,j}) : (i, j) \in I\}\]
+\[A = \{((i, j), T_{i,j}) : (i, j) \in \mathcal{I}\}\]
+\[B = \{(\sigma((i, j)), T_{i,j}) : (i, j) \in \mathcal{I}\}\]
 
 We can reduce this check down to polynomial equations.
 
@@ -351,30 +383,34 @@ So, we now can encode our program using 8 polynomials mentioned at the beginning
 These are called \textit{common preprocessed input}.
 
 \subsubsection{Summary}
-Having a program $P$ we saw how it can be represented as a sequence of gates with left, right operands and output. 
-\\
-The circuit may be encoded using two matrices $Q$ - for capturing gates, and $V$ for encoding value carries (\textit{wirings}).
-\\
-Upon execution, we get trace execution matrix $T$ and $PI$ for public inputs.
+Having a program for relation $\mathcal{R}$, we saw how it can be represented as
+a sequence of gates with left, right operands and output. The circuit may be
+encoded using two matrices $Q$ --- for capturing gates, and $V$ --- for encoding
+value carries (\textit{wirings}). Upon execution, we get trace execution matrix
+$T$ and $\Pi$ for public inputs.
 
 \begin{definition}
-Let $T$ be a $N \times 3$ matrix with columns $A, B, C$ and $PI$ a $N \times 1$ matrix. They correspond to a valid execution instance with public input given by $PI$ if and only if:
+Let $T$ be a $N \times 3$ matrix with columns $A, B, C$ and $\Pi$ a $N \times 1$
+matrix where $N$ is the number of gates. They correspond to a valid execution
+instance with public input given by $\Pi$ if and only if:
 
 \begin{enumerate}
-    \item \(\forall i: A_iQ_{Li} + B_iQ_{Ri} + A_iB_iQ_{Mi} + C_iQ_{Oi} + Q_{Ci} + PI_i = 0\)
+    \item \(\forall i: A_iQ_{Li} + B_iQ_{Ri} + A_iB_iQ_{Mi} + C_iQ_{Oi} + Q_{Ci} + \Pi_i = 0\)
     \item \(\forall i, j, k, l: V_{i,j} = V_{k,l} \implies T_{i,j} = T_{k,l}\)
-    \item \(\forall i > n: PI_i = 0\)
+    \item \(\forall i > n: \Pi_i = 0\)
 \end{enumerate}
 \end{definition}
 
 When, we encode those conditions in terms of polynomials.
 
 \begin{definition}
-Let $z_H = X^N - 1$. Let $T$ be a $N \times 3$ matrix with columns $A, B, C$ and $PI$ a $N \times 1$ matrix. They correspond to a valid execution instance with public input given by $PI$ if and only if:
+Let $z_{\Omega} = X^N - 1$. Let $T$ be a $N \times 3$ matrix with columns $A, B,
+C$ and $\Pi$ a $N \times 1$ matrix. They correspond to a valid execution
+instance with public input given by $\Pi$ if and only if:
 
 \begin{enumerate}
-    \item \(\exists t_1: aq_L + bq_R + abq_M + cq_O + q_C + pi = z_Ht_1\)
-    \item \(\exists t_2, t_3, z: zf - gz' = z_Ht_2\) and \((z-1)L_1 = z_Ht_3\), where $z'(X) = z(X\omega)$.
+    \item \(\exists t_1 \in \mathbb{F}[X]: aq_L + bq_R + abq_M + cq_O + q_C + \pi = z_{\Omega}t_1\)
+    \item \(\exists t_2, t_3, z \in \mathbb{F}[X]: zf - gz' = z_{\Omega}t_2\) and \((z-1)L_1 = z_{\Omega}t_3\), where $z'(X) = z(X\omega)$.
 \end{enumerate}
 \end{definition}
 \begin{remark}
@@ -382,7 +418,7 @@ We can reduce every needed check down to one equation, if we introduce randomnes
 Let $\alpha$ be a random field element, then: 
 \[
     \begin{aligned}
-        z_Ht &= aq_L + bq_R + abq_M + cq_O + q_C + pi \\
+        z_Ht &= aq_L + bq_R + abq_M + cq_O + q_C + \pi \\
         &= \alpha(gz' - fz) \\
         &= \alpha^2(z - 1)L_1
     \end{aligned}
