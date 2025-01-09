@@ -2,7 +2,7 @@
 
 \title[Plonk Arithmetization]{\textbf{Plonk Arithmetization}}
 \author{Distributed Lab}
-\date{December 05, 2024}
+\date{January 09, 2025}
 \homepage{zkdl-camp.github.io}
 \github{ZKDL-Camp}
 
@@ -21,19 +21,27 @@
         \tableofcontents
     \end{frame}
 
-    \section{Informal: Plonk 5 Ws}
+    \section{Introduction. PlonK: Five Ws}
 
-    \begin{frame}{What is Plonk?}
+    \begin{frame}{What is PlonK?}
         \textbf{PlonK is a type of zkSNARK:}
         \begin{itemize}
             \item Groth16
-            \item Plonk
-            \item $\vdots$
+            \item Halo2
+            \item Marlin
+            \item \textbf{PlonK}
+            \item $\dots$
         \end{itemize}
     \end{frame}
 
     \begin{frame}{Who and When invented Plonk?}
-        Ariel Gabizon, Zachary Williamson, Oana Ciobotaru introduced paper in 2019
+        Ariel Gabizon, Zachary Williamson, Oana Ciobotaru introduced paper ``PLONK: Permutations over Lagrange-bases for Oecumenical Noninteractive arguments of Knowledge'' in 2019
+
+        \begin{figure}
+            \centering
+            \includegraphics[width=\textwidth]{images/lecture_12/plonk.png}
+            \caption{PlonK Paper. Date in Paper reflects the last update :)}
+        \end{figure}
     \end{frame}
 
     \begin{frame}{Why use Plonk?}
@@ -59,26 +67,26 @@
     \section{PlonK Arithmetization}
 
     \begin{frame}{Arithmetization}
-        Write some program (computation) into math processing-prone form.
+        \textbf{Goal:} Write some program (computation) into math processing-prone form.
         \begin{example}
-            Public Input: $x \in \mathbb{F}$ \\
-            Private Input $e \in \mathbb{F}$ \\
-            Output: $e \times x + x - 1$ \\
+            \textbf{Public Input}: $x \in \mathbb{F}$ \\
+            \textbf{Private Input}: $e \in \mathbb{F}$ \\
+            \textbf{Output}: $e \times x + x - 1$ \\
         \end{example}
-        Let's split our program into the sequence of gates with left, right operands and output - circuit.
+        \pause Let's split our program into the sequence of gates with left, right operands and output - circuit.
         \begin{example}
             We need \textbf{three gates} to encode our program:
             \\
             \begin{enumerate}
-                \item \textbf{Gate \#1}: left $e$, right $x$, output \(u = e \times x\)
-                \item \textbf{Gate \#2}: left $u$, right $x$, output \(\upsilon = u + x\)
+                \item \textbf{Gate \#1}: left $e$, right $x$, output \(u = e \times x\)\pause
+                \item \textbf{Gate \#2}: left $u$, right $x$, output \(\upsilon = u + x\)\pause
                 \item \textbf{Gate \#3}: left $\upsilon$, right $x$, output \(w = \upsilon + (-1)\)
             \end{enumerate}
         \end{example}
     \end{frame}
 
     \begin{frame}{Execution Trace}
-        Then, form  \textit{execution trace table} - a matrix $T$ with columns $L$, $R$ and $O$.
+        Then, form  \textit{execution trace table} --- a matrix $T$ with columns $L$, $R$ and $O$.
         \begin{example}
             \begin{center}
                 \begin{tabular}{|c|c|c|}
@@ -90,7 +98,7 @@
                 \end{tabular}
             \end{center}
         \end{example}
-        \begin{block}{Remark}
+        \pause \begin{block}{Remark}
             Notice how the last row has no value in $B$ column (marked by \xmark) --- this is reasoned by the fact it is not a variable, but rather a constant, meaning it doesn't depend on execution.
         \end{block}
     \end{frame}
@@ -98,16 +106,14 @@
     \begin{frame}{Encode the Program}
         Suppose you were given random matrix $T$. How could you tell if it is suitable for your circuit?
         \begin{block}{Solution}
-        Encode the circuit. Check $T$ using encoding:
-        \begin{enumerate}
-            \item Gates (gate constraints) - using matrix $Q$.
-            \item Wires (copy constraints) - using matrix $V$.
-        \end{enumerate}
+            Encode the circuit. Check $T$ using encoding:
+            \begin{enumerate}
+                \item \textbf{Gates} (gate constraints) --- using matrix $Q$.
+                \item \textbf{Wires} (copy constraints) --- using matrix $V$.
+            \end{enumerate}
         \end{block}
-    \end{frame}
 
-    \begin{frame}{$Q$ Matrix}
-        \begin{definition}
+        \pause \begin{definition}[Gate Matrix]
             $Q$ matrix has one row per each gate with columns $Q_L$, $Q_R$, $Q_O$, $Q_M$, $Q_C$. If columns $A$, $B$ and $C$ of the execution trace table form valid evaluation of the circuit, 
             \[A_i Q_{Li} + B_i Q_{Ri} + A_i B_i Q_{Mi} + C_i Q_{Oi} + Q_{ci} = 0\]
         \end{definition}
@@ -121,20 +127,20 @@
                     \hline
                     $Q_L$ & $Q_R$ & $Q_M$ & $Q_O$ & $Q_c$ \\ 
                     \hline
-                    0 & 0 & 1 & $-1$ & 0 \\ 
+                    \textcolor{blue}{0} & \textcolor{blue}{0} & \textcolor{blue}{1} & \textcolor{blue}{$-1$} & \textcolor{blue}{0} \\ 
                     \hline
-                    1 & 1 & 0 & $-1$ & 0 \\ 
+                    \textcolor{blue}{1} & \textcolor{blue}{1} & \textcolor{blue}{0} & \textcolor{blue}{$-1$} & \textcolor{blue}{0} \\ 
                     \hline
-                    1 & 0 & 0 & $-1$ & $-1$ \\ 
+                    \textcolor{blue}{1} & \textcolor{blue}{0} & \textcolor{blue}{0} & \textcolor{blue}{$-1$} & \textcolor{blue}{$-1$} \\ 
                     \hline
                 \end{tabular}
             \end{center}
 
             You can verify that our claim holds for aforementioned trace matrix:
             \begin{align*}
-              2 \times 0 + 3 \times 0 + 2 \times 3 \times 1 + 6 \times (-1) + 0 &= 0 \\
-              6 \times 1 + 3 \times 1 + 6 \times 3 \times 0 + 9 \times (-1) + 0 &= 0 \\
-              9 \times 1 + 0 \times 0 + 9 \times 0 \times 0 + 8 \times (-1) + (-1) &= 0 
+              2 \times \textcolor{blue}{0} + 3 \times \textcolor{blue}{0} + 2 \times 3 \times \textcolor{blue}{1} + 6 \times \textcolor{blue}{(-1)} + \textcolor{blue}{0} &= 0 \\
+              6 \times \textcolor{blue}{1} + 3 \times \textcolor{blue}{1} + 6 \times 3 \times \textcolor{blue}{0} + 9 \times \textcolor{blue}{(-1)} + \textcolor{blue}{0} &= 0 \\
+              9 \times \textcolor{blue}{1} + 0 \times \textcolor{blue}{0} + 9 \times 0 \times \textcolor{blue}{0} + 8 \times \textcolor{blue}{(-1)} + \textcolor{blue}{(-1)} &= 0 
             \end{align*}
         \end{example}
     \end{frame}
@@ -169,18 +175,17 @@
         \begin{block}{Solution}
             $Q$ with it's 5 columns already allows for custom gates, however it is possible to include out own columns.
         \end{block}
-    \end{frame}
 
-    \begin{frame}{Custom Gates}
         \begin{example}
             Our entire program may be encoded as one custom gate.
             \begin{center}
+            \scriptsize
             $Q$: 
                 \begin{tabular}{|c|c|c|c|c|}
                     \hline
                     $Q_L$ & $Q_R$ & $Q_M$ & $Q_o$ & $Q_c$ \\ 
                     \hline
-                    0 & 1 & 1 & $-1$ & $-1$ \\ 
+                    \textcolor{blue}{0} & \textcolor{blue}{1} & \textcolor{blue}{1} & \textcolor{blue}{$-1$} & \textcolor{blue}{$-1$} \\ 
                     \hline
                 \end{tabular}
             \quad $V$:
@@ -191,16 +196,19 @@
                     0 & 1 & 2 \\
                     \hline
                 \end{tabular}
-            \\ $T$:
+            \quad $T$:
                 \begin{tabular}{|c|c|c|}
                     \hline
                     A & B & C \\
                     \hline
-                    2 & 3 & 8 \\
+                    \textcolor{purple}{2} & \textcolor{purple}{3} & \textcolor{purple}{8} \\
                     \hline
                 \end{tabular}
-            \[2 \times 0 + 3 \times 1 + 2 \times 3 \times 1 + 8 \times (-1) + (-1) = 0\]
             \end{center}
+
+            \begin{equation*}
+                \textcolor{purple}{2} \times \textcolor{blue}{0} + \textcolor{purple}{3} \times \textcolor{blue}{1} + \textcolor{purple}{2} \times \textcolor{purple}{3} \times \textcolor{blue}{1} + \textcolor{purple}{8} \times \textcolor{blue}{(-1)} + \textcolor{blue}{(-1)} = 0
+            \end{equation*}
         \end{example}
     \end{frame}
 
@@ -209,10 +217,9 @@
         \begin{block}{Idea}
             Consider, as if we added new \textit{selector} rows to $Q$ and tied them in $V$ and $T$.
         \end{block}
-    \end{frame}
 
-    \begin{frame}{Public Inputs}
         \begin{example}
+            \scriptsize
             \begin{center}
             $Q$: 
                 \begin{tabular}{|c|c|c|c|c|}
@@ -242,7 +249,7 @@
                     1 & 3 &  \\
                     \hline
                 \end{tabular}
-            \\ $T$:
+             \quad $T$:
                 \begin{tabular}{|c|c|c|}
                     \hline
                     A & B & C \\
@@ -258,13 +265,14 @@
                 \end{tabular}
             \end{center}
         \end{example}
-    \end{frame}
 
-    \begin{frame}
-        Now $Q$ and $V$ are not independent of evaluations. 
+        \pause Now $Q$ and $V$ are not independent of evaluations. 
         \begin{block}{Solution}
             We introduce another one-column matrix named $\Pi$ (public inputs).
         \end{block}
+    \end{frame}
+
+    \begin{frame}{Wrap-Up}
         \begin{example}
             With only $Q$ modified, we have:
             \centering 
@@ -298,10 +306,8 @@
                 \end{tabular}
             \end{center}
         \end{example}
-    \end{frame}
 
-    \begin{frame} {Interim Summary}
-        \begin{definition}
+        \pause\begin{definition}[Interim Summary]
             Matrix $T$ with columns $A$, $B$ and $C$ encodes correct execution of the program, if the following two conditions hold:
             \begin{enumerate}
                 \item \(\forall i: A_i Q_{Li} + B_i Q_{Ri} + A_i B_i Q_{Mi} + C_i Q_{Oi} + Q_{ci} + \Pi_i = 0\)
@@ -310,20 +316,22 @@
         \end{definition}
     \end{frame}
 
-    \begin{frame} {Matrices to Polynomials}
+    \section{Polynomial Form}
+    \subsection{Formulating Conditions}
+    \begin{frame}{Matrices to Polynomials}
         Encode matrices into a few equations on polynomials. 
 
         Let $\omega$ be a primitive $N$-th root of unity and let $\Omega = \{\omega^j: 0 \le j < N\}$. 
         Let \(a, b, c, q_L, q_R, q_M, q_O, q_C, \pi\) be polynomials of degree at most $N$ that
         interpolate corresponding columns from matrices at the domain $\Omega$. This means,
         that \(\forall j: a(\omega^j) = A_j\) and the same for other columns.
-    \end{frame}
 
-    \begin{frame} {Gate constraints in polynomial form.}
-        Now we can reduce down our first condition to checking valid execution trace
-        into the following claim over polynomials:
-        \[\exists t \in \mathbb{F}[X]: \; aq_L + bq_R + abq_M + cq_O + q_C + \pi = z_{\Omega} t,\]
-        where $z_{\Omega}(X)$ is the vanishing polynomial $X^N - 1$.
+        \pause\begin{block}{Proposition}
+            Now we can reduce down our first condition to checking valid execution trace
+            into the following claim over polynomials:
+            \[\exists t \in \mathbb{F}[X]: \; aq_L + bq_R + abq_M + cq_O + q_C + \pi = z_{\Omega} t,\]
+            where $z_{\Omega}(X)$ is the vanishing polynomial $X^N - 1$.
+        \end{block}
     \end{frame}
 
     \begin{frame} {Copy constraints in polynomial form.}
@@ -362,6 +370,7 @@
         \end{example}
     \end{frame}
 
+    \subsection{Permutation Check}
     \begin{frame}
         \textcolor{blue!80!black}{\textbf{Permutation Check.}} Having defined permutation, we can now reduce a condition $2$ of valid execution trace matrix into the following check:
         \[\forall (i, j) \in \mathcal{I}: T_{i,j} = T_{\sigma(i,j)}\]
