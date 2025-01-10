@@ -421,7 +421,136 @@ Hence, we already know how the Extended Euclidean Algorithm works, but this meth
 
 \subsubsection{Prime numbers}
 
+Prime numbers are fundamental in mathematics due to their role as the building blocks of all natural numbers. Every integer greater than 1 can be uniquely factored into primes, a concept known as the Fundamental Theorem of Arithmetic, will be introduced nex section. This property makes primes central to number theory, and they play a crucial role in various mathematical proofs and structures.
+
+\begin{definition}
+    Number $n \in \mathbb{N}$ is prime $\iff n$ have only two divisors $1$ and $n$. 
+\end{definition}
+
+\begin{definition}
+    Number $n \in \mathbb{N}$ is composite $\iff $ for all $a \in \mathbb{N}, 1 < a < n: a \mid n$.
+\end{definition}
+
+Therefore, in opposite of prime numbers, there are composite numbers, which are divisible by factors other than one and themselves.
+
+\begin{remark}
+    The number one is special, considered as not prime and not composite number.
+\end{remark}
+
+\begin{lemma}
+    For all $n \in \mathbb{N}: \gcd(n, n+1) = 1$
+\end{lemma}
+
+\begin{theorem} [Euclidean theorem]
+    If $A = \{p_1, p_2, p_3, \dots p_k\}$ - finite set, where $p_1$ is primes, then there exists a prime number such that $p \notin A$.
+\end{theorem}
+
+\begin{corollary}
+    There is an infinite set of prime numbers.
+\end{corollary}
+
+But how do we know that for all $n \in \mathbb{N} \; \exists \, a$ - prime, $a \mid n$? Next Lemma states so. 
+
+\begin{lemma}
+    For all $n \in \mathbb{N}, n$ - composite, if $\exists \; d > 1$ - minimal divisor of n, then d - prime number.
+\end{lemma}
+% todo add proof
+
+You may have a question or know something about the arrangement of prime numbers? 
+How to check the prime number? 
+For now there is no known efficient formula for primes, only asymptotic estimation.
+For example this is reslut that says we can find at least one prime number in some parametrized range.
+Also there are deterministics and probabilistic primality tests that answers second question, depends on tasks are solving.
+
+Worth of mentioning, different forms of prime numbers also exists and have its application in some areas. For example Mersenne primes, Factorial primes, Euclid primes, Fibonacci primes and many others type of prime numbers.
+
+\begin{definition} [Mersenne primes]
+    $M_p = 2^p - 1$ - prime number $\Rightarrow p$ - prime number.
+\end{definition}
+% todo add proof
+% todo add exmaple of biggest Mersenne primes
+
+Mersenne primes, are important in both number theory and cryptography.
+They have unique mathematical properties that make them useful for testing primality and generating large prime numbers.
+Mersenne primes are also crucial in the construction of efficient algorithms for error correction in coding theory and for generating random numbers in cryptographic applications, etc. 
+Beside, next theorem importan says that we can know the form of a prime numbers.
+
+\begin{theorem} [Dirichlet's theorem]
+    For any $a, b \in \mathbb{N}$ if $\gcd(a, b) = 1$, then infinite primes number form of $am + b$ exists, where $m \in \mathbb{N}$.
+\end{theorem}
+
+In other words, every infinite arithmetic progression whose first term and difference are positive integers contains an infinite number of primes.
+
+% todo add exmaple of Dirichlet's theorem
+
 \subsubsection{Fundamental theorem of arithmetic}
+The Fundamental Theorem of Arithmetic states that every integer greater than 1 can be uniquely factored into primes, which is crucial for understanding the structure of numbers. 
+It plays a key role in areas like number theory, cryptography, and simplifying calculations involving divisibility. 
+But before formal description of the theorem, for better understanding is good to know following Lemma \ref{euclidean_lemma}.
+
+\begin{lemma}[Euclidean lemma] \label{euclidean_lemma}
+    If $p$ is a prime and $p \mid ab$, then $p \mid a$ or $p \mid b$.
+\end{lemma}
+
+\textbf{Proof.} 
+$\blacktriangleright$
+Let $p \mid ab$, but $ p \nmid a \Rightarrow \gcd(a, p) = 1 \Rightarrow \exists \; u, v: au + bv = 1 \Rightarrow abu + pbv = b$, but $p \mid ab$ and $p \mid p$, therefore $p \mid abu + pbv$. 
+$\blacktriangleleft$
+
+\begin{theorem}[Fundamental theorem of arithmetic]
+    \hfill \\ 
+    For all $n > 1, \, n \in \mathbb{N}: n~=~p_{1}^{\alpha_1} p_{2}^{\alpha_2} \dots p_{t}^{\alpha_t}$, where $p_i$ - primes and $\alpha_i > 0 \in \mathbb{N}$.
+\end{theorem}
+
+\textbf{Proof.} 
+$\blacktriangleright$  
+The theorem state equation then need to proof equation existence and uniqueness.
+1) \textit{Existence}. 
+Suppose that the statement of the theorem is false and there exist natural primes that do not have such a representation.
+Let $n_0$ be the smallest of them.
+If $n_0$ is prime it can be represented as $n_{0}^{1}$, which satisfies representation. Then $n_0$ must be composite, which means $\exists \, a, b : 1 < a, b < n_0 : n = ab$.
+Since $n_0$ smallest non-decomposable number and $a, b < n_0$, then $a$ and $b$ can be represent as 
+$a = p_{1}^{\alpha_{1}} \dots p_{t}^{\alpha_{t}}$, 
+$b~=~q_{1}^{\beta{1}} \dots q_{k}^{\beta{k}} 
+\Rightarrow~n_0~=~ab~=$ $=~p_{1}^{\alpha_{1}} \dots p_{t}^{\alpha_{t}} q_{1}^{\beta{1}} \dots q_{k}^{\beta{k}}$
+$\Rightarrow$ contradiction. \\
+2) \textit{Uniqueness}. Suppose such $n \in \mathbb{N}$, that have two different decompositions of a number 
+$n = p_{1}^{\alpha_1} p_{2}^{\alpha_2} \dots p_{t}^{\alpha_t} = q_{1}^{\alpha_1} q_{2}^{\alpha_2} \dots q_{k}^{\alpha_k}
+\Rightarrow p_1 \mid n \Rightarrow p \mid q_{1}^{\alpha_1} q_{2}^{\alpha_2} \dots q_{k}^{\alpha_k}$ 
+According to Euclid's lemma~\ref{euclidean_lemma}, if the product of two numbers is divisible by a prime number $p$, then at least one of them is divisible by $p$.
+$\Rightarrow \exists \, i: p_1 \mid q_{i}^{\beta_i}$, but $q_i$ is prime number $\Rightarrow q_i = p_i$, because can only be divided into itself or its degrees and among these divisors only $q_i$ is prime. 
+Therefore, $p_i  = q_i$, now let's take $p2$, repeat the process and show that this number is also among these $q_i$ numbers.
+But perhaps there are other primes $q_i$ and their powers among the numbers? No, because we can start from $q_1$ instead of $p_1$.
+Hence, all numbers $p_{i}^{i}$  contains in set of $q_{i}^{i}$ vice~versa.
+$\blacktriangleleft$
+
+% \vspace{10pt}
+
+% You may wonder why we need uniqueness proof, why existence is not enough? Answer: uniqueness does not work for everyone. 
+
+% \begin{example}
+%     Let take following subset $\{ \forall k \in \mathbb{N} \mid 4k +1 \}$ and as it turns out, the multiplication operation is closed for a given subset.
+%     Moreover, it forms a group, if $k = 0$ number is identity element, etc. 
+%     But the key point is that this group has its own "prime numbers". 
+%     Among such numbers, it is easy to find numbers that have a non-unique representation in prime numbers. 
+%     Among sequence  $5, 9, 13, 17, 21, 25, 29, \dots \text{ there  are "primes" } 5, 9, \dots, \text{, but } 25 \text{ is not}$.
+%     $$441 = 21^2 = 9 \cdot 41$$
+    
+% \end{example}
+
+\begin{corollary}
+    \hfill
+
+    \begin{enumerate}
+        \item $d \mid n \Rightarrow d = p_{1}^{\beta_1}p_{2}^{\beta_2} \dots p_{t}^{\beta_t}$, where $0 \leq \beta_i \leq \alpha_i$
+        \item $a = p_{1}^{\alpha_1} \dots p_{t}^{\alpha_t}, b = p_{1}^{\beta_1} \dots p_{t}^{\beta_t}$, $\alpha_i, \beta_i \geq 0 \Rightarrow \gcd(a, b) = \prod_{i=0}^{t}p^{\min(\alpha_i, \beta_i)}$
+        \item $a = p_{1}^{\alpha_1} \dots p_{t}^{\alpha_t}, b = p_{1}^{\beta_1} \dots p_{t}^{\beta_t}$, $\alpha_i, \beta_i \geq 0 \Rightarrow \lcm(a, b) = \prod_{i=0}^{t}p^{\max(\alpha_i, \beta_i)}$
+        \item $b \mid a, c \mid a, \gcd(b, c) = 1 \Rightarrow bc \mid a$
+    \end{enumerate}
+\end{corollary}
+
+The implications and applications of the Fundamental Theorem of Arithmetic are very large and important, and a number of “obvious” ones are listed above.
+However, you should also be aware that the problem of factorization, i.e., knowing the decomposition of a number into prime factors, is in a NP class (complexity) and is the basis of some cryptosystems, although it is gradually being abandoned, including due to the potential of quantum computers.
 
 \subsubsection{Linear congruence}
 
