@@ -26,7 +26,7 @@
 \RequirePackage{wrapfig}
 \RequirePackage[inline,shortlabels]{enumitem}
 \setlist{topsep=2pt,itemsep=2pt,parsep=0pt,partopsep=0pt}
-\RequirePackage[dvipsnames]{xcolor}
+\RequirePackage[dvipsnames,table]{xcolor}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[a4paper, top=1.0in,bottom=1.0in, left=0.8in, right=0.8in, footskip=0.4in, includefoot]{geometry}
 \RequirePackage[most]{tcolorbox}
