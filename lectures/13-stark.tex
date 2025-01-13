@@ -1,0 +1,218 @@
+\documentclass[../lecture-notes.tex]{subfiles}
+
+\begin{document}
+\subsection{Introduction to ZK-STARKs}
+
+ZK-STARK (Zero-Knowledge Scalable Transparent Argument of Knowledge) is a cryptographic proof system that allows one party to prove to another the knowledge of a piece of information without revealing the information itself, while ensuring scalability and transparency. 
+
+In this context, "scalable" implies that the time required by the prover grows at most quasilinearly (linear up to the logarithmic factor) relative to the runtime of the witness-checking process. Additionally, the verification (including both time and proof size) is limited to a polylogarithmic growth concerning this runtime.
+
+In turn, "transparent" means there is no requirement for a trusted setup, unlike SNARKs. STARK protocol utilizes advanced mathematical techniques like Fast Reed-Solomon IOP of Proximity and Merkle trees to achieve this. The security of STARK lies on the difficulty of computing the inverse function to the hash function, so we can consider STARK as a quantum-safe protocol if the used hash function also owns this property.
+
+Note, that the term "STARK" does not specify the protocol interactivity. But today, most of the STARK protocols (or probably all of the existing protocols) are deployed in the non-interactive environment (which makes all of them SNARKs). This means that we really do not need the additional abbreviation for the existing STARK protocols -- all of them can be considered as a "transparent SNARKs".
+
+\subsection{STARK-frieldy fields}
+In general, STARK protocol can work over any field $\mathbb{F}$ with high two-adicity.
+
+\begin{definition}
+    We call two-adicity fields, the fields where we can select the multiplicative subgroup of order $2^k$.
+\end{definition}
+
+To be honest, all protocol steps are followed with powers of two. It will be shown, why the groups we are working with must be of size $2^k$ and why the input data also follows this rule. As the result, the maximum size of the statement that we can prove using the STARK protocol is strictly depends on the size of two-adicit subgroup (that is why we label some fields to have \textit{high two-adicity} or \textit{low two-adicity}).
+
+\begin{remark}
+In our example we consider using field over prime modulus $N = 3\cdot 2^{30} + 1$ and subgroups of size $2^{13}$ and $2^{10}$.
+\end{remark}
+
+As we will work in the new subgroup we may want to specify the subgroup generator to be used in future equations. So, for the multiplicative group generator $w \in \mathbb{F}_N^{\times}$, the generator of the subgroup will be $w^\frac{N - 1}{2^k}$.
+
+\begin{example}
+For the prime field $\mathbb{F}_N$ where $N = 3\cdot 2^{30} + 1$, the order of $\mathbb{F}^{\times}$ is $N-1 = 3\cdot 2^{30}$. If we take $w = 5$ as the primitive element, the multiplicative subgroup of $2^{13}$ elements generator will be $5^{3\cdot 2^{17}}$
+\end{example}
+
+This kind of subgroups comes with very useful property: for each element in two-adicity subgroup $H$, the additive inverse element can be calculated by a simple equation over the element power.
+
+Let's denote the generator of this subgroup $h$ and, as we already examined, $h = w^{\frac{N - 1}{|H|}}$, for simplicity. Then, each element can be represented as $x = h^i = w^{\frac{N - 1}{|H|} \cdot i}$ where its additive inverse is $-x = h^j = w^{\frac{N - 1}{|H|} \cdot j}$. Then, the $i$ and $j$ values obtain the following property: $j = i + \frac{|H|}{2} \mod |H|$.
+
+\begin{proof}[Evaluation of the additive inverse element]
+The sum of $x$ and $-x$ must equal to zero by modulus $N$, so:
+\begin{equation*}
+x + (-x) \equiv w^{\frac{N - 1}{|H|}\cdot i}(1 + w^{\frac{N - 1}{|H|} \cdot \frac{|H|}{2}}) \equiv 0 \mod N
+\end{equation*}
+
+If the multiplication of two equations equals to zero by modulus $N$, then we can try to check whether one of these equations is zero modulo $N$:
+
+\begin{gather*}
+    1 + w^{\frac{N - 1}{|H|} \cdot \frac{|H|}{2}} \equiv 0 \mod N\\
+    1 + w^{\frac{N - 1}{2}} \equiv 0 \mod N\\
+    w^{\frac{N - 1}{2}} \equiv N - 1 \mod N\\
+    w^{N - 1} \equiv (N - 1)^2 \mod N\\
+    w^{N - 1} \equiv N^2 - 2N + 1 \mod N\\
+    1  \equiv 1 \mod N
+\end{gather*}
+\end{proof}
+
+\begin{remark}
+The equation $w^{N - 1} \equiv 1 \mod N$ is obtained from the order property of the primitive element $w$ in the multiplicative group $\mathbb{F}^{\times}$. 
+\end{remark}
+
+\subsection{Proving the Fibonacci square sequence}
+\subsubsection{Trace, evaluation domain and commitment}
+The Fibonacci square sequence is a sequence of elements defined as follows: 
+\begin{equation*}
+a_{i} = a_{i-1}^2 + a_{i-2}^2  
+\end{equation*}
+Then, we are going to prove that some statement holds on the given sequence of elements.
+\begin{example}
+\textit{I know a field element $x$ such that the $1023$rd element of the Fibonacci square sequence starting with $1$ and $x$ is $2338775057$.} The private $x$ in this case equals to $3141592$.    
+\end{example}
+
+\begin{definition}
+We call \textbf{trace} a sequence of elements from $\mathbb{F}$ that represents our witness. This sequence contains private and public values together and follows certain constraints.
+\end{definition}
+Following the Unisolvence Theorem, the trace $a$ is implied to be an evaluation of some unknown \textbf{trace polynomial} of degree $|a| - 1$. Also, to be evaluable on the two-adicity subgroup, the size of the trace has to be a power of two.
+\begin{definition}
+We call \textbf{domain} a two-adicity subgroup $G \in \mathbb{F}$ where we evaluate our polynomials.
+\end{definition}
+
+\begin{example}
+In our example, we put trace a sequence $a$ of first $1023$ elements of the Fibonacci square sequence over $\mathbb{F}_N$, where $N=3\cdot 2^{30} + 1$.
+\begin{equation*}
+1, 1, 2, 5, 29, ...
+\end{equation*}
+To interpolate our trace polynomial we select as a domain a two-adicity subgroup of $2^{10}$ elements from $\mathbb{F}^\times$ with generator $g = 5^{\frac{3\cdot 2^{30}}{2^{10}}}$ (here $5$ stands for the primitive element in $\mathbb{F}^\times_N$):
+\begin{equation*}
+G = \{g^i \;|\; g = 5^{3\cdot 2^{20}} \land i \in [0;1024) \}
+\end{equation*}
+\end{example}
+
+Next, using the Lagrange interpolation over $(g^i, a_i)_0^{|a| - 1}$ points we compute a trace polynomial $f \in \mathbb{F}[x]$. Note, that in practice, you may want to use more efficient algorithm for interpolation, for example -- \textit{Fast Fourier Transform (FFT)}.
+
+\begin{definition}
+We call \textbf{evaluation domain} a two-adicity coset $E = wH\in \mathbb{F}$, where $H \in \mathbb{F}$ is a two-adicity subgroup, that is larger $\rho$ times (some small constant) then the domain. 
+\end{definition}
+
+\begin{example}
+In our case we select a two-adicity subgroup of $2^{13}$ elements from $\mathbb{F}^\times$ ($\rho = 8$): 
+\begin{equation*}
+H = \{h^i \;|\; h = 5^{3\cdot 2^{17}} \land i \in [0;8192) \}
+\end{equation*}
+Then, we define the evaluation domain as:
+\begin{equation*}
+E = \{5\cdot h_i \;|\; \forall h_i \in H\}  
+\end{equation*}
+\end{example}
+
+We build a Merkle tree over the values $f(e_i),\; \forall e_i \in E$ and label it's root as a \textbf{trace polynomial commitment}. This approach will also be used to commit other polynomials during the protocol walkthrough.
+
+The \textbf{constraints} in STARK protocol are expressed as polynomials evaluated over the trace cells, which are satisfied if and only if the computations are correct.
+
+\begin{example}
+Obviously, our initial statement consists of the following three requirements:
+\begin{enumerate}
+    \item The element $a_0$ is equal to $1$;
+    \item The element $a_{1022}$ is equal to $2338775057$;
+    \item Each element $a_{i+2}$ is equal to $a_{i+1}^2 + a_{i}^2 \mod N$.
+\end{enumerate}
+\end{example}
+To verify that our committed trace polynomial satisfies all constraints, we can check that it has corresponding roots. In particular, according to the selected interpolation points $(g^i, a_i)$, the relation $r(a_i, a_j) = 0$ can be rewritten as $r(f(g^i), f(g^j)) = 0$.
+\begin{example}
+For our Fibonacci trace we have the following constraints to be checked over the interpolated polynomial:
+\begin{enumerate}
+    \item \textit{The element $a_0$ is equal to $1$} translated to: $f(x)-1$ has root at $x = g^0 = 1$;
+    \item \textit{The element $a_{1022}$ is equal to $2338775057$} translated to: $f(x) - 2338775057$ has root at $x = g^{1022}$;
+    \item \textit{Each element $a_{i+2}$ is equal to $a_{i+1}^2 + a_{i}^2$} translated to: $f(g^2x) - f(gx)^2 - f(x)^2$ has roots in $G \setminus \{g^{1021}, g^{1022}, g^{1023}\}$
+\end{enumerate}
+\end{example}
+
+To ensure that the specified polynomials have roots in given values, we can use the following property: if polynomial $f(x) \in \mathbb{F}[x]$ has root in $x_0$ then the $\frac{f(x)}{x - x_0}$ is also a polynomial in $\mathbb{F}[x]$.
+
+\begin{example}
+Finally, we define the following STARK constraints:
+\begin{gather*}
+    p_0(x) = \frac{f(x)-1}{x - 1} \\
+    p_1(x) = \frac{f(x) - 2338775057}{x - g^{1022}} \\
+    p_2(x) = \frac{f(g^2x) - f(gx)^2 - f(x)^2}{\prod_{i=0}^{1020} x - g^i}
+\end{gather*}
+Unfortunately, the $p_2$ polynomial still looks inconvenient to work with, so we may want to simplify it (this is not a part of the protocol in general, but you always may want to simplify your equations to achieve better proving time). Using the following property we can reduce the denominator of $p_2$:
+\begin{equation*}
+x^{|G|} - 1 = \prod_{g \in G}(x-g), \forall x \in G  
+\end{equation*}
+This equation works because both sides are polynomials whose roots are exactly the elements of $G$. Note, that while evaluating our polynomial on lager domain then $G$ we should only ensure that the resulting polynomial still holds the relation $f(g^i) = a_i$, so it is acceptable to use properties that only work over $G$. So, finally we have:
+\begin{equation*}
+p_2(x) = \frac{(f(g^2x) - f(gx)^2 - f(x)^2)(x - g^{2021})(x - g^{2022})(x - g^{2024})}{x^{1024} - 1}  
+\end{equation*}
+\end{example}
+
+In addition, there is one obvious requirement for the STARK constraints: the verifier should be able to compute the constraints polynomials $p_i(x)$ using only the given trace polynomial evaluations for the certain $x$.
+
+\begin{example}
+In our Fibonacci example, verifier can check the constraint polynomials evaluation by requesting only $f(x)$, $f(gx)$ and $f(g^2x)$ -- the values committed in the trace polynomial commitment.
+\end{example}
+
+To combine all our constraints into a single polynomial, we can follow a commonly used principle by taking a linear combination with the challenges from the verifier. In particular, after receiving trace polynomial commitment from the prover, the verifier selects $\{\alpha_i\ \in \mathbb{F}\}$ and sends it to the prover. Then, the prover puts the \textbf{composition polynomial} as:
+\begin{equation*}
+CP(x) = \sum \alpha_i\cdot p_i(x)
+\end{equation*}
+Additionally, prover also commits this polynomial by evaluating on the evaluation domain and building a Merkle tree.
+
+\subsubsection{FRI protocol}
+In general, our goal is to verify that the committed polynomial $CP(x)$ satisfies all our constraints, by checking it's evaluation at a random point from the evaluation domain that the verifier selects. Anyway, we can face the problem when the malicious prover constructs a lager polynomial that accepts lots of possible roots from our field (even $2^{64}$ field is still insecure for just checking the evaluation at one point). That is why we have to make sure that the committed polynomial degree lies in the acceptable range (the upper bound depends on the trace size).
+
+The final stage of the STARK protocol is a \textbf{Fast Reed-Solomon IOP of Proximity (FRI)}. FRI is a protocol between a prover and a verifier, which establishes that a given evaluation belongs to a polynomial of low-degree -- \textit{low} means no more than $\rho$ times less than the length of the evaluation domain size.
+
+The key idea of FRI protocol is to move from a polynomial of degree $n$ to a polynomial of degree $n/2$ until we get a constant value. Let's consider the polynomial $g_0(x)$ of degree $n=2^t$ and the evaluation domain $E_0 = E$. We suppose to group the \textit{odd} and the \textit{even} coefficients of the $g_0$ together into the two separate polynomials($g_0^o$ and $g_0^e$ respectively):
+\begin{gather*}
+    g_0^o(x^2) = \sum_{i=0}^{n/2} (a_{2i+1}\cdot x^{2i})\\
+    g_0^e(x^2) = \sum_{i=0}^{n/2} (a_{2i}\cdot x^{2i})
+\end{gather*}
+
+Or, in more comfortable form (we have already examined why searching of $-x$ cab be done easily in our two-adicity subgroup):
+\begin{gather*}
+    g_0^e(x^2) = \frac{g_0(x) + g_0(-x)}{2}\\
+    g_0^o(x^2) = \frac{g_0(x) - g_0(-x)}{2x}
+\end{gather*}
+
+Then, we define the next-layer of FRI polynomial as $g_1(x^2) = g_0^e(x^2) + \beta g_0^o(x^2)$, where $\beta$ is a challenge received from verifier. The next-layer evaluation domain is also simple to compute: $E_1 = \{(w\cdot h_i)^2 \;|\; i \in [0;\frac{|E_0|}{2})\}$
+
+Next, we commit the $g_1(x^2)$ using a next-layer evaluation domain $E_1$ (is also reduced by a factor two) and continue to repeat the described operations until $g_i(x^{2^i})$ becomes constant.
+
+\subsection{Protocol definition}
+
+\begin{tcolorbox}[title=Interactive ZK-STARK protocol,
+    colback=blue!5!white,
+    colframe=blue!75!black,
+    colbacktitle=blue!25!white,
+    coltitle=blue!20!black,
+    fonttitle=\bfseries,
+    boxrule=1.25pt,
+    subtitle style={boxrule=0pt,
+    colback=blue!20!white,
+    colupper=blue!75!gray} ]
+    \small
+
+    The prover and the verifier run the interactive version of the ZK-STARK protocol. Both knows the statement to be proved, that is defined by the constraint polynomials and the field $\mathbb{F}$ to work over. Prover also knows the witness to be able to generate the trace.
+
+    \tcbsubtitle{Preparation}
+    \begin{itemize}[label=\ding{51}]
+        \item The prover interpolates trace polynomial $f(x)$ and submits it's commitment to the verifier.
+        \item The verifier selects challenges random $\alpha_0, \alpha_1, \alpha_2 \in \mathbb{F}$ and sends to the prover.
+        \item The prover builds the composition polynomial $CP(x)$ and submits it's commitment to the verifier.
+    \end{itemize}
+
+    \tcbsubtitle{FRI}
+    \begin{itemize}[label=\ding{51}]
+        \item The verifier selects random $i \in [0; 8192-16)$, puts $c = w\cdot h^i$ and sends it to the prover.
+        \item The prover responds with the $f(c), f(gc), f(g^2c), CP(c), CP(-c)$ and corresponding Merkle proofs to them.
+        \item The verifier checks Merkle proofs and the evaluation of $CP(c)$ by evaluating the constraints polynomials $p_0(c), p_1(c), p_2(c)$.
+        \item The prover and the verifier go through the FRI protocol for $g_0(x) = CP(x)$ where the prover commits to the layer-$i$ polynomial $g_i(x)$, the verifier selects a challenge $\beta$ and queries from the prover $g_i(c), g_i(-c)$ to compute $g_{i+1}(c)$ until $g_i(x), i \leq log_2(\deg CP(x))$ becomes constant.
+    \end{itemize}
+    
+\end{tcolorbox}
+
+The non-interactive version of the presented protocol can be easily built obtaining the Fiat-Shamir heuristics.
+
+The soundness of the presented STARK protocol follows from the impossibility to commit any possible evaluation of the forgery $CP(x)$ over evaluation domain $E$ and simultaneously prove that $CP(x)$ is a low-degree polynomial by the FRI protocol. Since the size of $E$ is $\rho$ times bigger then the maximum allowed polynomial degree (that directly depends on the size of the trace), the attacker either can't construct such a polynomial or can't construct a low-degree polynomial, so a valid low-degree composite polynomial can only be obtained using a valid trace.
+
+
+\end{document}
