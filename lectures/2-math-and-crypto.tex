@@ -344,7 +344,7 @@ The integers $u$ and $v$ are called coefficients Bezout. The first corollary see
 The extended Euclidean algorithm finds the Bezout coefficients together with the GCD.
 
 \begin{algorithm}
-    \caption{Extended Euclidean algorithm} \label{extended_euclidean_algorithm}
+    \caption{Extended Euclidean algorithm} \label{alg:extended_euclidean}
     \Input{$a, b \in \mathbb{N}, a \geq b$}
     \Output{$(gcd(a, b), \, u, \, v)$}
         
@@ -629,6 +629,20 @@ However, there is an important note: not all numbers have an inverse number.
 \end{theorem}
 % todo add proof
 
+\begin{algorithm}
+    \caption{Modular multiplicative inverse algorithm} \label{alg:modular_inverse}
+    \Input{$a, n$}
+    \Output{$a^{-1}$}
+        
+    $(\gcd(a,n), \, u, \, v) \gets \text{ExtendedEuclideanAlgorithm}(a, \, n)$
+
+    \If{\gcd(a, n) = 1}{
+        \textbf{return} inverse not exist.
+    } 
+
+    \textbf{return} $u$
+\end{algorithm}
+
 \begin{definition}
     Multiplicative group of integers modulo $n$ $\mathbb{Z}_{n}^{*} = \{a \mid \gcd(a, n) = 1\}$.
 \end{definition}
@@ -642,6 +656,27 @@ The $\mathbb{Z}_{n}^{*}$ is one of the key objects in cryptography and is behind
 \begin{definition}
     Euler's totient function $\varphi(n), n \in \mathbb{N}$ counts in $[1, n]$ coprime numbers with $n$. 
 \end{definition}
+
+\begin{lemma}
+    \hfill
+    \begin{enumerate}
+        \item $\varphi(1) = 1$
+        \item $\varphi(p) = p - 1$, where $p$ is prime
+        \item $\varphi(pq) = \varphi(p) \cdot \varphi(q)$, where $p, q$ are primes
+        \item $\varphi(p^{\alpha}) = p^{\alpha} - p^{\alpha - 1}$, where $p$ is prime
+        \item $\varphi(n) = \prod_{i = 1}^{t} (p_{i}^{\alpha_i} - p_{i}^{\alpha_i - 1}) = n\prod_{i = 1}^{t} (1 - \frac{1}{p_i}), \; n = p_{1}^{\alpha_1}p_{2}^{\alpha_2} \dots p_{t}^{\alpha_t}$
+    \end{enumerate}    
+\end{lemma}
+
+\begin{example}
+    \hfill
+
+    \begin{itemize}
+        \item $\varphi(107) = 106$
+        \item $\varphi(123) = \varphi(3)\varphi(41) = 80$
+        \item $\varphi(729) = \varphi(3^6) = 3^6 - 3^5 = 486$
+    \end{itemize}
+\end{example}
 
 \subsubsection{Schwartz-Zippel Lemma}
 
