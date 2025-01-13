@@ -217,160 +217,232 @@ knowing that the probability of the adversary to break the Diffie-Hellman assump
 
 \subsection{Basic Number Theory}
 
-% todo add some intro word 
-some intro word
+As mentioned earlier, the cryptography must work with integer-based formats. 
+One of the earliest and most fundamental branches of mathematics is number theory, which 
+deals with the properties of the integer set $\mathbb{Z}$. Although, as we will see later, 
+we will primarily need the notion of \emph{prime/finite field} further, the basic concepts 
+of number theory will still be used extensively nonetheless.
 
 \subsubsection{Introduction to number theory}
 
+We start with the most basic definition of number theory --- \emph{divisibility}.
+
 \begin{definition}
-    An integer $a$ is divisible by a nonzero integer $b$, denoted $b \mid a$, or b is divisor of a, if and only if there exists an integer $k \in \mathbb{Z}$ such that $a = k \cdot b$.
+    An integer $a$ is divisible by a non-zero integer $b$, denoted $b \mid a$ (or \emph{b is a divisor of a}), if and only if there exists an integer $k \in \mathbb{Z}$ such that $a = k \cdot b$.
 \end{definition}
+
+Let us consider some basic properties of this relation.
 
 \begin{lemma}[Divisibility properties]
     For all $a, b, c \in \mathbb{Z}:$
     \hfill
     \begin{enumerate}
-        \item $1 \mid a$
-        \item $a \neq 0$, $a \mid a$
-        \item $a \neq 0$, $a \mid 0$
-        \item $b \mid a$, $c \mid b \Rightarrow c \mid a$
-        \item $b \mid a \iff b \cdot c \mid a \cdot c$, $c > 0$
-        \item $c \mid a$, $c \mid b  \Rightarrow c \mid (\alpha \cdot a \pm \beta \cdot b)$, $\text{for any } \alpha, \beta \in \mathbb{Z}$
+        \item $1 \mid a$ (any number is divisible by $1$)
+        \item If $a \neq 0$, then $a \mid a$ (any non-zero integer divides itself).
+        \item If $a \neq 0$, then $a \mid 0$ (any non-zero integer divides $0$).
+        \item If $b \mid a$ and $c \mid b$, then $c \mid a$ (formally called \emph{transitivity}).
+        \item $b \mid a \iff b \cdot c \mid a \cdot c$ for any $c \neq 0$.
+        \item If $c \mid a$ and $c \mid b$, then $c \mid (\alpha \cdot a \pm \beta \cdot b)$, $\text{for any } \alpha, \beta \in \mathbb{Z}$
     \end{enumerate}
 \end{lemma}
 
-You might wonder if there are cases where a number is not divisible by any integer, meaning there is no integer $k$ that satisfies the condition. Well, in such cases, a new theorem comes into play.
+But what happens if a number $a$ is not divisible by the given integer $b$, meaning there is no integer $k$ that satisfies the condition $a = b \cdot k$? In such cases, a new theorem comes into play.
 
-\begin{theorem}
-    $\forall a, b \in \mathbb{Z}:$ $\exists!\, q, r$, where $q \in \mathbb{Z}$, $r \in \mathbb{N}$, $0 \leq r < |b|$, that $a = b \cdot q + r$.
+\begin{theorem}[Division theorem]\label{th:division}
+    \begin{equation*}
+        \forall a, b \in \mathbb{Z} \; \exists! q, r \in \mathbb{Z} \; \text{such that} \; a = b \cdot q + r \; \text{with} \; 0 \leq r < |b|
+    \end{equation*}
 \end{theorem}
 
-To prove this theorem, all we need to prove is the existence and uniqueness of such a decomposition. Basically, this new theorem allows to define new operation that accept two integers and return two integers $q = \left\lfloor \frac{a}{b} \right\rfloor$, $r = a - b \cdot \left\lfloor \frac{a}{b} \right\rfloor$. Thus, $a \, \text{mod} \, b$ represents the remainder when $a$ is divided by $b$.
+To prove this theorem, all we need to prove is the existence and uniqueness of
+such a decomposition. To not make the book too long, we will not prove this
+theorem here, but you can find the proof in any number theory textbook.
 
-\vspace{10pt}
+This theorem allows us to define two new operations. Suppose $a,b,q,r$ are given
+as in the \Cref{th:division}. Then,
+\begin{itemize}
+    \item \textbf{Floor Operation} ($\lfloor a/b \rfloor$ or $a \; \text{div} \;
+b$) is defined as $q$. This operation is a standard \texttt{div} opeartion
+commonly used in programming languages.
+    \item \textbf{Mod Operation} ($a \; \text{mod} \; b$) is defined as $r$. This operation is a standard
+\texttt{mod} operation commonly used in programming languages. 
+\end{itemize}
 
-In division operations, it is common to check for any shared factors between two numbers. This is where the concept of the greatest common divisor (gcd) comes into.
+In division operations, it is common to check for any shared factors between two
+numbers. This is where the concept of the \textbf{greatest common divisor} (or
+\textbf{gcd} for short) comes into play.
 
-\begin{definition}
-    $\forall a, b \in \mathbb{Z}, \gcd(a, b) = d$ such that:
+\begin{definition}[GCD]
+    For any $a, b \in \mathbb{Z}$, the \textbf{greatest common divisor} $\gcd(a, b)$ is defined as an integer $d \in \mathbb{N}$ such that:
     \begin{enumerate}
-        \item $d \mid a$, $d \mid b$
-        \item $d  \in \mathbb{N}$ is a maximal integer that satisfies the first condition
+        \item $d \mid a$ and $d \mid b$.
+        \item $d$ is a maximal integer that satisfies the first condition.
     \end{enumerate}
+
+    One might right the above definition more concisely:
+    \begin{equation*}
+        \gcd(a,b) = \max\{d \in \mathbb{N}: d \mid a \; \text{and} \; d \mid b\}.
+    \end{equation*}
 \end{definition}
 
 \begin{definition}
-    Two numbers $a$ and $b$ \textbf{coprime} if and only if $\gcd(a, b) = 1$.
+    Two numbers $a$ and $b$ are \textbf{coprime} if and only if $\gcd(a, b) = 1$.
 \end{definition}
+
+As with any previous concept, let us check some basic properties of the GCD operation.
 
 \begin{lemma} [Greatest common divisor properties]
     \hfil
     \begin{enumerate}
         \item $\gcd(a, b) = b \iff b \mid a$
-        \item $a \neq 0$, $\gcd(a, 0) = a$
-        \item $\exists \delta$: $\delta \mid a, \delta \mid b \Rightarrow \delta \mid \gcd(a, b)$
-        \item $c > 0$, $\gcd(a \cdot c, b \cdot c) = c \cdot \gcd(a, b)$
-        \item $d = \gcd(a, b) \Rightarrow \gcd(\frac{a}{d}, \frac{b}{d}) = 1$
+        \item If $a \neq 0$, then $\gcd(a, 0) = a$
+        \item If there exists $\delta \in \mathbb{Z}$ such that $\delta \mid a$ and $\delta \mid b$, then $\delta \mid \gcd(a, b)$
+        \item If $c > 0$, then $\gcd(ac, bc) = c \cdot \gcd(a, b)$
+        \item Suppose $d = \gcd(a, b)$. Then, $\gcd(a/d, b/d) = 1$
     \end{enumerate}
 \end{lemma}
 
 \begin{lemma}
-    $\gcd(a, b) = \gcd(b, a - b)$
+    For any $a,b \in \mathbb{Z}$, we have $\gcd(a, b) = \gcd(b, a - b)$. 
 \end{lemma}
 
+The aforementioned lemma will be further extensively used for the Euclidean algorithm.
+
 \begin{corollary}
-    $\gcd(a, b) = \gcd(b, a \mod b)$
+    As a corollary, for any $a,b \in \mathbb{Z}$ we also have $\gcd(a, b) =
+    \gcd(b, a \; \text{mod} \; b)$.
 \end{corollary}
 
-All these properties are interesting and useful, but you may wonder how to actually find $gcd(a, b)$. Euclidean algorithm is an efficient method for computing the greatest common divisor, and we will describe extended version, but later.
+All these properties are interesting and useful from the theory standpoint, but
+you may wonder how to practically find $\gcd(a, b)$ (say, if you were to
+implement this function in the programming language). \emph{Euclidean algorithm} is an
+efficient method for computing the greatest common divisor, and we will describe
+extended version, but later.
 
 While the greatest common divisor (gcd) focuses on finding the largest shared factor between two numbers, the least common multiple (lcm) deals with finding the smallest multiple that both numbers have in common. The LCM is particularly useful when we need to synchronize cycles or work with fractions.
 
-\begin{definition}
-    $\forall a, b \in \mathbb{Z}, lcm(a, b) = m$ such that:
+\begin{definition}[LCM]
+    For any $a, b \in \mathbb{Z}$, the \textbf{least common multiple} $\lcm(a,
+    b)$ is defined as an integer $m \in \mathbb{N}$ such that:
     \begin{enumerate}
-        \item $a \mid m$, $a \mid m$
-        \item $m \in \mathbb{N}$ is a maximal integer that satisfies the first condition 
+        \item $a \mid m$ and $b \mid m$
+        \item $m$ is a minimal integer that satisfies the first condition 
     \end{enumerate}
+
+    One might right the above definition more concisely:
+    \begin{equation*}
+        \lcm(a,b) = \min\{m \in \mathbb{N}: a \mid m \; \text{and} \; b \mid m\}.
+    \end{equation*}
 \end{definition}
 
-\begin{lemma} [Least common multiple properties]
+\begin{lemma} [Least Common Multiple Properties]
     \hfil
     \begin{enumerate}
-        \item $\lcm(a, 0)$ - undefined
-        \item $\lcm(a, b) = a \iff b \mid a$
-        \item $a, b$ - coprime $\Rightarrow \lcm(a, b) = a \cdot b$
-        \item Any common divisor of $a$ and $b$ $\delta \mid \lcm(a, b)$
-        \item $\forall c > 0: \lcm(a \cdot c, b \cdot b) =  c \cdot \lcm(a, b)$
-        \item $\frac{\lcm(a, b)}{a}$ and $\frac{\lcm(a, b)}{b}$ - are coprime
+        \item We assume that $\lcm(a, 0)$ is undefined.
+        \item $\lcm(a, b) = a \iff b \mid a$.
+        \item If $a$ and $b$ are coprime, then $\lcm(a, b) = a \cdot b$.
+        \item Any common divisor $\delta$ of $a$ and $b$ satisfies $\delta \mid \lcm(a, b)$.
+        \item For any $c > 0$, we have $\lcm(a \cdot c, b \cdot b) =  c \cdot \lcm(a, b)$.
+        \item Integers $\lcm(a, b)/a$ and $\lcm(a, b) / b$ are coprime.
     \end{enumerate}
 \end{lemma}
 
 \begin{theorem}
-    $\forall a, b \in \mathbb{N}: \gcd(a, b) \cdot \lcm(a, b) = a \cdot b$
+    For any $a, b \in \mathbb{N}$, we have $\gcd(a, b) \cdot \lcm(a, b) = ab$.
 \end{theorem}
 
-This theorem states that no additional algorithm is required for $\text{lcm}(a, b)$.
+One interpretation of the above theorem is that no additional algorithm is required for
+$\text{lcm}(a, b)$ if we already have an algorithm for $\gcd(a, b)$. Indeed, we
+can simply use the formula $\text{lcm}(a, b) = ab / \gcd(a, b)$ with the
+previously computed $\gcd(a, b)$.
 
-\begin{theorem}
-    $\forall a, b \in \mathbb{N}: \gcd(a, b, c) = \gcd(\gcd(a, b), c) = \gcd(a, \gcd(a, b))$
+The reasonable question is how to generalize the $\gcd$ and $\lcm$ operations to more than two arguments. 
+For that reason, we provide the following algorithm:
+\begin{definition}[GCD and LCM for multiple arguments]
+    We define the \textbf{greatest common divisor} $\gcd(a_1, a_2, \dots, a_n)$ and the \textbf{least common multiple} $\lcm(a_1, a_2, \dots, a_n)$ for any set of integers $a_1, a_2, \dots, a_n \in \mathbb{Z}$ as follows:
+    \begin{align*}
+        \gcd(a_1, a_2, \dots, a_n) &= \max\{ d \in \mathbb{N}: d \mid a_1, d \mid a_2, \dots, d \mid a_n \}. \\
+        \lcm(a_1, a_2, \dots, a_n) &= \min\{ m \in \mathbb{N}: a_1 \mid m, a_2 \mid m, \dots, a_n \mid m \}.
+    \end{align*}
+\end{definition}
+
+\begin{theorem}[Computational Properties Of GCD and LCM For Multiple Arguments.]
+    The following two statements are true:
+    \begin{itemize}
+        \item $\forall a, b \in \mathbb{N}: \gcd(a, b, c) = \gcd(\gcd(a, b), c) = \gcd(a, \gcd(a, b))$.
+        \item $\forall a, b \in \mathbb{N}: \lcm(a, b, c) = \lcm(\lcm(a, b), c) = \lcm(a, \lcm(a, b))$.
+    \end{itemize}
 \end{theorem}
 
-\begin{theorem}
-    $\forall a, b \in \mathbb{N}: \lcm(a, b, c) = \lcm(\lcm(a, b), c) = \lcm(a, \lcm(a, b))$
-\end{theorem}
-
-In conclusion, from these two theorems, we already know that there is no necessity for specific algorithms for $\gcd$ and $\lcm$ when dealing with many arguments. There are more specialized algorithms for each when considering a specific number of arguments, but unfortunately, such topics are beyond the scope of this book.
+In conclusion, from these two theorems there is no necessity for specific
+algorithms for $\gcd$ and $\lcm$ when dealing with many arguments. There are
+more specialized algorithms for each when considering a specific number of
+arguments, but unfortunately, such topics are beyond the scope of this book.
 
 \subsubsection{Extended Euclidean algorithm}
 
-In this section, we will introduce the Extended Euclidean Algorithm and an important lemma related to the GCD. You might have reasonable question why extended version. The simple answer is that it will later help us find inverse elements, which will be introduced in a subsequent section.
+In this section, we will introduce the Extended Euclidean Algorithm and an
+important lemma related to the GCD. You might have reasonable question: why do
+we even need an extended version? One of the primary reasons is that this 
+algorithm will help in finding inverse modular elements, introduced in the 
+subsequent sections.
 
 \begin{lemma} [Bezout identity]
-    For all $a, b \in \mathbb{N}, d = \gcd(a, b) \; \exists u, v \in \mathbb{Z}, d = a \cdot u + b \cdot v$
+    For any two given integers $a, b \in \mathbb{N}$ with $d = \gcd(a, b)$ there exists such $u, v \in \mathbb{Z}$ that $d = au + bv$.
 \end{lemma}
 
 \begin{corollary} [From Bezout identity]
     \hfill
     \begin{enumerate}
-        \item $d = au + bv$, where one of the numbers is necessarily non-negative and the other is non-positive.
-        \item $d = \gcd(a_1, a_2, \dots, a_n) \Rightarrow \exists \, u_1, u_2, \dots, u_n \in \mathbb{Z}: \, d = u_2 a_1 + u_2 a_2 + \dots + u_n a_n$
-        \item For all $i \in \mathbb{N} \;\exists \, u_i, v_i \in \mathbb{Z}: r_i = a u_i + b v_i$
+        \item Integers $u$ and $v$ are of different signs (excluding the case when either $u=0$ or $v=0$).
+        \item \textit{Generalization for multiple integers:} Suppose $d = \gcd(a_1, a_2, \dots, a_n)$, then there exist such integers $u_1, u_2, \dots, u_n \in \mathbb{Z}$ that $d = u_1 a_1 + u_2 a_2 + \cdots + u_n a_n$.
     \end{enumerate}    
 \end{corollary}
 
-The integers $u$ and $v$ are called coefficients Bezout. The first corollary seems obvious, because if all coefficients are non-negative, the result will be much larger than necessary, and if they are non-positive, the result must be negative, but the GCD $ \in \mathbb{N} $. The second consequence follows from the fact that we can decompose gcd thus sequentially derive this sequence. The last one stand that we can find coefficients Bezout on each euclidean algorithm step.
+The integers $u$ and $v$ are called \textbf{Bezout coefficients}. The first
+corollary can be understood intuitively: if all coefficients are non-negative,
+the result will be much larger than necessary. Similarly, if they are
+non-positive, the result must be negative, but the GCD was defined to be
+positive. The second consequence follows from the fact that we can decompose
+gcd, thus sequentially derive this sequence. Also note that we can find Bezout
+coefficients on each Euclidean algorithm step. % TODO: Euclidean algorithm is unknown at this point
 
-The extended Euclidean algorithm finds the Bezout coefficients together with the GCD.
+Now we introduce the \textbf{extended Euclidean algorithm.} The extended
+Euclidean algorithm finds the Bezout coefficients together with the GCD
+efficiently.
 
-\begin{algorithm}
+\begin{algorithm}[H]
     \caption{Extended Euclidean algorithm} \label{alg:extended_euclidean}
-    \Input{$a, b \in \mathbb{N}, a \geq b$}
-    \Output{$(gcd(a, b), \, u, \, v)$}
+    \Input{$a, b \in \mathbb{N}$. Without loss of generality, $a \geq b$}
+    \Output{$(\gcd(a, b), u, v)$}
         
     $r_{0} \gets a; \, r_{1} \gets b$ \\ % todo fix format
     $u_{0} \gets 1; \, u_{1} \gets 0$ \\
     $v_{0} \gets 0; \, v_{1} \gets 1$ \\
 
-    \For{$i \in \{1, \dots , \log(b) \}$}{
-        $q_i \gets \lfloor r_{i-1} \, / \, r_{i} \rfloor$ \\
+    \While{$r_{i+1} \neq 0, \; i = 1, 2, \dots$}{
+        $q_i \gets  r_{i-1} \; \text{div} \; r_{i}$ \\
         $u_{i+1} \gets u_{i-1} - u_{i} q_i$ \\
         $v_{i+1} \gets v_{i-1} - v_{i} q_i$ \\
         $r_{i+1} \gets  a u_{i+1} + b v_{i}$ \\
-
-        \If{$r_{i+1} = 0$}{
-            \textbf{return} $(r_i, u_i, v_i)$
-        }
     }
+
+    \textbf{return} $(r_i, u_i, v_i)$
 \end{algorithm}
 
-Hence, we already know how the Extended Euclidean Algorithm works, but this method is not human-friendly. Next, example of a easy way to find the GCD.
+The time complexity of the extended Euclidean algorithm is $O(\log
+\min\{a,b\})$, which is very efficient. Although we already know how the
+Extended Euclidean Algorithm works, this method is still not very
+human-friendly. For that reason, let us consider an example of an easy way to
+find the GCD.
 
 % todo improve style
 \begin{example} [Extended Euclidean algorithm example]
     \hfill
 
-    First, we you need to find d = gcd(a,b), then, knowing this sequence of expansions, find the coefficients of Bezout, although this can be done simultaneously.
+    First, we you need to find $d = \gcd(a,b)$. Then, knowing the sequence of
+    expansions, find the Bezout coefficients. Note that this can be done
+    simultaneously.
 
     \hfill
 
@@ -392,7 +464,7 @@ Hence, we already know how the Extended Euclidean Algorithm works, but this meth
             \begin{tabular}{|c|c|c|c|c|c|c|c|}
                 \hline
                 
-                $i$   & $0$      & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ \\
+                \rowcolor{gray!30} $i$   & $0$      & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ \\
                 
                 \hline
                 \hline
@@ -403,7 +475,7 @@ Hence, we already know how the Extended Euclidean Algorithm works, but this meth
                 
                 $u_i$ & $1$      & $0$ & $1$ & $-2$ & $3$ & $-29$ & $32$ \\
                 \hline
-                $v_i$ & $0$      & $1$ & $-1$ & $3$ & $-4$ & $ $ & $ $ \\
+                $v_i$ & $0$      & $1$ & $-1$ & $3$ & $-4$ & \textcolor{green!60!black}{\textbf{?}} & \textcolor{green!60!black}{\textbf{?}} \\
                 
                 \hline
             \end{tabular}
@@ -412,60 +484,76 @@ Hence, we already know how the Extended Euclidean Algorithm works, but this meth
 
     \hfill
     
-    Each corresponding cell is calculated with the following formula: \\
-    $u_{i-1} - q_i u_i = u_{i+1}$ \\
-    $v_{i-1} - q_i v_i = v_{i+1}$ 
-
-    Knowing that, try to  finish this example. After finding $v_6$ and be sure to check yourself.
+    Here, each corresponding cell is calculated with the following formula: 
+    \begin{align*}
+        u_{i-1} - q_i u_i &= u_{i+1} \\
+        v_{i-1} - q_i v_i &= v_{i+1} 
+    \end{align*}
+    Knowing that, try to finish this example by filling in the missed cells
+    marked by \textcolor{green!60!black}{\textbf{?}}. After finding $v_6$, be
+    sure to check yourself.
 \end{example}
 
 \subsubsection{Prime numbers}
 
-Prime numbers are fundamental in mathematics due to their role as the building blocks of all natural numbers. Every integer greater than 1 can be uniquely factored into primes, a concept known as the Fundamental Theorem of Arithmetic, will be introduced nex section. This property makes primes central to number theory, and they play a crucial role in various mathematical proofs and structures.
+Prime numbers are fundamental in mathematics due to their role of the building
+blocks of all natural numbers. Every integer greater than 1 can be uniquely
+factored into primes, a concept known as the \emph{Fundamental Theorem of
+Arithmetic}, which we introduce in the next section. This property makes primes
+central to number theory, and they play a crucial role in various mathematical
+proofs and structures.
 
 \begin{definition}
-    Number $n \in \mathbb{N}$ is prime $\iff n$ have only two divisors $1$ and $n$. 
+    Number $n \in \mathbb{N}$ is \textbf{prime} iff its only two divisors are $1$
+    and $n$. 
 \end{definition}
 
 \begin{definition}
-    Number $n \in \mathbb{N}$ is composite $\iff $ for all $a \in \mathbb{N}, 1 < a < n: a \mid n$.
+    Number $n \in \mathbb{N}$ is \textbf{composite} iff there exists an integer
+    $a \in \mathbb{N}$, which is not $1$ or $n$, for which $a \mid n$. In other words,
+    it is not prime.
 \end{definition}
-
-Therefore, in opposite of prime numbers, there are composite numbers, which are divisible by factors other than one and themselves.
 
 \begin{remark}
-    The number one is special, considered as not prime and not composite number.
+    One might ask: what to do with the number $1$? We consider it to
+    be neither prime nor composite.
 \end{remark}
 
 \begin{lemma}
-    For all $n \in \mathbb{N}: \gcd(n, n+1) = 1$
+    For all $n \in \mathbb{N}$, we have $\gcd(n, n+1) = 1$
 \end{lemma}
 
 \begin{theorem} [Euclidean theorem]
-    If $A = \{p_1, p_2, p_3, \dots p_k\}$ - finite set, where $p_1$ is primes, then there exists a prime number such that $p \notin A$.
+    If $P = \{p_1, p_2, p_3, \dots p_k\} \subset \mathbb{N}$ is a finite set,
+    consisting of prime numbers, then there exists a prime number $p$ such that
+    $p \notin P$.
 \end{theorem}
 
 \begin{corollary}
-    There is an infinite set of prime numbers.
+    The set of prime numbers has an infinite cardinality.
 \end{corollary}
 
-But how do we know that for all $n \in \mathbb{N} \; \exists \, a$ - prime, $a \mid n$? Next Lemma states so. 
-
 \begin{lemma}
-    For all $n \in \mathbb{N}, n$ - composite, if $\exists \; d > 1$ - minimal divisor of n, then d - prime number.
+    For all $n \in \mathbb{N}$, where $n$ is composite, if there exists a 
+    minimal divisor $d>1$ of $n$, then $d$ is a prime number.
 \end{lemma}
 % todo add proof
 
-You may have a question or know something about the arrangement of prime numbers? 
-How to check the prime number? 
-For now there is no known efficient formula for primes, only asymptotic estimation.
-For example this is reslut that says we can find at least one prime number in some parametrized range.
-Also there are deterministics and probabilistic primality tests that answers second question, depends on tasks are solving.
+You may have a question or know something about the arrangement of prime
+numbers? How to check the prime number? For now there is no known efficient
+formula for primes, only asymptotic estimation. For example this is reslut that
+says we can find at least one prime number in some parametrized range. Also
+there are deterministics and probabilistic primality tests that answers second
+question, depends on tasks are solving.
 
-Worth of mentioning, different forms of prime numbers also exists and have its application in some areas. For example Mersenne primes, Factorial primes, Euclid primes, Fibonacci primes and many others type of prime numbers.
+Worth of mentioning, different forms of prime numbers also exists and have its
+application in some areas. For example Mersenne primes, Factorial primes, Euclid
+primes, Fibonacci primes and many others type of prime numbers. We consider one 
+of the most famous type of prime numbers --- Mersenne primes.
 
 \begin{definition} [Mersenne primes]
-    $M_p = 2^p - 1$ - prime number $\Rightarrow p$ - prime number.
+    The prime number of form $2^p - 1$ is called \textbf{Mersenne prime}, where $p$ is a
+    prime number.
 \end{definition}
 % todo add proof
 % todo add exmaple of biggest Mersenne primes
@@ -483,7 +571,7 @@ In other words, every infinite arithmetic progression whose first term and diffe
 
 % todo add exmaple of Dirichlet's theorem
 
-\subsubsection{Fundamental theorem of arithmetic}
+\subsubsection{Fundamental Theorem of Arithmetic}
 The Fundamental Theorem of Arithmetic states that every integer greater than 1 can be uniquely factored into primes, which is crucial for understanding the structure of numbers. 
 It plays a key role in areas like number theory, cryptography, and simplifying calculations involving divisibility. 
 But before formal description of the theorem, for better understanding is good to know following Lemma \ref{euclidean_lemma}.
@@ -497,9 +585,14 @@ $\blacktriangleright$
 Let $p \mid ab$, but $ p \nmid a \Rightarrow \gcd(a, p) = 1 \Rightarrow \exists \; u, v: au + bv = 1 \Rightarrow abu + pbv = b$, but $p \mid ab$ and $p \mid p$, therefore $p \mid abu + pbv$. 
 $\blacktriangleleft$
 
+Now, we are ready to introduce the central Number Theory theorem --- Fundamental
+Theorem of Arithmetic.
+
 \begin{theorem}[Fundamental theorem of arithmetic]
-    \hfill \\ 
-    For all $n > 1, \, n \in \mathbb{N}: n~=~p_{1}^{\alpha_1} p_{2}^{\alpha_2} \dots p_{t}^{\alpha_t}$, where $p_i$ - primes and $\alpha_i > 0 \in \mathbb{N}$.
+    Any integer $n>1$ can be decomposed in the unique way into a product of prime numbers:
+    \begin{equation*}
+        n = p_1^{\alpha_1}p_2^{\alpha_2}\cdots p_t^{\alpha_t} = \prod_{j=1}^t p_j^{\alpha_j}.
+    \end{equation*}
 \end{theorem}
 
 \textbf{Proof.} 
@@ -589,17 +682,7 @@ Moreover, all conditions are equivalent to each other. Next, as always, we need 
             \item $d = \gcd(a, b, n), a = a_1d, b =b_1d, n = n_1d, a \equiv b \, (\text{mod } n) \Rightarrow a_1 = b_1 \, (\text{mod } n_1)$
         \end{enumerate}
         \item $ a \equiv b \, (\text{mod } n), d \mid n \Rightarrow a \equiv b \, (\text{mod } d)$
-        \item 
-        \begin{itemize}
-            {
-                \renewcommand{\labelitemi}{} % Removes bullet points locally
-                \item $ a \equiv b \, (\text{mod } n_1)$
-                \item $ a \equiv b \, (\text{mod } n_2)$
-                \item $ \dots$
-                \item $ a \equiv b \, (\text{mod } n_k)$
-            }
-        \end{itemize}
-        $\Rightarrow a \equiv b \, (\text{mod } \lcm(n_1, n_2, \dots, n_k))$
+        \item Suppose $a \equiv b \, (\text{mod } n_j)$ for all $j \in [k]$. Then, $a \equiv b \, (\text{mod } \lcm(n_1, n_2, \dots, n_k))$.
         \item $a \equiv b \, (\text{mod } n) \Rightarrow \gcd(a, n) = \gcd(b, n)$
     \end{enumerate}
 \end{lemma}
