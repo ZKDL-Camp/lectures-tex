@@ -552,11 +552,96 @@ $\blacktriangleleft$
 The implications and applications of the Fundamental Theorem of Arithmetic are very large and important, and a number of “obvious” ones are listed above.
 However, you should also be aware that the problem of factorization, i.e., knowing the decomposition of a number into prime factors, is in a NP class (complexity) and is the basis of some cryptosystems, although it is gradually being abandoned, including due to the potential of quantum computers.
 
-\subsubsection{Linear congruence}
+\subsubsection{Modular arithmetic}
 
-\subsubsection{Modular multiplicative inverse}
+All the previous sections were intended to introduce why number theory was invented from a practical point of view.
 
-\subsubsection{Chinese remainder theorem}
+\begin{definition}
+    two integers $a, b \in \mathbb{Z}$ are said to be congruent modulo $n \in \mathbb{N})$, congruence modulo $n$ is denoted $a \equiv b(\mod n)$, if if one of the following conditions is met:
+    \begin{enumerate}
+        \item $\exists t \in \mathbb{Z}: a = b + nt$
+        \item $a \mod n = b \mod n$
+        \item $ n \mid (a - b)$
+    \end{enumerate}
+\end{definition}
+
+Moreover, all conditions are equivalent to each other. Next, as always, we need to formally describe the properties, although some of them may seem obvious, they need to be formally defined.
+
+\begin{lemma} [Properties.] 
+    For all $a, b, c \in \mathbb{Z}, n \in \mathbb{N}: $
+
+    \begin{enumerate}
+        \item 
+        \begin{enumerate}
+            \item $a \equiv a \, (\text{mod } n)$
+            \item $a \equiv b \, (\text{mod } n) \Rightarrow b \equiv a \, (\text{mod } n)$
+            \item $a \equiv b \, (\text{mod } n), \, b \equiv c \, (\text{mod } n) \Rightarrow a \equiv c \, (\text{mod } n)$
+        \end{enumerate}
+        \item $ a \equiv b \, (\text{mod } n), \, c \equiv d \, (\text{mod } n)$
+        \begin{enumerate}
+            \item $ a \pm c \equiv b \pm d \, (\text{mod } n)$
+            \item $ ac \equiv bd \, (\text{mod } n)$
+        \end{enumerate}
+        \item if $ca \equiv cb \, (\text{mod } n), \gcd(c, n) = 1, \Rightarrow a \equiv b \, (\text{mod } n)$
+        \item 
+        \begin{enumerate}
+            \item $a \equiv b \, (\text{mod } n), k \neq 0 \Rightarrow ak \equiv bk \, (\text{mod } nk) $
+            \item $d = \gcd(a, b, n), a = a_1d, b =b_1d, n = n_1d, a \equiv b \, (\text{mod } n) \Rightarrow a_1 = b_1 \, (\text{mod } n_1)$
+        \end{enumerate}
+        \item $ a \equiv b \, (\text{mod } n), d \mid n \Rightarrow a \equiv b \, (\text{mod } d)$
+        \item 
+        \begin{itemize}
+            {
+                \renewcommand{\labelitemi}{} % Removes bullet points locally
+                \item $ a \equiv b \, (\text{mod } n_1)$
+                \item $ a \equiv b \, (\text{mod } n_2)$
+                \item $ \dots$
+                \item $ a \equiv b \, (\text{mod } n_k)$
+            }
+        \end{itemize}
+        $\Rightarrow a \equiv b \, (\text{mod } \lcm(n_1, n_2, \dots, n_k))$
+        \item $a \equiv b \, (\text{mod } n) \Rightarrow \gcd(a, n) = \gcd(b, n)$
+    \end{enumerate}
+\end{lemma}
+
+\begin{definition}
+    The congruence class or residues of $k$ modulo $n$ is set $\{ k + nt \mid t \in \mathbb{Z}\}$    
+\end{definition}
+
+\begin{definition}
+    The least residue system modulo $m$ is called $\mathbb{Z}_n = \{0, 1, 2, \dots, n-1\}$
+\end{definition}
+
+In properties, says addition, subtraction, multiplication are supported, but what about division? There is no such operation, but there is so called modular multiplicative inverse, usually denoted as $a^{-1} \, (\text{mod } n)$.
+
+\begin{definition}
+    A modular multiplicative inverse of an integer $a \in \mathbb{Z}$ of modulo $n \in \mathbb{N}$ is such $a^{-1}: aa^{-1} \equiv a^{-1}a \equiv 1$.
+\end{definition}
+
+\begin{remark}
+    $(a^{2})^{-1} = (a^{-1})^{2}$, means we can find inverse and then square vice versa.
+\end{remark}
+
+However, there is an important note: not all numbers have an inverse number.
+
+\begin{theorem}
+    $\exists \, a^{-1} \, (\text{mod } n) \iff \gcd(a, b) = 1$.
+\end{theorem}
+% todo add proof
+
+\begin{definition}
+    Multiplicative group of integers modulo $n$ $\mathbb{Z}_{n}^{*} = \{a \mid \gcd(a, n) = 1\}$.
+\end{definition}
+
+The $\mathbb{Z}_{n}^{*}$ is one of the key objects in cryptography and is behind almost every cryptographic primitive.
+
+\begin{lemma}
+    $|\mathbb{Z}_{n}^{*}| = \varphi(n)$, where $\varphi(n)$ is Euler's totient function.
+\end{lemma}
+
+\begin{definition}
+    Euler's totient function $\varphi(n), n \in \mathbb{N}$ counts in $[1, n]$ coprime numbers with $n$. 
+\end{definition}
 
 \subsubsection{Schwartz-Zippel Lemma}
 
