@@ -387,7 +387,7 @@ we even need an extended version? One of the primary reasons is that this
 algorithm will help in finding inverse modular elements, introduced in the 
 subsequent sections.
 
-\begin{lemma} [Bezout identity]
+\begin{lemma} [Bezout identity] \label{lemma:bezout_identity}
     For any two given integers $a, b \in \mathbb{N}$ with $d = \gcd(a, b)$ there exists such $u, v \in \mathbb{Z}$ that $d = au + bv$.
 \end{lemma}
 
@@ -580,7 +580,9 @@ But before formal description of the theorem, for better understanding is good t
 
 \textbf{Proof.} 
 $\blacktriangleright$
-Let $p \mid ab$, but $ p \nmid a \Rightarrow \gcd(a, p) = 1 \Rightarrow \exists \; u, v: au + bv = 1 \Rightarrow abu + pbv = b$, but $p \mid ab$ and $p \mid p$, therefore $p \mid abu + pbv$. 
+Let $p \mid ab$, but $ p \nmid a$, then $\gcd(a, p) = 1$ because there are no common divisors.
+in which case, by Bezout identity \Cref{lemma:bezout_identity}, exist such $u, v: au + pv = 1$
+Let's multiply the left and right sides by $b \Rightarrow abu + pbv = b$, but $p \mid ab$ and $p \mid pb$, therefore their amount is also divisible by $p \mid abu + pbv$. 
 $\blacktriangleleft$
 
 Now, we are ready to introduce the central Number Theory theorem --- Fundamental
