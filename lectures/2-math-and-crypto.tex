@@ -539,24 +539,22 @@ proofs and structures.
 \end{lemma}
 % todo add proof
 
-You may have a question or know something about the arrangement of prime
-numbers? How to check the prime number? For now there is no known efficient
-formula for primes, only asymptotic estimation. For example this is reslut that
-says we can find at least one prime number in some parametrized range. Also
-there are deterministics and probabilistic primality tests that answers second
-question, depends on tasks are solving.
+Let's say we have a large number and we need to find out if it is prime, how do we do it?
+In other words, are there any methods for checking a number for prime?
+Yes, there are, starting with logical reasoning, you can check numbers with brute force, although
+this method is not practically applicable. There are probabilistic prime tests that will fail
+with some error. In 2003, an effective deterministic test of simplicity was found, which moved
+the problem to the class $P$.
 
-Worth of mentioning, different forms of prime numbers also exists and have its
-application in some areas. For example Mersenne primes, Factorial primes, Euclid
-primes, Fibonacci primes and many others type of prime numbers. We consider one 
-of the most famous type of prime numbers --- Mersenne primes.
+It is worth to be mentioned, there are also different forms of primes that find their application in some fields. 
+For example, Mersenne primes, factorial primes, Euclidean primes, Fibonacci primes, and many other types of primes.
+We will consider one of the most famous types of primes - Mersenne primes.
 
 \begin{definition} [Mersenne primes]
     The prime number of form $2^p - 1$ is called \textbf{Mersenne prime}, where $p$ is a
     prime number.
 \end{definition}
 % todo add proof
-% todo add exmaple of biggest Mersenne primes
 
 Mersenne primes, are important in both number theory and cryptography.
 They have unique mathematical properties that make them useful for testing primality and generating large prime numbers.
@@ -617,20 +615,6 @@ But perhaps there are other primes $q_i$ and their powers among the numbers? No,
 Hence, all numbers $p_{i}^{i}$  contains in set of $q_{i}^{i}$ vice~versa.
 $\blacktriangleleft$
 
-% \vspace{10pt}
-
-% You may wonder why we need uniqueness proof, why existence is not enough? Answer: uniqueness does not work for everyone. 
-
-% \begin{example}
-%     Let take following subset $\{ \forall k \in \mathbb{N} \mid 4k +1 \}$ and as it turns out, the multiplication operation is closed for a given subset.
-%     Moreover, it forms a group, if $k = 0$ number is identity element, etc. 
-%     But the key point is that this group has its own "prime numbers". 
-%     Among such numbers, it is easy to find numbers that have a non-unique representation in prime numbers. 
-%     Among sequence  $5, 9, 13, 17, 21, 25, 29, \dots \text{ there  are "primes" } 5, 9, \dots, \text{, but } 25 \text{ is not}$.
-%     $$441 = 21^2 = 9 \cdot 41$$
-    
-% \end{example}
-
 \begin{corollary}
     \hfill
 
@@ -638,7 +622,7 @@ $\blacktriangleleft$
         \item $d \mid n \Rightarrow d = p_{1}^{\beta_1}p_{2}^{\beta_2} \dots p_{t}^{\beta_t}$, where $0 \leq \beta_i \leq \alpha_i$
         \item $a = p_{1}^{\alpha_1} \dots p_{t}^{\alpha_t}, b = p_{1}^{\beta_1} \dots p_{t}^{\beta_t}$, $\alpha_i, \beta_i \geq 0 \Rightarrow \gcd(a, b) = \prod_{i=0}^{t}p^{\min(\alpha_i, \beta_i)}$
         \item $a = p_{1}^{\alpha_1} \dots p_{t}^{\alpha_t}, b = p_{1}^{\beta_1} \dots p_{t}^{\beta_t}$, $\alpha_i, \beta_i \geq 0 \Rightarrow \lcm(a, b) = \prod_{i=0}^{t}p^{\max(\alpha_i, \beta_i)}$
-        \item $b \mid a, c \mid a, \gcd(b, c) = 1 \Rightarrow bc \mid a$
+        \item $b \mid a, c \mid a$ and $\$gcd(b, c) = 1$, then $bc \mid a$
     \end{enumerate}
 \end{corollary}
 
@@ -650,41 +634,70 @@ However, you should also be aware that the problem of factorization, i.e., knowi
 All the previous sections were intended to introduce why number theory was invented from a practical point of view.
 
 \begin{definition}
-    two integers $a, b \in \mathbb{Z}$ are said to be congruent modulo $n \in \mathbb{N})$, congruence modulo $n$ is denoted $a \equiv b(\mod n)$, if if one of the following conditions is met:
+    Two integers $a, b \in \mathbb{Z}$ are said to be congruent modulo $n \in \mathbb{N}$, congruence modulo $n$ is denoted $a \equiv b \pmod{n}$, if if one of the following conditions is met:
     \begin{enumerate}
-        \item $\exists t \in \mathbb{Z}: a = b + nt$
-        \item $a \mod n = b \mod n$
-        \item $ n \mid (a - b)$
+        \item Exist such $t \in \mathbb{Z}$, that $a = b + nt$
+        \item If $a \mod{n} = b \mod{n}$
+        \item If $ n \mid (a - b)$
     \end{enumerate}
 \end{definition}
 
-Moreover, all conditions are equivalent to each other. Next, as always, we need to formally describe the properties, although some of them may seem obvious, they need to be formally defined.
+Moreover, all conditions are equivalent to each other. Next, as always, it is necessary to formally describe the properties, although some of them may seem intuitive, they need to be formally defined.
 
-\begin{lemma} [Properties.] 
-    For all $a, b, c \in \mathbb{Z}, n \in \mathbb{N}: $
-
+\begin{lemma}[Reflexivity, Symmetry, and Transitivity] 
+    \hfill
     \begin{enumerate}
-        \item 
-        \begin{enumerate}
-            \item $a \equiv a \, (\text{mod } n)$
-            \item $a \equiv b \, (\text{mod } n) \Rightarrow b \equiv a \, (\text{mod } n)$
-            \item $a \equiv b \, (\text{mod } n), \, b \equiv c \, (\text{mod } n) \Rightarrow a \equiv c \, (\text{mod } n)$
-        \end{enumerate}
-        \item $ a \equiv b \, (\text{mod } n), \, c \equiv d \, (\text{mod } n)$
-        \begin{enumerate}
-            \item $ a \pm c \equiv b \pm d \, (\text{mod } n)$
-            \item $ ac \equiv bd \, (\text{mod } n)$
-        \end{enumerate}
-        \item if $ca \equiv cb \, (\text{mod } n), \gcd(c, n) = 1, \Rightarrow a \equiv b \, (\text{mod } n)$
-        \item 
-        \begin{enumerate}
-            \item $a \equiv b \, (\text{mod } n), k \neq 0 \Rightarrow ak \equiv bk \, (\text{mod } nk) $
-            \item $d = \gcd(a, b, n), a = a_1d, b =b_1d, n = n_1d, a \equiv b \, (\text{mod } n) \Rightarrow a_1 = b_1 \, (\text{mod } n_1)$
-        \end{enumerate}
-        \item $ a \equiv b \, (\text{mod } n), d \mid n \Rightarrow a \equiv b \, (\text{mod } d)$
-        \item Suppose $a \equiv b \, (\text{mod } n_j)$ for all $j \in [k]$. Then, $a \equiv b \, (\text{mod } \lcm(n_1, n_2, \dots, n_k))$.
-        \item $a \equiv b \, (\text{mod } n) \Rightarrow \gcd(a, n) = \gcd(b, n)$
+        \item $a \equiv a \pmod{n}$
+        \item If $a \equiv b \pmod{n}$, then $b \equiv a \pmod{n}$
+        \item If $a \equiv b \pmod{n}$ and $b \equiv c \pmod{n}$, then $a \equiv c \pmod{n}$
     \end{enumerate}
+\end{lemma}
+
+The lemma states the three basic properties of congruence modulo $n$: reflexivity, symmetry, and transitivity. 
+These properties confirm that congruence modulo $n$ is an equivalence relation.
+
+\begin{lemma}
+    Suppose we have $a \equiv b \pmod{n}$ and $c \equiv d \pmod{n}$, then we have 
+        \begin{enumerate}
+            \item $a \pm c \equiv b \pm d \pmod{n}$
+            \item $ac \equiv bd \pmod{n}$
+        \end{enumerate}
+\end{lemma}
+
+In its turn, this lemma states that we can perform addition, subtraction, and multiplication on the congruent numbers by modulo $n$.
+
+\begin{lemma}
+    If $ca \equiv cb \pmod{n}$ and $\gcd(c, n) = 1$, then $ a \equiv b \pmod{n}$.
+\end{lemma}
+
+This means that we can reduce the left and right parts respectively, but with a certain requirement. You may ask why this is necessary, the answer is in the following example.
+
+\begin{example}
+    Let's shorten the following $6 \equiv 2 \pmod{4}$ by $2$, then we have false statement because $3 \not\equiv 1 \pmod{4}$, which means requirement $\gcd(c, n) = 1$ is mandatory.
+\end{example}
+
+\begin{lemma}
+    Modulo congruence can be scaled in both directions:
+    
+    \begin{enumerate}
+        \item If $k \neq 0, a \equiv b \pmod{n}$, then $ak \equiv bk \pmod{nk}$
+        \item If $d = \gcd(a, b, n) \text{ and } a = a_1d, b =b_1d, n = n_1d, a \equiv b \, (\text{mod } n)$, then $a_1 = b_1 \, (\text{mod } n_1)$
+    \end{enumerate}
+\end{lemma}
+
+\begin{lemma}
+    $ d \mid n$ and $a \equiv b \, (\text{mod } n)$, then $a \equiv b \, (\text{mod } d)$.
+\end{lemma}
+
+This property is very convenient when it comes to large calculations, if you know its decomposition.
+It allows you to significantly reduce them, and then restore the result by a large modulus.
+
+\begin{lemma}
+    Suppose $a \equiv b \pmod{p_j}$ for all $j \in [k]$. Then, $a \equiv b \pmod{\lcm(n_1, n_2, \dots, n_k)}$.
+\end{lemma}
+
+\begin{lemma}
+    If $a \equiv b \, (\text{mod } n)$, then $\gcd(a, n) = \gcd(b, n)$
 \end{lemma}
 
 \begin{definition}
@@ -708,9 +721,11 @@ In properties, says addition, subtraction, multiplication are supported, but wha
 However, there is an important note: not all numbers have an inverse number.
 
 \begin{theorem}
-    $\exists \, a^{-1} \, (\text{mod } n) \iff \gcd(a, b) = 1$.
+    Exist such $a^{-1} \pmod{n}$ if and only if $\gcd(a, b) = 1$.
 \end{theorem}
 % todo add proof
+
+Based on Extended Euclidean algorithm \Cref{alg:extended_euclidean} we can verify and find the inverse number immediately after executing the algorithm. 
 
 \begin{algorithm}
     \caption{Modular multiplicative inverse algorithm} \label{alg:modular_inverse}
