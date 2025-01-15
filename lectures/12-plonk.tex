@@ -592,4 +592,165 @@ The transition between second and third line is very unobvious and requires a
 bit of algebraic manipulation. Don't worry if you don't see it immediately.
 \end{remark}
 
+
+\subsection{Plonk}
+
+In this part, we will observe Plonk from the perspective of a proving system.
+\\
+Let $N$ be the size of our program. Let $\omega$ be a primitive $N$-th root of unity. Let $H = \{1, \omega, \dots, \omega^{N-1}\}$. Define $Z_H := X^N - 1$.
+\\
+Assume we have conducted arithmetization of this program, obtaining eight polynomials.
+Now we will demonstrate commitment-scheme agnostic non-interactive (Fiat-Shamir) algorithms for both prover and verifier.
+
+\subsubsection{Proving}
+Prover computes execution trace table $T \in \mathbb{F}^{N\times 3}$.
+
+\paragraph{Round 1}
+
+Add to the transcript commitments of 8 arithmetizational polynomials:
+\begin{center}
+com($S_{o1}$), com($S_{o2}$), com($S_{o3}$), com($q_L$), com($q_R$), com($q_M$), com($q_o$), com($q_C$)
+\end{center}
+Interpolate polynomials $a', b', c'$ over corresponding columns of $T$ matrix at the domain $H$. Sample random $b_1, b_2, b_3, b_4, b_5, b_6$. Let:
+\begin{align*}
+\centering
+a &:= (b_1 X + b_2)Z_H + a' \\
+b &:= (b_3 X + b_4)Z_H + b' \\
+c &:= (b_5 X + b_6)Z_H + c'
+\end{align*}
+Add to the transcript commitments of computed above polynomials:
+\begin{center}
+    com($a$), com($b$), com($c$)
+\end{center}
+
+\paragraph{Round 2}
+Sample random $\beta, \gamma$ from the transcript. Let $z_0 = 1$ and define recursively $\forall k \in [0, N]$:
+
+\[z_{k+1} = z_k \frac{(a_k + \beta \omega^{k^1}) (b_k + \beta \omega^{k^1}k_1 + \gamma) (c_k + \beta \omega^{k^1}k_2 + \gamma)}{(a_k + \beta S_{\sigma_1}(\omega^{k^1}) + \gamma) (b_k + \beta S_{\sigma_2}(\omega^{k^1}) + \gamma) (c_k + \beta S_{\sigma_3}(\omega^{k^1}) + \gamma)} \]
+Interpolate polynomial $z'$ over evaluations $(z_0, \dots, z_{N-1})$ at the domain $H$.
+\\
+Sample random $b_7, b_8, b_9$. Let $z = (b_7 X^2 + b_8 X + b_9)Z_H + z'$.
+Add to the transcript com($z$).
+
+\paragraph{Round 3}
+
+Sample $\alpha$ from the transcript. Let $pi$ be the interpolation polynomial of the input matrix $\Pi$ at the domain $H$. Let
+\begin{align*}
+p_1 &= aq_L + bq_R + abq_M + cq_o + q_C + pi \\
+p_2 &= (a + \beta X + \gamma)(b + \beta k_1 X + \gamma)(c + \beta k_2 X + \gamma)z - \\
+    &- (a + \beta S_1 + \gamma)(b + \beta S_2 + \gamma)(c + \beta S_3 + \gamma)z(\omega X) \\
+p_3 &= (z - 1)L_1
+\end{align*}
+Define $p = p_1 + \alpha p_2 + \alpha^2 p_3$. Compute $t$ such that $p = tZ_H$. \\
+Write $t = t_{lo} + X^{N+2}t_{mid} + X^{2(N+2)}t_{hi}$, with $t_{lo}, t_{mid}$, and $t_{hi}$ polynomials of degree at most $N+1$. Sample random $b_{10}, b_{11}$ and define:
+\begin{align*}
+t_{lo} &= t'_{lo} + b_{10}X^{N+2} \\
+t_{mid} &= t'_{mid} - b_{10} + b_{11}X^{N+2} \\
+t_{hi} &= t'_{hi} - b_{11}
+\end{align*}
+
+Add to the transcript commitments: com($t_{lo}$), com($t_{mid}$), com($t_{hi})$.
+
+\paragraph{Round 4}
+
+Sample random $\zeta$ from the transcript. \\
+Compute:
+\[\bar{a} = a(\bar{\zeta}), \bar{b} = b(\bar{\zeta}), \bar{c} = c(\bar{\zeta}), \bar{S}_{o1} = S_{o1}(\bar{\zeta}), \bar{S}_{o2} = S_{o2}(\bar{\zeta}), \bar{z}_w = z(\bar{\zeta}_w)\]
+and add them to the transcript.
+
+\paragraph{Round 5}
+Sample random $v$ from the transcript. 
+Let:
+\begin{align*}
+\hat{p}_{nc1} &= \bar{a}q_L + \bar{b}q_R + \bar{a}\bar{b}q_M + \bar{c}q_o + q_C \\
+\hat{p}_{nc2} &= (\bar{a} + \beta \zeta_1 + \gamma)(\bar{b} + \beta k_1 \zeta_1 + \gamma)(\bar{c} + \beta k_2 \zeta_1 + \gamma) z -\\
+&- (\bar{a} + \beta \bar{S}_{\sigma_1} + \gamma)(\bar{b} + \beta \bar{S}_{\sigma_2} + \gamma)(\bar{c} + \beta \bar{S}_{\sigma_3} + \gamma) z(\omega \zeta_1) \\
+\hat{p}_{nc3} &= L_1(\zeta_1)z
+\end{align*}
+Define:
+\begin{align*}
+p_{nc} &= p_{nc1} + \alpha p_{nc2} + \alpha^2 p_{nc3} \\
+t_{partial} &= t_{lo} + \zeta^{N+2}t_{mid} + \zeta^{2(N+2)}t_{hi}
+\end{align*}
+The subscript $nc$ stands for "nonconstant," as it is the part of the linearization of $p$ with nonconstant factors. The subscript $partial$ indicates that it is a partial evaluation of $t$ at $\zeta$. Partial means that only some power of $X$ is replaced by the powers of $\zeta$. So in particular $t_{partial}(\zeta) = t(\zeta)$.
+Let $\pi_{batch}$ be the opening proof at $\zeta$ of the polynomial $f_{batch}$ defined as: 
+\[t_{partial} + v p_{nc} + v^2 a + v^3 b + v^4 c + v^5 S_{o1} + v^6 S_{o2}\]
+Let $\pi_{single}$ be the opening proof at $\zeta\omega$ of the polynomial $z$. \\
+Compute $\bar{p}_{nc} := p_{nc}(\zeta)$ and $\bar{t} = t(\zeta)$.
+
+\paragraph{Proof}
+\[com(a), com(b), com(c), com(z), com(t_{lo}), com(t_{mid}), com(t_{hi}),\] 
+\[\bar{a}, \bar{b}, \bar{c}, \bar{S}_{o1}, \bar{S}_{o2}, \bar{z}_w, T_{batch}, T_{single}, \bar{p}_{nc}, \bar{t}\]
+
+\subsubsection{Verification}
+
+\paragraph{Transcript Initialization}
+
+Same as prover, verified adds the following to the transcript:
+
+\begin{center}
+com($S_{o1}$), com($S_{o2}$), com($S_{o3}$), com($q_L$), com($q_R$), com($q_M$), com($q_o$), com($q_C$)
+\end{center}
+
+\paragraph{Extraction of values and commitments}
+
+Firstly, the verifier needs to compute all the challenges. For that, he follows these steps:
+\begin{itemize}
+    \item Add com($a$), com($b$), com($c$) to the transcript.
+    \item Sample two challenges $\beta$, $\gamma$.
+    \item Add com($z$) to the transcript.
+    \item Sample a challenge $\alpha$.
+    \item Add com($t_{lo}$), com($t_{mid}$), com($t_{hi}$) to the transcript.
+    \item Sample a challenge $\zeta$.
+    \item Add $\bar{a}$, $\bar{b}$, $\bar{c}$, $\bar{S}_{o1}$, $\bar{S}_{o2}$, $\bar{z}_w$ to the transcript.
+    \item Sample a challenge $v$.
+\end{itemize}
+
+\paragraph{Compute $pi(\zeta)$}
+Also, he needs to compute a few values of all these data. First, he computes the $\Pi$ matrix with the public inputs and outputs. He needs to compute $pi(\zeta)$, where $pi$ is the interpolation of $\Pi$ at the domain $H$. But he doesn't need to compute pi. He can instead compute $pi(\zeta)$ as:
+\[\sum_{i=0}^{n} L_{i}(\zeta) P_{I_i}\]
+where $n$ is the number of public inputs and $L_i$ is the Lagrange basis at the domain H.
+
+\paragraph{Compute claimed values $p(\zeta)$ and $t(\zeta)$}
+Compute: 
+\[\bar{p}_c = p_1(\zeta) + \alpha z_{w} \left( \bar{c} + \gamma \right) \left( \bar{a} + \beta \bar{S}_{\sigma_1} + \gamma \right) \left( \bar{b} + \beta \bar{S}_{\sigma_2} + \gamma \right) - \alpha^2 L_1(\zeta)\]
+This is the constant part of the linearization of $p$. So, adding it to what the prover claims to be $\bar{p}_{nc}$, he obtains $p(\zeta) = \bar{p}_c + \bar{p}_{nc}$.
+
+\paragraph{Compute com($t_{partial}$) and com($p_{nc}$)}
+He computes these of the commitments in the proof as follows:
+\[com(t_{partial}) = com(t_{lo}) + \zeta^{N+2}com(t_{mid}) + \zeta^{2(N+2)}com(t_{hi})\]
+For the second one, compute those:
+\begin{align*}
+\hat{p}_{nc1} &= \bar{a} * com(q_L) + \bar{b} * com(q_R) + (\bar{a}\bar{b}) * com(q_M) + \bar{c} * com(q_o) + com(q_C) \\
+\hat{p}_{nc2} &= (\bar{a} + \beta \zeta_1 + \gamma)(\bar{b} + \beta k_1 \zeta_1 + \gamma)(\bar{c} + \beta k_2 \zeta_1 + \gamma) * com(z) - \\ 
+&- (\bar{a} + \beta \bar{S}_{\sigma_1} + \gamma)(\bar{b} + \beta \bar{S}_{\sigma_2} + \gamma)(\bar{c} + \beta \bar{S}_{\sigma_3} + \gamma) * com(z)(\omega \zeta_1) \\
+\hat{p}_{nc3} &= L_1(\zeta_1) * com(z)
+\end{align*}
+Then: \[com(p_{nc}) = com(p_{nc1}) + com(p_{nc2}) + com(p_{nc3})\].
+
+\paragraph{Compute claimed value $f_{batch}(\zeta)$ and $com(f_{batch})$}
+
+\begin{align*}
+f_{batch}(\zeta) &= \bar{t} + v \bar{p}_{nc} + v^2 \bar{a} + v^3 \bar{b} + v^4 \bar{c} + v^5 \bar{S}_{o1} + v^6 \bar{S}_{o2} \\
+com(f_{batch}) &= com(t_{partial}) + v * com(p_{nc}) + v^2 * com(a) + \\
+&+ v^3 * com(b) + v^4 * com(c) + v^5 * com(S_{o1}) + v^6 * com(S_{o2})
+\end{align*}
+\paragraph{Proof check}
+
+Now the verifier has all the necessary values to proceed with the checks.
+
+\begin{itemize}
+    \item Check that $p(\zeta)$ equals $(\zeta^N - 1)t(\zeta)$.
+    \item Verify the opening of $f_{batch}$ at $\zeta$. That is, check that 
+        \begin{equation*}
+            \text{Verify}([f_{batch}], \pi_{batch}, \zeta, f_{batch}(\zeta)) \text{ outputs Accept.}
+        \end{equation*}
+    \item Verify the opening of $z$ at $\zeta_w$. That is, check the validity of the proof $\pi_{single}$ using the commitment $com(z)$ and the value $\bar{z}_w$. 
+        \begin{equation*}
+            \text{That is, check that } \text{Verify}(com(z), \pi_{single}, \zeta_w, \bar{z}_w) \text{ outputs Accept.}
+        \end{equation*}
+\end{itemize}
+
+If all checks pass, output Accept. Otherwise, output Reject.
+
 \end{document}
