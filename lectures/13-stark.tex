@@ -214,5 +214,20 @@ The non-interactive version of the presented protocol can be easily built obtain
 
 The soundness of the presented STARK protocol follows from the impossibility to commit any possible evaluation of the forgery $CP(x)$ over evaluation domain $E$ and simultaneously prove that $CP(x)$ is a low-degree polynomial by the FRI protocol. Since the size of $E$ is $\rho$ times bigger then the maximum allowed polynomial degree (that directly depends on the size of the trace), the attacker either can't construct such a polynomial or can't construct a low-degree polynomial, so a valid low-degree composite polynomial can only be obtained using a valid trace.
 
+\subsection{Protocol security}
+Most of the existing versions of the STARK protocol leverage on several optimizations to achieve better proving and verification time. The key point here is that each FRI query check adds $log_2(\rho)$ bits of security, so we can skip some of these checks if the security level is already satisfied. 
+One more optimization is to include a proof-of-work computation into the protocol that should be done before FRI with dependency on the committed values.
+It can be useful because the verification of the proof-of-work is less expensive then the verification of the FRI step while still increases the computation cost for the malicious prover. 
+
+More precisely, let's assume that the desired security level of the protocol is $\lambda$. First of all, we obviously have to use a proper collision-resistant hash function with $2\lambda$ bits output.
+Then, according to the StarkWare's definition of the STARK protocol, the resulting security is defined as follows:
+\begin{equation*}
+    \lambda \geq min\{ \delta + log_2(\rho) \cdot s, log_2(|F|) \} - 1
+\end{equation*}
+where $\delta$ -- number of the proof-of-work bits, $s$ -- number of the FRI queries.
+
+\begin{example}
+If the protocol is deployed over $256$-bit field and the domain ratio is $\rho = 3$, to achieve the $128$ bit security we can for example execute $33$ FRI query and evaluate $29$ proof-of-work bits: $min\{29+3\cdot 33, 256\} = 128$. 
+\end{example}
 
 \end{document}
