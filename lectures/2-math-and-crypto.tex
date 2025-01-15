@@ -9,10 +9,10 @@ In many cases, technical papers include the analysis on the key question: ``How 
 Typically, the cryptographic security is defined in a form of a game between the adversary (who we call $\mathcal{A}$) and the challenger (who we call $\mathcal{C}h$). The adversary is trying to break the security of the cryptographic algorithm using arbitrary (but still efficient) protocol, while the challenger is following a simple, fixed protocol. The game is played in a form of a challenge, where the adversary is given some information and is asked to perform some task. The security of the cryptographic algorithm is defined based on the probability of the adversary to win the game.
 
 \subsubsection{Cipher Semantic Security}
-Let us get into specifics. Suppose that we want to specify that the encryption scheme is secure. Recall that cipher $\mathcal{E} = (E,D)$ over the space $(\mathcal{K}, \mathcal{M}, \mathcal{C})$ (here, $\mathcal{K}$ is the space containing all possible keys, $\mathcal{M}$ -- all possible messages and $\mathcal{C}$ -- all possible ciphers) consists of two efficiently computable methods:
+Let us get into specifics. Suppose that we want to specify that the encryption scheme is secure. Recall that cipher $\mathcal{E} = (E,D)$ over the space $(\mathcal{K}, \mathcal{M}, \mathcal{C})$ (here, $\mathcal{K}$ is the space containing all possible keys, $\mathcal{M}$ --- all possible messages and $\mathcal{C}$ --- all possible ciphers) consists of two efficiently computable methods:
 \begin{itemize}
-    \item $E: \mathcal{K} \times \mathcal{M} \to \mathcal{C}$ -- encryption method, that based on the provided message $m \in \mathcal{M}$ and key $k \in \mathcal{K}$ outputs the cipher $c = E(k,m) \in \mathcal{C}$.
-    \item $D: \mathcal{K} \times \mathcal{C} \to \mathcal{M}$ -- decryption method, that based on the provided cipher $c \in \mathcal{C}$ and key $k \in \mathcal{K}$ outputs the message $m = D(k,c) \in \mathcal{M}$.
+    \item $E: \mathcal{K} \times \mathcal{M} \to \mathcal{C}$ --- encryption method, that based on the provided message $m \in \mathcal{M}$ and key $k \in \mathcal{K}$ outputs the cipher $c = E(k,m) \in \mathcal{C}$.
+    \item $D: \mathcal{K} \times \mathcal{C} \to \mathcal{M}$ --- decryption method, that based on the provided cipher $c \in \mathcal{C}$ and key $k \in \mathcal{K}$ outputs the message $m = D(k,c) \in \mathcal{M}$.
 \end{itemize}
 
 Of course, we require the \textbf{correctness}:
@@ -308,7 +308,7 @@ As with any previous concept, let us check some basic properties of the GCD oper
 
 The aforementioned lemma will be further extensively used for the Euclidean algorithm.
 
-\begin{corollary}
+\begin{corollary}\label{cor:euclidean}
     As a corollary, for any $a,b \in \mathbb{Z}$ we also have $\gcd(a, b) =
     \gcd(b, a \; \text{mod} \; b)$.
 \end{corollary}
@@ -316,8 +316,15 @@ The aforementioned lemma will be further extensively used for the Euclidean algo
 All these properties are interesting and useful from the theory standpoint, but
 you may wonder how to practically find $\gcd(a, b)$ (say, if you were to
 implement this function in the programming language). \emph{Euclidean algorithm} is an
-efficient method for computing the greatest common divisor, and we will describe
-extended version, but later.
+efficient method for computing the greatest common divisor. The main idea of 
+Euclidean algorithm is to recursively apply the \Cref{cor:euclidean}. The concrete implementation 
+in Python is specified below. 
+\begin{lstlisting}[language=Python]
+def gcd(a: int, b: int) -> int:
+    return gcd(b, a % b) if b != 0 else a
+\end{lstlisting}
+
+Notice that the algorithm can be easily implemented in a single line.
 
 While the greatest common divisor (gcd) focuses on finding the largest shared factor between two numbers, the least common multiple (lcm) deals with finding the smallest multiple that both numbers have in common. The LCM is particularly useful when we need to synchronize cycles or work with fractions.
 
@@ -405,7 +412,7 @@ the result will be much larger than necessary. Similarly, if they are
 non-positive, the result must be negative, but the GCD was defined to be
 positive. The second consequence follows from the fact that we can decompose
 gcd, thus sequentially derive this sequence. Also note that we can find Bezout
-coefficients on each Euclidean algorithm step. % TODO: Euclidean algorithm is unknown at this point
+coefficients on each Euclidean algorithm step.
 
 Now we introduce the \textbf{extended Euclidean algorithm.} The extended
 Euclidean algorithm finds the Bezout coefficients together with the GCD
@@ -416,7 +423,7 @@ efficiently.
     \Input{$a, b \in \mathbb{N}$. Without loss of generality, $a \geq b$}
     \Output{$(\gcd(a, b), u, v)$}
         
-    $r_{0} \gets a; \, r_{1} \gets b$ \\ % todo fix format
+    $r_{0} \gets a; \, r_{1} \gets b$ \\
     $u_{0} \gets 1; \, u_{1} \gets 0$ \\
     $v_{0} \gets 0; \, v_{1} \gets 1$ \\
 
@@ -430,13 +437,12 @@ efficiently.
     \textbf{return} $(r_i, u_i, v_i)$
 \end{algorithm}
 
-The time complexity of the extended Euclidean algorithm is $O(\log
-\min\{a,b\})$, which is very efficient. Although we already know how the
+The time complexity of the Extended Euclidean algorithm is $O(\log{a} \log{b})$ bit
+operations, which is very efficient. Although we already know how the
 Extended Euclidean Algorithm works, this method is still not very
 human-friendly. For that reason, let us consider an example of an easy way to
 find the GCD.
 
-% todo improve style
 \begin{example} [Extended Euclidean algorithm example]
     \hfill
 
@@ -537,7 +543,6 @@ proofs and structures.
     For all $n \in \mathbb{N}$, where $n$ is composite, if there exists a 
     minimal divisor $d>1$ of $n$, then $d$ is a prime number.
 \end{lemma}
-% todo add proof
 
 Let's say we have a large number and we need to find out if it is prime, how do we do it?
 In other words, are there any methods for checking a number for prime?
@@ -548,13 +553,12 @@ the problem to the class $P$.
 
 It is worth to be mentioned, there are also different forms of primes that find their application in some fields. 
 For example, Mersenne primes, factorial primes, Euclidean primes, Fibonacci primes, and many other types of primes.
-We will consider one of the most famous types of primes - Mersenne primes.
+We will consider one of the most famous types of primes --- Mersenne primes.
 
 \begin{definition} [Mersenne primes]
     The prime number of form $2^p - 1$ is called \textbf{Mersenne prime}, where $p$ is a
     prime number.
 \end{definition}
-% todo add proof
 
 Mersenne primes, are important in both number theory and cryptography.
 They have unique mathematical properties that make them useful for testing primality and generating large prime numbers.
@@ -567,12 +571,10 @@ Beside, next theorem importan says that we can know the form of a prime numbers.
 
 In other words, every infinite arithmetic progression whose first term and difference are positive integers contains an infinite number of primes.
 
-% todo add exmaple of Dirichlet's theorem
-
 \subsubsection{Fundamental Theorem of Arithmetic}
 The Fundamental Theorem of Arithmetic states that every integer greater than 1 can be uniquely factored into primes, which is crucial for understanding the structure of numbers. 
 It plays a key role in areas like number theory, cryptography, and simplifying calculations involving divisibility. 
-But before formal description of the theorem, for better understanding is good to know following Lemma \ref{euclidean_lemma}.
+But before formal description of the theorem, for better understanding it is good to know the following Lemma \ref{euclidean_lemma}.
 
 \begin{lemma}[Euclidean lemma] \label{euclidean_lemma}
     If $p$ is a prime and $p \mid ab$, then $p \mid a$ or $p \mid b$.
@@ -581,50 +583,44 @@ But before formal description of the theorem, for better understanding is good t
 \textbf{Proof.} 
 $\blacktriangleright$
 Let $p \mid ab$, but $ p \nmid a$, then $\gcd(a, p) = 1$ because there are no common divisors.
-in which case, by Bezout identity \Cref{lemma:bezout_identity}, exist such $u, v: au + pv = 1$
-Let's multiply the left and right sides by $b \Rightarrow abu + pbv = b$, but $p \mid ab$ and $p \mid pb$, therefore their amount is also divisible by $p \mid abu + pbv$. 
+In which case, by Bezout identity \Cref{lemma:bezout_identity}, there exist such $u, v \in \mathbb{Z}$ that $au + pv = 1$.
+Let's multiply the left and right sides by $b$: $abu + pbv = b$, but $p \mid ab$ and $p \mid pb$, therefore their sum is also divisible by $p \mid abu + pbv$. 
 $\blacktriangleleft$
 
 Now, we are ready to introduce the central Number Theory theorem --- Fundamental
 Theorem of Arithmetic.
 
-\begin{theorem}[Fundamental theorem of arithmetic]
+\begin{theorem}[Fundamental theorem of arithmetic]\label{th:fundamental_arithmetic}
     Any integer $n>1$ can be decomposed in the unique way into a product of prime numbers:
     \begin{equation*}
-        n = p_1^{\alpha_1}p_2^{\alpha_2}\cdots p_t^{\alpha_t} = \prod_{j=1}^t p_j^{\alpha_j}.
+        n = p_1^{\alpha_1}p_2^{\alpha_2}\cdots p_t^{\alpha_t} = \prod_{j=1}^t p_j^{\alpha_j},
     \end{equation*}
+    where $p_1,\dots,p_t$ are prime numbers and $\alpha_1,\dots,\alpha_t \in \mathbb{N}$.
 \end{theorem}
 
 \textbf{Proof.} 
 $\blacktriangleright$  
-The theorem state equation then need to proof equation existence and uniqueness.
-1) \textit{Existence}. 
-Suppose that the statement of the theorem is false and there exist natural primes that do not have such a representation.
+The theorem state equation then need to proof equation existence and uniqueness. Since the existence property is 
+easy to prove, let us make the small exception and show it. For other proves (in particular, for the uniqueness case, see literature)
+
+\textcolor{green!60!black}{\textbf{Existence}}. Suppose the theorem statement is false and there exist $n$ that do not have such a representation.
 Let $n_0$ be the smallest of them.
-If $n_0$ is prime it can be represented as $n_{0}^{1}$, which satisfies representation. Then $n_0$ must be composite, which means $\exists \, a, b : 1 < a, b < n_0 : n = ab$.
-Since $n_0$ smallest non-decomposable number and $a, b < n_0$, then $a$ and $b$ can be represent as 
-$a = p_{1}^{\alpha_{1}} \dots p_{t}^{\alpha_{t}}$, 
-$b~=~q_{1}^{\beta{1}} \dots q_{k}^{\beta{k}} 
-\Rightarrow~n_0~=~ab~=$ $=~p_{1}^{\alpha_{1}} \dots p_{t}^{\alpha_{t}} q_{1}^{\beta{1}} \dots q_{k}^{\beta{k}}$
-$\Rightarrow$ contradiction. \\
-2) \textit{Uniqueness}. Suppose such $n \in \mathbb{N}$, that have two different decompositions of a number 
-$n = p_{1}^{\alpha_1} p_{2}^{\alpha_2} \dots p_{t}^{\alpha_t} = q_{1}^{\alpha_1} q_{2}^{\alpha_2} \dots q_{k}^{\alpha_k}
-\Rightarrow p_1 \mid n \Rightarrow p \mid q_{1}^{\alpha_1} q_{2}^{\alpha_2} \dots q_{k}^{\alpha_k}$ 
-According to Euclid's lemma~\ref{euclidean_lemma}, if the product of two numbers is divisible by a prime number $p$, then at least one of them is divisible by $p$.
-$\Rightarrow \exists \, i: p_1 \mid q_{i}^{\beta_i}$, but $q_i$ is prime number $\Rightarrow q_i = p_i$, because can only be divided into itself or its degrees and among these divisors only $q_i$ is prime. 
-Therefore, $p_i  = q_i$, now let's take $p2$, repeat the process and show that this number is also among these $q_i$ numbers.
-But perhaps there are other primes $q_i$ and their powers among the numbers? No, because we can start from $q_1$ instead of $p_1$.
-Hence, all numbers $p_{i}^{i}$  contains in set of $q_{i}^{i}$ vice~versa.
-$\blacktriangleleft$
+If $n_0$ is prime, it can be represented as $p_1=n_0$, $\alpha_1=1$, which satisfies the representation. Therefore, $n_0$ must be composite, which means $\exists a, b \in \mathbb{N}, 1 < a, b < n_0$ such that $n = ab$.
+Since $n_0$ is the smallest non-decomposable number and $a, b < n_0$, then $a$ and $b$ can be represented as 
+\begin{align*}
+    a &= p_{1}^{\alpha_{1}} \dots p_{t}^{\alpha_{t}} \\
+    b &= q_{1}^{\beta_{1}} \dots q_{k}^{\beta_{k}}.
+\end{align*}
+Therefore, $n_0 = ab=p_{1}^{\alpha_{1}} \dots p_{t}^{\alpha_{t}} q_{1}^{\beta_{1}} \dots q_{k}^{\beta_{k}}$. Thus, the contradiction. $\blacktriangleleft$  
 
 \begin{corollary}
-    \hfill
+    Suppose $n$ is decomposed as in \Cref{th:fundamental_arithmetic}. Then,
 
     \begin{enumerate}
-        \item $d \mid n \Rightarrow d = p_{1}^{\beta_1}p_{2}^{\beta_2} \dots p_{t}^{\beta_t}$, where $0 \leq \beta_i \leq \alpha_i$
-        \item $a = p_{1}^{\alpha_1} \dots p_{t}^{\alpha_t}, b = p_{1}^{\beta_1} \dots p_{t}^{\beta_t}$, $\alpha_i, \beta_i \geq 0 \Rightarrow \gcd(a, b) = \prod_{i=0}^{t}p^{\min(\alpha_i, \beta_i)}$
-        \item $a = p_{1}^{\alpha_1} \dots p_{t}^{\alpha_t}, b = p_{1}^{\beta_1} \dots p_{t}^{\beta_t}$, $\alpha_i, \beta_i \geq 0 \Rightarrow \lcm(a, b) = \prod_{i=0}^{t}p^{\max(\alpha_i, \beta_i)}$
-        \item $b \mid a, c \mid a$ and $\$gcd(b, c) = 1$, then $bc \mid a$
+        \item If $d \mid n$, then $d = p_{1}^{\beta_1}p_{2}^{\beta_2} \dots p_{t}^{\beta_t}$, where $0 \leq \beta_i \leq \alpha_i$.
+        \item Suppose $a = p_{1}^{\alpha_1} \dots p_{t}^{\alpha_t}$ and $b = p_{1}^{\beta_1} \dots p_{t}^{\beta_t}$. Then, the GCD can be evaluated as $\gcd(a, b) = \prod_{i=0}^{t}p^{\min\{\alpha_i, \beta_i\}}$.
+        \item Suppose $a = p_{1}^{\alpha_1} \dots p_{t}^{\alpha_t}$ and $b = p_{1}^{\beta_1} \dots p_{t}^{\beta_t}$. Then, the LCM can be evaluated as $\lcm(a, b) = \prod_{i=0}^{t}p^{\max\{\alpha_i, \beta_i\}}$.
+        \item If $b \mid a$ and $c \mid a$ and $\gcd(b, c) = 1$, then $bc \mid a$.
     \end{enumerate}
 \end{corollary}
 
@@ -633,18 +629,21 @@ However, you should also be aware that the problem of factorization, i.e., knowi
 
 \subsubsection{Modular arithmetic}
 
-All the previous sections were intended to introduce why number theory was invented from a practical point of view.
+Now we are ready for practical applications of number theory, starting with modulo congruence.
+In this section, we will review the idea of congruence, learn how to use it, and explore
+its key properties. Understanding these properties will help simplify calculations and solve 
+problems more efficiently in fields such as cryptography, algorithms, and number theory.
 
 \begin{definition}
-    Two integers $a, b \in \mathbb{Z}$ are said to be congruent modulo $n \in \mathbb{N}$, congruence modulo $n$ is denoted $a \equiv b \pmod{n}$, if if one of the following conditions is met:
+    Two integers $a, b \in \mathbb{Z}$ are said to be \textbf{congruent} modulo $n \in \mathbb{N}$ (congruence modulo $n$ is denoted as $a \equiv b \pmod{n}$), if one of the following conditions is met:
     \begin{enumerate}
-        \item Exist such $t \in \mathbb{Z}$, that $a = b + nt$
-        \item If $a \mod{n} = b \mod{n}$
-        \item If $ n \mid (a - b)$
+        \item There exists such $t \in \mathbb{Z}$ that $a = b + nt$
+        \item $a \; \texttt{mod} \; n = b \; \texttt{mod} \; n$
+        \item $n \mid (a - b)$
     \end{enumerate}
 \end{definition}
 
-Moreover, all conditions are equivalent to each other. Next, as always, it is necessary to formally describe the properties, although some of them may seem intuitive, they need to be formally defined.
+It is fairly easy to see that all conditions are equivalent to each other. Next, as always, it is necessary to formally describe the properties, although some of them may seem intuitive, they need to be formally defined.
 
 \begin{lemma}[Reflexivity, Symmetry, and Transitivity] 
     \hfill
@@ -655,8 +654,8 @@ Moreover, all conditions are equivalent to each other. Next, as always, it is ne
     \end{enumerate}
 \end{lemma}
 
-The lemma states the three basic properties of congruence modulo $n$: reflexivity, symmetry, and transitivity. 
-These properties confirm that congruence modulo $n$ is an equivalence relation.
+The lemma states three basic properties of congruence modulo $n$: reflexivity, symmetry, and transitivity. 
+These properties confirm that congruence modulo $n$ is an equivalence relation (for general equivalence relation definition, see \Cref{section:relations}).
 
 \begin{lemma}
     Suppose we have $a \equiv b \pmod{n}$ and $c \equiv d \pmod{n}$, then we have 
@@ -666,17 +665,21 @@ These properties confirm that congruence modulo $n$ is an equivalence relation.
         \end{enumerate}
 \end{lemma}
 
-In its turn, this lemma states that we can perform addition, subtraction, and multiplication on the congruent numbers by modulo $n$.
+In turn, this lemma states that we can perform addition, subtraction, and multiplication on the congruent numbers modulo $n$ similarly to the usual arithmetic.
 
 \begin{lemma}
     If $ca \equiv cb \pmod{n}$ and $\gcd(c, n) = 1$, then $ a \equiv b \pmod{n}$.
 \end{lemma}
 
-This means that we can reduce the left and right parts respectively, but with a certain requirement. You may ask why this is necessary, the answer is in the following example.
+This means that we can cancel out the same left and right parts respectively, but with a certain requirement. You may ask why this is necessary, the answer is in the following example.
 
 \begin{example}
-    Let's shorten the following $6 \equiv 2 \pmod{4}$ by $2$, then we have false statement because $3 \not\equiv 1 \pmod{4}$, which means requirement $\gcd(c, n) = 1$ is mandatory.
+    Let us try to simplify the following equation: $6 \equiv 2 \pmod{4}$. Suppose we divide both sides by $2$, then we have the false statement $3 \equiv 1 \pmod{4}$. That being said, the requirement $\gcd(c, n) = 1$ is mandatory. 
 \end{example}
+
+\begin{remark}
+    In particular, the example above shows why the division operation is fundamentally different from the regular real/rational numbers. We will see that, in fact, the arithmetic modulo $n$ is not always what mathematicians call a \textbf{field}. You will see more details in \Cref{section:field_extensions}.
+\end{remark}
 
 \begin{lemma}
     Modulo congruence can be scaled in both directions:
@@ -688,14 +691,17 @@ This means that we can reduce the left and right parts respectively, but with a 
 \end{lemma}
 
 \begin{lemma}
-    $ d \mid n$ and $a \equiv b \, (\text{mod } n)$, then $a \equiv b \, (\text{mod } d)$.
+    If $d \mid n$ and $a \equiv b \, (\text{mod } n)$, then $a \equiv b \, (\text{mod } d)$.
 \end{lemma}
 
 This property is very convenient when it comes to large calculations, if you know its decomposition.
 It allows you to significantly reduce them, and then restore the result by a large modulus.
 
 \begin{lemma}
-    Suppose $a \equiv b \pmod{p_j}$ for all $j \in [k]$. Then, $a \equiv b \pmod{\lcm(n_1, n_2, \dots, n_k)}$.
+    Suppose $a \equiv b \pmod{n_1}$, $a \equiv b \pmod{n_2}$, \ldots, $a \equiv b \pmod{n_k}$. Then, the following statement is true: 
+    \begin{equation*}
+        a \equiv b \pmod{\lcm(n_1, n_2, \dots, n_k)}.
+    \end{equation*}
 \end{lemma}
 
 \begin{lemma}
@@ -703,77 +709,98 @@ It allows you to significantly reduce them, and then restore the result by a lar
 \end{lemma}
 
 \begin{definition}
-    The congruence class or residues of $k$ modulo $n$ is set $\{ k + nt \mid t \in \mathbb{Z}\}$    
+    The congruence class or residues of $k$ modulo $n$ is defined as a set $k + n\mathbb{Z} = \{ k + nt \mid t \in \mathbb{Z}\}$    
 \end{definition}
 
 \begin{definition}
-    The least residue system modulo $m$ is called $\mathbb{Z}_n = \{0, 1, 2, \dots, n-1\}$
-\end{definition}
-
-In properties, says addition, subtraction, multiplication are supported, but what about division? There is no such operation, but there is so called modular multiplicative inverse, usually denoted as $a^{-1} \, (\text{mod } n)$.
-
-\begin{definition}
-    A modular multiplicative inverse of an integer $a \in \mathbb{Z}$ of modulo $n \in \mathbb{N}$ is such $a^{-1}: aa^{-1} \equiv a^{-1}a \equiv 1$.
+    The \textbf{complete residue system modulo} (or residue ring) $n$ is a set of integers, where
+    every integer is congruent to a unique member of the set modulo $n$, usually denoted
+    as $\mathbb{Z}_n = \{0, 1, 2, \dots, n-1\}$.
 \end{definition}
 
 \begin{remark}
-    $(a^{2})^{-1} = (a^{-1})^{2}$, means we can find inverse and then square vice versa.
+    Sometimes, one might also encounter the notation $\mathbb{Z}/n\mathbb{Z}$, which is more frequently used in Abstract Algebra.
 \end{remark}
 
-However, there is an important note: not all numbers have an inverse number.
+The aforementioned lemmas and definitions describe the properties of addition, subtraction, and multiplication. But what about division? To define the division (if such operation is valid at all), we need to consider the so-called \emph{modular multiplicative inverse}, which is usually denoted as $a^{-1} \, (\text{mod } n)$, similarly to real/rational numbers.
 
-\begin{theorem}
-    Exist such $a^{-1} \pmod{n}$ if and only if $\gcd(a, b) = 1$.
+\begin{definition}
+    A modular multiplicative inverse of an integer $a \in \mathbb{Z}$ modulo $n \in \mathbb{N}$ is such an integer $a^{-1}$ that satisfies $a \cdot a^{-1} \equiv a^{-1}a \equiv 1 \pmod{n}$.
+\end{definition}
+
+\begin{remark}
+    (\textbf{Caution}): not all numbers have an inverse number!
+\end{remark}
+
+\begin{remark}
+    The inverse (if exists) behaves similarly to the usual inverse over rations/reals. For example, $(a^{2})^{-1} = (a^{-1})^{2}$, which means, we can first find the inverse, then the squared value, and vice versa.
+\end{remark}
+
+The question then is when does the number have the inverse? Consider the following theorem.
+
+\begin{theorem}\label{th:inverse_existence}
+    Modular inverse $a^{-1} \pmod{n}$ exists if and only if $\gcd(a, n) = 1$.
 \end{theorem}
-% todo add proof
 
-Based on Extended Euclidean algorithm \Cref{alg:extended_euclidean} we can verify and find the inverse number immediately after executing the algorithm. 
+Based on Extended Euclidean \Cref{alg:extended_euclidean} and \Cref{th:inverse_existence}, we build the algorithm that can verify an existence and find the inverse value.
 
 \begin{algorithm}
     \caption{Modular multiplicative inverse algorithm} \label{alg:modular_inverse}
     \Input{$a, n$}
     \Output{$a^{-1}$}
         
-    $(\gcd(a,n), \, u, \, v) \gets \text{ExtendedEuclideanAlgorithm}(a, \, n)$
+    $(d, u, v) \gets \text{ExtendedEuclideanAlgorithm}(a, n)$ \Comment{See \Cref{alg:extended_euclidean}}
 
-    \If{\gcd(a, n) = 1}{
-        \textbf{return} inverse not exist.
+    \If{$d \neq 1$}{
+        \textbf{return} inverse does not exist.
     } 
 
     \textbf{return} $u$
 \end{algorithm}
 
-\begin{definition}
-    Multiplicative group of integers modulo $n$ $\mathbb{Z}_{n}^{*} = \{a \mid \gcd(a, n) = 1\}$.
-\end{definition}
-
-The $\mathbb{Z}_{n}^{*}$ is one of the key objects in cryptography and is behind almost every cryptographic primitive.
-
-\begin{lemma}
-    $|\mathbb{Z}_{n}^{*}| = \varphi(n)$, where $\varphi(n)$ is Euler's totient function.
-\end{lemma}
+\begin{remark}
+    Note that the complexity of this algorithm is the same as for \Cref{alg:extended_euclidean}, which is $O(\log a \log n)$ bit operations.
+\end{remark}
 
 \begin{definition}
-    Euler's totient function $\varphi(n), n \in \mathbb{N}$ counts in $[1, n]$ coprime numbers with $n$. 
+    The \textbf{multiplicative group of integers} modulo $n$, denoted as $\mathbb{Z}_n^{\times}$, is a set of natural numbers that are coprime to $n$ and less than $n$. In other words, $\mathbb{Z}_n^{\times} = \{a \in \mathbb{N}: \gcd(a, n) = 1\}$.
 \end{definition}
 
-\begin{lemma}
+The $\mathbb{Z}_{n}^{\times}$ is a fundamental object in number theory and 
+plays a crucial role in cryptography, forming the basis almost for every cryptographic primitive.
+
+\begin{definition}
+    \textbf{Euler's Totient Functiom} $\varphi(n)$ is the cardinality of the multiplication 
+    group of integers $\mathbb{Z}_n^{\times}$. In other words, $\varphi(n) = |\mathbb{Z}_n^{\times}|$.
+\end{definition}
+
+\begin{remark}
+    The alternative Euler's totient function intuition is following: $\varphi(n)$ counts all coprimes with $n$ in range $[1, n]$. 
+\end{remark}
+
+\begin{lemma} [Euler's totient function properties]
     \hfill
     \begin{enumerate}
-        \item $\varphi(1) = 1$
-        \item $\varphi(p) = p - 1$, where $p$ is prime
-        \item $\varphi(pq) = \varphi(p) \cdot \varphi(q)$, where $p, q$ are primes
-        \item $\varphi(p^{\alpha}) = p^{\alpha} - p^{\alpha - 1}$, where $p$ is prime
-        \item $\varphi(n) = \prod_{i = 1}^{t} (p_{i}^{\alpha_i} - p_{i}^{\alpha_i - 1}) = n\prod_{i = 1}^{t} (1 - \frac{1}{p_i}), \; n = p_{1}^{\alpha_1}p_{2}^{\alpha_2} \dots p_{t}^{\alpha_t}$
+        \item $\varphi(1) = 1$.
+        \item $\varphi(p) = p - 1$, $p$ where is prime.
+        \item $\varphi(pq) = \varphi(p) \cdot \varphi(q)$, where $p, q$ are primes.
+        \item $\varphi(p^{\alpha}) = p^{\alpha} - p^{\alpha - 1}$, where  $p$ is prime.        
     \end{enumerate}    
 \end{lemma}
+
+\begin{corollary}
+    For any number $n = p_{1}^{\alpha_1}p_{2}^{\alpha_2} \dots p_{t}^{\alpha_t}$ general formula for Euler's totient function is: 
+    \begin{equation*}
+        \varphi(n) = \prod_{i = 1}^{t} \left( p_{i}^{\alpha_i} - p_{i}^{\alpha_i - 1} \right) = n \prod_{i = 1}^{t} \left( 1 - \frac{1}{p_i} \right).
+    \end{equation*}
+\end{corollary}
 
 \begin{example}
     \hfill
 
     \begin{itemize}
-        \item $\varphi(107) = 106$
-        \item $\varphi(123) = \varphi(3)\varphi(41) = 80$
+        \item $\varphi(107) = 106$, because $107$ is prime.
+        \item $\varphi(123) = \varphi(3 \cdot 41) = \varphi(3)\varphi(41) = 2 \cdot 40 = 80$
         \item $\varphi(729) = \varphi(3^6) = 3^6 - 3^5 = 486$
     \end{itemize}
 \end{example}
