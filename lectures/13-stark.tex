@@ -158,9 +158,9 @@ p_2(x) = \frac{(f(g^2x) - f(gx)^2 - f(x)^2)(x - g^{2021})(x - g^{2022})(x - g^{2
 
 In addition, there is one obvious requirement for the STARK constraints: the verifier should be able to compute the constraints polynomials $p_i(x)$ using only the given trace polynomial evaluations for the certain $x$.
 
-\begin{example}
+\begin{remark}
 In our Fibonacci example, verifier can check the constraint polynomials evaluation by requesting only $f(x)$, $f(gx)$ and $f(g^2x)$ -- the values committed in the trace polynomial commitment.
-\end{example}
+\end{remark}
 
 To combine all our constraints into a single polynomial, we can follow a commonly used principle by taking a linear combination with the challenges from the verifier. In particular, after receiving trace polynomial commitment from the prover, the verifier selects $\{\alpha_i\ \in \mathbb{F}\}$ and sends it to the prover. Then, the prover puts the \textbf{composition polynomial} as:
 \begin{equation*}
@@ -231,13 +231,14 @@ Next, we commit to the $z_1(x^2)$ using a next-layer evaluation domain $E_1$ (is
 
 The non-interactive version of the presented protocol can be easily built obtaining the Fiat-Shamir heuristics.
 
-The soundness of the presented STARK protocol follows from the impossibility to commit any possible evaluation of the forgery $CP(x)$ over evaluation domain $E$ and simultaneously prove that $CP(x)$ is a low-degree polynomial by the FRI protocol. Since the size of $E$ is $\rho$ times bigger then the maximum allowed polynomial degree (that directly depends on the size of the trace), the attacker either can't construct such a polynomial or can't construct a low-degree polynomial, so a valid low-degree composite polynomial can only be obtained using a valid trace.
+The soundness of the presented STARK protocol follows from the impossibility to commit any possible evaluation of the forgery $CP(x)$ over evaluation domain $E$ and simultaneously prove that $CP(x)$ is a low-degree polynomial by the FRI protocol. 
+Since the size of $E$ is $\rho$ times bigger then the maximum allowed polynomial degree (that directly depends on the size of the trace), the attacker either can't construct such a polynomial or can't construct a low-degree polynomial, so a valid low-degree composition polynomial can only be obtained using a valid trace.
 
 \begin{example}
     Finally, let's overview the first steps of the ZK-STARK protocol applied to our Fibonacci example:
     
     \begin{enumerate}
-        \item The protocol defines the public constaints such as 2023-th element of sequence, field $\mathbb{F}$, etc.
+        \item The protocol defines the public constraints such as 2023-th element of sequence, field $\mathbb{F}$, etc.
         \item The prover generates the trace $a$ where $a_0 = 1, a_1 = 3141592, a_i = a_{i-1}^2 + a_{i-2}^2$, 
         evaluates the trace polynomial $f(x)$ over the evaluation domain and sends it's commitments to the verifier. 
         \item The verifier selects challenges $\alpha_0, \alpha_1, \alpha_2 \in \mathbb{F}$ and shares them with the prover.
