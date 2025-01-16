@@ -11,7 +11,7 @@ In turn, "transparent" means there is no requirement for a trusted setup, unlike
 
 Note, that the term "STARK" does not specify the protocol interactivity. But today, most of the STARK protocols (or probably all of the existing protocols) are deployed in the non-interactive environment (which makes all of them SNARKs). This means that we really do not need the additional abbreviation for the existing STARK protocols -- all of them can be considered as a "transparent SNARKs".
 
-\subsection{STARK-frieldy fields}
+\subsection{STARK-friendly fields}
 In general, STARK protocol can work over any field $\mathbb{F}$ with high two-adicity.
 
 \begin{definition}
@@ -239,13 +239,13 @@ The soundness of the presented STARK protocol follows from the impossibility to 
     \begin{enumerate}
         \item The protocol defines the public constaints such as 2023-th element of sequence, field $\mathbb{F}$, etc.
         \item The prover generates the trace $a$ where $a_0 = 1, a_1 = 3141592, a_i = a_{i-1}^2 + a_{i-2}^2$, 
-        evaluates the trace polynomial $f(x)$ over the evaluation domain and sends it's commitments to the verifier 
-        \item The verifier selects challenges $\alpha_0, \alpha_1, \alpha_2 \in \mathbb{F}$ and shares them with the prover
-        \item The prover evaluates the composition polynomial $CP(x)$ over evaluation domain and sends it's commitments to the verifier 
-        \item The verifier selects random $i \in [0; 8192-16)$, puts $c = 5\cdot h^i$ and sends it to the prover
-        \item The prover responds with the $f(c), f(gc), f(g^2c), CP(c), CP(-c)$ and corresponding Merkle proofs to them
-        \item The verifier checks Merkle proofs and the evaluation of $CP(c)$ by evaluating the constraint polynomials $p_0(c), p_1(c), p_2(c)$
-        \item The prover and the verifier go through the FRI protocol for $z_0(x) = CP(x)$ until $z_i(x), i \in [1;12)$ becomes constant
+        evaluates the trace polynomial $f(x)$ over the evaluation domain and sends it's commitments to the verifier. 
+        \item The verifier selects challenges $\alpha_0, \alpha_1, \alpha_2 \in \mathbb{F}$ and shares them with the prover.
+        \item The prover evaluates the composition polynomial $CP(x)$ over evaluation domain and sends it's commitments to the verifier .
+        \item The verifier selects random $i \in [0; 8192-16)$, puts $c = 5\cdot h^i$ and sends it to the prover.
+        \item The prover responds with the $f(c), f(gc), f(g^2c), CP(c), CP(-c)$ and corresponding Merkle proofs to them.
+        \item The verifier checks Merkle proofs and the evaluation of $CP(c)$ by evaluating the constraint polynomials $p_0(c), p_1(c), p_2(c)$.
+        \item The prover and the verifier go through the FRI protocol for $z_0(x) = CP(x)$ until $z_i(x), i \in [1;12)$ becomes constant.
     \end{enumerate}
     
 \end{example}
