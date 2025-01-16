@@ -547,6 +547,7 @@ resources. See \Cref{fig:pcp}.
 
 \begin{figure}[H]
     \centering
+    \scalebox{0.7}{
     \begin{tikzpicture}
         \node[inner sep=0pt, align=center] at (-4.0, 0.0) (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
         \node[inner sep=0pt, align=center] at (4.0, 0.0) (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
@@ -565,6 +566,7 @@ resources. See \Cref{fig:pcp}.
         \draw[-{Stealth[length=3mm]},line width=0.4mm] (prover)--(pcp) node[midway, left=3mm]{Generate an oracle ($\pi$)};
         \draw[-{Stealth[length=3mm]},line width=0.4mm] (verifier)--(pcp) node[midway, right=3mm]{Point queries $q_1,\dots,q_m$};
     \end{tikzpicture}
+    }
     \caption{Illustration of a Probabilistically Checkable Proof (PCP) system. The prover $\mathcal{P}$ generates a PCP oracle $\pi$ that is queried by the verifier $\mathcal{V}$ at specific points $q_1,\dots,q_m$.}
     \label{fig:pcp}
 \end{figure}
@@ -580,6 +582,7 @@ Three main extensions of PCPs that are frequently used in SNARKs are:
 
 \begin{figure}[H]
     \centering
+    \scalebox{0.5}{
     \begin{tikzpicture}
         \node[inner sep=0pt, align=center] at (-4.0, 0.0) (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
         \node[inner sep=0pt, align=center] at (4.0, 0.0) (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
@@ -630,6 +633,7 @@ Three main extensions of PCPs that are frequently used in SNARKs are:
         % Two arrows to left and to right between the prover and verifier with the "Interaction" label
         \draw[{Stealth[length=3mm]}-{Stealth[length=3mm]},line width=0.4mm,dashed] (prover) to node[midway, below]{Interaction} (verifier);
     \end{tikzpicture}
+    }
     \caption{Illustration of an Interactive Oracle Proof (IOP). On each round $i$ ($1 \leq i \leq r$), $\mathcal{V}$ sends a message $m_i$, and $\mathcal{P}$ commits to a new oracle $\pi_i$, which $\mathcal{V}$ can query at $\mathbf{q}_i=(q_{i,1},\dots,q_{i,m})$.}
     \label{fig:pcp}
 \end{figure}
