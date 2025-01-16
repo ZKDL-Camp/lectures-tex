@@ -35,7 +35,7 @@ Notice that we transferred $O(\tau)$ to the right side of the equation to furthe
 \end{remark}
 
 So, sounds like we are done. Let us summarize what we have done so far:
-\begin{tcolorbox}[title=Attempt \#1: Non-sound SNARK Protocol,
+\begin{tcolorbox}[breakable, title=Attempt \#1: Non-sound SNARK Protocol,
     colback=blue!5!white,
     colframe=blue!75!black,
     colbacktitle=blue!25!white,
@@ -98,7 +98,7 @@ Indeed, what $\mathcal{P}^*$ needs to do is calculating $c^{\alpha}$, but he doe
 
 For that reason, we modify the SNARK protocol to include not only commitments to polynomials but also PoE for each of them. Let us see how it looks like.
 
-\begin{tcolorbox}[title=Attempt \#2: SNARK with PoE included,
+\begin{tcolorbox}[breakable, title=Attempt \#2: SNARK with PoE included,
     colback=blue!5!white,
     colframe=blue!75!black,
     colbacktitle=blue!25!white,
@@ -206,7 +206,7 @@ Even that is not the end of the story! We also need to make sure that $g^{\beta_
 
 Oof, that was a long fix! Let us come back to the new version of the SNARK protocol (not yet zero-knowledge)!
 
-\begin{tcolorbox}[title=Attempt \#3: Sound SNARK Protocol,
+\begin{tcolorbox}[breakable, title=Attempt \#3: Sound SNARK Protocol,
     colback=blue!5!white,
     colframe=blue!75!black,
     colbacktitle=blue!25!white,
@@ -296,7 +296,7 @@ $|\mathcal{I}_{\text{mid}}|$). The same goes for other parts of the proof $\bold
 
 Now, let us formulate the updated SNARK protocol with the extended witness split.
 
-\begin{tcolorbox}[title=Attempt \#4: Sound SNARK for Public/Private Inputs,
+\begin{tcolorbox}[breakable, title=Attempt \#4: Sound SNARK for Public/Private Inputs,
     colback=blue!5!white,
     colframe=blue!75!black,
     colbacktitle=blue!25!white,
@@ -420,7 +420,7 @@ Oof. Finally, we also have a zero-knowledge property for our SNARK. Let us summa
 
 Let us now look at the final version of our basic SNARK protocol.
 
-\begin{tcolorbox}[title=Attempt \#5: Turning SNARK into zk-SNARK,
+\begin{tcolorbox}[breakable, title=Attempt \#5: Turning SNARK into zk-SNARK,
     colback=blue!5!white,
     colframe=blue!75!black,
     colbacktitle=blue!25!white,
@@ -578,7 +578,7 @@ Let us see what has changed in the Pinocchio Protocol.
 
 Let us see the complete specification of the Pinocchio Protocol.
 
-\begin{tcolorbox}[title=Pinocchio Protocol,
+\begin{tcolorbox}[breakable, title=Pinocchio Protocol,
     colback=blue!5!white,
     colframe=blue!75!black,
     colbacktitle=blue!25!white,
