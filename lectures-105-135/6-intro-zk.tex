@@ -108,6 +108,7 @@ That being said, formally the interaction between prover $\mathcal{P}$ and verif
 
 \begin{figure}
     \centering
+    \scalebox{0.7}{
     \begin{tikzpicture}
         \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
         \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
@@ -144,7 +145,7 @@ That being said, formally the interaction between prover $\mathcal{P}$ and verif
         Verify $z^2 \equiv a \times x^{b} \pmod{N}$ \\
         \noindent\rule{3.5cm}{0.8pt}};
     \end{tikzpicture}
-
+    }    
     \caption{The interactive protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$ for the quadratic residue test.}
 \end{figure}
 
@@ -209,6 +210,7 @@ Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended w
 
 \begin{figure}[H]
     \centering
+    \scalebox{0.9}{
     \begin{tikzpicture}
         \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
         \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
@@ -229,7 +231,7 @@ Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended w
         \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-7.5cm]verifier.south) coordinate (l2)--(l2-|prover) node[midway, above=0mm, fill=white]{Toss coin $r_{\ell}$ and send query $q_{\ell}$};
         
     \end{tikzpicture}
-
+    }
     \caption{The interactive protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$. Prover's messages consist of messages $\{m_k\}_{k=1}^{\ell}$, verifier's messages consist of queries $\{q_k\}_{k=1}^{\ell}$, and additionally verifier samples random coins $\{r_k\}_{k=1}^{\ell}$.}
 \end{figure}
 
@@ -385,6 +387,7 @@ Here how it goes. Suppose we have an interactive protocol $(\mathcal{P}, \mathca
 
 \begin{figure}[H]
     \centering
+    \scalebox{0.6}{
     \begin{tikzpicture}
         % Blue zone
         \node[very thick, draw=blue, fill=blue, fill opacity=0.1,minimum width=7cm, minimum height=7cm,dashed,on background layer](targetbox) at (2.25,-5.0) {};
@@ -416,7 +419,7 @@ Here how it goes. Suppose we have an interactive protocol $(\mathcal{P}, \mathca
         Verify $\pi$ \\
         \noindent\rule{3.5cm}{0.8pt}};
     \end{tikzpicture}
-
+    }
     \caption{The non-interactive protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$ using Fiat-Shamir Transformation. In \textcolor{blue!90!black}{\textbf{blue}} we marked a non-interactive part of the protocol, being the ``communication'' between a prover and a proof stream. In \textcolor{green!50!black}{\textbf{green}} we marked the final proof $\pi$ that is sent to the verifier.}
     \label{fig:fiat-shamir}
 \end{figure}
