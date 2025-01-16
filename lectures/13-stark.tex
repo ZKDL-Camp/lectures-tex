@@ -18,7 +18,7 @@ In general, STARK protocol can work over any field $\mathbb{F}$ with high two-ad
     We call two-adicity fields, the fields where we can select the multiplicative subgroup of order $2^k$.
 \end{definition}
 
-To be honest, all protocol steps are followed with powers of two. It will be shown, why the groups we are working with must be of size $2^k$ and why the input data also follows this rule. As the result, the maximum size of the statement that we can prove using the STARK protocol is strictly depends on the size of two-adicit subgroup (that is why we label some fields to have \textit{high two-adicity} or \textit{low two-adicity}).
+To be honest, all protocol steps are followed with powers of two. It will be shown, why the groups we are working over must be of size $2^k$ and why the input data also follows this rule. As the result, the maximum size of the statement that we can prove using the STARK protocol is strictly depends on the size of two-adicity subgroup (that is why we label some fields to have \textit{high two-adicity} or \textit{low two-adicity}).
 
 \begin{remark}
 In our example we consider using field over prime modulus $N = 3\cdot 2^{30} + 1$ and subgroups of size $2^{13}$ and $2^{10}$.
@@ -56,21 +56,29 @@ If the multiplication of two equations equals to zero by modulus $N$, then we ca
 The equation $w^{N - 1} \equiv 1 \mod N$ is obtained from the order property of the primitive element $w$ in the multiplicative group $\mathbb{F}^{\times}$. 
 \end{remark}
 
-\subsection{Proving the Fibonacci square sequence}
+\subsection{Protocol definition}
+
 \subsubsection{Trace, evaluation domain and commitment}
-The Fibonacci square sequence is a sequence of elements defined as follows: 
-\begin{equation*}
-a_{i} = a_{i-1}^2 + a_{i-2}^2  
-\end{equation*}
-Then, we are going to prove that some statement holds on the given sequence of elements.
-\begin{example}
-\textit{I know a field element $x$ such that the $1023$rd element of the Fibonacci square sequence starting with $1$ and $x$ is $2338775057$.} The private $x$ in this case equals to $3141592$.    
-\end{example}
+Now, we are going to prove that some statement holds on the given sequence of elements.
 
 \begin{definition}
 We call \textbf{trace} a sequence of elements from $\mathbb{F}$ that represents our witness. This sequence contains private and public values together and follows certain constraints.
 \end{definition}
+
+\begin{example}
+The Fibonacci square sequence is a sequence of elements defined as follows: 
+\begin{equation*}
+a_{i} = a_{i-1}^2 + a_{i-2}^2  
+\end{equation*}
+
+Then, we can for example prove the following statement:
+\textit{I know a field element $x$ such that the $1023$rd element of the Fibonacci square sequence starting with $1$ and $x$ is $2338775057$.} 
+
+(The private $x$ in this case equals to $3141592$).
+\end{example}
+
 Following the Unisolvence Theorem, the trace $a$ is implied to be an evaluation of some unknown \textbf{trace polynomial} of degree $|a| - 1$. Also, to be evaluable on the two-adicity subgroup, the size of the trace has to be a power of two.
+
 \begin{definition}
 We call \textbf{domain} a two-adicity subgroup $G \in \mathbb{F}$ where we evaluate our polynomials.
 \end{definition}
@@ -86,7 +94,11 @@ G = \{g^i \;|\; g = 5^{3\cdot 2^{20}} \land i \in [0;1024) \}
 \end{equation*}
 \end{example}
 
-Next, using the Lagrange interpolation over $(g^i, a_i)_0^{|a| - 1}$ points we compute a trace polynomial $f \in \mathbb{F}[x]$. Note, that in practice, you may want to use more efficient algorithm for interpolation, for example -- \textit{Fast Fourier Transform (FFT)}.
+Next, using the Lagrange interpolation over $(g^i, a_i)_0^{|a| - 1}$ points we compute a trace polynomial $f \in \mathbb{F}[x]$.
+
+\begin{remark}
+Note, that in practice, you may want to use more efficient algorithm for interpolation, for example -- \textit{Fast Fourier Transform (FFT)}.
+\end{remark}
 
 \begin{definition}
 We call \textbf{evaluation domain} a two-adicity coset $E = wH\in \mathbb{F}$, where $H \in \mathbb{F}$ is a two-adicity subgroup, that is larger $\rho$ times (some small constant) then the domain. 
@@ -156,28 +168,35 @@ CP(x) = \sum \alpha_i\cdot p_i(x)
 \end{equation*}
 Additionally, prover also commits this polynomial by evaluating on the evaluation domain and building a Merkle tree.
 
+\begin{example}
+The Fibonacci composition polynomial looks like as follows:
+\begin{gather*}
+    CP(x) = \alpha_0 p_0(x) + \alpha_1 p_1(x) + \alpha_2 p_2(x) =\\
+    \alpha_0 \frac{f(x)-1}{x - 1} + \alpha_1 \frac{f(x) - 2338775057}{x - g^{1022}} + \\
+    \alpha_2 \frac{(f(g^2x) - f(gx)^2 - f(x)^2)(x - g^{2021})(x - g^{2022})(x - g^{2024})}{x^{1024} - 1}
+\end{gather*}
+\end{example}
+
 \subsubsection{FRI protocol}
 In general, our goal is to verify that the committed polynomial $CP(x)$ satisfies all our constraints, by checking it's evaluation at a random point from the evaluation domain that the verifier selects. Anyway, we can face the problem when the malicious prover constructs a lager polynomial that accepts lots of possible roots from our field (even $2^{64}$ field is still insecure for just checking the evaluation at one point). That is why we have to make sure that the committed polynomial degree lies in the acceptable range (the upper bound depends on the trace size).
 
-The final stage of the STARK protocol is a \textbf{Fast Reed-Solomon IOP of Proximity (FRI)}. FRI is a protocol between a prover and a verifier, which establishes that a given evaluation belongs to a polynomial of low-degree -- \textit{low} means no more than $\rho$ times less than the length of the evaluation domain size.
+The final stage of the STARK protocol is a \textbf{Fast Reed-Solomon IOP of Proximity (FRI)}. FRI is a protocol between a prover and a verifier, which establishes that a given evaluation belongs to a polynomial of low-degree. In this context \textit{low} means no more than $\rho$ times bigger than the trace.
 
-The key idea of FRI protocol is to move from a polynomial of degree $n$ to a polynomial of degree $n/2$ until we get a constant value. Let's consider the polynomial $g_0(x)$ of degree $n=2^t$ and the evaluation domain $E_0 = E$. We suppose to group the \textit{odd} and the \textit{even} coefficients of the $g_0$ together into the two separate polynomials($g_0^o$ and $g_0^e$ respectively):
+The key idea of FRI protocol is to move from a polynomial of degree $n$ to a polynomial of degree $n/2$ until we get a constant value. Let's consider the polynomial $z_0(x) = \sum a_i\cdot x^i$ of degree $n=2^t$ and the evaluation domain $E_0 = E$. We suppose to group the \textit{odd} and the \textit{even} coefficients of the $z_0$ together into the two separate polynomials($z_0^o$ and $z_0^e$ respectively):
 \begin{gather*}
-    g_0^o(x^2) = \sum_{i=0}^{n/2} (a_{2i+1}\cdot x^{2i})\\
-    g_0^e(x^2) = \sum_{i=0}^{n/2} (a_{2i}\cdot x^{2i})
+    z_0^o(x^2) = \sum_{i=0}^{n/2} (a_{2i+1}\cdot x^{2i})\\
+    z_0^e(x^2) = \sum_{i=0}^{n/2} (a_{2i}\cdot x^{2i})
 \end{gather*}
 
-Or, in more comfortable form (we have already examined why searching of $-x$ cab be done easily in our two-adicity subgroup):
+Or, in more comfortable form (we have already examined why searching of $-x$ can be done easily in our two-adicity subgroup):
 \begin{gather*}
-    g_0^e(x^2) = \frac{g_0(x) + g_0(-x)}{2}\\
-    g_0^o(x^2) = \frac{g_0(x) - g_0(-x)}{2x}
+    z_0^e(x^2) = \frac{z_0(x) + z_0(-x)}{2}\\
+    z_0^o(x^2) = \frac{z_0(x) - z_0(-x)}{2x}
 \end{gather*}
 
-Then, we define the next-layer of FRI polynomial as $g_1(x^2) = g_0^e(x^2) + \beta g_0^o(x^2)$, where $\beta$ is a challenge received from verifier. The next-layer evaluation domain is also simple to compute: $E_1 = \{(w\cdot h_i)^2 \;|\; i \in [0;\frac{|E_0|}{2})\}$
+Then, we define a next-layer of the FRI polynomial as $z_1(x^2) = z_0^e(x^2) + \beta z_0^o(x^2)$, where $\beta$ is a challenge received from verifier. The next-layer evaluation domain is also simple to compute: $E_1 = \{(w\cdot h_i)^2 \;|\; i \in [0;\frac{|E_0|}{2})\}$
 
-Next, we commit the $g_1(x^2)$ using a next-layer evaluation domain $E_1$ (is also reduced by a factor two) and continue to repeat the described operations until $g_i(x^{2^i})$ becomes constant.
-
-\subsection{Protocol definition}
+Next, we commit to the $z_1(x^2)$ using a next-layer evaluation domain $E_1$ (is also reduced by a factor two) and continue to repeat the described operations until $z_i(x^{2^i})$ becomes constant.
 
 \begin{tcolorbox}[title=Interactive ZK-STARK protocol,
     colback=blue!5!white,
@@ -191,7 +210,7 @@ Next, we commit the $g_1(x^2)$ using a next-layer evaluation domain $E_1$ (is al
     colupper=blue!75!gray} ]
     \small
 
-    The prover and the verifier run the interactive version of the ZK-STARK protocol. Both knows the statement to be proved, that is defined by the constraint polynomials and the field $\mathbb{F}$ to work over. Prover also knows the witness to be able to generate the trace.
+    The prover and the verifier run the interactive version of the ZK-STARK protocol. Both know the statement to be proved, that is defined by the constraint polynomials and the field $\mathbb{F}$ to work over. Prover also knows the witness to be able to generate the trace.
 
     \tcbsubtitle{Preparation}
     \begin{itemize}[label=\ding{51}]
@@ -202,10 +221,10 @@ Next, we commit the $g_1(x^2)$ using a next-layer evaluation domain $E_1$ (is al
 
     \tcbsubtitle{FRI}
     \begin{itemize}[label=\ding{51}]
-        \item The verifier selects random $i \in [0; 8192-16)$, puts $c = w\cdot h^i$ and sends it to the prover.
-        \item The prover responds with the $f(c), f(gc), f(g^2c), CP(c), CP(-c)$ and corresponding Merkle proofs to them.
-        \item The verifier checks Merkle proofs and the evaluation of $CP(c)$ by evaluating the constraints polynomials $p_0(c), p_1(c), p_2(c)$.
-        \item The prover and the verifier go through the FRI protocol for $g_0(x) = CP(x)$ where the prover commits to the layer-$i$ polynomial $g_i(x)$, the verifier selects a challenge $\beta$ and queries from the prover $g_i(c), g_i(-c)$ to compute $g_{i+1}(c)$ until $g_i(x), i \leq log_2(\deg CP(x))$ becomes constant.
+        \item The verifier selects random $i \in [0; |E|)$, puts $c = w\cdot h^i$ and sends it to the prover.
+        \item The prover responds with the $CP(c), CP(-c)$ and all $f(x)$ required to check $CP$ evaluation with corresponding Merkle proofs to them.
+        \item The verifier checks Merkle proofs and the evaluation of $CP(c)$ by evaluating the constraints polynomials $p_i(c)$.
+        \item The prover and the verifier go through the FRI protocol for $z_0(x) = CP(x)$ where the prover commits to the layer-$i$ polynomial $z_i(x)$, the verifier selects a challenge $\beta$ and queries from the prover $z_i(c), z_i(-c)$ to compute $z_{i+1}(c)$ until $z_i(x), i \leq log_2(\deg CP(x))$ becomes constant.
     \end{itemize}
     
 \end{tcolorbox}
@@ -213,6 +232,23 @@ Next, we commit the $g_1(x^2)$ using a next-layer evaluation domain $E_1$ (is al
 The non-interactive version of the presented protocol can be easily built obtaining the Fiat-Shamir heuristics.
 
 The soundness of the presented STARK protocol follows from the impossibility to commit any possible evaluation of the forgery $CP(x)$ over evaluation domain $E$ and simultaneously prove that $CP(x)$ is a low-degree polynomial by the FRI protocol. Since the size of $E$ is $\rho$ times bigger then the maximum allowed polynomial degree (that directly depends on the size of the trace), the attacker either can't construct such a polynomial or can't construct a low-degree polynomial, so a valid low-degree composite polynomial can only be obtained using a valid trace.
+
+\begin{example}
+    Finally, let's overview the first steps of the ZK-STARK protocol applied to our Fibonacci example:
+    
+    \begin{enumerate}
+        \item The protocol defines the public constaints such as 2023-th element of sequence, field $\mathbb{F}$, etc.
+        \item The prover generates the trace $a$ where $a_0 = 1, a_1 = 3141592, a_i = a_{i-1}^2 + a_{i-2}^2$, 
+        evaluates the trace polynomial $f(x)$ over the evaluation domain and sends it's commitments to the verifier 
+        \item The verifier selects challenges $\alpha_0, \alpha_1, \alpha_2 \in \mathbb{F}$ and shares them with the prover
+        \item The prover evaluates the composition polynomial $CP(x)$ over evaluation domain and sends it's commitments to the verifier 
+        \item The verifier selects random $i \in [0; 8192-16)$, puts $c = 5\cdot h^i$ and sends it to the prover
+        \item The prover responds with the $f(c), f(gc), f(g^2c), CP(c), CP(-c)$ and corresponding Merkle proofs to them
+        \item The verifier checks Merkle proofs and the evaluation of $CP(c)$ by evaluating the constraint polynomials $p_0(c), p_1(c), p_2(c)$
+        \item The prover and the verifier go through the FRI protocol for $z_0(x) = CP(x)$ until $z_i(x), i \in [1;12)$ becomes constant
+    \end{enumerate}
+    
+\end{example}
 
 \subsection{Protocol security}
 Most of the existing versions of the STARK protocol leverage on several optimizations to achieve better proving and verification time. The key point here is that each FRI query check adds $log_2(\rho)$ bits of security, so we can skip some of these checks if the security level is already satisfied. 
