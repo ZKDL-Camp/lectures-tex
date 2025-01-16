@@ -198,11 +198,11 @@ from some finite field $\mathbb{F}$ (see right figure below).
 \begin{figure}[h!]
     \centering
     \vspace*{1em}
-    
     \begin{minipage}{0.46\textwidth}
         \centering
         % Boolean AND and OR gates
         \begin{tabular}{cc}
+            \scalebox{0.5}{
             \begin{tikzpicture}
                 % Nodes
                 \node[var] (a) at (0, -1.5) {$a$};
@@ -215,7 +215,9 @@ from some finite field $\mathbb{F}$ (see right figure below).
                 \draw[arrow,gray] (b) -- (and);
                 \draw[arrow,gray!50!black] (and) -- (c);
             \end{tikzpicture}
+            }
             &
+            \scalebox{0.5}{
             \begin{tikzpicture}
                 % Nodes
                 \node[var] (a) at (0, -1.5) {$a$};
@@ -228,6 +230,7 @@ from some finite field $\mathbb{F}$ (see right figure below).
                 \draw[arrow,gray] (b) -- (or);
                 \draw[arrow,gray!50!black] (or) -- (c);
             \end{tikzpicture}
+            }
             \label{fig:circuits}
         \end{tabular}
         \caption{Boolean \texttt{AND} and \texttt{OR} Gates}
@@ -237,6 +240,7 @@ from some finite field $\mathbb{F}$ (see right figure below).
         \centering
         % Addition and Multiplication gates
         \begin{tabular}{cc}
+            \scalebox{0.5}{
             \begin{tikzpicture}
                 % Nodes
                 \node[var] (a) at (0, -1.5) {$a$};
@@ -249,7 +253,9 @@ from some finite field $\mathbb{F}$ (see right figure below).
                 \draw[arrow,gray] (b) -- (add);
                 \draw[arrow,gray!50!black] (add) -- (c);
             \end{tikzpicture}
+            }
             &
+            \scalebox{0.5}{
             \begin{tikzpicture}
                 % Nodes
                 \node[var] (a) at (0, -1.5) {$a$};
@@ -262,6 +268,7 @@ from some finite field $\mathbb{F}$ (see right figure below).
                 \draw[arrow,gray] (b) -- (mul);
                 \draw[arrow,gray!50!black] (mul) -- (c);
             \end{tikzpicture}
+            }
         \end{tabular}
         \caption{Addition and Multiplication Gates}
     \end{minipage}
@@ -303,6 +310,7 @@ calculating $(a \;\texttt{AND}\; b) \,\texttt{OR}\; c$.
 
 \begin{figure}[h!]
     \centering
+    \scalebox{0.7}{
     \begin{tikzpicture}
         % Nodes
         \node[var] (a) at (0, -1.5) {$a$};
@@ -319,6 +327,7 @@ calculating $(a \;\texttt{AND}\; b) \,\texttt{OR}\; c$.
         \draw[arrow,gray] (and) -- (or);
         \draw[arrow,gray!50!black] (or) -- (d);
     \end{tikzpicture}
+    }
     \caption{Example of a circuit evaluating $d = (a \;\texttt{AND}\; b) \,\texttt{OR}\; c$.}
     \label{fig:bool-circuit}
 \end{figure}
@@ -363,6 +372,7 @@ Good, but this one is quite trivial. Let's consider a more complex example.
 Looks easy, right? But the circuit is now much less trivial. Consider \Cref{fig:multivariate-polynomial-circuit}. Notice that to calculate $x_1^3$ we cannot use the single gate: we need to multiply $x_1$ by itself two times. For that reason, we need three multiplication and one addition gate to represent $Q(x_1,x_2)$ calculation.
 \begin{figure}[h!]
     \centering
+    \scalebox{0.7}{
     \begin{tikzpicture}
         % Nodes
         \node[var] (x1) at (0, 1) {$x_1$};
@@ -392,6 +402,7 @@ Looks easy, right? But the circuit is now much less trivial. Consider \Cref{fig:
         \node[var] (q) at (7.0, -0.5) {$Q$};
         \draw[arrow,gray!50!black] (plus) -- (q);
     \end{tikzpicture}
+    }
     \caption{Example of a circuit evaluating $x_1^3 + x_2^2$.}
     \label{fig:multivariate-polynomial-circuit}
 \end{figure}
@@ -420,6 +431,7 @@ Below, we show to visualize the arithmetic circuit for the \texttt{if} statement
 
 \begin{figure}[h!]
     \centering
+    \scalebox{0.5}{
     \begin{tikzpicture}
         % Nodes
         \node[var] (c) at (0, -3) {$c$};
@@ -467,6 +479,7 @@ Below, we show to visualize the arithmetic circuit for the \texttt{if} statement
         \draw[arrow,gray!50!black] (r) to (result);
 
     \end{tikzpicture}
+    }
     \caption{Example of a circuit evaluating the \texttt{if} statement logic.}
     \label{fig:multivariate-polynomial-circuit}
 \end{figure}
@@ -517,6 +530,7 @@ Let us consider some concrete example of the Circuit Satisfiability Problem.
     For that reason, define the circuit $\Circ(\rho,x_1,x_2) := x_1^2 + x_2^2 - \rho$. It is constructed as shown in the Figure below.
     
     \begin{center}
+        \scalebox{0.7}{
         \begin{tikzpicture}
             % Defining the circuit for equation x1**2 + x2**2 - rho
 
@@ -556,7 +570,7 @@ Let us consider some concrete example of the Circuit Satisfiability Problem.
             \node[var] (result) at (8, -0.75) {$\Circ$};
             \draw[arrow,gray!50!black] (minus) to (result);
         \end{tikzpicture}
-
+        }
         \scriptsize \textit{\textbf{Illustration:} Arithmetic circuit for the equation $x_1^2 + x_2^2 - \rho$.}
     \end{center}
 
