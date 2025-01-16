@@ -173,6 +173,7 @@ def r(x1: bool, x2: F, x3: F) -> F:
 
     \begin{figure}[h!]
         \centering
+        \scalebox{0.5}{
         \begin{tikzpicture}
             \colorlet{circle edge}{gray!50!black}
             \colorlet{circle area}{gray!20}
@@ -237,6 +238,7 @@ def r(x1: bool, x2: F, x3: F) -> F:
             \draw[arrow,gray!50!black] (r) to (result);
 
         \end{tikzpicture}
+        }
         \caption{Example of a circuit evaluating the \texttt{if} statement logic.}
         \label{fig:polynomial-circuit}
     \end{figure}
