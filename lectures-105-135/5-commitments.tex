@@ -152,8 +152,6 @@ If $c_1 = c$, prover has revealed the correct pair $(m, r)$.
         
 \end{remark}
 
-\vspace{0.5 cm}
-
 \textbf{Commitment aggregation}
 
 Pedersen commitment have some advantages compared to hash-based commitments.
@@ -172,13 +170,9 @@ This works for any number of commitments, so we can encode as many points as we 
 For example, if a set of balances is committed, the sum of any subset can be proven without revealing the exact value of each balance. 
 This is achieved by disclosing the sum of the balances and the corresponding sum of the blinding factors.
 
-\vspace{0.5 cm}
-
 \subsubsection{Vector commitments}
 
 Vector commitment schemes allows to commit to a vector of values rather than a value and a blinding term.
-
-\vspace{0.5 cm}
 
 \textbf{Pedersen Vector Commitments}
 
@@ -193,8 +187,6 @@ Since the \textit{Prover} does not know the discrete logarithm of the generators
 Hence, this scheme is binding: they can only reveal $(v_1, \ldots ,v_n)$ to produce $[C]$ later, they cannot produce another vector.
 
 Prover can later open the commitment by revealing the vector $(m_1, m_2 \ldots m_n)$ and a blinding term $r$.
-
-\vspace{0.5 cm}
 
 \textbf{Merkle Tree based Vector Commitments}
 
@@ -224,12 +216,7 @@ One of Merkle tree key advantages is that it allows for the selective disclosure
 Polynomial commitment can be used to prove that the commited polynomial satisfies certain properties $P(x_1, x_2, \ldots, x_n) = y$, without revealing what the polynomial is.
 The commitment is generally succint, which means that it is much smaller than the polynomial it represents.
 
-\vspace{0.5 cm}
-
 \textbf{The KZG polynomial commitment scheme}
-
-\vspace{0.5 cm}
-
 
 The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
 

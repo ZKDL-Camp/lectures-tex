@@ -210,8 +210,6 @@ Now, we can construct our adversary $\mathcal{A}$ as follows. Suppose $\mathcal{
 
 Suppose $\gamma$ is indeed $\alpha \times \beta$. Then, condition $p_{\gamma}'=p_{\gamma}$ will always hold. If $\gamma$ is a random element, then the probability that $p_{\gamma}'=p_{\gamma}$ is $1/2$. Therefore, the probability that $\mathcal{A}$ will guess the bit $b$ correctly is $3/4$, and the advantage is $1/4$ therefore. $\blacksquare$
 
-\vspace{10pt}
-
 Why is this necessary? Typically, it is impossible to prove the predicate ``for every efficient adversary $\mathcal{A}$ this probability is negligible'' and therefore we need to make assumptions, such as the Discrete Logarithm Assumption or the Computational Diffie-Hellman Assumption. In turn, proving the statement ``if $X$ is secure then $Y$ is also secure'' is manageable and does not require solving any fundamental problems. So, for example,
 knowing that the probability of the adversary to break the Diffie-Hellman assumption is negligible, we can prove that the Diffie-Hellman key exchange is secure. 
 
