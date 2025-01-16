@@ -33,6 +33,7 @@ First, let us start with the interactive version of the protocol.
 
 \begin{figure}[H]
     \centering
+    \scalebox{0.7}{
     \begin{tikzpicture}
         \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
         \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
@@ -67,7 +68,7 @@ First, let us start with the interactive version of the protocol.
         Verify $g^{\sigma} = a \cdot u^e$ \\
         \noindent\rule{3.5cm}{0.8pt}};
     \end{tikzpicture}
-
+    }
     \caption{The interactive Schnorr protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$ for proof of knowledge of discrete logarithm relation.}
     \label{fig:interactive_schnorr}
 \end{figure}
@@ -373,7 +374,7 @@ Now, we describe the algorithm.
 
 \subsection{Exercises}
 
-\begin{tcolorbox}[colback=gray!10!white,fonttitle=\bfseries,colframe=purple!80!black,title=Exercises 1-5. In search of correct Schnorr's Identification Protocol\ldots]
+\begin{tcolorbox}[breakable, colback=gray!10!white,fonttitle=\bfseries,colframe=purple!80!black,title=Exercises 1-5. In search of correct Schnorr's Identification Protocol\ldots]
     \textit{You are given the protocol and five ways to implement it. Most of them lack the crucial properties. For each attempt, you need to determine whether the protocol is correct and, if not, specify which of the properties are violated.}
  
     Recall, that given the cyclic group $\mathbb{G}$ of order $q$, the prover wants to convince the verifier that he knows the discrete logarithm $\alpha$ of $h \in \mathbb{G}$ with respect to the generator $g \in \mathbb{G}$ (so that $g^{\alpha}=h$).
@@ -403,7 +404,7 @@ Now, we describe the algorithm.
     \end{center}
 \end{tcolorbox}
 
-\begin{tcolorbox}[colback=gray!10!white,fonttitle=\bfseries,colframe=purple!80!black,title=Exercises 6-10. Non-Interactive Chaum-Pedersen Protocol.]
+\begin{tcolorbox}[breakable, colback=gray!10!white,fonttitle=\bfseries,colframe=purple!80!black,title=Exercises 6-10. Non-Interactive Chaum-Pedersen Protocol.]
     \textit{This section explores how to make the previously considered Chaum-Pedersen protocol non-interactive. Fill in the gaps in the following text with the correct statements.}
 
     Recall that the Chaum-Pedersen protocol allows the prover $\mathcal{P}$ to convince the skeptical verifier $\mathcal{V}$ that the given triplet $(u,v,w) \in \mathbb{G}^3$ is a Diffie-Hellman (DH) triplet in the cyclic group $\mathbb{G}$ of prime order $q$ with a generator $g \in \mathbb{G}$, meaning that $u=g^{\alpha},v=g^{\beta},w=g^{\alpha\beta}$ for some $\alpha,\beta \in \mathbb{Z}_q$. However, instead of making $(\alpha,\beta)$ as a witness, observe that $\beta$ is sufficient. Indeed, if $u=g^{\alpha},v=g^{\beta}$, then $w=\boxed{\textcolor{purple!80!black}{\textbf{6}}}$. Thus, the relation is:
