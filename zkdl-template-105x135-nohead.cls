@@ -255,8 +255,8 @@ ruled
 \newenvironment{talign*}{\let\displaystyle\textstyle\csname align*\endcsname}{\endalign}
 
 \usepackage[explicit]{titlesec}
-\titleformat{\section}{\fontsize{14}{16}\sffamily\bfseries}{\thesection}{14pt}{#1}
-\titleformat{\subsection}{\fontsize{12}{14}\sffamily\bfseries}{\thesubsection}{12pt}{#1}
+\titleformat{\section}{\fontsize{13}{16}\sffamily\bfseries}{\thesection}{14pt}{#1}
+\titleformat{\subsection}{\fontsize{11}{14}\sffamily\bfseries}{\thesubsection}{12pt}{#1}
 \titleformat{\subsubsection}{\fontsize{10}{12}\sffamily\large\bfseries}{\thesubsubsection}{8pt}{#1}
 
 \titlespacing*{\section}{0pt}{5pt}{5pt}
