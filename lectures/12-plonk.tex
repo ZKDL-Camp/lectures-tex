@@ -593,74 +593,139 @@ bit of algebraic manipulation. Don't worry if you don't see it immediately.
 \end{remark}
 
 
-\subsection{Plonk}
+\subsection{Plonk Prover and Verifier}
 
-In this part, we will observe Plonk from the perspective of a proving system.
-\\
-Let $N$ be the size of our program. Let $\omega$ be a primitive $N$-th root of unity. Let $H = \{1, \omega, \dots, \omega^{N-1}\}$. Define $Z_H := X^N - 1$.
-\\
-Assume we have conducted arithmetization of this program, obtaining eight polynomials.
-Now we will demonstrate commitment-scheme agnostic non-interactive (Fiat-Shamir) algorithms for both prover and verifier.
+In this part, we will observe how the Plonk turns its arithmetization system
+into the non-interactive proof. We consider how the prover and verifier specifically interact
+in the protocol.
+
+As in the previous sections, let $N$ be the size of our program (number of
+gates). Let $\omega$ be a primitive $N$-th root of unity. Let $\Omega =
+\{\omega^j\}_{0 \leq j < N}$. Define $Z_{\Omega}(X) := X^N - 1$ --- the vanishing 
+polynomial of $\Omega$.
+
+Assume we have conducted arithmetization of this program, obtaining eight
+polynomials. Now we will demonstrate commitment-scheme agnostic non-interactive
+(Fiat-Shamir) algorithms for both prover and verifier.
+
+\begin{remark}
+    Although the further discussion would involve statements like ``the prover
+    picks the random $\alpha,\beta$, \ldots'', it is important to note that
+    these values are not actually chosen by the prover, but rather computed
+    deterministically from the transcript using Fiat-Shamir heuristic. In case 
+    you are not familiar with Fiat-Shamir heuristic, we recommend you to revisit
+    the \Cref{section:zk}.
+\end{remark}
+
+\subsubsection{Gadgets}
+
+Before diving into the protocol, let us introduce the gadgets that will be used.
+
+\textcolor{blue!60!black}{\textbf{Commitment Scheme.}} We use the polynomial
+commitment scheme to commit to the polynomials. Similarly to Groth16, one might
+safely think of KZG commitment scheme to commit to the polynomials: for $p(x)
+\in \mathbb{F}^{(\leq N)}[X]$, the commitment is $\mathsf{com}(p) =
+g^{p(\tau)}$, which is evaluated using the powers of the generator $g$. The
+opening procedure at point $\zeta \in \mathbb{F}$ of the commitment is simply
+finding the encryption $g^{Q(\tau)}$ of the quotient polynomial $Q(X) :=
+(p(X)-y)/(X-\zeta)$, where $y$ is the value of the polynomial at $\zeta$.
+Finally, verification simply involves applying pairing. Note that other
+commitment schemes might be used as well.
+
+\textcolor{blue!60!black}{\textbf{Blindings.}} In the protocol, to achieve 
+the HZVK property (honest verifier zero-knowledge), the prover must somehow 
+conceal the polynomials he works with. Specifically, consider the polynomial 
+$b(X)$ that is computed as the interpolated values from the trace table (namely, 
+$b(\omega^j) = T_{j,1}$). However, the prover, by providing the opening $b(\zeta)$,
+should not reveal any information on polynomial $b(X)$ itself. To achieve this, the prover
+extends $b(X) \in \mathbb{F}^{(\leq N)}[X]$ to the higher-degree polynomial $\widetilde{b}(X)$
+with the condition that $\widetilde{b}(\omega^j) = b(\omega^j) = T_{j,1}$. However, for higher 
+degrees, there are multitude of choices for $\widetilde{b}(X)$, so we need to standardize 
+this choice. 
+
+Assume we extend $b(X)$ to $\widetilde{b}(X) \in \mathbb{F}^{(\leq N')}[X]$ of
+higher degree $N'>N$. For convenience, assume $N' = N + \delta$ with $\delta \in
+\mathbb{N}$. How can we construct such $\widetilde{b}(X)$? We can do this by
+sampling random values $\gamma_0,\gamma_1,\dots,\gamma_{\delta} \xleftarrow{R} \mathbb{F}$ and 
+letting:
+\begin{equation*}
+    \widetilde{b}(X) = b(X) + z_{\Omega}(X)\sum_{j=0}^{\delta}\beta_jX^j
+\end{equation*}
+
+Why does this work? Let us substitute any $\omega^i \in \Omega$:
+\begin{equation*}
+    \widetilde{b}(\omega^i) = b(\omega^i) + z_{\Omega}(\omega^i)\sum_{j=0}^{\delta}\beta_j\omega^{ij} = b(\omega^i).
+\end{equation*}
+
+Here, we use the fact that $z_{\Omega}(\omega^i) = 0$ for all $i \in [N]$ since $z_{\Omega}$ is, 
+by definition, the vanishing polynomial of $\Omega \ni \omega^i$.
 
 \subsubsection{Proving}
-Prover computes execution trace table $T \in \mathbb{F}^{N\times 3}$.
+First, the prover computes execution trace table $T \in \mathbb{F}^{N\times 3}$.
+Then,  Let us 
+finally proceed with the protocol.
 
-\paragraph{Round 1}
-
-Add to the transcript commitments of 8 arithmetizational polynomials:
-\begin{center}
-com($S_{o1}$), com($S_{o2}$), com($S_{o3}$), com($q_L$), com($q_R$), com($q_M$), com($q_o$), com($q_C$)
-\end{center}
-Interpolate polynomials $a', b', c'$ over corresponding columns of $T$ matrix at the domain $H$. Sample random $b_1, b_2, b_3, b_4, b_5, b_6$. Let:
+\textcolor{green!60!black}{\textbf{Round 1.}} Add to the transcript commitments
+of 8 arithmetizational polynomials:
+\begin{equation*}
+    \mathsf{com}(S_{\sigma,1}), \mathsf{com}(S_{\sigma,2}), \mathsf{com}(S_{\sigma,3}), \mathsf{com}(q_L), \mathsf{com}(q_R), \mathsf{com}(q_M), \mathsf{com}(q_O), \mathsf{com}(q_C)
+\end{equation*}
+Interpolate polynomials $a', b', c'$ over corresponding columns of $T$ matrix at
+the domain $\Omega$. Sample random $b_1, b_2, b_3, b_4, b_5, b_6 \xleftarrow{R}
+\mathbb{F}$. Let the blinded polynomials be:
 \begin{align*}
 \centering
-a &:= (b_1 X + b_2)Z_H + a' \\
-b &:= (b_3 X + b_4)Z_H + b' \\
-c &:= (b_5 X + b_6)Z_H + c'
+a &:= (b_1 X + b_2)Z_{\Omega}(X) + a'(X) \\
+b &:= (b_3 X + b_4)Z_{\Omega}(X) + b'(X) \\
+c &:= (b_5 X + b_6)Z_{\Omega}(X) + c'(X)
 \end{align*}
 Add to the transcript commitments of computed above polynomials:
-\begin{center}
-    com($a$), com($b$), com($c$)
-\end{center}
+\begin{equation*}
+    \mathsf{com}(a), \mathsf{com}(b), \mathsf{com}(c)
+\end{equation*}
 
-\paragraph{Round 2}
-Sample random $\beta, \gamma$ from the transcript. Let $z_0 = 1$ and define recursively $\forall k \in [0, N]$:
+\textcolor{green!60!black}{\textbf{Round 2.}}  Sample random scalars $\beta,
+\gamma \xleftarrow{R} \mathbb{F}$ from the transcript. Let $z_0 = 1$ and define
+recursively for $k = 0, \dots, N$:
+\begin{equation*}
+    z_{k+1} = z_k \times \frac{(a_k + \beta \omega^{k} + \gamma) (b_k + \beta \omega^{k}k_1 + \gamma) (c_k + \beta \omega^{k}k_2 + \gamma)}{(a_k + \beta S_{\sigma,1}(\omega^{k}) + \gamma) (b_k + \beta S_{\sigma,2}(\omega^{k}) + \gamma) (c_k + \beta S_{\sigma,3}(\omega^{k}) + \gamma)}     
+\end{equation*}
 
-\[z_{k+1} = z_k \frac{(a_k + \beta \omega^{k^1}) (b_k + \beta \omega^{k^1}k_1 + \gamma) (c_k + \beta \omega^{k^1}k_2 + \gamma)}{(a_k + \beta S_{\sigma_1}(\omega^{k^1}) + \gamma) (b_k + \beta S_{\sigma_2}(\omega^{k^1}) + \gamma) (c_k + \beta S_{\sigma_3}(\omega^{k^1}) + \gamma)} \]
-Interpolate polynomial $z'$ over evaluations $(z_0, \dots, z_{N-1})$ at the domain $H$.
-\\
-Sample random $b_7, b_8, b_9$. Let $z = (b_7 X^2 + b_8 X + b_9)Z_H + z'$.
-Add to the transcript com($z$).
+Interpolate polynomial $z'$ over evaluations $(z_0, \dots, z_{N-1})$ at the domain $\Omega$.
 
-\paragraph{Round 3}
+Sample random $b_7, b_8, b_9 \xleftarrow{R} \mathbb{F}$. Let $z = (b_7 X^2 + b_8
+X + b_9)Z_H + z'$. Add to the transcript $\mathsf{com}(z)$.
 
-Sample $\alpha$ from the transcript. Let $pi$ be the interpolation polynomial of the input matrix $\Pi$ at the domain $H$. Let
+\textcolor{green!60!black}{\textbf{Round 3}} Sample $\alpha \xleftarrow{R}
+\mathbb{F}$ from the transcript. Let $\pi(X)$ be the interpolation polynomial of the
+input matrix $\Pi$ at the domain $\Omega$. Let
 \begin{align*}
-p_1 &= aq_L + bq_R + abq_M + cq_o + q_C + pi \\
+p_1 &= aq_L + bq_R + abq_M + cq_o + q_C + \pi \\
 p_2 &= (a + \beta X + \gamma)(b + \beta k_1 X + \gamma)(c + \beta k_2 X + \gamma)z - \\
-    &- (a + \beta S_1 + \gamma)(b + \beta S_2 + \gamma)(c + \beta S_3 + \gamma)z(\omega X) \\
+    &- (a + \beta S_{\sigma,1} + \gamma)(b + \beta S_{\sigma,2} + \gamma)(c + \beta S_{\sigma,3} + \gamma)z(\omega X) \\
 p_3 &= (z - 1)L_1
 \end{align*}
-Define $p = p_1 + \alpha p_2 + \alpha^2 p_3$. Compute $t$ such that $p = tZ_H$. \\
-Write $t = t_{lo} + X^{N+2}t_{mid} + X^{2(N+2)}t_{hi}$, with $t_{lo}, t_{mid}$, and $t_{hi}$ polynomials of degree at most $N+1$. Sample random $b_{10}, b_{11}$ and define:
+
+Define the composite polynomial $p = p_1 + \alpha p_2 + \alpha^2 p_3$. Compute
+$t$ such that $p = tZ_{\Omega}$. Write $t = t_{\text{lo}} +
+X^{N+2}t_{\text{mid}} + X^{2(N+2)}t_{\text{hi}}$, with $t_{\text{lo}},
+t_{\text{mid}}$, and $t_{\text{hi}} \in \mathbb{F}^{\leq (N+1)}[X]$ polynomials
+of degree at most $N+1$. Sample random $b_{10}, b_{11} \xleftarrow{R} \mathbb{F}$ and define:
 \begin{align*}
-t_{lo} &= t'_{lo} + b_{10}X^{N+2} \\
-t_{mid} &= t'_{mid} - b_{10} + b_{11}X^{N+2} \\
-t_{hi} &= t'_{hi} - b_{11}
+t_{\text{lo}} &= t'_{\text{lo}} + b_{10}X^{N+2} \\
+t_{\text{mid}} &= t'_{\text{mid}} - b_{10} + b_{11}X^{N+2} \\
+t_{\text{hi}} &= t'_{\text{hi}} - b_{11}
 \end{align*}
 
-Add to the transcript commitments: com($t_{lo}$), com($t_{mid}$), com($t_{hi})$.
+Add to the transcript commitments: com($t_{\text{lo}}$), com($t_{\text{mid}}$), com($t_{\text{hi}})$.
 
-\paragraph{Round 4}
-
-Sample random $\zeta$ from the transcript. \\
-Compute:
-\[\bar{a} = a(\bar{\zeta}), \bar{b} = b(\bar{\zeta}), \bar{c} = c(\bar{\zeta}), \bar{S}_{o1} = S_{o1}(\bar{\zeta}), \bar{S}_{o2} = S_{o2}(\bar{\zeta}), \bar{z}_w = z(\bar{\zeta}_w)\]
+\textcolor{green!60!black}{\textbf{Round 4}} Sample random $\zeta \xleftarrow{R}
+\mathbb{F}$ from the transcript. Compute:
+\[\bar{a} = a(\zeta), \bar{b} = b(\zeta), \bar{c} = c(\zeta), \bar{S}_{\sigma,1} = S_{\sigma,1}(\zeta), \bar{S}_{\sigma,2} = S_{\sigma,2}(\zeta), \bar{z}_{\omega} = z(\zeta \omega)\]
 and add them to the transcript.
 
-\paragraph{Round 5}
-Sample random $v$ from the transcript. 
-Let:
+\textcolor{green!60!black}{\textbf{Round 5}} Sample random $v \xleftarrow{R}
+\mathbb{F}$ from the transcript. Let:
 \begin{align*}
 \hat{p}_{nc1} &= \bar{a}q_L + \bar{b}q_R + \bar{a}\bar{b}q_M + \bar{c}q_o + q_C \\
 \hat{p}_{nc2} &= (\bar{a} + \beta \zeta_1 + \gamma)(\bar{b} + \beta k_1 \zeta_1 + \gamma)(\bar{c} + \beta k_2 \zeta_1 + \gamma) z -\\
