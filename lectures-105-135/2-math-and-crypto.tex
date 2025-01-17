@@ -16,9 +16,9 @@ Let us get into specifics. Suppose that we want to specify that the encryption s
 \end{itemize}
 
 Of course, we require the \textbf{correctness}:
-\begin{equation}
+\begin{equation*}
     (\forall k \in \mathcal{K}) \, (\forall m \in \mathcal{M}): \{D(k,E(k,m)) = m\}
-\end{equation}
+\end{equation*}
 
 Now let us play the following game between adversary $\mathcal{A}$ and challenger $\mathcal{C}h$:
 \begin{enumerate}
@@ -60,9 +60,9 @@ Now let us play the following game between adversary $\mathcal{A}$ and challenge
 
 Now, what should happen if our encryption scheme is secure? The adversary should not be able to guess the bit $b$ with a probability significantly higher than $1/2$ (a random guess). Formally, define the 
 \textbf{advantage} of the adversary $\mathcal{A}$ as:
-\begin{equation}
+\begin{equation*}
     \text{SSAdv}[\mathcal{E}, \mathcal{A}] := \left| \Pr[\hat{b} = b] - \frac{1}{2} \right|
-\end{equation}
+\end{equation*}
 
 We say that the encryption scheme is \textbf{semantically secure}\footnote{This version of definition is called a \textbf{bit-guessing} version.} if for any efficient adversary $\mathcal{A}$ the advantage $\text{SSAdv}[\mathcal{A}]$ is negligible. In other words, the adversary cannot guess the bit $b$ with a probability significantly higher than $1/2$.
 
@@ -76,25 +76,25 @@ The alternative definition, which is problably easier to interpret, is the follo
 
 \begin{theorem}
     A function $f: \mathbb{N} \to \mathbb{R}$ is \textbf{negligible} if and only if for any $c \in \mathbb{R}_{>0}$, we have
-    \begin{equation}
+    \begin{equation*}
         \lim_{n \to \infty} f(n)n^c = 0
-    \end{equation}
+    \end{equation*}
 \end{theorem}
 
 \begin{example}
     The function $f(n) = 2^{-n}$ is negligible since for any $c \in \mathbb{R}_{>0}$ we have
-    \begin{equation}
+    \begin{equation*}
         \lim_{n \to \infty} 2^{-n}n^c = 0
-    \end{equation}
+    \end{equation*}
 
     The function $g(n) = \frac{1}{n!}$ is also negligible for similar reasons.
 \end{example}
 
 \begin{example}
     The function $h(n) = \frac{1}{n}$ is not negligible since for $c = 1$ we have
-    \begin{equation}
+    \begin{equation*}
         \lim_{n \to \infty} \frac{1}{n} \times n = 1 \neq 0
-    \end{equation}
+    \end{equation*}
 \end{example}
 
 Well, that is weird. For some reason we are considering a function the depends on some natural number $n$, but what is this number?
@@ -104,14 +104,14 @@ Typically, when defining the security of the cryptographic algorithm, we are con
 So all in all, we can define the semantic security as follows.
 
 \begin{definition}
-    The encryption scheme $\mathcal{E}$ with a security paramter $\lambda \in \mathbb{N}$ is \textbf{semantically secure} if for any efficient adversary $\mathcal{A}$ we have:
-    \begin{equation}
+    The encryption scheme $\mathcal{E}$ with a security paramter $\lambda \in \mathbb{N}$ is \textbf{semantically secure} if for any efficient adversary $\mathcal{A}$ the following value is negligible.
+    \begin{equation*}
         \left|\text{Pr}\begin{bmatrix}[c|c]
             & m_0, m_1 \gets \mathcal{A}, \; k \xleftarrow{R} \mathcal{K}, \; b \xleftarrow{R} \{0,1\} \\
             b = \hat{b} & c \gets E(k,m_b) \\
             &\hat{b} \gets \mathcal{A}(c)
-        \end{bmatrix} - \frac{1}{2}\right| < \text{negl}(\lambda)
-    \end{equation}
+        \end{bmatrix} - \frac{1}{2}\right|
+    \end{equation*}
 \end{definition}
 
 Do not be afraid of such complex notation, it is quite simple. Notation $\text{Pr}[A \mid B]$ means ``the probability of $A$, given that $B$ occurred''. So our inner probability is read as ``the probability that the guessed bit $\hat{b}$ equals $b$ given the setup on the right''. Then, on the right we define the setup: first we generate two messages $m_0,m_1 \in \mathcal{M}$, then we choose a random bit $b$ and a key $k$, cipher the message $m_b$, send it to the adversary and the adversary, based on provided cipher, gives $\hat{b}$ as an output. We then claim that the probability of the adversary to guess the bit $b$ is close to $1/2$.
@@ -173,9 +173,9 @@ Now, we loosen the requirements a bit. The \textbf{Decisional Diffie-Hellman} (D
     \end{enumerate}
 
     We define $\mathcal{A}$'s \textbf{advantage in solving the Decisional Diffie-Hellman problem in $\mathbb{G}$}, denoted as $\text{DDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as
-    \begin{equation}
+    \begin{equation*}
         \text{DDH}\mathsf{adv}[\mathcal{A},\mathbb{G}] := \left| \Pr[b = \hat{b}] - \frac{1}{2} \right|
-    \end{equation}
+    \end{equation*}
 \end{definition}
 
 Now, let us break this assumption for some quite generic group! Consider the following example.
@@ -194,9 +194,9 @@ Now, if we could efficiently determine, based on group element $g \in \mathbb{G}
 \end{lemma}
 
 \textbf{Proof.} If $\alpha$ is even, then $\alpha = 2\alpha'$ and thus
-\begin{equation}
+\begin{equation*}
     u^n = (g^{2\alpha'})^n = g^{2n\alpha'} = (g^{2n})^{\alpha'} = 1^{\alpha'} = 1
-\end{equation}
+\end{equation*}
 
 Conversely, if $u^n = 1$ then $u^{\alpha n}=1$, meaning that $2n \mid \alpha n$, implying that $\alpha$ is even. Lemma is proven.
 
@@ -367,8 +367,8 @@ For that reason, we provide the following algorithm:
 \begin{definition}[GCD and LCM for multiple arguments]
     We define the \textbf{greatest common divisor} $\gcd(a_1, a_2, \dots, a_n)$ and the \textbf{least common multiple} $\lcm(a_1, a_2, \dots, a_n)$ for any set of integers $a_1, a_2, \dots, a_n \in \mathbb{Z}$ as follows:
     \begin{align*}
-        \gcd(a_1, a_2, \dots, a_n) &= \max\{ d \in \mathbb{N}: d \mid a_1, d \mid a_2, \dots, d \mid a_n \}. \\
-        \lcm(a_1, a_2, \dots, a_n) &= \min\{ m \in \mathbb{N}: a_1 \mid m, a_2 \mid m, \dots, a_n \mid m \}.
+        \gcd(a_1, \dots, a_n) &= \max\{ d \in \mathbb{N}: d \mid a_1, \dots, d \mid a_n \}. \\
+        \lcm(a_1, \dots, a_n) &= \min\{ m \in \mathbb{N}: a_1 \mid m, \dots, a_n \mid m \}.
     \end{align*}
 \end{definition}
 
@@ -464,8 +464,8 @@ find the GCD.
             \end{enumerate}
         \vspace*{\fill}
     \end{minipage}
-    \begin{minipage}{0.7\textwidth}
-        \resizebox{0.7\textwidth}{!}{
+    \begin{minipage}{0.75\textwidth}
+        \resizebox{0.8\textwidth}{!}{
             \begin{tabular}{|c|c|c|c|c|c|c|c|}
                 \hline
                 
