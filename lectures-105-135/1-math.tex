@@ -9,11 +9,11 @@ Before going into the details, let us introduce some notation.
 \subsubsection{Set Theory}
 First, let us enumerate some fundamental sets:
 \begin{itemize}
-    \item $\mathbb{N}$ -- a set of natural numbers. Examples: $10, 13, 193, \dots$.
-    \item $\mathbb{Z}$ -- a set of integers. Examples: $-2, -6, 0, 62, 103, \dots$.
-    \item $\mathbb{Q}$ -- a set of rational numbers. Examples: $\{\frac{n}{m}: n \in \mathbb{Z}, m \in \mathbb{N}\}$.
-    \item $\mathbb{R}$ -- a set of real numbers. Examples: $2.2, 1.4, -6.7, \dots$.
-    \item $\mathbb{R}_{>0}$ -- a set of positive real numbers. Examples: $2.6, 10.4, 100.2$.
+    \item $\mathbb{N}$ -- a set of natural numbers: $\{1, 2, 3, 4, \dots\}$.
+    \item $\mathbb{Z}$ -- a set of integers numbers: $\{0, \pm 1, \pm 2, \pm 3, \dots\}$.
+    \item $\mathbb{Q}$ -- a set of rational numbers: $\{\frac{n}{m}: n \in \mathbb{Z}, m \in \mathbb{N}\}$.
+    \item $\mathbb{R}$ -- a set of real numbers. Examples: $0.2, -6.7, \dots$.
+    \item $\mathbb{R}_{>0}$ -- a set of positive real numbers.
     \item $\mathbb{C}$ -- a set of complex numbers\footnote{Complex number is an expression in a form $x+iy$ for $i^2=-1$}. Examples: $1+2i, 5i, -7-5.7i, \dots$.
 \end{itemize}
 
@@ -36,7 +36,7 @@ The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \i
 \tikzset{filled/.style={fill=circle area, draw=circle edge, ultra thick},
     outline/.style={draw=circle edge, ultra thick}}
 
-\begin{figure}
+\begin{figure}[H]
     \begin{center}
 \scalebox{0.5}{
 \begin{tabular}{cc}
@@ -76,7 +76,8 @@ The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \i
     \end{tikzpicture}
 \end{tabular}}
 \end{center}
-    \caption{Set operations illustrated with Venn diagrams.}
+    % \caption{Set operations illustrated with Venn diagrams.} 
+    \caption{Venn diagram illustration.}
 \label{fig:venn_diagrams}
 \end{figure}
 
@@ -100,9 +101,11 @@ Fix some set $A$. To denote that we are uniformly randomly picking some element 
 
 \subsubsection{Sequences and Vectors}
 
-To denote the infinite sequence $\{x_1,x_2,x_3,\dots\}$ we write $\{x_n\}_{n \in \mathbb{N}}$. To denote the finite sequence $\{x_1,x_2,\dots,x_n\}$ we write $\{x_k\}_{k=1}^n$. 
+To denote the infinite sequence $\{x_1,x_2,x_3,\dots\}$ we write $\{x_n\}_{n \in \mathbb{N}}$. 
+To denote the finite sequence $\{x_1,\dots,x_n\}$ we write $\{x_k\}_{k=1}^n$. 
 
-Vector is a collection of elements $\mathbf{x} = (x_1,\dots,x_n) \in A^n$. Finally, the scalar product\footnote{It is totally normal if you do not know what that is, we will explain more in the Bulletproof lecture} is denoted as $\langle \mathbf{x}, \mathbf{y} \rangle := \sum_{k=1}^n x_ky_k$.
+Vector is ordered list of elements $\mathbf{x} = (x_1, \dots ,x_n) \in A^n$. The scalar product\footnote{It is totally normal if you do not know what that is, we will explain more in the Bulletproof lecture} is denoted usually 
+as $\langle \mathbf{x}, \mathbf{y} \rangle := \sum_{k=1}^n x_ky_k$.
 
 \subsection{Introduction to Abstract Algebra}
 
@@ -178,7 +181,7 @@ For this reason, it makes sense to give a special name to a group in which the o
 
 \begin{example}
     The set of $2 \times 2$ matrices with real entries and determinant $1$ (denoted by $\text{SL}(2,\mathbb{R})$) is a group with respect to matrix multiplication. However, this group is not abelian! Take
-    \begin{equation}
+    \begin{equation*}
         A = \begin{pmatrix}
             1 & 1 \\
             0 & 1
@@ -186,10 +189,10 @@ For this reason, it makes sense to give a special name to a group in which the o
             1 & 0 \\
             1 & 1
         \end{pmatrix}.
-    \end{equation}
+    \end{equation*}
 
     Then, it is easy to verify that
-    \begin{equation}
+    \begin{equation*}
         AB = \begin{pmatrix}
             2 & 1 \\
             1 & 1
@@ -197,7 +200,7 @@ For this reason, it makes sense to give a special name to a group in which the o
             1 & 1 \\
             1 & 2
         \end{pmatrix},
-    \end{equation}
+    \end{equation*}
     so clearly $AB \neq BA$ -- the elements of $\text{SL}(2, \mathbb{R})$ do not commute.
 \end{example}
 
@@ -231,14 +234,14 @@ Since this guide is not a textbook on abstract algebra, we will not prove all th
 \textbf{First Statement Proof.} Suppose $e_1,e_2 \in \mathbb{G}$ are both identity elements. Consider $e_1e_2$. From the definition of the identity element, we know that $e_1e_2 = e_1$ and $e_1e_2 = e_2$. Therefore, $e_1 = e_2$.
 
 \textbf{Second Statement Proof.} Take $g \in \mathbb{G}$ and suppose $a,b \in \mathbb{G}$ are both inverses of $g$. By defininition,
-\begin{equation}
+\begin{equation*}
     ag = ga = e, \quad bg = gb = e.
-\end{equation}
+\end{equation*}
 
 Now, notice that
-\begin{equation}
+\begin{equation*}
     a = ae = a (gb) = (a g) b = e b = b
-\end{equation}
+\end{equation*}
 
 Thus, $a = b$.
 
@@ -268,9 +271,9 @@ The natural question to ask is whether $\mathbb{H}$ is a group itself. Yes, but 
 These are good examples, but let us consider a more interesting one, which we call a lemma. It is frequently used further when dealing with cosets and normal subgroups, but currently regard this just as an exercise.
 \begin{lemma}
     Let $\mathbb{G}$ be a group and $g \in \mathbb{G}$. The centralizer of $g$ is defined to be
-    \begin{equation}
+    \begin{equation*}
         C_g = \{h \in \mathbb{G}: h g = g h\}
-    \end{equation}
+    \end{equation*}
 
     Then, $C_g$ is a subgroup of $\mathbb{G}$.
 \end{lemma}
@@ -285,16 +288,16 @@ Probably, cyclic groups are the most interesting groups in the world of cryptogr
 we have a group $\mathbb{G}$ and $g \in \mathbb{G}$. Then, $g^n$ means multiplying (adding) $g$ to itself $n$ times. If $n$ is negative, then we add $g^{-1}$ to itself $|n|$ times. For $n=0$ we define $g^0 = e$. Now, let us define what the cyclic group is.
 \begin{definition}
     Given a group $\mathbb{G}$ and $g \in \mathbb{G}$ the cyclic subgroup generated by $g$ is
-    \begin{equation}
-        \langle g \rangle = \{g^n: n \in \mathbb{Z}\} = \{\dots,g^{-3}, g^{-2}, g^{-1}, e, g, g^2, g^3, \dots\}.
-    \end{equation}
+    \begin{equation*}
+        \langle g \rangle = \{g^n: n \in \mathbb{Z}\} = \{\dots, g^{-2}, g^{-1}, e, g, g^2, \dots\}.
+    \end{equation*}
 \end{definition}
 
 \begin{example}
     Consider the group of integers modulo $12$, denoted by $\mathbb{Z}_{12}$. Consider $2 \in \mathbb{Z}_{12}$, the group generated by $2$ is then
-    \begin{equation}
+    \begin{equation*}
         \langle 2 \rangle = \{2,4,6,8,10, 0\}
-    \end{equation}
+    \end{equation*}
 \end{example}
 
 \begin{definition}
@@ -312,9 +315,9 @@ suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is t
 
 \begin{definition}
     A function $\varphi: \mathbb{G} \to \mathbb{H}$ is called an \textbf{homomorphism} if it is a function that preserves the group operation, that is, 
-    \begin{equation}
+    \begin{equation*}
         \forall a,b \in \mathbb{G}: \varphi(a \oplus b) = \varphi(a) \odot \varphi(b).
-    \end{equation}
+    \end{equation*}
 \end{definition}
 
 \begin{definition}
@@ -327,18 +330,20 @@ suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is t
 
 \begin{example}
     Consider the group of integers $(\mathbb{Z},+)$ and the group of integers modulo $12$ $(\mathbb{Z}_{12},+)$. The function $\varphi: \mathbb{Z} \to \mathbb{Z}_{12}$ defined as $\varphi(x) = x \;\text{mod}\; 12$ is a homomorphism. Indeed:
-    \begin{equation}
-        \varphi(a+b) = (a+b) \;\text{mod}\; 12 = (a \;\text{mod}\; 12) + (b \;\text{mod}\; 12) = \varphi(a) + \varphi(b).
-    \end{equation}
+    \begin{align*}
+        \varphi(a+b) &= (a+b) \;\text{mod}\; 12 \\
+                     &= (a \;\text{mod}\; 12) + (b \;\text{mod}\; 12) \\
+                     &= \varphi(a) + \varphi(b)
+    \end{align*}
 
     However, this function is not an isomorphism, since it is not bijective. For example, $\varphi(0) = \varphi(12) = 0$.
 \end{example}
 
 \begin{example}
     Additive group of reals $(\mathbb{R}, +)$ and the multiplicative group of positive reals $(\mathbb{R}_{>0}, \times)$ are isomorphic. The function $\varphi: \mathbb{R} \to \mathbb{R}_{>0}$ defined as $\varphi(x) = e^x$ is an isomorphism. Indeed:
-    \begin{equation}
+    \begin{equation*}
         \varphi(a+b) = e^{a+b} = e^a \cdot e^b = \varphi(a) \cdot \varphi(b).
-    \end{equation}
+    \end{equation*}
     Thus, $\varphi$ is a homomorphism. It is also injective since $e^x = e^y \implies x=y$. Finally, it is obviously onto. This means $(\mathbb{R}, +) \cong (\mathbb{R}_{>0}, \times)$.
 \end{example}
 
@@ -433,9 +438,9 @@ Recall: we do not like reals, we want to operate with integers! But notice that 
 \end{example}
 
 \textbf{Inversion.} Inversion is a bit more tricky. Recall that $(\mathbb{Z}_p \setminus \{0\}, \times)$ must be an abelian group, meaning that for each $a \in \mathbb{Z}_p$ there should be some $x \in \mathbb{Z}_p$ such that $ax = 1$ (multiplication in a sense of definition above). In other words, we need to solve the modular equation:
-\begin{equation}
+\begin{equation*}
     ax \equiv 1 \pmod{p}.
-\end{equation}
+\end{equation*}
 
 Note that there is no guarantee that for any $a \in \mathbb{Z}_p \setminus \{0\}$ we might find such $x$. For example, take $p=10$ and $a=2$. Then, $2x \equiv 1 \pmod{10}$ has no solution. 
 
@@ -475,9 +480,9 @@ statements we will need to prove. That being said, let us define what polynomial
 
 \begin{definition}
     A \textbf{polynomial} $f(x)$ is a function of the form
-    \begin{equation}
+    \begin{equation*}
         p(x) = c_0 + c_1 x + c_2 x^2 + \cdots + c_n x^n = \sum_{k=0}^{n} c_k x^k,
-    \end{equation}
+    \end{equation*}
     where $c_0, c_1, \dots, c_n$ are coefficients of the polynomial.
 \end{definition}
 
@@ -485,9 +490,9 @@ Notice that for now we did not specify what are $c_i$'s. We are interested in th
 
 \begin{definition}
     A set of polynomials depending on $x$ with coefficients in a field $\mathbb{F}$ is denoted as $\mathbb{F}[x]$, that is
-    \begin{equation}
+    \begin{equation*}
         \mathbb{F}[x] = \left\{p(x) = \sum_{k=0}^{n} c_k x^k: c_k \in \mathbb{F}, \; k = 0,\dots,n\right\}.
-    \end{equation}
+    \end{equation*}
 \end{definition}
 
 \begin{definition}
@@ -540,9 +545,9 @@ One of the fundamental theorems of polynomials is following.
 
 \begin{theorem}
     Let $p(x) \in \mathbb{F}[x], \deg p \geq 1$. Then, $x_0 \in \mathbb{F}$ is a root of $p(x)$ if and only if there exists a polynomial $q(x)$ (with $\deg q = n-1$) such that
-    \begin{equation}
+    \begin{equation*}
         p(x) = (x-x_0)q(x)
-    \end{equation}
+    \end{equation*}
 \end{theorem}
 
 \begin{example}
@@ -553,16 +558,16 @@ Also, this might not be obvious, but we can also divide polynomials in the same 
 
 \begin{theorem}
     Given $f,g \in \mathbb{F}[x]$ with $g \neq 0$, there are unique polynomials $p,q \in \mathbb{F}[x]$ such that 
-    \begin{equation}
+    \begin{equation*}
         f = q \cdot g + r, \; 0 \leq \deg r < \deg g
-    \end{equation}
+    \end{equation*}
 \end{theorem}
 
 \begin{example}
     Consider $f(x) = x^3+2$ and $g(x) = x+1$ over $\mathbb{R}$. Then, we can write $f(x) = (x^2-x+1)g(x) + 1$, so the remainder of the division is $1$. Typically, we denote this as:
-    \begin{equation}
+    \begin{equation*}
         f \, \text{div} \, g = x^2-x+1, \quad f \, \text{mod} \, g = 1.
-    \end{equation}
+    \end{equation*}
 
     The notation is pretty similar to one used in integer division.
 \end{example}
@@ -611,29 +616,29 @@ in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the po
 \begin{theorem}
     Given a set of points $\{(x_0,y_0),(x_1,y_1),\dots,(x_n,y_n)\} \subset \mathbb{F} \times \mathbb{F}$, there is a unique polynomial $L(x)$ of degree $n$ such that $L(x_i) = y_i$ for all $i=0,\dots,n$. This polynomial is called the \textbf{Lagrange interpolation polynomial} and can be 
     found through the following formula:
-    \begin{equation}
+    \begin{equation*}
         L(x) = \sum_{i=0}^{n} y_i \ell_i(x), \quad \ell_i(x) = \prod_{j=0, j \neq i}^{n} \frac{x-x_j}{x_i-x_j}.
-    \end{equation}  
+    \end{equation*}  
 \end{theorem}
 
 \begin{lemma}
     The polynomials $\{\ell_i\}_{i=1}^n$, in fact, have quite an interesting property:
-    \begin{equation}
+    \begin{equation*}
         \ell_i(x_j) = \delta_{ij} = \begin{cases}
             1, & i = j \\ 0, & i \neq j
         \end{cases},
-    \end{equation}
+    \end{equation*}
     where $\delta_{ij}$ is the Kronecker delta. Moreover, $\{\ell_i\}_{i=1}^n$ form a basis of $\mathbb{F}^{(\leq n)}[x]$: for any polynomial $p(x) \in \mathbb{F}^{(\leq n)}[x]$ there exist unique coefficients $\alpha_0,\dots,\alpha_n \in \mathbb{F}$ such that
-    \begin{equation}
+    \begin{equation*}
         p(x) = \sum_{i=0}^{n} \alpha_i \ell_i(x).
-    \end{equation}
+    \end{equation*}
 \end{lemma}
 
 \begin{example}
     Suppose we have points $(0,1)$ and $(1,2)$. Then, the Lagrange interpolation polynomial is
-    \begin{equation}
+    \begin{equation*}
         L(x) = 1 \cdot \frac{x-1}{0-1} + 2 \cdot \frac{x-0}{1-0} = (-1) \cdot (x-1) + 2 \cdot x = x + 1
-    \end{equation}
+    \end{equation*}
 \end{example}
 
 \subsubsection{Some Fun: Shamir's Secret Sharing}
@@ -656,17 +661,17 @@ Now, let us define the sharing scheme.
     \end{itemize}
 
     Here, we require the \textbf{correctness}: for every $\alpha \in F$, for every possible output $(\alpha_1,\dots,\alpha_n) \gets \mathsf{Gen}(\alpha, t, n)$, and any $t$-size subset $\mathcal{I}$ of $\{1,\dots,n\}$ we have
-    \begin{equation}
+    \begin{equation*}
         \mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}}) = \alpha.
-    \end{equation}
+    \end{equation*}
 \end{definition}
 
 Now, Shamir's protocol is one of the most famous secret sharing schemes. It works as follows: our finite set is $\mathbb{F}_q$ for some large prime $q$. Then, algorithms in the protocol are defined as follows:
 \begin{itemize}
     \item $\mathsf{Gen}(\alpha, k, n)$: choose random $k_1,\dots,k_{t-1} \xleftarrow[]{R} \mathbb{F}_q$ and define the polynomial
-    \begin{equation}
+    \begin{equation*}
         \omega(x) := \alpha + k_1x + k_2x^2 + \cdots + k_{t-1}x^{t-1} \in \mathbb{F}_q^{\leq (t-1)}[x],     
-    \end{equation}
+    \end{equation*}
     and then compute $\alpha_i \gets \omega(i) \in \mathbb{F}_q, \; i = 1,\dots,n$. Return $(\alpha_1,\dots,\alpha_n)$.
     \item $\mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}})$: reconstruct the polynomial $\omega(x)$ using Lagrange interpolation and return $\omega(0) = \alpha$.
 \end{itemize}
@@ -992,13 +997,13 @@ as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \
 \end{enumerate}
 
 \textbf{Exercise 10*.} Denote by $\text{GL}(2,\mathbb{R})$ a set of $2\times 2$ invertable matrices with real entries. Define two functions $\varphi: \text{GL}(2,\mathbb{R}) \to \mathbb{R}$:
-\begin{equation}
+\begin{equation*}
     \varphi_1 \left(\begin{bmatrix}
         a & b \\ c & d
     \end{bmatrix}\right) = ad - bc, \; \varphi_2 \left(\begin{bmatrix}
         a & b \\ c & d
     \end{bmatrix}\right) = a + d
-\end{equation}
+\end{equation*}
 
 Den claims the following:
 \begin{enumerate}
