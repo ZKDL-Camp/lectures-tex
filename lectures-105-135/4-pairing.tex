@@ -302,11 +302,12 @@ Projective coordinates is a way to solve this problem. The idea is to represent 
 But why adding two points, say, $(X_P:Y_P:Z_P)$ and $(X_Q:Y_Q:Z_Q)$, in the projective form is more efficient? We will not derive the formulas, but trust us that they have the following form:
 \begin{equation*}
     \begin{aligned}
-        X_R = (X_PZ_Q - X_QZ_P)(Z_PZ_Q(Y_PZ_Q-Y_QZ_P)^2 - \\
-        - (X_PZ_Q-X_QZ_P)^2(X_PZ_Q+X_QZ_P)); \\
-        Y_R = Z_PZ_Q(X_QY_P - X_PY_Q)(X_PZ_Q-X_QZ_P)^2 - \\
-        - (Y_PZ_Q-Y_QZ_P)((Y_PZ_Q-Y_QZ_P)^2Z_PZ_Q \\ -(X_PZ_Q+X_QZ_P)(X_PZ_Q-X_QZ_P)^2); \\
-        Z_R = Z_PZ_Q(X_PZ_Q - X_QZ_P)^3.
+        &X_R = (X_PZ_Q - X_QZ_P)(Z_PZ_Q(Y_PZ_Q-Y_QZ_P)^2 - \\
+        &- (X_PZ_Q-X_QZ_P)^2(X_PZ_Q+X_QZ_P)); \\
+        &Y_R = Z_PZ_Q(X_QY_P - X_PY_Q)(X_PZ_Q-X_QZ_P)^2 - \\
+        &- (Y_PZ_Q-Y_QZ_P)((Y_PZ_Q-Y_QZ_P)^2Z_PZ_Q \\
+        &-(X_PZ_Q+X_QZ_P)(X_PZ_Q-X_QZ_P)^2); \\
+        &Z_R = Z_PZ_Q(X_PZ_Q - X_QZ_P)^3.
     \end{aligned}
 \end{equation*}
 
