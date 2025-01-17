@@ -66,9 +66,11 @@ At the same time, your friend cannot access the letter since they do not have th
         
         Define the advantage in the binding game as:
         
-        \begin{equation}
-            \mathsf{BindAdv}[\mathcal{A}, \Pi_{\text{commitment}}] = \text{Pr}[b_0 = b_1 \neq 0 \wedge m_0 \neq m_1]
-        \end{equation}
+        \begin{equation*}
+            \begin{aligned}
+                \mathsf{BindAdv}[\mathcal{A}, \Pi_{\text{commitment}}] = \\ = \text{Pr}[b_0 = b_1 \neq 0 \wedge m_0 \neq m_1]                
+            \end{aligned}
+        \end{equation*}
 
         We say that the commitment scheme is binding if for any adversary, such advantage is negligible.
 
@@ -213,7 +215,7 @@ One of Merkle tree key advantages is that it allows for the selective disclosure
 
 \subsubsection{Polynomial commitment}
 
-Polynomial commitment can be used to prove that the commited polynomial satisfies certain properties $P(x_1, x_2, \ldots, x_n) = y$, without revealing what the polynomial is.
+Polynomial commitment can be used to prove that the commited polynomial satisfies certain properties \\ $P(x_1, x_2, \ldots, x_n) = y$, without revealing what the polynomial is.
 The commitment is generally succint, which means that it is much smaller than the polynomial it represents.
 
 \textbf{The KZG polynomial commitment scheme}
@@ -237,7 +239,7 @@ The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
     
     \item \textit{Commit to polynomial}. Given the polynomial $p(x) = \sum_{i = 0}^{d} p_i x^i$, compute the commitment $c = [p(\tau)]G $ 
     using the trusted setup. Although the committer cannot compute $p(\tau)$ directly since the value of $\tau$ is unknown, he can
-    compute it using values $([\tau^0]G, [\tau^1]G, \ldots, [\tau^d]G)$:
+    compute it using values \\ $([\tau^0]G, [\tau^1]G, \ldots, [\tau^d]G)$:
     
     \begin{center}
        $ [p(\tau)]G = [\sum_{i=0}^{d} p_i \tau^i]G = \sum_{i=0}^{d}p_i[\tau^i]G$
