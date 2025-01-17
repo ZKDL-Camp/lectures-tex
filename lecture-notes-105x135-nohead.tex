@@ -42,7 +42,19 @@
         \includegraphics[width=0.8\textwidth]{lectures/images/cover-image-1.png}
     \end{figure}
 
+    \thispagestyle{empty}
     \pagebreak
+
+%  Inverse title page
+
+    \thispagestyle{empty}
+    \pagebreak
+    
+    \pagecolor{white}
+    
+    abstract + authors + isbn
+    
+    \thispagestyle{empty}
 
 % --- Table of Contents ---
 
@@ -101,5 +113,22 @@
     \section{PlonK}
 
     \subfile{lectures-105-135/12-plonk}
+
+    % Contacy page
+
+    \newpage
+    \pagestyle{empty}
+    
+    \ifodd\value{page}
+        \newpage
+    \fi
+    
+    \vspace*{\fill}
+    
+    \begin{center}
+        contact@distributedlab.com
+    \end{center}
+    
+    \vspace*{\fill}
 
 \end{document}
