@@ -8,18 +8,18 @@ Before delving into the projective coordinates and further zero-knowledge topics
 
 \begin{definition}
     Let $\mathcal{X},\mathcal{Y}$ be some sets. Then, $\mathcal{R}$ is a \textbf{relation} if 
-    \begin{equation}
+    \begin{equation*}
         \mathcal{R} \subset \mathcal{X} \times \mathcal{Y} = \{(x,y): x \in \mathcal{X}, y \in \mathcal{Y}\}
-    \end{equation}
+    \end{equation*}
 \end{definition}
 
 Interpretation is approximately the following: suppose we have sets $\mathcal{X}$ and $\mathcal{Y}$. Then, relation $\mathcal{R}$ gives a set of pairs $(x,y)$, telling that $x \in \mathcal{X}$ and $y \in \mathcal{Y}$ are \textit{related}.
 
 \begin{example}
     Let $\mathcal{X} = \{\text{Oleksandr}, \text{Phat}, \text{Anton}\}$ and $\mathcal{Y} = \{\text{Backend}, \text{Frontend}, \text{Research}\}$. Define the following relation of ``person $x$ works in field $y$'':
-    \begin{equation}
-        \mathcal{R} = \{(\text{Oleksandr}, \text{Research}), (\text{Phat}, \text{Frontend}), (\text{Anton}, \text{Backend})\}
-    \end{equation}
+    \begin{equation*}
+        \mathcal{R} = \{(\text{Oleksandr}, \text{Research}), (\text{Phat}, \text{Frontend}), \dots\}
+    \end{equation*}
     Obviously, $\mathcal{R} \subset \mathcal{X} \times \mathcal{Y}$, so $\mathcal{R}$ is a relation.
 \end{example}
 
@@ -31,9 +31,9 @@ Interpretation is approximately the following: suppose we have sets $\mathcal{X}
 
 \begin{example}
     Let $E$ be a cyclic group of points on the Elliptic Curve of order $r \geq 2$ with a generator $\langle G \rangle = E$. Let $\mathcal{X} = \mathbb{Z}_r$ and $\mathcal{Y} = E$. Define a relation $\mathcal{R} \subset \mathcal{X} \times \mathcal{Y}$ by:
-    \begin{equation}
+    \begin{equation*}
         \mathcal{R} = \{(\alpha, P) \in \mathbb{Z}_r \times E: [\alpha]G = P\}
-    \end{equation}
+    \end{equation*}
     Essentially, such a relation is a set of secret keys $\alpha$ and corresponding public keys $P$. In this case, for example, $0\mathcal{R}\mathcal{O}$ and $1\mathcal{R}G$ or $0 \sim \mathcal{O}$ and $1 \sim G$.
 \end{example}
 
@@ -43,13 +43,13 @@ Interpretation is approximately the following: suppose we have sets $\mathcal{X}
 
 \begin{remark}
     The provided example is relevant in most cases (ecdsa, eddsa, schnorr signatures etc.). But for some algorithms, the relation between secret key $\alpha$ and public key $P$ can be defined as:
-    \begin{equation}
+    \begin{equation*}
         \mathcal{R} = \{(\alpha, P) \in \mathbb{Z}_r \times E: \ominus[\alpha]G = P\}
-    \end{equation} 
+    \end{equation*} 
     for DSTU 4145 standard or even:
-    \begin{equation}
+    \begin{equation*}
         \mathcal{R} = \{(\alpha, P) \in \mathbb{Z}_r \times E: [\alpha^{-1}]G = P\}
-    \end{equation}
+    \end{equation*}
     for twisted ElGamal algorithm.
 \end{remark}
 
@@ -93,17 +93,17 @@ Now, suppose I give you a set $\mathcal{X}$ with some equivalence relation $\sim
 
 \begin{definition}
     Let $\mathcal{X}$ be a set and $\sim$ be an equivalence relation on $\mathcal{X}$. For any $x \in \mathcal{X}$, the \textbf{equivalence class} of $x$ is the set
-    \begin{equation}
+    \begin{equation*}
         [x] = \{y \in \mathcal{X}: x \sim y\}
-    \end{equation}
+    \end{equation*}
     The \textbf{set of all equivalence classes} is denoted by $\mathcal{X}/\text{$\sim$}$ (or, if the relation $\mathcal{R}$ is given explicitly, then $\mathcal{X}/\mathcal{R}$), which is read as ``$\mathcal{X}$ modulo relation $\sim$''.
 \end{definition}
 
 \begin{example}
     Let $\mathcal{X} = \mathbb{Z}$ and $n$ be some fixed integer. Define $\sim$ on $\mathcal{X}$ by $x \sim y$ if $x \equiv y \pmod{n}$. Then the equivalence class of $x$ is the set
-    \begin{equation}
+    \begin{equation*}
         [x] = \{y \in \mathbb{Z}: x \equiv y \pmod{n}\}
-    \end{equation}
+    \end{equation*}
     For example, $[0] = \{\ldots,-2n,-n,0,n,2n,\ldots\}$ while $[1] = \{\ldots,-2n+1,-n+1,1,n+1,2n+1,\ldots\}$.
 \end{example}
 
@@ -119,17 +119,17 @@ Now, as we have said before, a set of all equivalence classes form a partition o
 
 \begin{example}
     Let $n \in \mathbb{N}$ and, again, $\mathcal{X} = \mathbb{Z}$ with a ``modulo $n$'' equivalence relation $\mathcal{R}_n$. Define the equivalence class of $x$ by $[x]_n = \{y \in \mathbb{Z}: x \equiv y \pmod{n}\}$. Then, 
-    \begin{equation}
+    \begin{equation*}
         \mathbb{Z}/\mathcal{R}_n = \{[0]_n, [1]_n, [2]_n, \dots, [n-2]_n, [n-1]_n\}
-    \end{equation}
+    \end{equation*}
     forms a partition of $\mathbb{Z}$, that is 
-    \begin{equation}
+    \begin{equation*}
         \bigcup_{i=0}^{n-1} [i]_n = \mathbb{Z},
-    \end{equation}
+    \end{equation*}
     and for all $i,j \in \{0,1,\dots,n-1\}$, if $i \neq j$, then $[i]_n \cap [j]_n = \emptyset$. Commonly, we denote the set of all equivalence classes as $\mathbb{Z}/n\mathbb{Z}$ or, as we got used to, $\mathbb{Z}_n$. Moreover, we can naturally define the addition as:
-    \begin{equation}
+    \begin{equation*}
         [x]_n + [y]_n = [x+y]_n
-    \end{equation}
+    \end{equation*}
     Then, the set $(\mathbb{Z}/n\mathbb{Z},+)$ with the defined addition is a group.
 \end{example}
 
@@ -139,9 +139,9 @@ The primary reason we considered equivalence relations is that we will define th
 \subsubsection{Projective Space}
 
 Recall that we defined the elliptic curve as 
-\begin{equation}    
+\begin{equation*}    
     E(\overline{\mathbb{F}}_p) := \{(x,y) \in \mathbb{A}^2(\overline{\mathbb{F}}_p): y^2 = x^3+ax+b\} \cup \{\mathcal{O}\}
-\end{equation}
+\end{equation*}
 
 The above definition is the definition of the elliptic curve in \textit{the affine space}. However, notice that in this case 
 we need to append a somewhat artificial point $\mathcal{O}$ to the curve. This is done to make the curve a group since without 
@@ -159,9 +159,12 @@ Now, to the formal definition.
 
 \begin{definition}
     \textbf{Projective coordinate}, denoted as $\mathbb{P}^2(\mathbb{K})$ (or sometimes simply $\mathbb{K}\mathbb{P}^2$) is a triple of elements $(X:Y:Z)$ from $\mathbb{A}^3(\overline{\mathbb{K}}) \setminus \{0\}$ modulo the equivalence relation\footnote{Although we specify the definition for $n=2$, the definition can be generalized to any $\mathbb{P}^n(\overline{\mathbb{K}})$.}:
-    \begin{equation}
-        (X_1:Y_1:Z_1) \sim (X_2:Y_2:Z_2) \;\; \text{iff} \;\; \exists \lambda \in \overline{\mathbb{K}}: (X_1:Y_1:Z_1) = (\lambda X_2: \lambda Y_2: \lambda Z_2)
-    \end{equation}
+    \begin{equation*}
+        \begin{aligned}
+            (X_1:Y_1:Z_1) \sim (X_2:Y_2:Z_2) \;\; \text{iff} \;\; \exists \lambda \in \overline{\mathbb{K}}: \\
+            (X_1:Y_1:Z_1) = (\lambda X_2: \lambda Y_2: \lambda Z_2)            
+        \end{aligned}
+    \end{equation*}
 \end{definition}
 
 This definition on itself might be a bit too abstract, so let us consider the concrete example for projective space $\mathbb{P}^2(\mathbb{R})$.
@@ -205,18 +208,18 @@ Now, projective coordinates are not that useful unless we can come back to the a
 \subsubsection{Elliptic Curve Equation in Projective Form}
 
 Now, quite an interesting question is following: how to represent (basically, rewrite) the ``affine'' elliptic curve equation\footnote{Further, we will use notation $E_{\mathbb{A}}$ to represent the elliptic curve equation in the affine form, and $E_{\mathbb{P}}$ to represent the elliptic curve in the projective form.}
-\begin{equation}
+\begin{equation*}
     E_{\mathbb{A}}(\overline{\mathbb{F}}_p): y^2 = x^3 + ax + b, \; a,b \in \overline{\mathbb{F}}_p
-\end{equation}
+\end{equation*}
 in the projective form? Since currently, we defined the curve as the 2D curve, but now we are working in 3D space! The answer is following: recall that if $(X:Y:Z) \in \mathbb{P}^2(\overline{\mathbb{F}}_p)$ lies on the curve, so does the point $(X/Z,Y/Z)$. The condition on the latter point to lie on $E_{\mathbb{A}}(\overline{\mathbb{F}}_p)$ is following:
-\begin{equation}
+\begin{equation*}
     \left(\frac{Y}{Z}\right)^2 = \left(\frac{X}{Z}\right)^3 + a\cdot \frac{X}{Z} + b
-\end{equation}
+\end{equation*}
 
 But now multiply both sides by $Z^3$ to get rid of the fractions:
-\begin{equation}
+\begin{equation*}
     E_{\mathbb{P}}(\overline{\mathbb{F}}_p): Y^2Z = X^3 + aXZ^2 + bZ^3
-\end{equation}
+\end{equation*}
 
 This is an equation of the elliptic curve in \textbf{projective form}. 
 
@@ -228,9 +231,9 @@ Finally, let us summarize what we have observed so far.
 
 \begin{definition}
     The \textbf{homogenous projective form of the elliptic curve} $E_{\mathbb{P}}(\overline{\mathbb{F}}_p)$ is defined as the set of all points $(X:Y:Z) \in \mathbb{P}^2(\overline{\mathbb{F}}_p)$ in the projective space that satisfy the equation
-    \begin{equation}
+    \begin{equation*}
         E_{\mathbb{P}}(\overline{\mathbb{F}}_p): Y^2Z = X^3 + aXZ^2 + bZ^3, \;\; a,b \in \overline{\mathbb{F}}_p,
-    \end{equation}
+    \end{equation*}
     where the point at infinity is encoded as $\mathcal{O} = (0:1:0)$.
 \end{definition}
 
@@ -247,16 +250,19 @@ Finally, let us summarize what we have observed so far.
 
 \subsubsection{General Projective Coordinates}
 Hold on, but why did we use the term \textit{homogenous}? The reason why is because we defined equivalence as follows: $(X:Y:Z) \sim (\lambda X: \lambda Y: \lambda Z)$ for some $\lambda \in \overline{\mathbb{K}}$, called \textbf{homogenous coordinates}. However, this is not the only way to define equivalence. Consider a more general form of equivalence relation:
-\begin{equation}
-    (X:Y:Z) \sim (X':Y':Z') \;\; \text{iff} \;\; \exists \lambda \in \overline{\mathbb{K}}: (X,Y,Z) = (\lambda^n X', \lambda^m Y', \lambda Z')
-\end{equation}
+\begin{equation*}
+    \begin{aligned}
+        (X:Y:Z) \sim (X':Y':Z') \;\; \text{iff} \;\; \exists \lambda \in \overline{\mathbb{K}}: (X,Y,Z) = \\
+        = (\lambda^n X', \lambda^m Y', \lambda Z')
+    \end{aligned}
+\end{equation*}
 
 In this case, to come back to the affine form, we need to use the map $\phi: (X:Y:Z) \mapsto (X/Z^n, Y/Z^m)$. 
 \begin{example}
     The case $n=2,m=3$ is called the \textbf{Jacobian Projective Coordinates}. An Elliptic Curve equation might be then rewritten as: 
-    \begin{equation}
+    \begin{equation*}
         Y^2 = X^3 + aXZ^4 + bZ^6
-    \end{equation}
+    \end{equation*}
     The reason why we might want to use such coordinates is that they can be more efficient in some operations, such as point addition. However, we will not delve into this topic much further.
 \end{example}
 
@@ -274,9 +280,9 @@ In this case, to come back to the affine form, we need to use the map $\phi: (X:
 \subsubsection{Fast Addition}
 
 Let us come back to the affine case and assume that the underlying field is the prime field $\mathbb{F}_p$. Recall that for adding two points $P=(x_P,y_P)$ and $Q=(x_Q,y_Q)$ to get $R=(x_R,y_R) \gets P \oplus Q$ one used the following formulas (there is no need to understand the derivation fully, just take it as a fact):
-\begin{equation}
+\begin{equation*}
     x_R \gets \left(\frac{y_Q-y_P}{x_Q-x_P}\right)^2 - x_P - x_Q, \;\;\; y_R \gets \left(\frac{y_Q-y_P}{x_Q-x_P}\right)(x_P-x_R) - y_P
-\end{equation}
+\end{equation*}
 
 Denote by $\textcolor{blue}{\mathsf{M}}$ the cost of multiplication, by $\textcolor{green!60!black}{\mathsf{S}}$ the cost of squaring, and by $\textcolor{red}{\mathsf{I}}$ the cost of inverse operation in $\mathbb{F}_p$. Note that we do not count addition/inverse costs as they are significantly lower than operations listed. Then, the cost of additing two points using above formula is $2\textcolor{blue}{\mathsf{M}} + 1\textcolor{green!60!black}{\mathsf{S}} + 1\textcolor{red}{\mathsf{I}}$. Indeed, our computation can proceed as follows:
 \begin{enumerate}
@@ -294,13 +300,15 @@ Now imagine we want to add 4 points, say $P_1 \oplus P_2 \oplus P_3 \oplus P_4$:
 Projective coordinates is a way to solve this problem. The idea is to represent points in the projective form $(X:Y:Z)$, so when adding two numbers in projective form, you still get a point in a form $(X:Y:Z)$. Then, after conducting a series of additions, you can convert the point back to the affine form. 
 
 But why adding two points, say, $(X_P:Y_P:Z_P)$ and $(X_Q:Y_Q:Z_Q)$, in the projective form is more efficient? We will not derive the formulas, but trust us that they have the following form:
-\begin{equation}
+\begin{equation*}
     \begin{aligned}
-        X_R = (X_PZ_Q - X_QZ_P)(Z_PZ_Q(Y_PZ_Q-Y_QZ_P)^2 - (X_PZ_Q-X_QZ_P)^2(X_PZ_Q+X_QZ_P)); \\
-        Y_R = Z_PZ_Q(X_QY_P - X_PY_Q)(X_PZ_Q-X_QZ_P)^2 - (Y_PZ_Q-Y_QZ_P)((Y_PZ_Q-Y_QZ_P)^2Z_PZ_Q\\-(X_PZ_Q+X_QZ_P)(X_PZ_Q-X_QZ_P)^2); \\
+        X_R = (X_PZ_Q - X_QZ_P)(Z_PZ_Q(Y_PZ_Q-Y_QZ_P)^2 - \\
+        - (X_PZ_Q-X_QZ_P)^2(X_PZ_Q+X_QZ_P)); \\
+        Y_R = Z_PZ_Q(X_QY_P - X_PY_Q)(X_PZ_Q-X_QZ_P)^2 - \\
+        - (Y_PZ_Q-Y_QZ_P)((Y_PZ_Q-Y_QZ_P)^2Z_PZ_Q \\ -(X_PZ_Q+X_QZ_P)(X_PZ_Q-X_QZ_P)^2); \\
         Z_R = Z_PZ_Q(X_PZ_Q - X_QZ_P)^3.
     \end{aligned}
-\end{equation}
+\end{equation*}
 
 Do not be afraid, you do not need to understand how this formula is derived. But notice that despite the very scary look, there is no inversions involved! Moreover, this formula can be calculated in only $12\textcolor{blue}{\mathsf{M}}+2\textcolor{green!60!black}{\mathsf{S}}$! So all in all, this is much more effective than $2\textcolor{blue}{\mathsf{M}} + 1\textcolor{green!60!black}{\mathsf{S}} + 1\textcolor{red}{\mathsf{I}}$.
 
@@ -330,7 +338,7 @@ First idea: let us simply add $P$ to itself $k$ times. Well, the complexity woul
 
 So there should be a better way. In this section we will limit ourselves to the double-and-add method, but the curious reader can look up the NAF (Non-Adjacent Form) method, windowed methods, GLV scalar decomposition and many other methods, which we are not going to cover in this course.
 
-The idea of the double-and-add method is following: we represent the $N$-bit scalar $k$ in binary form, say $k = (k_{N-1},k_{N-2},\dots,k_0)_2$, then we calculate $P, [2]P, [4]P, [8]P, \dots, [2^{N-1}]P$ (which is simply applying the doubling multple times) and then add the corresponding points (corresponding to positions where $k_i=1$) to get the result. Formally, we specify the \Cref{alg:double_and_add}.
+The idea of the double-and-add method is following: we represent the $N$-bit scalar $k$ in binary form, say $k = (k_{N-1},\dots,k_0)_2$, then we calculate $P, [2]P, \dots, [2^{N-1}]P$ (which is simply applying the doubling multple times) and then add the corresponding points (corresponding to positions where $k_i=1$) to get the result. Formally, we specify the \Cref{alg:double_and_add}.
 
 \begin{algorithm}
     \caption{Double-and-add method for scalar multiplication}\label{alg:double_and_add}
@@ -378,7 +386,10 @@ So what is pairing?
     \begin{itemize}
         \item \textbf{Bilinearity} means essentially the following:
         \begin{equation*}
-            e([a]\textcolor{red}{P},[b]\textcolor{blue}{Q}) = e([ab]\textcolor{red}{P},\textcolor{blue}{Q}) = e(\textcolor{red}{P},[ab]\textcolor{blue}{Q}) = e(\textcolor{red}{P},\textcolor{blue}{Q})^{ab}.        
+            \begin{aligned}
+                e([a]\textcolor{red}{P},[b]\textcolor{blue}{Q}) = e([ab]\textcolor{red}{P},\textcolor{blue}{Q}) = \\
+                = e(\textcolor{red}{P},[ab]\textcolor{blue}{Q}) = e(\textcolor{red}{P},\textcolor{blue}{Q})^{ab}.                        
+            \end{aligned}
         \end{equation*}
         \item \textbf{Non-degeneracy} means that $e(G_1,G_2) \neq 1$ (where $G_1,G_2$ are generators of $\textcolor{red}{\mathbb{G}_1},\textcolor{blue}{\mathbb{G}_2}$, respectively). This property basically says that the pairing is not trivial.
         \item \textbf{Efficient computability} means that the pairing can be computed in a reasonable time.
@@ -396,9 +407,9 @@ So what is pairing?
 
 \begin{example}
     Suppose $\mathbb{G}_1=\mathbb{G}_2=\mathbb{G}_T=\mathbb{Z}_r$ are scalars. Then, the map $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$, defined as:
-    \begin{equation}
+    \begin{equation*}
         e(x,y)= 2^{xy}
-    \end{equation}
+    \end{equation*}
     is pairing. Indeed, it is bilinear. For example, $e(ax,by) = 2^{abxy} = (2^{xy})^{ab} = e(x,y)^{ab}$ or $e(ax,by)=2^{abxy}=2^{(x)(aby)}=e(x,aby)$. Moreover, it is non-degenerate, since $e(1,1)=2 \neq 1$. And finally, it is obviously efficiently computable.
 
     However, this is a quite trivial example since working over integers is typically not secure. For example, the discrete logarithm over $\mathbb{Z}_r$ can be solved in subexponential time. For that reason, we want to build pairings over elliptic curves.
@@ -434,8 +445,12 @@ So what is pairing?
 
 Pretty obvious observation: lower embedding degree is faster to work with, since it allows us to work over smaller fields. But usually, this embedding degree is quite large and we need to craft elliptic curves specifically to have a small embedding degree. For example, a pretty famous curve \texttt{secp256k1} has an embedding degree
 \begin{equation*}
-    k = \mathsf{0x2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa74727a26728c1ab49ff8651778090ae0},
+    \begin{aligned}    
+    k = \mathsf{0x2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa} \\
+    \mathsf{74727a26728c1ab49ff8651778090ae0}
+    \end{aligned}
 \end{equation*}
+
 which is 254-bit long. For that reason, it is natural to define the term \textit{pairing-friendly elliptic curve}.
 \begin{definition}
     An elliptic curve is called \textbf{pairing-friendly} if it has a relatively small embedding degree $k$ (typically, $k \leq 16$).
@@ -443,9 +458,9 @@ which is 254-bit long. For that reason, it is natural to define the term \textit
 
 \begin{remark}
     One might ask why usually, when dealing with pairings, we do not get to work with field extensions that much (most likely, if you were to write \texttt{groth16} from scratch using some mathematical libraries, you will not need to work with $\mathbb{F}_{p^{12}}$ arithmetic specifically). The reason is that typically, libraries implement the following abstraction: given a set of points $\{(P_i,Q_i)\}_{i=1}^n \subset \mathbb{G}_1^n \times \mathbb{G}_2^n$, the function checks whether
-    \begin{equation}
+    \begin{equation*}
         \prod_{i=1}^n e(P_i,Q_i) = 1
-    \end{equation}
+    \end{equation*}
     Note that in this case, we do not need to work with $\mathbb{F}_{p^{12}}$ arithmetic, but rather checking the equality in the target group $\mathbb{G}_T$. 
 
     \textbf{Interesting fact:} this condition is specified in the \texttt{ecpairing} precompile standard used in Ethereum.
@@ -466,9 +481,12 @@ Suppose we have pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ (
 \end{definition}
         
 Let us check the correctness:
-\begin{equation}
-    e(\sigma,G_2) = e(\textcolor{blue}{[\mathsf{sk}]}\mathsf{H}(m),G_2) = e(\mathsf{H}(m), \textcolor{blue}{[\mathsf{sk}]}G_2) = e(\mathsf{H}(m), \mathsf{pk})
-\end{equation}
+\begin{equation*}
+    \begin{aligned}
+        e(\sigma,G_2) = e(\textcolor{blue}{[\mathsf{sk}]}\mathsf{H}(m),G_2) = \\
+        = e(\mathsf{H}(m), \textcolor{blue}{[\mathsf{sk}]}G_2) = e(\mathsf{H}(m), \mathsf{pk})        
+    \end{aligned}
+\end{equation*}
 
 As we see, the verification equation holds. 
     
@@ -505,17 +523,22 @@ This scheme is also quite famous for its aggregation properties, which we are no
 
 \begin{example}
     Finally, let us prove something more interesting. Like, based on $(x_1,x_2)$, whether
-    \begin{equation}
+    \begin{equation*}
         x_1^2 + x_1x_2 = x_2
-    \end{equation}
+    \end{equation*}
     Alice can calculate $P_1 \gets [x_1]G_1 \in \mathbb{G}_1, P_2 \gets [x_1]G_2 \in \mathbb{G}_2, Q \gets [x_2]G_2 \in \mathbb{G}_2$. Then, the condition can be verified by checking whether
-    \begin{equation}
+    \begin{equation*}
         e(P_1,P_2\oplus Q)e(G_1,\ominus Q) = 1
-    \end{equation}
+    \end{equation*}
     Let us see the correctness of this equation:
-    \begin{gather}
-        e(P_1,P_2\oplus Q)e(G_1,\ominus Q) = e([x_1]G_1,[x_1+x_2]G_2)e(G_1,[x_2]G_2)^{-1} \nonumber \\= e(G_1,G_2)^{x_1(x_1+x_2)}e(G_1,G_2)^{-x_2} = e(G_1,G_2)^{x_1^2+x_1x_2-x_2}
-    \end{gather}
+    \begin{equation*}
+        \begin{aligned}
+            e(P_1,P_2\oplus Q)e(G_1,\ominus Q) = \\ 
+            = e([x_1]G_1,[x_1+x_2]G_2)e(G_1,[x_2]G_2)^{-1} \nonumber = \\
+            = e(G_1,G_2)^{x_1(x_1+x_2)}e(G_1,G_2)^{-x_2} = \\
+            = e(G_1,G_2)^{x_1^2+x_1x_2-x_2}            
+        \end{aligned}
+    \end{equation*}
     Now, if this is $1$, then $x_1^2+x_1x_2=x_2$, which was exactly what we wanted to prove.
 \end{example}
 
