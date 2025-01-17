@@ -8,7 +8,10 @@ To better illustrate the Fiat-Shamir Transformation in practice, let us consider
 
 Let us formalize it using theory from \Cref{section:relations_and_languages}. Suppose $\mathbb{G}$ is a cyclic group of order $q$ with a generator $g$. Then, the relation and language being considered are:
 \begin{equation*}
-    \mathcal{R} = \{(u, \alpha) \in \mathbb{G} \times \mathbb{Z}_q: u = g^{\alpha}\}, \; \mathcal{L}_{\mathcal{R}} = \{u \in \mathbb{G}: \exists \alpha \in \mathbb{Z}_q: u = g^{\alpha}\}
+    \begin{aligned}
+        &\mathcal{R} = \{(u, \alpha) \in \mathbb{G} \times \mathbb{Z}_q: u = g^{\alpha}\}, \\
+        &\mathcal{L}_{\mathcal{R}} = \{u \in \mathbb{G}: \exists \alpha \in \mathbb{Z}_q: u = g^{\alpha}\}        
+    \end{aligned}
 \end{equation*}
 
 Now, suppose prover $\mathcal{P}$ has a valid statement and a witness $(u,\alpha) \in \mathcal{R}$ and he wants to convince the verifier $\mathcal{V}$ that he knows the witness $\alpha$ to the public statement $u$ (that is, we are building the proof of knowledge). Well, the easiest way how to proceed is simply giving $\alpha$ to $\mathcal{V}$, but this is obviously not what we want. Instead, the Schnorr protocol allows $\mathcal{P}$ to prove the knowledge of $\alpha$ without revealing it. 
@@ -110,7 +113,7 @@ Now, notice that the provided protocol is a public-coin protocol. Therefore, we 
     \item The prover $\mathcal{P}$ computes $r \gets \mathbb{Z}_q^{\times}, a \gets g^{r}$ and sends $a$ to the Fiat-Shamir Channel.
     \item The Fiat-Shamir channel responds with the challenge $e \gets \mathcal{O}_{\text{R}}(u,a)$.
     \item The prover $\mathcal{P}$ computes $\sigma \gets r + \alpha e$ and sends $\sigma$ to the Fiat-Shamir Channel.
-    \item The Fiat-Shamir channel outputs the proof $\pi = (a,e,\sigma)$, which the verifier can check via previously mentioned equation $g^{\sigma} = a \cdot u^e$.
+    \item The Fiat-Shamir channel outputs the proof \\ $\pi = (a,e,\sigma)$, which the verifier can check via previously mentioned equation $g^{\sigma} = a \cdot u^e$.
 \end{enumerate}
 
 Now, notice that $e$ might not be included in the proof since the verifier can compute it by himself. Therefore, the final proof $\pi$ can be reduced to $(a,\sigma) \in \mathbb{G} \times \mathbb{Z}_q$ and its computation does not need any interaction with the verifier. Moreover, it is still complete, sound, and proof of knowledge due to the Fiat-Shamir transformation. It is also (not easy to prove) zero-knowledge.
@@ -219,7 +222,10 @@ Now, let us describe the protocol.
 
 \textit{Completeness.} Suppose indeed that $(u,(\alpha,\beta)) \in \mathcal{R}$. Then, the verification condition can be written as follows:
 \begin{equation*}
-    g^{\alpha_z}h^{\beta_z} = g^{\alpha_r + \alpha c}h^{\beta_r + \beta c} = g^{\alpha_r}g^{\alpha c}h^{\beta_r}h^{\beta c} = \underbrace{(g^{\alpha_r}h^{\beta_r})}_{=u_r} \cdot (\underbrace{g^{\alpha}h^{\beta}}_{=u})^c = u_r u^c
+    \begin{aligned}
+        & g^{\alpha_z}h^{\beta_z} = g^{\alpha_r + \alpha c}h^{\beta_r + \beta c} = g^{\alpha_r}g^{\alpha c}h^{\beta_r}h^{\beta c} = \\ 
+        & = \underbrace{(g^{\alpha_r}h^{\beta_r})}_{=u_r} \cdot (\underbrace{g^{\alpha}h^{\beta}}_{=u})^c = u_r u^c        
+    \end{aligned}
 \end{equation*}
 
 \textit{Special Soundness}. Suppose we are given two accepting conversations: $(u_r,c,(\alpha_z,\beta_z))$ and $(u_r,c',(\alpha_z',\beta_z'))$ and we want to construct an extractor $\mathcal{E}$ which would give us a witness $(\alpha,\beta)$. In this case, we have the following holding:
@@ -300,7 +306,10 @@ And now the prover $\mathcal{P}$ wants to convince the verifier $\mathcal{V}$ th
         \item \textbf{Schnorr Protocol:} Here we have $\mathbb{H} = \mathbb{Z}_q$, $\mathbb{T} = \mathbb{G}$, and $\psi: \mathbb{Z}_q \to \mathbb{G}$ is defined as $\psi(\alpha) = g^{\alpha}$. Moreover, here $\psi$ is an isomorphism!
         \item \textbf{Okamoto Protocol:} Here we have $\mathbb{H} = \mathbb{Z}_q^2$, $\mathbb{T} = \mathbb{G}$, and $\psi: \mathbb{Z}_q^2 \to \mathbb{G}$ is defined as $\psi(\alpha,\beta) = g^{\alpha}h^{\beta}$. It is also quite easy to see that $\psi$ is a homomorphism:
         \begin{equation*}
-            \psi((\alpha,\beta) + (\alpha',\beta')) = \psi(\alpha+\alpha',\beta+\beta') = g^{\alpha+\alpha'}h^{\beta+\beta'} = g^{\alpha}h^{\beta}g^{\alpha'}h^{\beta'} = \psi(\alpha,\beta)\psi(\alpha',\beta')
+            \begin{aligned}
+                &\psi((\alpha,\beta) + (\alpha',\beta')) = \psi(\alpha+\alpha',\beta+\beta') = \\ 
+                &= g^{\alpha+\alpha'}h^{\beta+\beta'} = g^{\alpha}h^{\beta}g^{\alpha'}h^{\beta'} = \psi(\alpha,\beta)\psi(\alpha',\beta')                
+            \end{aligned}
         \end{equation*}
         \item \textbf{Chaum-Pedersen Protocol:} Here we have $\mathbb{H} = \mathbb{Z}_q$, $\mathbb{T} = \mathbb{G}^2$, and $\psi: \mathbb{Z}_q \to \mathbb{G}^2$ is defined as $\psi(\beta) = (g^{\beta},u^{\beta})$. Again, it is easy to see that $\psi$ is a homomorphism.
     \end{itemize}
@@ -332,7 +341,10 @@ Among two, the second one is a bit more interesting since it allows us to prove 
 
 Now, let the prover $\mathcal{P}$ prove the witness knowledge of the following relation:
 \begin{equation*}
-    \mathcal{R}_{\text{AND}} = \left\{ ((x_0,x_1), (w_0,w_1)) \in (\mathcal{X}_0 \times \mathcal{X}_1) \times (\mathcal{W}_0 \times \mathcal{W}_1): (w_0,x_0) \in \mathcal{R}_0 \wedge (w_1,x_1) \in \mathcal{R}_1 \right\}
+    \begin{aligned}
+        &\mathcal{R}_{\text{AND}} = \{ ((x_0,x_1), (w_0,w_1)) \in (\mathcal{X}_0 \times \mathcal{X}_1) \times (\mathcal{W}_0 \times \mathcal{W}_1): \\
+        &(w_0,x_0) \in \mathcal{R}_0 \wedge (w_1,x_1) \in \mathcal{R}_1 \}        
+    \end{aligned}
 \end{equation*}
 
 We define the following protocol.
@@ -353,7 +365,10 @@ However, such protocol is not very interesting since what we did essentially is 
 
 The less trivial example is the following: define the relation
 \begin{equation*}
-    \mathcal{R}_{\text{OR}} = \left\{ ((x_0, x_1), (w, b)) \in (\mathcal{X}_0 \times \mathcal{X}_1) \times ((\mathcal{W}_0 \cup \mathcal{W}_1) \times \{0,1\}): (x, w_b) \in \mathcal{R}_b \right\}
+    \begin{aligned}        
+        &\mathcal{R}_{\text{OR}} = \{ ((x_0, x_1), (w, b)) \in \\
+        & \in (\mathcal{X}_0 \times \mathcal{X}_1) \times ((\mathcal{W}_0 \cup \mathcal{W}_1) \times \{0,1\}): (x, w_b) \in \mathcal{R}_b \}
+    \end{aligned}
 \end{equation*}
 
 Here, the statement is $x_0$ and $x_1$, but the witness is the witness $w$ to either $x_0$ or $x_1$, and the bit $b \in \{0,1\}$, marking to which of the statement $w$ belongs to. That being said, $w$ might be from either set $\mathcal{W}_0$ or $\mathcal{W}_1$: that is why we say that $w \in \mathcal{W}_0 \cup \mathcal{W}_1$.
@@ -394,13 +409,15 @@ Now, we describe the algorithm.
     Below, mark whether the properties of \textit{completeness}, \textit{soundness}, and \textit{zero-knowledge} hold for each attempt.
 
     \begin{center}
-    \begin{tabular}{ |l|c|c|c|c|c| } 
-        \hline
-        \textbf{Attempt \#} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} \\ \hline
-        \textbf{Completeness} holds? & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark \\ \hline
-        \textbf{Soundness} holds? & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark \\ \hline
-        \textbf{Zero-Knowledge} holds? & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark\\ \hline
-    \end{tabular}
+        \scalebox{0.75}{
+            \begin{tabular}{ |l|c|c|c|c|c| } 
+                \hline
+                \textbf{Attempt \#} & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} \\ \hline
+                \textbf{Completeness} holds? & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark \\ \hline
+                \textbf{Soundness} holds? & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark \\ \hline
+                \textbf{Zero-Knowledge} holds? & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark & \cmark/\xmark\\ \hline
+            \end{tabular}
+        }
     \end{center}
 \end{tcolorbox}
 
@@ -427,53 +444,61 @@ Now, we describe the algorithm.
         \end{enumerate}
     \end{itemize}
 
-    \begin{center}
-        \begin{tabular}{p{5cm}p{5.15cm}p{6cm}}
-            % Exercise 3
-            \textbf{Exercise 6.}
-            \begin{enumerate}[A)]
-                \item $v^{\beta}$
-                \item $u^{\beta}$
-                \item $vu$
-                \item $v^u$
-                \item $v^{\beta}u$
-            \end{enumerate} &   
-            \textbf{Exercise 7.}
-            \begin{enumerate}[A)]
-                \item $v = g^{\beta}$ and $w = vu$
-                \item $v = g^{\beta}$ and $w = v^{\beta}$
-                \item $v = g^{\beta}$ and $w = u^{\beta}$
-                \item $u = g^{\beta}$ and $w = u^{\beta}$
-                \item $u/w = g^{\beta}$
-            \end{enumerate} & \\
-            \textbf{Exercise 8.}
-            \begin{enumerate}[A)]
-                \item $(v_r,w_r) = (g^{\beta_r},g^{\beta_r\beta})$
-                \item $(v_r,w_r) = (g^{\beta_r},w^{\beta_r})$
-                \item $(v_r,w_r) = (g^{\beta_r},u^{\beta_r})$
-                \item $(v_r,w_r) = (g^{\beta},g^{\beta_r})$
-                \item $(v_r,w_r) = (g^{\beta},g^{\beta_r}g^{\beta})$
-            \end{enumerate}
-            &
-            \textbf{Exercise 9.}
-            \begin{enumerate}[A)]
-                \item $H: \mathbb{G}^3 \times \mathbb{G}^2 \to \mathcal{C}$
-                \item $H: \mathbb{G}^3 \times (\mathbb{G} \times \mathbb{Z}_q) \to \mathcal{C}$
-                \item $H: \mathbb{G}^3 \to \mathcal{C}$
-                \item $H: \mathbb{G}^3 \times \mathbb{Z}_q \to \mathcal{C}$
-                \item $H: \mathbb{G}^2 \times \mathbb{Z}_q \to \mathcal{C}$
-            \end{enumerate} 
-            &
-            \textbf{Exercise 10.}
-            \begin{enumerate}[A)]
-                \item $H((u,v,w),(v_r,w_r))$
-                \item $H((u,v,w),(v_r,\beta_r))$
-                \item $H(u,v,w)$
-                \item $H((u,v,w),\beta_r)$
-                \item $H((v_r,w_r),\beta_r)$
-            \end{enumerate} 
-        \end{tabular}
-    \end{center}
+    \newpage
+    
+    \textbf{Exercise 6.}
+    \begin{enumerate}[A)]
+        \item $v^{\beta}$
+        \item $u^{\beta}$
+        \item $vu$
+        \item $v^u$
+        \item $v^{\beta}u$
+    \end{enumerate}
+    
+    \vspace{10pt} % Add vertical space between exercises
+    
+    \textbf{Exercise 7.}
+    \begin{enumerate}[A)]
+        \item $v = g^{\beta}$ and $w = vu$
+        \item $v = g^{\beta}$ and $w = v^{\beta}$
+        \item $v = g^{\beta}$ and $w = u^{\beta}$
+        \item $u = g^{\beta}$ and $w = u^{\beta}$
+        \item $u/w = g^{\beta}$
+    \end{enumerate}
+    
+    \vspace{10pt} % Add vertical space between exercises
+    
+    \textbf{Exercise 8.}
+    \begin{enumerate}[A)]
+        \item $(v_r,w_r) = (g^{\beta_r},g^{\beta_r\beta})$
+        \item $(v_r,w_r) = (g^{\beta_r},w^{\beta_r})$
+        \item $(v_r,w_r) = (g^{\beta_r},u^{\beta_r})$
+        \item $(v_r,w_r) = (g^{\beta},g^{\beta_r})$
+        \item $(v_r,w_r) = (g^{\beta},g^{\beta_r}g^{\beta})$
+    \end{enumerate}
+    
+    \vspace{10pt} % Add vertical space between exercises
+    
+    \textbf{Exercise 9.}
+    \begin{enumerate}[A)]
+        \item $H: \mathbb{G}^3 \times \mathbb{G}^2 \to \mathcal{C}$
+        \item $H: \mathbb{G}^3 \times (\mathbb{G} \times \mathbb{Z}_q) \to \mathcal{C}$
+        \item $H: \mathbb{G}^3 \to \mathcal{C}$
+        \item $H: \mathbb{G}^3 \times \mathbb{Z}_q \to \mathcal{C}$
+        \item $H: \mathbb{G}^2 \times \mathbb{Z}_q \to \mathcal{C}$
+    \end{enumerate}
+    
+    \vspace{10pt} % Add vertical space between exercises
+    
+    \textbf{Exercise 10.}
+    \begin{enumerate}[A)]
+        \item $H((u,v,w),(v_r,w_r))$
+        \item $H((u,v,w),(v_r,\beta_r))$
+        \item $H(u,v,w)$
+        \item $H((u,v,w),\beta_r)$
+        \item $H((v_r,w_r),\beta_r)$
+    \end{enumerate}
+
 \end{tcolorbox}
 
 \end{document}
