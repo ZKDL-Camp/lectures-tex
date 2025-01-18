@@ -83,7 +83,9 @@ consider the arithmetic circuits and the Quadratic Arithmetic Programs.
 Previously, we considered NARKs that did not require any setup procedure. However, zk-SNARKs are
 more complex and require a setup phase. This setup phase is used to generate the proving and
 verification keys (which we call prover parameters $\mathsf{pp}$ and verifier parameters $\mathsf{vp}$, respectively), 
-which are then used to create and verify proofs. That being said, let us introduce the \textbf{preprocessing NARK}.
+which are then used to create and verify proofs.
+
+That being said, let us introduce the \textbf{preprocessing NARK}.
 
 \begin{definition}
     A \textbf{preprocessing non-interactive argument of knowledge} (\textbf{preprocessing NARK}) $\Pi_{\text{preNARK}}=(\mathsf{Setup},\mathsf{Prove},\mathsf{Verify})$ consists of three algorithms:
@@ -94,26 +96,29 @@ which are then used to create and verify proofs. That being said, let us introdu
     \end{itemize}
 \end{definition}
 
-Recall, that from NARK (and now preprocessing NARK, respectively) over relation $\mathcal{R}$ we require the following properties:
+Recall, that from NARK (and now preprocessing \\ NARK, respectively) over relation $\mathcal{R}$ we require the following properties:
 \begin{itemize}
     \item \textbf{Completeness} --- if the prover is honest and the statement is true, the verifier will always accept the proof:
     \begin{equation*}
-        \forall (x,w) \in \mathcal{R}: \text{Pr}[\mathsf{Verify}(\mathsf{vp}, x, \mathsf{Prove}(\mathsf{pp},x,w)) = \mathsf{accept}] = 1
+        \begin{aligned}
+            &\forall (x,w) \in \mathcal{R}: \\
+            &\text{Pr}[\mathsf{Verify}(\mathsf{vp}, x, \mathsf{Prove}(\mathsf{pp},x,w)) = \mathsf{accept}] = 1            
+        \end{aligned}
     \end{equation*}
-    \item \textbf{Knowledge Soundness} --- the prover cannot (statistically) generate a false proof $\pi$ that convinces the verifier. 
-    \item \textbf{Zero-knowledge} --- the verifier ``learns nothing'' about the witness $w$ from $(\mathcal{R},\mathsf{pp},\mathsf{vp},x,\pi)$.
+    \item \textbf{Knowledge Soundness} --- the prover cannot \\ (statistically) generate a false proof $\pi$ that \\ convinces the verifier. 
+    \item \textbf{Zero-knowledge} --- the verifier ``learns nothing'' \\ about the witness $w$ from $(\mathcal{R},\mathsf{pp},\mathsf{vp},x,\pi)$.
 \end{itemize}
 
 While we have formally defined all the terms here, including statistical soundness, we have not defined what \textbf{knowledge soundness} is. We give a brief informal definition below.
 
 \begin{definition}[Knowledge Soundness]
-    $\Pi_{\text{preNARK}}$ is (adaptively) \textbf{knowledge sound} for a relation $\mathcal{R}$ if for every PPT adversary $\mathcal{A}=(\mathcal{A}_0,\mathcal{A}_1)$, split into two algorithms, such that:
+    $\Pi_{\text{preNARK}}$ is (adaptively) \textbf{knowledge sound} for a relation $\mathcal{R}$ if for every PPT adversary $\mathcal{A}=(\mathcal{A}_0,\mathcal{A}_1)$, split into two algorithms, such the following value greater then $\alpha$:
     \begin{equation*}
         \text{Pr}\begin{bmatrix}[c|c]
             & (\mathsf{pp},\mathsf{vp}) \gets \mathsf{Setup}(\cdot)\\
             \mathsf{Verify}(\mathsf{vp},x,\pi)=\mathsf{accept} & x \gets \mathcal{A}_0(\cdot)  \\
             & \pi \gets \mathcal{A}_1(\mathsf{pp},x)
-        \end{bmatrix} > \alpha,
+        \end{bmatrix},
     \end{equation*}
     where $\alpha=\alpha(\lambda) \neq \mathsf{negl}(\lambda)$ is a non-negligible probability, there exists a PPT extractor $\mathcal{E}^{\mathcal{A}}$ such that
     \begin{equation*}
@@ -496,7 +501,6 @@ Corresponding equations for the circuit are:
         r = r_4 + r_5 \\
     \end{aligned}
 \end{equation*}
-
 With the witness vector: $\mathbf{w} = (r, r_1, r_2, r_3, r_4, r_5, a , b, c)$. One example of a valid witness is $(6, 6, 5, 0, 6, 0, 1, 2, 3)$.
 
 \subsubsection{Circuit Satisfability Problem}
@@ -516,7 +520,10 @@ Now, suppose that the circuit is defined over $n$ inputs. We can always split th
 \begin{definition}
     The \textbf{Circuit Satisfiability Problem} is defined as follows: given an arithmetic circuit $\Circ$ and a public input $\mathbf{x} \in \mathbb{F}^{\ell}$, determine if there exists a private input $\mathbf{w} \in \mathbb{F}^{n-\ell}$ such that $\Circ(\mathbf{x},\mathbf{w}) = 0$. More formally, the problem is determined by relation $\mathcal{R}_{\Circ}$ and corresponding language $\mathcal{L}_{\Circ}$ as follows:
     \begin{equation*}
-        \mathcal{R}_{\Circ} = \{(\mathbf{x},\mathbf{w}) \in \mathbb{F}^{\ell} \times \mathbb{F}^{n-\ell}: \mathtt{C}(\mathbf{x},\mathbf{w}) = 0\}, \; \mathcal{L}_{\Circ} = \{\mathbf{x} \in \mathbb{F}^{\ell}: \exists \mathbf{w} \in \mathbb{F}^{n-\ell},\; \Circ(\mathbf{x},\mathbf{w}) = 0\}
+        \begin{aligned}
+            &\mathcal{R}_{\Circ} = \{(\mathbf{x},\mathbf{w}) \in \mathbb{F}^{\ell} \times \mathbb{F}^{n-\ell}: \mathtt{C}(\mathbf{x},\mathbf{w}) = 0\}, \\
+            &\mathcal{L}_{\Circ} = \{\mathbf{x} \in \mathbb{F}^{\ell}: \exists \mathbf{w} \in \mathbb{F}^{n-\ell},\; \Circ(\mathbf{x},\mathbf{w}) = 0\}            
+        \end{aligned}
     \end{equation*}
 \end{definition}
 
@@ -619,8 +626,9 @@ the vector space might be simply $\mathbb{F}^n$: the set of all $n$-tuples $(x_1
     For example, $V = \mathbb{F}^n$ with operations defined as:
     \begin{equation*}
         \begin{aligned}
-            \lambda \cdot (x_1,x_2,\dots,x_n) &= (\lambda x_1, \lambda x_2, \dots, \lambda x_n) \\
-            (x_1,x_2,\dots,x_n) + (y_1,y_2,\dots,y_n) &= (x_1+y_1, x_2+y_2, \dots, x_n+y_n)
+            &\lambda \cdot (x_1,x_2,\dots,x_n) = (\lambda x_1, \lambda x_2, \dots, \lambda x_n) \\
+            &(x_1,x_2,\dots,x_n) + (y_1,y_2,\dots,y_n) \\ 
+            &= (x_1+y_1, x_2+y_2, \dots, x_n+y_n)
         \end{aligned}
     \end{equation*}
     is a vector space. Similarly, the following three sets $V_1,V_2,V_3$ with operations defined above are also valid vector spaces:
@@ -696,10 +704,10 @@ Finally, is just happens that we can construct matrix from the vectors. Therefor
         A = \begin{bmatrix}
             \mathbf{v}_1 & \mathbf{v}_2 & \dots & \mathbf{v}_n
         \end{bmatrix} = \begin{bmatrix}
-            v_{1,1} & v_{2,1} & \dots & v_{n,1} \\
-            v_{1,2} & v_{2,2} & \dots & v_{n,2} \\
-            \vdots & \vdots & \ddots & \vdots \\
-            v_{1,m} & v_{2,m} & \dots & v_{n,m}
+            v_{1,1} & \dots & v_{n,1} \\
+            v_{1,2} & \dots & v_{n,2} \\
+            \vdots  & \ddots & \vdots \\
+            v_{1,m} & \dots & v_{n,m}
         \end{bmatrix}
     \end{equation*}
 
@@ -774,18 +782,19 @@ is usually called \textbf{dot product}.
     \end{equation*}
 \end{example}
 
-Yet another product we are going to use is the \textbf{Hadamard product}. Let us see how it works.
+Yet another product we are going to use is the \\ \textbf{Hadamard product}. Let us see how it works.
 \begin{definition}
     Suppose $A,B \in \mathbb{F}^{m \times n}$. The \textbf{Hadamard product} $A \odot B$ gives a matrix $C$ such that $C_{i,j} = A_{i,j}B_{i,j}$. Essentially, we multiply elements elementwise.
 \end{definition}
 
 \begin{example}
-    Consider $A = \begin{bmatrix}
+    Consider the Hadamard product of matrices: 
+    $A = \begin{bmatrix}
         1 & 1 & 2 \\
         3 & 0 & 3
-    \end{bmatrix}, B = \begin{bmatrix}
+    \end{bmatrix} \text{and } B =  \begin{bmatrix}
         3 & 2 & 1 \\ 0 & 2 & 1
-    \end{bmatrix}$. Then, the Hadamard product is:
+    \end{bmatrix}$. Then,  is:
     \begin{equation*}
         A \odot B = \begin{bmatrix}
             1 \cdot 3 & 1 \cdot 2 & 2 \cdot 1 \\
@@ -831,19 +840,21 @@ Finally, the final ingredient is the \textbf{outer product} and some of its prop
     \end{equation*}
     Then: 
     \begin{equation*}
+        \begin{aligned}            
         \mathbf{u} \otimes \mathbf{v} = \mathbf{u}\mathbf{v}^{\top} = \begin{bmatrix}
         1 \\ 2 \\ 3
         \end{bmatrix}\begin{bmatrix}
         2 & 4 & 3
-        \end{bmatrix} = \begin{bmatrix}
+        \end{bmatrix} = \\ = \begin{bmatrix}
             1 \cdot 2 & 1 \cdot 4 & 1 \cdot 3 \\
             2 \cdot 2 & 2 \cdot 4 & 2 \cdot 3 \\
             3 \cdot 2 & 3 \cdot 4 & 3 \cdot 3
-        \end{bmatrix} = \begin{bmatrix}
+        \end{bmatrix}  = \begin{bmatrix}
             2 & 4 & 3 \\
             4 & 8 & 6 \\
             6 & 12 & 9
         \end{bmatrix}
+    \end{aligned}
     \end{equation*}
     Additionally, as we can see the rows number 2 and 3 in the result matrix can be represented
     as a linear combination of the first row, specifically by multiplying it by 2 and 3, 
@@ -873,7 +884,14 @@ constraint in the context of an R1CS.
         r = x_1 \times x_2
     \end{equation*}
     Since we have $3$ variables, the constraint is written as:
-    \[(a_1w_1 + a_2w_2 + a_3w_3)(b_1w_1 + b_2w_2 + b_3w_3) = c_1w_1 + c_2w_2 + c_3w_3\]
+    
+    \begin{equation*}
+        \begin{aligned}
+            &(a_1w_1 + a_2w_2 + a_3w_3)(b_1w_1 + b_2w_2 + b_3w_3) = \\
+            & = c_1w_1 + c_2w_2 + c_3w_3
+        \end{aligned}
+    \end{equation*}
+
     Coefficients and witness vectors are:
     $\mathbf{w} = (r, x_1, x_2), \mathbf{a} = (0, 1, 0), \mathbf{b} = (0, 0, 1), \mathbf{c} = (1, 0, 0)$. Therefore, our expression above reduces to:
     \[ (0w_1 + 1w_2 + 0w_3)(0w_1 + 0w_2 + 1w_3) = (1w_1 + 0w_2 + 0w_3) \]
@@ -913,10 +931,17 @@ coefficient.
     \[ \mathbf{w} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult}) \]
     The coefficients vectors:
     \begin{align*}
-        \mathbf{a}_1 &= (0, 0, 1, 0, 0, 0, 0) & \quad \mathbf{b}_1 &= (0, 0, 1, 0, 0, 0, 0) & \quad \mathbf{c}_1 &= (0, 0, 1, 0, 0, 0, 0) \\
-        \mathbf{a}_2 &= (0, 0, 0, 1, 0, 0, 0) & \quad \mathbf{b}_2 &= (0, 0, 0, 0, 1, 0, 0) & \quad \mathbf{c}_2 &= (0, 0, 0, 0, 0, 1, 0) \\
-        \mathbf{a}_3 &= (0, 0, 1, 0, 0, 0, 0) & \quad \mathbf{b}_3 &= (0, 0, 0, 0, 0, 1, 0) & \quad \mathbf{c}_3 &= (0, 0, 0, 0, 0, 0, 1) \\
-        \mathbf{a}_4 &= (1, 0, -1, 0, 0, 0, 0) & \quad \mathbf{b}_4 &= (0, 0, 0, 1, 1, 0, 0) & \quad \mathbf{c}_4 &= (0, 1, 0, 0, 0, 0, -1)
+        \mathbf{a}_1 &= (0, 0, 1, 0, 0, 0, 0) & \quad \mathbf{b}_1 &= (0, 0, 1, 0, 0, 0, 0) \\
+        \mathbf{a}_2 &= (0, 0, 0, 1, 0, 0, 0) & \quad \mathbf{b}_2 &= (0, 0, 0, 0, 1, 0, 0) \\
+        \mathbf{a}_3 &= (0, 0, 1, 0, 0, 0, 0) & \quad \mathbf{b}_3 &= (0, 0, 0, 0, 0, 1, 0) \\
+        \mathbf{a}_4 &= (1, 0, -1, 0, 0, 0, 0) & \quad \mathbf{b}_4 &= (0, 0, 0, 1, 1, 0, 0) 
+    \end{align*}
+
+    \begin{align*}
+        \mathbf{c}_1 &= (0, 0, 1, 0, 0, 0, 0) \\
+        \mathbf{c}_2 &= (0, 0, 0, 0, 0, 1, 0) \\
+        \quad \mathbf{c}_3 &= (0, 0, 0, 0, 0, 0, 1) \\
+        \quad \mathbf{c}_4 &= (0, 1, 0, 0, 0, 0, -1)
     \end{align*}
 
     Now, let us use some specific values to compute an example. Using the arithmetic in a large finite
