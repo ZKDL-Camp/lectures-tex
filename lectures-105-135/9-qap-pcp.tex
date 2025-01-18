@@ -39,13 +39,13 @@ So, we need to change the way how we manage coefficients and make the representa
             a_{21} & a_{22} & \dots & a_{2n} \\
             \vdots & \vdots & \ddots & \vdots \\
             a_{m1} & a_{m2} & \dots & a_{mn}
-        \end{bmatrix} & \quad
+        \end{bmatrix} & \quad \\
         B = \begin{bmatrix}
             b_{11} & b_{12} & \dots & b_{1n} \\
             b_{21} & b_{22} & \dots & b_{2n} \\
             \vdots & \vdots & \ddots & \vdots \\
             b_{m1} & b_{m2} & \dots & b_{mn}
-        \end{bmatrix} & 
+        \end{bmatrix} & \\
         C = \begin{bmatrix}
             c_{11} & c_{12} & \dots & c_{1n} \\
             c_{21} & c_{22} & \dots & c_{2n} \\
@@ -96,13 +96,13 @@ The last equality is a bit tricky to observe, so let us explain how we ended up 
         \langle \mathbf{a}_2, \mathbf{w}\rangle \\
         \vdots \\
         \langle \mathbf{a}_m, \mathbf{w}\rangle 
-    \end{bmatrix}, \quad
+    \end{bmatrix}, \quad \\
     B\mathbf{w} = \begin{bmatrix}
         \langle \mathbf{b}_1, \mathbf{w}\rangle \\
         \langle \mathbf{b}_2, \mathbf{w}\rangle \\
         \vdots \\
         \langle \mathbf{b}_m, \mathbf{w}\rangle 
-    \end{bmatrix}, \quad
+    \end{bmatrix}, \quad \\
     C\mathbf{w} = \begin{bmatrix}
         \langle \mathbf{c}_1, \mathbf{w}\rangle \\
         \langle \mathbf{c}_2, \mathbf{w}\rangle \\
@@ -126,18 +126,20 @@ Therefore, $A\mathbf{w} \odot B\mathbf{w} = C\mathbf{w}$ is equivalent to the sy
     \end{align*}
     This corresponds to $n = 7, m = 4$
     \begin{equation*}
-        A = \begin{bmatrix}
+        \begin{aligned}            
+        &A = \begin{bmatrix}
             a_{1,1} & a_{1,2} & a_{1,3} & a_{1,4} & a_{1,5} & a_{1,6} & a_{1,7} \\
             a_{2,1} & a_{2,2} & a_{2,3} & a_{2,4} & a_{2,5} & a_{2,6} & a_{2,7} \\
             a_{3,1} & a_{3,2} & a_{3,3} & a_{3,4} & a_{3,5} & a_{3,6} & a_{3,7} \\
             a_{4,1} & a_{4,2} & a_{4,3} & a_{4,4} & a_{4,5} & a_{4,6} & a_{4,7}
-        \end{bmatrix} = \begin{bmatrix}
+        \end{bmatrix} = \\ &\text{\;\;\,} = \begin{bmatrix}
             0 & 0 & 1 & 0 & 0 & 0 & 0 \\
             0 & 0 & 0 & 1 & 0 & 0 & 0 \\
             0 & 0 & 1 & 0 & 0 & 0 & 0 \\
             1 & 0 & -1 & 0 & 0 & 0 & 0 
         \end{bmatrix}
-    \end{equation*}
+    \end{aligned}
+\end{equation*}
 \end{example}
 
 \subsubsection{Polynomial Interpolation}
@@ -225,9 +227,9 @@ we want to interpolate $n$ polynomials $A_j \in \mathbb{F}[X]$ such that:
 The same is true for matrices $B$ and $C$, resulting in $3n$ polynomials, $n$ for each of the
 coefficients matrices:
 \begin{align*}
-    A_1(x), A_2(x), \dots, A_n(x), 
-    B_1(x), B_2(x), \dots, B_n(x),
-    C_1(x), C_2(x), \dots, C_n(x)
+    &A_1(x), A_2(x), \dots, A_n(x), \\
+    &B_1(x), B_2(x), \dots, B_n(x), \\
+    &C_1(x), C_2(x), \dots, C_n(x)
 \end{align*}
 
 \begin{example}
@@ -241,17 +243,17 @@ coefficients matrices:
     
     The Lagrange interpolation polynomial for this set of points can be built as follows (for the demonstration purposes, assume we are working in the field $\mathbb{R}$):
     \begin{align*}
-        \ell_1(x) &= \frac{(x - 2)(x - 3)(x - 4)}{(1 - 2)(1 - 3)(1 - 4)} = -\frac{(x - 2)(x - 3)(x - 4)}{6}, \\
-        \ell_2(x) &= \frac{(x - 1)(x - 3)(x - 4)}{(2 - 1)(2 - 3)(2 - 4)} = \frac{(x - 1)(x - 3)(x - 4)}{2}, \\
-        \ell_3(x) &= \frac{(x - 1)(x - 2)(x - 4)}{(3 - 1)(3 - 2)(3 - 4)} = -\frac{(x - 1)(x - 2)(x - 4)}{2}, \\
-        \ell_4(x) &= \frac{(x - 1)(x - 2)(x - 3)}{(4 - 1)(4 - 2)(4 - 3)} = \frac{(x - 1)(x - 2)(x - 3)}{6}.
+        \ell_1(x) &= \frac{(x - 2)(x - 3)(x - 4)}{(1 - 2)(1 - 3)(1 - 4)} = \\ &= -\frac{(x - 2)(x - 3)(x - 4)}{6}, \\
+        \ell_2(x) &= \frac{(x - 1)(x - 3)(x - 4)}{(2 - 1)(2 - 3)(2 - 4)} = \\ &= \frac{(x - 1)(x - 3)(x - 4)}{2}, \\
+        \ell_3(x) &= \frac{(x - 1)(x - 2)(x - 4)}{(3 - 1)(3 - 2)(3 - 4)} = \\ &= -\frac{(x - 1)(x - 2)(x - 4)}{2}, \\
+        \ell_4(x) &= \frac{(x - 1)(x - 2)(x - 3)}{(4 - 1)(4 - 2)(4 - 3)} = \\ &= \frac{(x - 1)(x - 2)(x - 3)}{6}.
     \end{align*}
 
     Thus, the polynomial is given by:
     \begin{align*}
         A_1(x) &= 1 \cdot \ell_1(x) + 0 \cdot \ell_2(x) + 1 \cdot \ell_3(x) + (-1) \cdot \ell_4(x) \\
-        &= -\frac{(x - 2)(x - 3)(x - 4)}{6} - \frac{(x - 1)(x - 2)(x - 4)}{2} - \frac{(x - 1)(x - 2)(x - 3)}{6} \\
-        &= -\frac{5}{6}x^3 + 6x^2 - \frac{79}{6}x + 9
+        &= -\frac{(x - 2)(x - 3)(x - 4)}{6} - \\ &- \frac{(x - 1)(x - 2)(x - 4)}{2} - \\ &-\frac{(x - 1)(x - 2)(x - 3)}{6} = \\
+        &= -\frac{5}{6}x^3 + 6x^2 - \frac{79}{6}x + 9.
     \end{align*}
     Therefore, the final Lagrange interpolation polynomial is:
     \begin{equation*}
@@ -323,7 +325,7 @@ coefficients matrices:
 Now, using coefficients encoded with polynomials, a constraint number $X \in \{1, \dots\ m\}$, from
 a constraint system with a witness vector $\mathbf{w}$ can be built in the next way:
 \begin{align*}
-    (w_1A_1(X) + w_2A_2(X) + \dots + w_nA_n(X)) &\times (w_1B_1(X) + w_2B_2(X) + \dots + w_nB_n(X)) =\\ = (w_1C_1(X) + w_2C_2(X)& + \dots + w_nC_n(X))
+    &(w_1A_1(X) + w_2A_2(X) + \dots + w_nA_n(X)) \times \\ &\times (w_1B_1(X) + w_2B_2(X) + \dots + w_nB_n(X)) = \\ &= (w_1C_1(X) + w_2C_2(X) + \dots + w_nC_n(X))
 \end{align*}
 
 Or, written more concisely:
@@ -334,12 +336,12 @@ Or, written more concisely:
 \begin{remark}
     Hold on, but why does it hold? Let us substitute any $X=j$ into this equation:
     \begin{equation*}
-        \left( \sum_{i = 1}^{n} w_iA_i(j) \right) \times \left( \sum_{i = 1}^{n} w_iB_i(j) \right) = \left( \sum_{i = 1}^{n} w_iC_i(j) \right) \; \forall j \in \{1,\dots,m\}
+        \left( \sum_{i = 1}^{n} w_iA_i(j) \right) \times \left( \sum_{i = 1}^{n} w_iB_i(j) \right) = \left( \sum_{i = 1}^{n} w_iC_i(j) \right)
     \end{equation*}
 
     Recall that we interpolated polynomials to have $A_i(j) = a_{j,i}$. Therefore, the equation above can be reduced to:
     \begin{equation*}
-        \left( \sum_{i = 1}^{n} w_ia_{j,i} \right) \times \left( \sum_{i = 1}^{n} w_ib_{j,i} \right) = \left( \sum_{i = 1}^{n} w_ic_{j,i} \right) \; \forall j \in \{1,\dots,m\}
+        \left( \sum_{i = 1}^{n} w_ia_{j,i} \right) \times \left( \sum_{i = 1}^{n} w_ib_{j,i} \right) = \left( \sum_{i = 1}^{n} w_ic_{j,i} \right)
     \end{equation*}
 
     But hold on again! Notice that $\sum_{i = 1}^{n} w_ia_{j,i} = \langle \mathbf{w}, \mathbf{a}_j \rangle$ and therefore we have:
@@ -352,7 +354,9 @@ Or, written more concisely:
 
 Now let us define polynomials $A(X)$, $B(X)$, $C(X)$ for easier notation: 
 \begin{equation*}
-    A(X) = \sum_{i = 1}^{n} w_iA_i(X), \quad B(X) = \sum_{i = 1}^{n} w_iB_i(X), \quad C(X) = \sum_{i = 1}^{n} w_iC_i(X)
+    \begin{aligned}
+        A(X) = \sum_{i = 1}^{n} w_iA_i(X), \\ \quad B(X) = \sum_{i = 1}^{n} w_iB_i(X), \\ \quad C(X) = \sum_{i = 1}^{n} w_iC_i(X)        
+    \end{aligned}
 \end{equation*}
 
 Therefore, our constraint can be rewritten as $A + B = C$ --- much less scary-looking than what we have written before. OK, but what does it give us? 
@@ -375,12 +379,17 @@ All in all, let us give the definition of a \textbf{Quadratic Arithmetic Program
 
     Then, the \textbf{Quadratic Arithmetic Program} consists of $3n$ polynomials $A_1,\dots,A_n$, $B_1,\dots,B_n$, $C_1,\dots,C_n$ such that:
     \begin{equation*}
-        A_j(i) = a_{i,j}, \; B_j(i) = b_{i,j}, \; C_j(i) = c_{i,j}, \; \forall i \in \{1,\dots,m\} \; \forall j \in \{1,\dots,n\}
+        \begin{aligned}
+            &\forall i \in \{1,\dots,m\} \; \forall j \in \{1,\dots,n\}: \\
+            &A_j(i) = a_{i,j}, \; B_j(i) = b_{i,j}, \; C_j(i) = c_{i,j}            
+        \end{aligned}
     \end{equation*}
 
     Then, $\mathbf{w} \in \mathbb{F}^n$ is a valid assignment for the given QAP and \textbf{target polynomial} $Z(X) = \prod_{i=1}^m (X-i)$ if and only if there exists such a polynomial $H(X)$ such that
     \begin{equation*}
-        \left( \sum_{i = 1}^{n} w_iA_i(X) \right)\left( \sum_{i = 1}^{n} w_iB_i(X) \right) - \left( \sum_{i = 1}^{n} w_iC_i(X) \right) = Z(X)H(X)
+        \begin{aligned}
+            &\left( \sum_{i = 1}^{n} w_iA_i(X) \right)\left( \sum_{i = 1}^{n} w_iB_i(X) \right) - \left( \sum_{i = 1}^{n} w_iC_i(X) \right) = \\ &= Z(X)H(X)            
+        \end{aligned}
     \end{equation*}
 \end{definition}
 
@@ -650,7 +659,9 @@ While IOPs will be later used for PLONK and zk-STARKs, we will focus on Linear P
 \begin{example}[QAP as a Linear PCP]
     Recall that key QAP equation is:
     \begin{equation*}
-        \left(\sum_{i=1}^nw_iL_i(x)\right)\left(\sum_{i=1}^nw_iR_i(x)\right) - \left(\sum_{i=1}^nw_iO_i(x)\right) = Z(x)H(x).
+        \begin{aligned}
+            &\left(\sum_{i=1}^nw_iL_i(x)\right)\left(\sum_{i=1}^nw_iR_i(x)\right) - \left(\sum_{i=1}^nw_iO_i(x)\right) = \\ &= Z(x)H(x).            
+        \end{aligned}
     \end{equation*}
 
     Now, the notation might be confusing, but firstly, we denote vectors of polynomials: 
@@ -666,7 +677,9 @@ While IOPs will be later used for PLONK and zk-STARKs, we will focus on Linear P
         \item $\mathcal{V}$ samples $\gamma \xleftarrow{R} \mathbb{F}$ and sends query $\boldsymbol{\gamma} = (\gamma,\gamma^2,\dots,\gamma^n)$ to $\mathcal{P}$.
         \item $\mathcal{P}$ reveals the following values:
         \begin{equation*}
-            \pi_1 \gets \langle \mathbf{w}, \boldsymbol{L}(\gamma) \rangle, \quad \pi_2 \gets \langle \mathbf{w}, \boldsymbol{R}(\gamma) \rangle, \quad \pi_3 \gets \langle \mathbf{w}, \boldsymbol{O}(\gamma) \rangle, \quad \pi_4 \gets Z(\gamma) \cdot \langle \mathbf{h}, \boldsymbol{\gamma} \rangle.
+            \begin{aligned}
+                &\pi_1 \gets \langle \mathbf{w}, \boldsymbol{L}(\gamma) \rangle, \quad \pi_2 \gets \langle \mathbf{w}, \boldsymbol{R}(\gamma) \rangle, \quad \\ & \pi_3 \gets \langle \mathbf{w}, \boldsymbol{O}(\gamma) \rangle, \quad \pi_4 \gets Z(\gamma) \cdot \langle \mathbf{h}, \boldsymbol{\gamma} \rangle.                
+            \end{aligned}
         \end{equation*}
         \item $\mathcal{V}$ checks whether $\pi_1\pi_2 - \pi_3 = \pi_4$.
     \end{enumerate}
