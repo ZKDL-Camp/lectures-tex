@@ -27,7 +27,7 @@
     \begin{frame}{Polynomial Interpolation}
         \begin{block}{Notice}
             All the previous protocols use the idea that polynomials 
-            are \textbf{universal data encoders}. We can encode any 
+            are \textbf{universal data encoders}.\pause We can encode any 
             set of scalars $(a_0,\dots,a_{N-1}) \in \mathbb{F}^N$ 
             using \textbf{interpolation}:
             \begin{equation*}
@@ -49,7 +49,7 @@
                 L_j(i) = \ell_{i,j}, \quad R_j(i) = r_{i,j}, \quad O_j(i) = o_{i,j},
             \end{equation*}
             where $\ell_{i,j}, r_{i,j}, o_{i,j}$ are the elements of constraint
-            matrices $L, R, O$ (left, right, and output).
+            matrices $L, R, O$ (left, right, and output).\pause
         \end{example}
 
         \begin{columns}
@@ -82,14 +82,14 @@
             \end{equation*}
         \end{block}
 
-        \begin{alertblock}{Question}
-            What is the naive complexity of this interpolation implementation?
+        \pause\begin{alertblock}{Question}
+            What is the naive complexity of this interpolation implementation?\pause
         \end{alertblock}
 
         \begin{block}{Observation}
             Through careful choice of $\{x_j\}_{j \in [N]}$, we can reduce the
             complexity of interpolation, multiplication, or other complex
-            operations to $\mathcal{O}(N \log N)$. \textbf{Spoiler:} we will use
+            operations to $\mathcal{O}(N \log N)$.\pause \textbf{Spoiler:} we will use
             the $n$th roots of unity domain $\Omega = \{\omega^j\}_{j \in [N]}$.
             Let us see why it helps.
         \end{block}
@@ -98,17 +98,17 @@
     \section{Roots of Unity}
     \subsection{Multiplicative Subgroup of Finite Fields}
     \begin{frame}{Multiplicative Subgroup.}
-        We know that $\mathbb{F}_p$ is a \textbf{field}: we have a usual arithmetic $+,\times$.
+        We know that $\mathbb{F}_p$ is a \textbf{field}: we have a usual arithmetic $+,\times$.\pause
 
         \begin{alertblock}{Question}
-            Does $(\mathbb{F}_p, \times)$ form a group?
+            Does $(\mathbb{F}_p, \times)$ form a group?\pause
         \end{alertblock}
 
         No, since $0$ does not have an inverse. But, if we consider
-        $(\mathbb{F}_p \setminus \{0\}, \times)$, we do have a group structure!
+        $(\mathbb{F}_p \setminus \{0\}, \times)$, we do have a group structure!\pause
 
         \begin{definition}
-            A \textbf{multiplicative group} of a finite field $\mathbb{F}$, denoted as $\mathbb{F}^{\times}$, is a multiplicative group $(\mathbb{F} \setminus \{0\}, \times)$.
+            A \textbf{multiplicative group} of a finite field $\mathbb{F}$, denoted as $\mathbb{F}^{\times}$, is a multiplicative group $(\mathbb{F} \setminus \{0\}, \times)$.\pause
         \end{definition}
 
         \begin{block}{Number of Elements}
@@ -120,7 +120,7 @@
         \begin{theorem}
             Multiplicative group of a finite field $\mathbb{F}^{\times}_p$ is
             \textbf{cyclic}. The generators $\omega$ of this group are called
-            \textbf{primitive roots}.
+            \textbf{primitive roots}.\pause
         \end{theorem}
 
         \begin{example}
@@ -129,7 +129,7 @@
                 3^1 = 3, \quad 3^2 = 2, \quad 3^3 = 6, \quad 3^4 = 4, \quad 3^5 = 5, \quad 3^6 = 1.
             \end{align*} 
 
-            Clearly, $\langle \omega \rangle = \mathbb{F}_7^{\times}$.
+            Clearly, $\langle \omega \rangle = \mathbb{F}_7^{\times}$.\pause
         \end{example}
 
         The set $\mathbb{F}^{\times}_p$ is not useful on its own. However, we
@@ -140,26 +140,26 @@
 
         \vspace{-15px}
 
-        \textcolor{purple}{\textbf{Question.}} When such cyclic group exists?
+        \pause\textcolor{purple}{\textbf{Question.}} When such cyclic group exists?
     \end{frame}
 
     \begin{frame}{Roots of Unity}
         \begin{theorem}[Lagrange Theorem]
-            If $\mathbb{H} \leq \mathbb{G}$ is a subgroup of any finite group $\mathbb{G}$, then $\text{ord}(\mathbb{H}) \mid \text{ord}(\mathbb{G})$.
+            If $\mathbb{H} \leq \mathbb{G}$ is a subgroup of any finite group $\mathbb{G}$, then $\text{ord}(\mathbb{H}) \mid \text{ord}(\mathbb{G})$.\pause
         \end{theorem}
 
         \begin{corollary}
             If $\Omega_r$ is a subgroup of $\mathbb{F}_p^{\times}$, then $r \mid
-            (p - 1)$.
+            (p - 1)$.\pause
         \end{corollary}
 
         \begin{alertblock}{Some other Notes}
             Moreover, one might prove in the opposite direction:
             \begin{itemize}
                 \item If $r \mid (p-1)$, then there exists a subgroup $\Omega_r
-                \leq \mathbb{F}_p^{\times}$.
+                \leq \mathbb{F}_p^{\times}$.\pause
                 \item Its generator is given by $\omega = g^{(p-1)/r}$ where 
-                $\langle g \rangle = \mathbb{F}_p^{\times}$.
+                $\langle g \rangle = \mathbb{F}_p^{\times}$.\pause
             \end{itemize} 
         \end{alertblock}
 
@@ -185,20 +185,20 @@
     \begin{frame}{Vanishing Polynomial}
         \begin{block}{Definition}
             The \textbf{vanishing polynomial} $z_D(x)$ of a set $D \subset \mathbb{F}_p$
-            is a polynomial satisfying $z_D(d) = 0$ for all $d \in D$.
+            is a polynomial satisfying $z_D(d) = 0$ for all $d \in D$.\pause
         \end{block}
         Vanishing polynomials are always of form $z_D(x) = c \cdot \prod_{d \in
-        D}(x-d)$. 
+        D}(x-d)$. \pause
 
         The interesting question is: what is the vanishing polynomial of the
-        $r$-th roots of unity $\Omega_r$? For simplicity, assume $c=1$.
+        $r$-th roots of unity $\Omega_r$? For simplicity, assume $c=1$.\pause
 
         \begin{block}{Lemma}
-            The vanishing polynomial of $\Omega_r$ is $z_{\Omega}(x) = x^r-1$.
+            The vanishing polynomial of $\Omega_r$ is $z_{\Omega}(x) = x^r-1$.\pause
         \end{block}
 
         \textbf{Proof Idea.} Since for any $\zeta \in \Omega_r$ we have $\zeta^r=1$, or, 
-        equivalently, $\zeta^r-1$. Thus, any $\zeta \in \Omega_r$ is a root of $z_{\Omega}(x) = x^r-1$.
+        equivalently, $\zeta^r-1=0$.\pause Thus, any $\zeta \in \Omega_r$ is a root of $z_{\Omega}(x) = x^r-1$.
     \end{frame}
 
     \begin{frame}{Vanishing Polynomial over $\mathbb{R}$}
@@ -211,7 +211,7 @@
 
     \begin{frame}{Barycentric Interpolation}
         Now, let us come back to the interpolation problem $p(x_j) = a_j$ for $j \in [N]$.
-        Introduce $\gamma(x) = \prod_{j=0}^{N-1}(x-x_j)$. 
+        Introduce $\gamma(x) = \prod_{j=0}^{N-1}(x-x_j)$. \pause
 
         \begin{block}{Proposition}
             The Lagrange basis polynomial $\ell_j$ can be rewritten as:
@@ -220,9 +220,9 @@
             \end{equation*}
         \end{block}
 
-        Let us substitute it into the interpolation formula:
+        \pause Let us substitute it into the interpolation formula:
         \begin{equation*}
-            p(x) = \sum_{j=0}^{N-1}a_j\ell_j(x) = \sum_{j=0}^{N-1}a_j\gamma(x)\frac{w_j}{x-x_j} = \gamma(x)\sum_{j=0}^{N-1}\frac{w_j}{x-x_j}a_j.
+            p(x) = \sum_{j=0}^{N-1}a_j\ell_j(x) = \sum_{j=0}^{N-1}a_j\gamma(x)\frac{w_j}{x-x_j} \pause = \gamma(x)\sum_{j=0}^{N-1}\frac{w_j}{x-x_j}a_j.
         \end{equation*}
     \end{frame}
 
@@ -231,40 +231,40 @@
             \boxed{\textbf{Barycentric Formula:} \; \; p(x) = \gamma(x)\sum_{j=0}^{N-1}\frac{w_j}{x-x_j}a_j}
         \end{equation*}
 
-        \begin{alertblock}{Proposition}
+        \pause\begin{alertblock}{Proposition}
             \begin{itemize}
                 \item Computing $\{w_j\}_{j \in [N]}$ costs $\mathcal{O}(N^2)$
-                operations \emph{before evaluation}.
-                \item Both $\gamma(x)$ and sum requires $\mathcal{O}(N)$ operations.
+                operations \emph{before evaluation}.\pause
+                \item Both $\gamma(x)$ and sum requires $\mathcal{O}(N)$ operations.\pause
             \end{itemize}
         \end{alertblock}
 
-        But what happens if instead of $x_j$, we use $\omega^j \in \Omega_N$?
+        But what happens if instead of $x_j$, we use $\omega^j \in \Omega_N$?\pause
         \begin{equation*}
             \boxed{p(x) = \frac{x^N-1}{N}\sum_{j \in [N]}\frac{\omega^j}{x-\omega^j}a_j}
         \end{equation*}
 
-        \textcolor{purple}{\textbf{Takeaway:}} We can interpolate in $\mathcal{O}(N)$ operations.
+        \pause\textcolor{purple}{\textbf{Takeaway:}} We can interpolate+evaluate in $\mathcal{O}(N)$ operations.
     \end{frame}
 
     \section{Number Theoretic Transform}
 
     \subsection{Three Gadgets}
     \begin{frame}{What is NTT?}
-        Now suppose we want to find $m(x) = p(x)q(x)$. We'll use NTT!
+        Now suppose we want to find $m(x) = p(x)q(x)$. We'll use NTT!\pause
         
         \begin{alertblock}{Question}
-            What does it mean that you \emph{know} polynomial $p(x) \in \mathbb{F}^{(\leq N)}[x]$?
+            What does it mean that you \emph{know} polynomial $p(x) \in \mathbb{F}^{(\leq N)}[x]$?\pause
         \end{alertblock}
 
         This means either of two (typically):
         \begin{itemize}
-            \item You know the polynomial coefficients $p_0,\dots,p_{N-1}$.
-            \item You know the polynomial values at some points $\{(x_j,a_j)\}_{j \in [N]}$.
+            \item You know the polynomial coefficients $p_0,\dots,p_{N-1}$.\pause
+            \item You know the polynomial values at some points $\{(x_j,a_j)\}_{j \in [N]}$.\pause
         \end{itemize}
 
         \begin{definition}[NTT]
-            Suppose $p(x) = \sum_{j=0}^{N-1}p_jx^j$. The \textbf{Number Theoretic Transform} (NTT) of $p$ is defined as evaluations of $p$ at the $N$-th roots of unity:
+            Suppose $p(x) = \sum_{j=0}^{N-1}p_jx^j$. The \textbf{Number Theoretic Transform} (NTT) of $p$ is defined as evaluations of $p$ at the $N$-th roots of unity:\pause
             \begin{equation*}
                 \mathsf{NTT}(p) = \left(p(\omega^0), p(\omega^1), \dots, p(\omega^{N-1})\right).
             \end{equation*}
@@ -272,10 +272,10 @@
     \end{frame}
 
     \begin{frame}{What is the point of NTT?}
-        \textcolor{green!60!black}{\textbf{Note:}} To denote the result of NTT, we use hat: $\hat{p} = \mathsf{NTT}(p)$.
+        \textcolor{green!60!black}{\textbf{Note:}} To denote the result of NTT, we use hat: $\hat{p} = \mathsf{NTT}(p)$.\pause
 
         \textcolor{purple}{\textbf{Question:}} Given NTTs $\hat{p}$ and $\hat{q}$ of two polynomials $p$ and $q$, 
-        how do we find the NTT of their product $m(x) = p(x)q(x)$?
+        how do we find the NTT of their product $m(x) = p(x)q(x)$?\pause
 
         \begin{block}{Main NTT Property}
             Suppose $m(x) = p(x)q(x)$ is the product of $p$ and $q$. Then,
@@ -283,16 +283,16 @@
                 \hat{\boldsymbol{m}} = \hat{\boldsymbol{p}} \odot \hat{\boldsymbol{q}}
             \end{equation*}
         
-            Speaking more formally, $\mathsf{NTT}: (\mathbb{F}^{(\leq N)}[X],\times) \to (\mathbb{F}^N, \odot)$ is 
+            \pause Speaking more formally, $\mathsf{NTT}: (\mathbb{F}^{(\leq N)}[X],\times) \to (\mathbb{F}^N, \odot)$ is 
             a homomorphism between a set of polynomials of degree up to $N$ and their NTT domain. With certain 
             appropriate technicalities, $\mathsf{NTT}$ can be extended to the isomorphism (namely, use $\mathbb{F}[X] / (X^N-1)$).
         \end{block}
 
-        \textcolor{blue!60!black}{\textbf{Why?}} Well... $m(\omega^j)=p(\omega^j)q(\omega^j)$ \hspace{20px} \textbf{:/}
+        \pause\textcolor{blue!60!black}{\textbf{Why?}}\pause Well... $m(\omega^j)=p(\omega^j)q(\omega^j)$ \hspace{20px} \textbf{:/}
     \end{frame}
 
     \begin{frame}{Final Ingredient: Inverse NTT}
-        Now, can we restore the polynomial $m(x)$ from its NTT $\hat{m}$? Of course!
+        Now, can we restore the polynomial $m(x)$ from its NTT $\hat{m}$?\pause Of course!
 
         \begin{definition}{Inverse NTT}
             The \textbf{Inverse Number Theoretic Transform} (INTT) is a function 
@@ -302,7 +302,7 @@
             \end{equation*}
         \end{definition}
 
-        In its essence, we solve the interpolation problem:
+        \pause In its essence, we solve the interpolation problem:
         \begin{equation*}
             m(\omega^j) = \hat{m}_j, \quad j \in [N], \quad \text{\textbf{Goal}: find coefficients $m_0,\dots,m_{N-1}$}
         \end{equation*}
@@ -318,20 +318,24 @@
                 \node[very thick, draw=blue, fill=blue, fill opacity=0.1,minimum width=9.5cm, minimum height=1.75cm,dashed,on background layer](targetbox) at (2.25, 0.1) {};
                 \node(targetzonelabel)[above=0.65cm of targetbox,anchor=north,color=blue!90!black]{\textbf{Polynomial Space $\mathbb{F}^{(\leq N)}[x]$}};
             
-                \node[very thick, draw=green, fill=green!80!black, fill opacity=0.1,minimum width=9.5cm, minimum height=2.0cm,dashed,on background layer](targetbox) at (2.25, -2.0) {};
-                \node(targetzonelabel)[below=0.15cm of targetbox,anchor=north,color=green!60!black]{\textbf{NTT Space}};
             
                 % Nodes
                 \node (pq) at (0,0) {\( p, q \)};
                 \node (m) [right=3cm of pq] {\( m = p \cdot q \)};
-                \node (pHatqHat) [below=2cm of pq] {\( \hat{p}, \hat{q} \)};
-                \node (mHat) [below=2cm of m] {\( \hat{m} = \hat{p} \odot \hat{q} \)};
                 
                 % Arrows
+                \pause
                 \draw[->, line width = 0.5mm] (pq) -- (m) node[midway, above] {$\mathcal{O}(N^2)$};
-                \draw[->, dashed, line width = 0.5mm] (pq) -- (pHatqHat) node[midway, left] {$\mathcal{O}(N \log N)$};
-                \draw[->, dashed, line width = 0.5mm] (pHatqHat) -- (mHat) node[midway, above] {$\mathcal{O}(N)$};
-                \draw[->, dashed, line width = 0.5mm] (mHat) -- (m) node[midway, right] {$\mathcal{O}(N \log N)$};
+                \pause
+                \node[very thick, draw=green, fill=green!80!black, fill opacity=0.1,minimum width=9.5cm, minimum height=2.0cm,dashed,on background layer](targetbox) at (2.25, -2.0) {};
+                \node(targetzonelabel)[below=0.15cm of targetbox,anchor=north,color=green!60!black]{\textbf{NTT Space}};
+                \pause
+                \node (pHatqHat) [below=2cm of pq] {\( \hat{p}, \hat{q} \)};
+                \node (mHat) [below=2cm of m] {\( \hat{m} = \hat{p} \odot \hat{q} \)};
+                \pause
+                \draw[->, dashed, line width = 0.5mm, blue] (pq) -- (pHatqHat) node[midway, left] {$\mathcal{O}(N \log N)$};
+                \draw[->, dashed, line width = 0.5mm, blue] (pHatqHat) -- (mHat) node[midway, above] {$\mathcal{O}(N)$};
+                \draw[->, dashed, line width = 0.5mm, blue] (mHat) -- (m) node[midway, right] {$\mathcal{O}(N \log N)$};
             
                 % Labels
                 \node at ($(pq)!0.5!(pHatqHat)$) [left] {};
@@ -340,10 +344,6 @@
             \caption{Illustration of the NTT Algorithm}
             \label{fig:ntt}
         \end{figure}
-
-        \begin{alertblock}{Question}
-            Does it resemble you one trick from Elliptic Curves?
-        \end{alertblock}
     \end{frame}
 
     \begin{frame}{Illustration}
@@ -358,18 +358,18 @@
 
     \begin{frame}{When NTT works?}
         \begin{block}{Note}
-            For NTT to work, we will impose the following requirements on 
+            For NTT to work, we will impose two requirements on 
             our setup:
             \begin{enumerate}
-                \item The field $\mathbb{F}_p$ should have $2^k$-roots of unity for sufficiently many $k$. In other words, $p=p' \cdot 2^m + 1$ with \emph{small} $p' \in \mathbb{N}$.
-                \item The polynomial order is $N=2^k$. Not a strict requirement, since we can always pad the polynomial with zeros.
+                \item The field $\mathbb{F}_p$ should have $2^k$-roots of unity for sufficiently many $k$. In other words, $p=p' \cdot 2^m + 1$ with \emph{small} $p' \in \mathbb{N}$.\pause
+                \item The polynomial order is $N=2^k$. Not a strict requirement, since we can always pad the polynomial with zeros.\pause
             \end{enumerate}
         \end{block}
 
         \begin{example}
             \begin{itemize}
                 \item \textbf{BabyBear prime} $p=15 \cdot 2^{27} + 1$ is NTT-friendly: the order of multiplicative
-                group is $15 \cdot 2^{27}$, so $2^k \mid 15 \cdot 2^{27}$ for all $k \leq 27$.
+                group is $15 \cdot 2^{27}$, so $2^k \mid 15 \cdot 2^{27}$ for all $k \leq 27$.\pause
                 \item \textbf{Mersenne prime} $p=2^{31}-1$ is not NTT-friendly: the order of multiplicative 
                 group is $2^{31}-2 = 2 \times (2^{30}-1)$.
             \end{itemize}
@@ -384,8 +384,8 @@
             p(\omega^j) = \sum_{i=0}^{N-1}p_i(\omega^j)^i = \sum_{i=0}^{N-1}p_i\omega^{ij}, \quad j \in [N].
         \end{equation*}
 
-        \textcolor{purple}{\textbf{Naive Complexity:}} $\mathcal{O}(N^2)$ operations. We need $N$ evaluations, 
-        each of which requires $N$ multiplications.
+        \pause\textcolor{purple}{\textbf{Naive Complexity:}} $\mathcal{O}(N^2)$ operations. We need $N$ evaluations, 
+        each of which requires $N$ multiplications.\pause
 
         \begin{align*}
             p(\omega^j) &= \sum_{i=0}^{2^r-1}p_i\omega^{ij} = \sum_{i=0}^{2^{r-1}-1}p_{2i}\omega^{2ij} + \sum_{i=0}^{2^{r-1}-1}p_{2i+1}\omega^{j(2i+1)}\\
@@ -399,17 +399,17 @@
             p(\omega^j) = \textcolor{green!60!black}{p_E(\omega^{2j})} + \omega^j \textcolor{blue!60!black}{p_O(\omega^{2j})}.
         \end{equation*}
 
-        \begin{block}{Fact \#1}
+        \pause\begin{block}{Fact \#1}
             We need only $N/2$ evaluations from $\Omega$ of $p_E$ and $p_O$. Note that:
             \begin{equation*}
                 p(\omega^{j+N/2}) = \textcolor{green!60!black}{p_E(\omega^{2j})} + \omega^j\omega^{N/2} \textcolor{blue!60!black}{p_O(\omega^{2j})}.
             \end{equation*}
         \end{block}
 
-        \begin{block}{Fact \#2}
+        \pause\begin{block}{Fact \#2}
             \begin{itemize}
-                \item We need to evaluate two $N/2$-degree polynomials.
-                \item We need to evaluate them at $N/2$ points.
+                \item We need to evaluate two $N/2$-degree polynomials.\pause
+                \item We need to evaluate them at $N/2$ points.\pause
             \end{itemize}
 
             Thus, we shrink the problem size by half at each step.
@@ -448,7 +448,7 @@
                 p_j = \frac{1}{N}\sum_{i=0}^{N-1}\omega^{-ij}\hat{p}_i
             \end{equation*}
 
-            Thus, its complexity is also $\mathcal{O}(N \log N)$.
+            Thus, its complexity is also $\mathcal{O}(N \log N)$.\pause
         \end{theorem}
 
         \begin{block}{Conclusion}
