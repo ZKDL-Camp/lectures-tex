@@ -303,17 +303,18 @@ its NTT form. This problem is equivalent to solving the interpolation problem:
     m(\omega^j) = \hat{m}_j, \quad j \in [N]
 \end{equation*}
 
-This problem was extensively discussed in \Cref{section:mult-cyclic-g}, where 
-it was shown that the complexity of such problem is $O(N \log N)$.
-
-To summarize, consider the \Cref{fig:ntt}.
+This problem was extensively discussed in \Cref{section:mult-cyclic-g}, where it
+was shown that the complexity of such problem is $O(N \log N)$. Alternatively,
+one can find the inverse NTT by using equality $p_j =
+\frac{1}{N}\sum_{j=0}^{N-1}\hat{p}_j\omega^{-ij}$. Either way, we summarize the
+whole discussion in \Cref{fig:ntt}.
 
 \begin{figure}[H]
 \centering
 \begin{tikzpicture}[node distance=2.5cm, >=Stealth]
     % Zones
     \node[very thick, draw=blue, fill=blue, fill opacity=0.1,minimum width=9.5cm, minimum height=1.75cm,dashed,on background layer](targetbox) at (2.25, 0.1) {};
-    \node(targetzonelabel)[above=0.6cm of targetbox,anchor=north,color=blue!90!black]{\textbf{Polynomial Space}};
+    \node(targetzonelabel)[above=0.65cm of targetbox,anchor=north,color=blue!90!black]{\textbf{Polynomial Space $\mathbb{F}^{(\leq N)}[x]$}};
 
     \node[very thick, draw=green, fill=green!80!black, fill opacity=0.1,minimum width=9.5cm, minimum height=2.0cm,dashed,on background layer](targetbox) at (2.25, -2.0) {};
     \node(targetzonelabel)[below=0.15cm of targetbox,anchor=north,color=green!60!black]{\textbf{NTT Space}};
