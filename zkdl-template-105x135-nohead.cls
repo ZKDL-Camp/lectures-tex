@@ -50,7 +50,6 @@
 % \captionsetup[figure]{margin=10pt} % Set caption margin for figures
 \setlength{\belowcaptionskip}{0mm}  % Set space after the caption (adjust the value as needed)
 \setlength{\textfloatsep}{1mm}      % Space between float and text (affects figures/tables)
-% \setlength{\floatsep}{10pt}      % Space between consecutive floats
 \counterwithin{figure}{section}
 
 % --- Hyperref settings ---
