@@ -245,7 +245,7 @@ from some finite field $\mathbb{F}$ (see right figure below).
         \centering
         % Addition and Multiplication gates
         \begin{tabular}{cc}
-            \scalebox{0.5}{
+            \scalebox{0.45}{
             \begin{tikzpicture}
                 % Nodes
                 \node[var] (a) at (0, -1.5) {$a$};
@@ -260,7 +260,7 @@ from some finite field $\mathbb{F}$ (see right figure below).
             \end{tikzpicture}
             }
             &
-            \scalebox{0.5}{
+            \scalebox{0.45}{
             \begin{tikzpicture}
                 % Nodes
                 \node[var] (a) at (0, -1.5) {$a$};
@@ -282,7 +282,7 @@ from some finite field $\mathbb{F}$ (see right figure below).
 
 \begin{wraptable}{r}{0.4\textwidth}
     \centering
-    \vspace{-1em}
+    \vspace{-0.5em}
     \begin{tabular}{|c|c|c|}
         \hline
         \textbf{A} & \textbf{B} & \textbf{A AND B} \\
@@ -298,7 +298,7 @@ from some finite field $\mathbb{F}$ (see right figure below).
     \end{tabular}
     \caption{\texttt{AND} Gate Truth Table}
     \label{tab:and-truth-table}
-    \vspace{1em}
+    \vspace{0.5em}
 \end{wraptable}
 
 % --- Finish Writing diagrams ---
@@ -306,7 +306,7 @@ from some finite field $\mathbb{F}$ (see right figure below).
 Let us come back to boolean circuits for a moment and consider the \texttt{AND} gate. The \textit{\texttt{AND} Gate Truth \Cref{tab:and-truth-table}} shows us the results we receive if 
 particular values are supplied to the gate. The main point here is that with this table, we can 
 verify the validity of logical statements. Boolean circuits receive an input vector of $\{0, 1\}$ 
-and resolve to \texttt{true} (1) or \texttt{false} (0); basically, they determine if the input values satisfy the 
+and~resolve~to \texttt{true} (1) or \texttt{false} (0); basically, they determine if the input values satisfy the 
 statement.
 
 However, more notably, we can combine these gates to create more complex circuits that can resolve

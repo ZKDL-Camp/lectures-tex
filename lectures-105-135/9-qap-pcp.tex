@@ -717,14 +717,14 @@ Thus, using properties of polynomials' degrees, we can estimate the degree of po
     \deg(M) \leq \max\{\deg(L) + \deg(R), \deg(O)\} \leq 2 \left| \Circ \right|
 \end{equation*}
 
-Now, using the Schwartz-Zippel Lemma (see \Cref{lemma:sz}),
+Now, using the Schwartz-Zippel \Cref{lemma:sz},
 we can deduce that if an adversary $\mathcal{A}$ does not know a valid witness $\mathbf{w}$, 
 resolving the circuit $\Circ$, he can compute a polynomial $\widetilde{M}(x) \gets \mathcal{A}(\cdot)$ that 
 satisfies a verifier $\mathcal{V}$ with probability less than $2 \left| \Circ \right|/|\mathbb{F}|$. To put it formally, we can write:
 \begin{equation*}
     \mathop{\text{Pr}}_{s \xleftarrow{R} \mathbb{F}}[\widetilde{M}(s) = M(s)] \leq \frac{2 \left| \Circ \right|}{|\mathbb{F}|}
 \end{equation*}
-This probability becomes negligible as $|\mathbb{F}|$ grows large (which is typically the case), giving us soundness. In the same time, the
+This probability becomes negligible as $|\mathbb{F}|$ grows large, which is typically the case, giving us soundness. In the same time, the
 verifier accepts the $M(x)$ generated using a valid witness with probability $1$ giving us the 
 completeness, so, we can categorize QAP as PCP. 
 

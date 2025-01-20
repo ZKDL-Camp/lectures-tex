@@ -204,10 +204,6 @@ Basically, the specified interaction is a \textbf{proof}! The prover $\mathcal{P
 \subsubsection{The Verifier's View}
 Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended with the successful verification. What has $\mathcal{V}$ learned? Well, first things first, he has learned that the statement is true, that is $x \in \mathcal{L}_{\mathcal{R}}$. However, he has also learned something more: he has learned the transcript of the interaction, that is the sequence of messages between $\mathcal{P}$ and $\mathcal{V}$.
 
-\begin{definition}
-    Interaction between $\mathcal{P}$ and $\mathcal{V}$ consists of prover's messages (e.g., commitments and responses) $(m_1,m_2,\dots,m_{\ell})$, verifier's queries $(q_1,q_2,\dots,q_{\ell})$, and $\mathcal{V}$'s random coins $(r_1,r_2,\dots,r_{\ell})$. The view of the verifier $\mathcal{V}$, denoted as $\mathsf{view}_{\mathcal{V}}(\mathcal{P},\mathcal{V})[x]$, is a random variable $(m_1,r_1,q_1,m_2,r_2,q_2,\dots,m_{\ell},r_{\ell},q_{\ell})$ that is determined by the random coins of $\mathcal{V}$ and the messages of $\mathcal{P}$ after the interaction with the statement $x$. See Figure below.
-\end{definition}
-
 \begin{figure}[H]
     \centering
     \scalebox{0.9}{
@@ -233,7 +229,12 @@ Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended w
     \end{tikzpicture}
     }
     \caption{The interactive protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$. Prover's messages consist of messages $\{m_k\}_{k=1}^{\ell}$, verifier's messages consist of queries $\{q_k\}_{k=1}^{\ell}$, and additionally verifier samples random coins $\{r_k\}_{k=1}^{\ell}$.}
+    \label{fig:interactive_protocol}
 \end{figure}
+
+\begin{definition}
+    Interaction between $\mathcal{P}$ and $\mathcal{V}$ consists of prover's messages (e.g., commitments and responses) $(m_1,m_2,\dots,m_{\ell})$, verifier's queries $(q_1,q_2,\dots,q_{\ell})$, and $\mathcal{V}$'s random coins $(r_1,r_2,\dots,r_{\ell})$. The view of the verifier $\mathcal{V}$, denoted as $\mathsf{view}_{\mathcal{V}}(\mathcal{P},\mathcal{V})[x]$, is a random variable $(m_1,r_1,q_1,m_2,r_2,q_2,\dots,m_{\ell},r_{\ell},q_{\ell})$ that is determined by the random coins of $\mathcal{V}$ and the messages of $\mathcal{P}$ after the interaction with the statement $x$. See in \Cref{fig:interactive_protocol}.
+\end{definition}
 
 \begin{example}
     Suppose that for the aforementioned protocol with $N=3 \times 2^{30} + 1$, the conversation between the prover $\mathcal{P}$, who wants to convince that $1286091780 \in \mathcal{L}_R$, and $\mathcal{V}$ is the following:
@@ -512,7 +513,8 @@ Suppose we use the protocol $(\mathcal{P}, \mathcal{V}^*)$ where the ``broken'' 
     \item The prover $\mathcal{P}$ can convince the verifier $\mathcal{V}$ that the statement is true without knowing the witness.
  \end{enumerate}
 
-\textbf{Hint:} View of the participant in the protocol consists of all data he has access to during the protocol execution. For example, verifier $\mathcal{V}$'s view consists of the messages he sends and receives, as well as the random coins he generates.
+\textbf{Hint:} View of the participant in the protocol consists of all data he has access to during the protocol execution. 
+% For example, verifier $\mathcal{V}$'s view consists of the messages he sends and receives, as well as the random coins he generates.
 
 \textbf{Exercise 7.} Which of the following is \textbf{not} true about the Fiat-Shamir heuristic?
 \begin{enumerate}[(A)]

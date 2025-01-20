@@ -383,9 +383,9 @@ Finally, we came to the point where we need to make the protocol zero-knowledge.
 The main idea to make our protocol zero-knowledge is to ``shift'' our commitments by some random factor $\delta$. Of course, this ``shift'' $\delta$ must be different for each commitment and must be chosen by the prover $\mathcal{P}$. This way, we propose to modify the commitments as follows:
 \begin{equation*}    
     \begin{aligned}
-        &\pi_L = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iL_i(\tau) + \textcolor{purple}{\delta_LZ(\tau)}} = \textcolor{purple}{(g^{Z(\tau)})^{\delta_L}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{L_i(\tau)})^{w_i}, \\ &\pi_L' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_L}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha L_i(\tau)})^{w_i} \\
-        &\pi_R = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iR_i(\tau) + \textcolor{purple}{\delta_RZ(\tau)}} = \textcolor{purple}{(g^{Z(\tau)})^{\delta_R}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{R_i(\tau)})^{w_i}, \\ &\pi_R' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_R}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha R_i(\tau)})^{w_i} \\
-        &\pi_O = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iO_i(\tau) + \textcolor{purple}{\delta_OZ(\tau)}} = \textcolor{purple}{(g^{Z(\tau)})^{\delta_O}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{O_i(\tau)})^{w_i}, \\ &\pi_O' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_O}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha O_i(\tau)})^{w_i}
+        &\pi_L = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iL_i(\tau) + \textcolor{purple}{\delta_LZ(\tau)}} = \\ &= \textcolor{purple}{(g^{Z(\tau)})^{\delta_L}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{L_i(\tau)})^{w_i}, \\ &\pi_L' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_L}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha L_i(\tau)})^{w_i} \\
+        &\pi_R = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iR_i(\tau) + \textcolor{purple}{\delta_RZ(\tau)}} = \\ &= \textcolor{purple}{(g^{Z(\tau)})^{\delta_R}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{R_i(\tau)})^{w_i}, \\ &\pi_R' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_R}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha R_i(\tau)})^{w_i} \\
+        &\pi_O = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iO_i(\tau) + \textcolor{purple}{\delta_OZ(\tau)}} = \\ &= \textcolor{purple}{(g^{Z(\tau)})^{\delta_O}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{O_i(\tau)})^{w_i}, \\ &\pi_O' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_O}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha O_i(\tau)})^{w_i}
     \end{aligned}
 \end{equation*}
 
