@@ -194,7 +194,7 @@ Or, in more comfortable form (we have already examined why searching of $-x$ can
     z_0^o(x^2) = \frac{z_0(x) - z_0(-x)}{2x}
 \end{gather*}
 
-Then, we define a next-layer of the FRI polynomial as $z_1(x^2) = z_0^e(x^2) + \beta z_0^o(x^2)$, where $\beta$ is a challenge received from verifier. The next-layer evaluation domain is also simple to compute: $E_1 = \{(w\cdot h_i)^2 \;|\; i \in [0;\frac{|E_0|}{2})\}$
+Then, we define a next-layer of the FRI polynomial as $z_1(x^2) = z_0^e(x^2) + \beta z_0^o(x^2)$, where $\beta$ is a challenge received from verifier. The next-layer evaluation domain is also simple to compute: $E_1 = \{(w\cdot h_i)^2 \;|\; i \in [0;\frac{|E_0|}{2})\}$, because squaring the other elements in $E_0$ will result in the same values.
 
 Next, we commit to the $z_1(x^2)$ using a next-layer evaluation domain $E_1$ (is also reduced by a factor two) and continue to repeat the described operations until $z_i(x^{2^i})$ becomes constant.
 
