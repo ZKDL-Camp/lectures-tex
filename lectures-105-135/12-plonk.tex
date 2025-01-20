@@ -18,10 +18,14 @@ $\mathcal{R}_{\text{example}}$: suppose we have a public input $x \in
 \mathbb{F}$ and public output $y \in \mathbb{F}$, and we want to prove the knowledge of $e \in
 \mathbb{F}$ such that $e \times x + x - 1 = y$. Formally, we have the following relation:
 \begin{equation*}
-    \mathcal{R}_{\text{example}} = \left\{ \begin{matrix}
-        \textbf{Public Statement:} & x, y \in \mathbb{F} \\
-        \textbf{Witness}: & e \in \mathbb{F}
-    \end{matrix} \; \Big| \; e \times x + x - 1 = y \right\}
+    \scalebox{0.8}{$
+    \begin{aligned}    
+        \mathcal{R}_{\text{example}} = \left\{ \begin{matrix}
+            \textbf{Public Statement:} & x, y \in \mathbb{F} \\
+            \textbf{Witness}: & e \in \mathbb{F}
+        \end{matrix} \, \Big| \, e \times x + x - 1 = y \right\}
+    \end{aligned}
+    $}
 \end{equation*}
 
 \end{example}
@@ -104,7 +108,10 @@ $\mathbb{F}^N$. If columns $\mathbf{A}$, $\mathbf{B}$ and $\mathbf{C} \in
 \mathbb{F}^N$ of the execution trace table form valid evaluation of the circuit, 
 then the following holds:
 \begin{equation*}
-    A_i (Q_{L})_i + B_i (Q_{R})_i + A_i B_i (Q_{M})_i + C_i (Q_{O})_i + (Q_{C})_i = 0, \; \forall i \in [N]    
+    \begin{aligned}
+        &A_i (Q_{L})_i + B_i (Q_{R})_i + A_i B_i (Q_{M})_i + \\
+        &+ C_i (Q_{O})_i + (Q_{C})_i = 0, \; \forall i \in [N]            
+    \end{aligned}
 \end{equation*}
 
 Using Hadamard product notation, this can be concisely rewritten as:
@@ -138,7 +145,7 @@ You can verify that our claim holds for aforementioned trace matrix:
   &9 \times \textcolor{blue}{1} + 0 \times \textcolor{blue}{0} + 9 \times 0 \times \textcolor{blue}{0} + 8 \times \textcolor{blue}{(-1)} + \textcolor{blue}{(-1)} = 0 
 \end{align*}
 
-Recall that columns of trace matrix $T$ are $\mathbf{A} = \begin{bmatrix} 2 \\ 6 \\ 9 \end{bmatrix}, \;\mathbf{B} = \begin{bmatrix} 3 \\ 3 \\ \text{\xmark} \end{bmatrix}, \;\mathbf{C} = \begin{bmatrix} 6 \\ 9 \\ 8 \end{bmatrix}$.
+Recall that columns of trace matrix $T$ are $ \\ \mathbf{A} = \begin{bmatrix} 2 \\ 6 \\ 9 \end{bmatrix}, \;\mathbf{B} = \begin{bmatrix} 3 \\ 3 \\ \text{\xmark} \end{bmatrix}, \;\mathbf{C} = \begin{bmatrix} 6 \\ 9 \\ 8 \end{bmatrix}$.
 
 \end{example}
 
@@ -183,6 +190,7 @@ $Q=$
 \textcolor{blue}{0} & \textcolor{blue}{1} & \textcolor{blue}{1} & \textcolor{blue}{$-1$} & \textcolor{blue}{$-1$} \\ 
 \hline
 \end{tabular}
+\\
 \quad $V=$
 \begin{tabular}{|c|c|c|}
 \hline
@@ -255,6 +263,7 @@ $-1$ & 0 & 0 & 0 & 8 \\
 1 & $-1$ & 0 & 0 & 0 \\ 
 \hline
 \end{tabular}
+\\
 \quad $V=$
 \begin{tabular}{|c|c|c|}
 \hline
@@ -316,6 +325,7 @@ With only $Q$ modified, we now have:
 0 \\ 
 \hline
 \end{tabular} \hspace{1cm}
+\\
 $Q=$ 
 \begin{tabular}{|c|c|c|c|c|}
 \hline
@@ -361,7 +371,10 @@ Notice that if our trace matrix is correct, then the first condition of
 \Cref{prop:plonk-conditions} can be reduced to the following polynomial
 equation:
 \begin{equation*}
-    a(\omega^j)q_L(\omega^j) + b(\omega^j)q_R(\omega^j) + a(\omega^j)b(\omega^j)q_M(\omega^j) + c(\omega^j)q_O(\omega^j) + q_C(\omega^j) + \pi(\omega^j) = 0, \; \forall j \in [N]
+    \begin{aligned}
+        &a(\omega^j)q_L(\omega^j) + b(\omega^j)q_R(\omega^j) + a(\omega^j)b(\omega^j)q_M(\omega^j) + \\
+        &+ c(\omega^j)q_O(\omega^j) + q_C(\omega^j) + \pi(\omega^j) = 0, \; \forall j \in [N]        
+    \end{aligned}
 \end{equation*}
 
 Notice that this essentially means that the left polynomial $aq_L + bq_R + abq_M
@@ -485,11 +498,18 @@ interpolate at $\Omega$ as follows:
 Then, \(\prod_{i=0}^{k-1} (a_i + \gamma) = \prod_{i=0}^{k-1} (b_i + \gamma)\) holds if and only if there is a polynomial $Z \in \mathbb{F}[X]$ such that for all $h \in \Omega$ we have $Z(\omega^{0}) = 1$ and $Z(h)f(h) = g(h)Z(\omega h)$.
 
 Now that we can encode equality of sets of field elements, let's expand this to sets of tuples of field elements. Let \(A = \{(a_0, a_1), (a_2, a_3)\}\) and \(B = \{(b_0, b_1), (b_2, b_3)\}\). Then, similarly, if
-\[A' = \{a_0 + a_1Y + X, a_2 + a_3Y + X\}, \quad B' = \{b_0 + b_1Y + X, b_2 + b_3Y + X\},\]
+\begin{equation*}
+    \begin{aligned}
+        &A' = \{a_0 + a_1Y + X, a_2 + a_3Y + X\}, \\
+        &B' = \{b_0 + b_1Y + X, b_2 + b_3Y + X\},
+    \end{aligned}
+\end{equation*}
 
 then $A=B$ if and only if $A'=B'$. As before, we can leverage Schwartz-Zippel lemma to reduce this down into sampling two random $\beta$ and $\gamma \xleftarrow{R} \mathbb{F}$ and checking equality of:
 \begin{equation*}
-    (a_0 + \beta a_1 + \gamma)(a_2 + \beta a_3 + \gamma) = (b_0 + \beta b_1 + \gamma)(b_2 + \beta b_3 + \gamma)
+    \begin{aligned}
+        &(a_0 + \beta a_1 + \gamma)(a_2 + \beta a_3 + \gamma) = \\ &= (b_0 + \beta b_1 + \gamma)(b_2 + \beta b_3 + \gamma)        
+    \end{aligned}
 \end{equation*}
 
 \textbf{Permutation Check.} Now, to go back to the second condition of
@@ -505,10 +525,13 @@ consider the modified sets:
 \end{align*}
 
 Sample two random field elements $\beta$ and $\gamma \xleftarrow{R} \mathbb{R}$. Let $\mathcal{D} = \{1, \eta, \eta^2, \ldots, \eta^{3N-1}\}$. Then, interpolate two polynomials $f$ and $g$ over the defined set $\mathcal{D}$ as follows:
-\begin{align*}
-    f(\eta^{3i+j}) &= T_{i,j} + \eta^{3i+j}\beta + \gamma, \quad (i, j) \in \mathcal{I} \\
-    g(\eta^{3k+\ell}) &= T_{i,j} + \eta^{3k+\ell}\beta + \gamma, \quad (i, j) \in \mathcal{I}, \quad \sigma((i, j)) = (k, \ell)
-\end{align*}
+\begin{equation*}
+    \begin{aligned}
+        f(\eta^{3i+j}) &= T_{i,j} + \eta^{3i+j}\beta + \gamma, \quad (i, j) \in \mathcal{I} \\
+        g(\eta^{3k+\ell}) &= T_{i,j} + \eta^{3k+\ell}\beta + \gamma, \quad (i, j) \in \mathcal{I},\\
+        &\text{where } \sigma((i, j)) = (k, \ell)
+    \end{aligned}
+\end{equation*}
 
 Similarly to our previous discussion, there should be a polynomial $Z \in
 \mathbb{F}[X]$ such that $\forall d \in \mathcal{D}$, we have $Z(\eta^{0}) = 1$ and
@@ -530,10 +553,14 @@ Let $k_1$ and $k_2$ be two field elements such that $\omega^i \neq \omega^j k_1
 \neq \omega^{\ell} k_2$ for all possible triplets $i, j, \ell$. Recall that
 $\beta$ and $\gamma$ are random field elements. Let $f$ and $g$ be the
 polynomials that interpolate, respectively, the following values at $\Omega$:
-\begin{align*}
-    f(\omega^i) &=\left(T_{i,0} + \omega^i \beta + \gamma\right)\left(T_{i,1} + \omega^i k_1 \beta + \gamma\right)\left(T_{i,2} + \omega^i k_2 \beta + \gamma\right), \quad i \in [N] \\
-    g(\omega^i) &= \left(T_{i,0} + S_{\sigma,1}(\omega^i) \beta + \gamma\right)\left(T_{i,0} + S_{\sigma,2}(\omega^i) \beta + \gamma\right)\left(T_{i,0} + S_{\sigma,3}(\omega^i) \beta + \gamma\right), \quad i \in [N]
-\end{align*}
+\begin{equation*}
+    \scalebox{0.9}{$
+    \begin{aligned}    
+        &f(\omega^i) = \left(T_{i,0} + \omega^i \beta + \gamma\right)\left(T_{i,1} + \omega^i k_1 \beta + \gamma\right)\left(T_{i,2} + \omega^i k_2 \beta + \gamma\right), \\
+        &g(\omega^i) = \left(T_{i,0} + S_{\sigma,1}(\omega^i) \beta + \gamma\right) \cdot \left(T_{i,0} + S_{\sigma,2}(\omega^i) \beta + \gamma\right) \cdot \\  &\left(T_{i,0} + S_{\sigma,3}(\omega^i) \beta + \gamma\right), \quad i \in [N]
+    \end{aligned}
+    $}
+\end{equation*}
 
 That being said, there is a polynomial $Z \in \mathbb{F}[X]$ such that $\forall
 d \in \mathcal{D}$ we have $Z(\omega^{0}) = 1$ and $Z(d)f(d) = g(d)Z(\omega d)$,
