@@ -55,6 +55,9 @@ If the multiplication of two equations equals to zero by modulus $N$, then we ca
 \begin{remark}
 The equation $w^{N - 1} \equiv 1 \mod N$ is obtained from the order property of the primitive element $w$ in the multiplicative group $\mathbb{F}^{\times}$. 
 \end{remark}
+\begin{remark}
+This provides us with an additional important property beyond element's power computation: when working with a negative element, its power shift equals half the size of the subgroup so, squaring the elements within this subgroup results in a smaller subgroup, reduced by a factor of two. Consequently, to compute the square of the subgroup, it suffices to square only the first half of its elements (powers $0, 1, 2, 3, \dots, \frac{H}{2}$).
+\end{remark}
 
 \subsection{Protocol definition}
 
