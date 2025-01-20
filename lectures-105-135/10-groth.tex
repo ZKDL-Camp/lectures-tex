@@ -474,11 +474,15 @@ Let us now look at the final version of our basic SNARK protocol.
     \begin{itemize}[label=\ding{51}]
         \item Picks random values $\tau, \alpha, \beta_L, \beta_R, \beta_O, \gamma \xleftarrow{R} \mathbb{F}$.
         \item \textbf{Outputs} prover parameters $\mathsf{pp}$ and verification parameters $\mathsf{vp}$:
-        \begin{align*}
-            \mathsf{pp} &\gets \big\{\{g^{\tau^i}\}_{i \in [d]}, \{\textcolor{purple}{g^{Z(\tau)}}, g^{L_i(\tau)}, g^{\alpha L_i(\tau)}, g^{R_i(\tau)}, g^{\alpha R_i(\tau)}, \\ 
-            & g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, \textcolor{purple}{g^{\beta_LL_i(\tau)}, g^{\beta_RR_i(\tau)}, g^{\beta_OO_i(\tau)}}\}_{i \in \mathcal{I}_{\text{mid}}}\big\} \\
-            \mathsf{vp} &\gets \big\{ g^{Z(\tau)}, g^{\alpha}, g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, g^{\beta_O\gamma}, g^{\gamma}, \{g^{L_i(\tau)}, g^{R_i(\tau)}, g^{O_i(\tau)}\}_{i \in \mathcal{I}_{\text{io}}} \big\}
-        \end{align*}
+        \begin{equation*}
+            \begin{aligned}
+                \mathsf{pp} &\gets \big\{\{g^{\tau^i}\}_{i \in [d]}, \{\textcolor{purple}{g^{Z(\tau)}}, g^{L_i(\tau)}, g^{\alpha L_i(\tau)}, \\ 
+                            &  g^{R_i(\tau)}, g^{\alpha R_i(\tau)}, g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, \\
+                            & \textcolor{purple}{g^{\beta_LL_i(\tau)}, g^{\beta_RR_i(\tau)}, g^{\beta_OO_i(\tau)}}\}_{i \in \mathcal{I}_{\text{mid}}}\big\} \\
+                \mathsf{vp} &\gets \big\{ g^{Z(\tau)}, g^{\alpha}, g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, \\
+                            & g^{\beta_O\gamma}, g^{\gamma}, \{g^{L_i(\tau)}, g^{R_i(\tau)}, g^{O_i(\tau)}\}_{i \in \mathcal{I}_{\text{io}}} \big\}
+            \end{aligned}
+        \end{equation*}
         \item \textbf{Deletes} aforementioned random scalars.
     \end{itemize}
     \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbf{x}, \mathbf{w})$}
@@ -551,7 +555,8 @@ Then, we define $\rho_O \triangleq \rho_L\rho_R$, and finally introduce the foll
 
 The next change is that we use different $\alpha$ values for $L(x)$, $R(x)$, and $O(x)$. Namely, we define $\alpha_L,\alpha_R,\alpha_O \xleftarrow{R} \mathbb{F}$ and use them in the commitments. This way, in the setup phase, we additionally prepare the following values:
 \begin{equation*}
-    \{g_L^{L_i(\tau)}, g_L^{\alpha_LL_i(\tau)}, g_R^{R_i(\tau)}, g_R^{\alpha_RR_i(\tau)}, g_O^{O_i(\tau)}, g_O^{\alpha_O O_i(\tau)}\}_{i \in \mathcal{I}_{\text{mid}}}
+    % \{g_L^{L_i(\tau)}, g_L^{\alpha_LL_i(\tau)}, g_R^{R_i(\tau)}, g_R^{\alpha_RR_i(\tau)}, g_O^{O_i(\tau)}, g_O^{\alpha_O O_i(\tau)}\}_{i \in \mathcal{I}_{\text{mid}}}
+    \scalebox{0.95}{$\{g_L^{L_i(\tau)}, g_L^{\alpha_LL_i(\tau)}, g_R^{R_i(\tau)}, g_R^{\alpha_RR_i(\tau)}, g_O^{O_i(\tau)}, g_O^{\alpha_O O_i(\tau)}\}_{i \in \mathcal{I}_{\text{mid}}}$}
 \end{equation*}
 
 Instead of using three different $\beta$'s, the Pinocchio Protocol uses a single $\beta \xleftarrow{R} \mathbb{F}$:
@@ -702,10 +707,12 @@ Let us now concretely describe the Groth16 construction.
 
 \textcolor{blue!75!gray}{\textbf{Setup Procedure.}} In Groth16, we need only five random scalars: $\alpha,\beta,\gamma,\delta,\tau \xleftarrow{R} \mathbb{F}$. Now, the prover key $\mathsf{pk}$ looks as follows:
 \begin{equation*}
+    \scalebox{0.85}{$
     \begin{aligned}
         &\mathsf{pp} \gets \left(g_1^{\alpha},g_1^{\beta},g_1^{\delta},\left\{g_1^{\tau^i},\frac{\beta L_i(\tau) + \alpha R_i(\tau) + O_i(\tau)}{\gamma}, \frac{\tau^i Z(\tau)}{\delta}\right\}_{i \in [n]} \right., \\
         & \left. g_2^{\beta}, g_2^{\delta}, g_2^{\gamma}, \{g_2^{\tau^i}\}_{i \in [d]}\right).        
     \end{aligned}
+    $}
 \end{equation*}
 
 \textcolor{green!50!black}{\textbf{Proving.}} Sample random $\delta_L,\delta_R \xleftarrow{R} \mathbb{F}$ and compute the following values:
@@ -715,7 +722,10 @@ Let us now concretely describe the Groth16 construction.
     \end{aligned}
 \end{equation*}
 
-where we denoted $Q_{\text{mid}} := \sum_{i \in \mathcal{I}_{\text{mid}}}w_i(\beta L_i(\tau) + \alpha R_i(\tau) + O_i(\tau))$.
+where we denoted 
+\begin{center}
+    $Q_{\text{mid}} := \sum_{i \in \mathcal{I}_{\text{mid}}}w_i(\beta L_i(\tau) + \alpha R_i(\tau) + O_i(\tau))$.    
+\end{center}
 
 \textcolor{purple}{\textbf{Verification.}} The verifier first calculates the following value:
 \begin{equation*}
