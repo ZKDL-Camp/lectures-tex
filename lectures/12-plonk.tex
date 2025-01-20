@@ -5,6 +5,339 @@
 
 \begin{document}
 
+\subsection{Number Theoretical Trasnform: Universal Polynomial Accelerator}
+
+In the previous sections, when considering Groth16, we have seen the idea that
+polynomials are powerful encoders of data. To encode a set of $N$ values
+$a_0,\dots,a_{N-1} \in \mathbb{F}$, we interpolate a polynomial $p(x)$ that at
+specific points $x_0,\dots,x_{N-1} \in \mathbb{F}$ evaluates to these values. The
+only condition we impose on these points is that they are distinct (unless, the
+interpolation would not be properly defined). This way, generally, we have the
+following interpolation problem:
+\begin{equation*}
+    p(x_j) = a_j, \quad j = 0,\dots,N-1
+\end{equation*}
+
+Particularly, in Groth16 our choice of points was $x_j = j$ for $j = 0,\dots,N-1$, which, 
+for the large enough finite field $\mathbb{F}$, does not cause any issues. However, the 
+complexity of interpolation in this case is not optimal. Let us see why.
+
+Recall that the interpolation formula (see \Cref{section:math-crypto-2} for details)
+is given by:
+\begin{equation*}
+    p(x) = \sum_{i=0}^{N-1} a_i \ell_i(x), \quad \ell_i(x) = \prod_{j=0, j \neq i}^{N-1} \frac{x-x_j}{x_i-x_j}.
+\end{equation*}
+
+The naive evaluation of this formula requires $O(N^2)$ operations: we
+need to compute each $\ell_i$, costing $O(N)$ operations, and then sum
+them up with, again, $O(N)$ operations.
+
+With the specific choice of points $\{x_j\}_{0 \leq j < N}$, we can do much
+better: in fact, we can reduce the complexity to $O(N \log N)$ operations or
+even $O(N)$. This is done by utilizing several techniques, including the
+\textbf{Barycentric Interpolation} and the \textbf{$N$th roots of unity}. 
+
+\subsubsection{Barycentric Interpolation}
+
+The idea of $O(N \log N)$ is to exploit the barycentric formula for polynomial
+interpolation. Let us derive the formula and see how it helps.
+
+First, introduce the quantity $\gamma(x) = \prod_{j=0}^{N-1}(x-x_j)$. Now note that 
+the Lagrange basis polynomials $\ell_j(x)$ can be rewritten as:
+\begin{equation*}
+    \ell_j(x) = \gamma(x) \cdot \frac{w_j}{x-x_j}, \quad w_j = \frac{1}{\prod_{k=0,k \neq j}^{N-1}(x_j-x_k)}, \quad j \in [N]
+\end{equation*}
+
+\begin{remark}
+    This step might seem unobvious, so let us be careful here. Let us see why expression $\gamma(x) \cdot \frac{w_j}{x-x_j}$ 
+    indeed gives the desired basis polynomial:
+    \begin{equation*}
+        \textcolor{blue!60!black}{\gamma(x)} \cdot \frac{\textcolor{green!60!black}{w_j}}{x-x_j} = \textcolor{blue!60!black}{\left(\prod_{k=0}^{N-1}(x-x_k) \right)} \cdot \frac{1}{\textcolor{green!60!black}{\left(\prod_{k=0,k \neq j}^{N-1}(x_j-x_k)\right)}(x-x_j)}
+    \end{equation*}
+
+    Note that we can cancel out $(x-x_j)$ from both numerator and denominator and get
+    \begin{equation*}
+        \textcolor{blue!60!black}{\left(\prod_{k=0,k\neq j}^{N-1}(x-x_j) \right)} \cdot \frac{1}{\textcolor{green!60!black}{\prod_{k=0,k \neq j}^{N-1}(x_j-x_k)}} = \prod_{k=0,k \neq j}^{N-1} \frac{x-x_j}{x_j-x_k} = \ell_j(x),
+    \end{equation*}
+    which is exactly what we wanted to show.
+\end{remark}
+
+Good, so why do we even need such an expression for $\ell_j$? Let us substitute it back into the interpolation formula:
+\begin{equation*}
+    p(x) = \sum_{i=0}^{N-1} a_i \ell_i(x) = \sum_{i=0}^{N-1}a_i \gamma(x) \cdot \frac{w_i}{x-x_i} = \gamma(x) \sum_{i=0}^{N-1} \frac{w_i}{x-x_i}a_i
+\end{equation*}
+
+In regards to this formula, we give the following definition.
+\begin{proposition}\label{prop:barycentric}
+    The \textbf{barycentric interpolation formula} for the interpolation problem
+    $p(x_j)=a_j, j \in [N]$, given by $p(x) = \gamma(x) \sum_{i \in [N]}
+    \frac{w_i}{x-x_i}a_i$ with $\gamma(x)=\prod_{i \in [N]}(x-x_i)$, requires $O(N)$ operations to compute and $O(N^2)$
+    operations to pre-compute.
+\end{proposition}
+
+\textbf{Proof.} Coefficients $\{w_j\}_{j \in [N]}$ are independent of $x$, and so 
+are the values $\{a_j\}_{j \in [N]}$. To compute $\{w_j\}_{j \in [N]}$, one needs 
+$O(N)$ operations for each $w_j$, and thus $O(N^2)$ operations in total. To compute
+the polynomial $p(x)$, one needs $O(N)$ operations to compute $\gamma(x)$ and 
+$O(N)$ operations to compute the sum, knowing $\{w_ja_j\}_{j \in [N]}$. $\hfill\Box$
+
+Of course, in reality, storing $N$ values $\{w_j\}_{j \in [N]}$ requires $O(N)$
+memory, which is not optimal. Moreover, these points on their own are useless 
+and typically are not used in any other parts of the protocol. This is where the
+\textbf{$N$th roots of unity} come into play.
+
+\subsubsection{Multiplicative Cyclic Subgroup}\label{section:mult-cyclic-g}
+
+Again, assume we have the prime field $\mathbb{F}_p$. Let $\omega$ be a
+\textbf{primitive $N$-th root of unity}, i.e., $\omega^N = 1$ and $\omega^j \neq
+1$ for $j < N$. The set $\Omega = \{\omega^j\}_{0 \le j < N}$ is called
+the \textbf{$N$-th root of unity subgroup} of $\mathbb{F}_p$ of order $N$. One
+might ask the following question: why such primitive root even exists? Consider
+the following lemma, briefly mentioned in
+\Cref{section:multiplicative_subgroup}.
+
+\begin{lemma}
+    For $\mathbb{F}_p$ there exists a primitive $N$-th root of unity
+    if and only if $N \mid (p-1)$. 
+\end{lemma}
+What is so special about the set $\Omega$? The magic of $\Omega$ is that it
+allows to compute certain polynomial operations (such as interpolation or
+multiplication) using the \textbf{Discrete Fourier Transform} (DFT) or, 
+equivalently, the \textbf{Number Theoretic Transform} (NTT) algorithm. 
+Consider the first central lemma.
+
+\begin{lemma}\label{lemma:vanishing-polynomial}
+    The vanishing polynomial of the set $\Omega$ is given by $z_{\Omega}(X) = X^N - 1$.
+\end{lemma}
+
+\textbf{Proof Idea.} If $\omega$ is the $N$th primitive root, then for any $h
+\in \Omega$ we have $h^N = 1$ and therefore all elements of $\Omega$ are the
+roots of $X^N-1$. There are precisely $N$ such roots, so $X^N-1$ can be 
+decomposed as a product of linear factors $c \cdot \prod_{j=0}^{N-1}(X-\omega^j)$. 
+It is easy to see that $c=1$ by comparing the leading coefficient. 
+
+Now, let us come back to the barycentric formula. We have seen that the
+interpolation polynomial $p(x)$ can be written as $p(x) = \gamma(x) 
+\sum_{i=0}^{N-1} \frac{w_i}{x-x_i}a_i$. The key idea of the FFT is to
+set $x_j = \omega^j$. What does it give us? We give the following proposition.
+
+\begin{proposition}
+    Suppose the interpolation domain is chosen so that $a_i = \omega^i$. Then, 
+    following the notation of \Cref{prop:barycentric}, certain expressions 
+    simplify to the following:
+    \begin{itemize}
+        \item $\gamma(x) = x^N-1$.
+        \item $w_i = \omega^i/N$.
+    \end{itemize}
+\end{proposition}
+
+\textbf{Proof Idea.} For the first claim, notice that
+by definition $\gamma(x) = \prod_{i=0}^{N-1}(x-\omega^i)$, which is exactly 
+the vanishing polynomial of $\Omega$. Thus, $\gamma(x) = z_{\Omega}(x) = x^N-1$
+from \Cref{lemma:vanishing-polynomial}. 
+
+As for the second claim, recall that $w_i = 1/\prod_{j \neq
+i}^{N-1}(\omega^i-\omega^j)$. Intuitively, the real analysis
+shows that $w_i = 1/\gamma'(x_i)$ and since $\gamma(x)=x^N-1$, we 
+have exactly $w_i = 1/Nx^{N-1}\Big|_{x=\omega^i}=\omega^i/N$. The same 
+result can be obtained by direct computation. $\hfill\Box$
+
+That being said, the barycentric formula is now given by:
+\begin{equation*}
+    p(x) = (x^N-1) \sum_{j \in [N]} \frac{\omega^j}{x-\omega^j}a_j
+\end{equation*}
+
+This formula is a much more convenient form for the computation of the
+interpolation polynomial! First, the evaluation of the sum requires $O(N)$
+operations and it depends only on the values $\{\omega^j\}_{j \in [N]}$,
+which are typically pre-computed and used in many other parts of the protocol.
+Second, the evaluation of the vanishing polynomial $x^N-1$ requires $O(\log N)$
+operations using the fast exponentiation algorithm, compared to naive 
+$O(N)$ operations. 
+
+\subsubsection{Fast Polynomial Multiplication}
+
+\textcolor{blue!60!black}{\textbf{Forward NTT.}} Using the $N$th roots of unity $\Omega$, we can also compute the polynomial
+multiplication in $O(N \log N)$ operations. The idea is to use the \textbf{Number
+Theoretic Transform} (NTT) algorithm, which is a generalization of the Fast
+Fourier Transform (FFT) to the finite fields. But first, let us define 
+what NTT is.
+
+\begin{definition}[NTT]
+    Suppose the polynomial is given by $p(x) = \sum_{j=0}^{N-1}p_jx^j \in \mathbb{F}[x]$. In its
+    essence, the polynomial is defined as a vector of coefficients
+    $\boldsymbol{p}=(p_0,\dots,p_{N-1})$. The \textbf{Number Theoretic
+    Transform} (NTT) of polynomial $p(x)$ is the vector of evaluations at 
+    the $N$th roots of unity $\Omega$:
+    $\mathsf{NTT}(\boldsymbol{p}) =
+    (p(\omega^0),p(\omega^1),\dots,p(\omega^{N-1}))$.
+\end{definition}
+
+\begin{remark}
+    Typically, the $j$th component of the NTT vector is denoted as $\hat{p}_j = \mathsf{NTT}(\boldsymbol{p})_j$.
+\end{remark}
+
+If computed naively, the NTT requires $O(N^2)$ operations, since each 
+evaluation of $p(x)$ requires $O(N)$ operations. However, due to the 
+specifics of the selected domain $\Omega$, the NTT can be computed in
+$O(N \log N)$ operations. Let us emphasize this in the following lemma.
+
+\begin{lemma}
+    The \textbf{Number Theoretic Transform} (NTT) of a polynomial $p(x)$ can be
+    computed in $O(N \log N)$ operations using the $N$th roots of unity. This is
+    possible only if the prime field $\mathbb{F}_p$ allows to find the primitive
+    $2^k$ root of unity for $k \in [m]$ with large enough $m$. Equivalently, 
+    $2^k \mid (p-1)$ for $k \in [m]$.
+\end{lemma}
+
+To show this lemma is true, let us develop the concrete algorithm. Notice that 
+our task consists in computing:
+\begin{equation*}
+    p(\omega^i) = \sum_{j \in [N]} p_j (\omega^i)^j = \sum_{j \in [N]} p_j \omega^{ij} \; \text{for each} \; i \in [N]
+\end{equation*}
+
+Suppose the considered polynomial is such that $N=2^r$ (we can always pad the
+polynomial if that is not the case). Now, let us proceed with the polynomial as
+follows:
+\begin{equation*}
+    p(\omega^i) = \sum_{j=0}^{2^{r}-1}p_j\omega^{ij} = \sum_{j=0}^{2^{r-1}-1}p_{2j}\omega^{2ij} + \sum_{j=0}^{2^{r-1}-1}p_{2j+1}\omega^{i(2j+1)} = \sum_{j=0}^{2^{r-1}-1}p_{2j}(\omega^{2i})^j + \omega^i\sum_{j=0}^{2^{r-1}-1}p_{2j+1} (\omega^{2i})^j
+\end{equation*}
+
+This already looks interesting enough. Notice that we can introduce two new polynomials: $p_E(x)=\sum_{j=0}^{2^{r-1}-1}p_{2j}x^{j}$ and $p_O(x)=\sum_{j=0}^{2^{r-1}-1}p_{2j+1}x^{j}$, 
+which are polynomials, containing even and odd coefficients of $p$, respectively. In that case, 
+\begin{equation*}
+    p(\omega^i) = p_E(\omega^{2i}) + \omega^i p_O(\omega^{2i})
+\end{equation*}
+
+This is quite an interesting observation which already screams
+divide-and-conquer! However, currently it might still be unclear 
+how to use it: we still have to evaluate $N$ expressions of 
+form $p_E(\omega^{2i}) + \omega^i p_O(\omega^{2i})$ where both 
+polynomials $p_E$ and $p_O$ contain roughly $N/2$ coefficients, totalling 
+in $O(N^2)$ operations again. To counter this, we claim the following: 
+we need only half the domain of $\Omega$ to compute both $p_E$ and $p_O$.
+To see why, consider the expression $p(\omega^{i+N/2})$:
+\begin{equation*}
+    p(\omega^i) = p_E(\omega^{2(i+N/2)}) + \omega^{i+N/2}p_O(\omega^{2(i+N/2)}) = p_E(\omega^{2i}) + \omega^{i}\omega^{N/2}p_O(\omega^{2i})
+\end{equation*}
+
+In other words, having computed $p_E(\omega^{2i})$ and $p_O(\omega^{2i})$, we
+know not only $p(\omega^i)$, but also $p(\omega^{i+N/2})$ for free! This way, to
+compute the \textsf{NTT} for $N$-degree polynomial, we need to evaluate two
+$\frac{N}{2}$-degree polynomials at $\frac{N}{2}$ points. This way, on each
+step: (a) the evaluation domain shrinks in half, (b) the complexity of computing
+polynomials shrinks in half, (c) we get two new polynomials. This way, on each
+step, we reduce the problem complexity in half!
+
+The reason why the prime field should support multiplicative cyclic subgroups 
+of order $2^k$ for sufficiently many $k$ is that not always if $\omega$ is the 
+$N$th primitive root, then $\omega^2$ is the $\frac{N}{2}$th primitive root. If that is 
+not the case, all the aforementioned magic breaks.
+
+We summarize everything so far in the \Cref{alg:ntt}.
+
+\begin{algorithm}[H]
+    \caption{Number Theoretic Transform (NTT)}
+    \label{alg:ntt}
+    \Input{Polynomial $p(x) = \sum_{j=0}^{N-1}p_jx^j$}
+    \Output{Vector of evaluations $\mathsf{NTT}(\boldsymbol{p}, \omega)$ at $\Omega=\{\omega\}_{j \in [N]}$}
+
+    \If{$N=1$}{
+        \Return{$(p_0)$}
+    }
+
+    $H \gets N/2$ \Comment{Compute the domain half-size}
+
+    $\boldsymbol{p}_{E} \gets (p_0,p_2,\dots,p_{N-2})$ \Comment{Find even-indexed coefficients}
+
+    $\boldsymbol{p}_{O} \gets (p_1,p_3,\dots,p_{N-1})$ \Comment{Find odd-indexed coefficients}
+
+    $\boldsymbol{y}_E \gets \mathsf{NTT}(\boldsymbol{p}_{E}, \omega^2)$ \Comment{Compute NTT for even polynomial via $\frac{N}{2}$th primitive root $\omega^2$}
+
+    $\boldsymbol{y}_O \gets \mathsf{NTT}(\boldsymbol{p}_O, \omega^2)$ \Comment{Compute NTT for odd polynomial via $\frac{N}{2}$th primitive root $\omega^2$}
+
+    \Return{$(y_0,\dots,y_{N-1})$ with $y_j=y_{E, \;j \; \text{mod} \; H} + \omega^j y_{O, \; j \; \text{mod} \; H}$}
+\end{algorithm}
+
+\textcolor{purple}{\textbf{NTT Domain.}} OK, so what next? Suppose we want to
+multiply two polynomials $p(x), q(x) \in \mathbb{F}[X]$ of degree $N=2^r$ and we
+have successfully evaluated their NTTs. Say, we got $\hat{\boldsymbol{p}}$ and
+$\hat{\boldsymbol{q}}$. What can we do next? Here is another trick.
+
+\begin{proposition}
+    Suppose $m(x) = p(x)q(x)$ is the product of $p$ and $q$. Then,
+    \begin{equation*}
+        \hat{\boldsymbol{m}} = \hat{\boldsymbol{p}} \odot \hat{\boldsymbol{q}}
+    \end{equation*}
+
+    Speaking more formally, $\mathsf{NTT}: (\mathbb{F}^{(\leq N)}[X],\times) \to (\mathbb{F}^N, \odot)$ is 
+    a homomorphism between a set of polynomials of degree up to $N$ and their NTT domain. With certain 
+    appropriate technicalities, $\mathsf{NTT}$ can be extended to the isomorphism.
+\end{proposition}
+
+\textbf{Intuition.} Although this fact might come out of random, we give an
+intuitive explanation why this holds. One of NTT interpretations is well-known to you 
+\emph{interpolation}. Indeed, polynomials $p$ and $q$ satisfy the following 
+interpolation problem:
+\begin{equation*}
+    p(\omega^j) = \mathsf{NTT}(p)_j = \hat{p}_j, \quad q(\omega^j) = \mathsf{NTT}(q)_j = \hat{q}_j.
+\end{equation*}
+
+In turn, $\hat{m}_j$ is nothing but the evaluation of $m$ at $\omega^j$. But, if $m$ is the product of $p$ and $q$
+and values of $p$ and $q$ at $\omega^j$ are $\hat{p}_j$ and $\hat{q}_j$, this immediately implies that 
+$m(\omega^j)$ is nothing but $\hat{p}_j\hat{q}_j$. Meaning, $\hat{m}_j = \hat{p}_j\hat{q}_j$. This, in turn,
+implies $\hat{\boldsymbol{m}} = \hat{\boldsymbol{p}} \odot \hat{\boldsymbol{q}}$.
+
+Wow! What this essentially means is that multiplication in NTT domain is very cheap:
+it requires only $O(N)$ field multiplication operations! Now, the algorithm 
+of multiplication of $p$ and $q$ becomes a little bit more clear at this point:
+\begin{enumerate}
+    \item Compute NTTs $\hat{\boldsymbol{p}}$ and $\hat{\boldsymbol{q}}$ of $p$ and $q$.
+    \item Compute NTT $\hat{\boldsymbol{m}} = \hat{\boldsymbol{p}} \odot \hat{\boldsymbol{q}}$ of their product $m = pq$.
+    \item Restore $m(x)$ from NTT $\hat{\boldsymbol{m}}$ --- this problem is called Inverse NTT (INTT).
+\end{enumerate}
+
+\textcolor{green!60!black}{\textbf{Inverse NTT.}} So, the only problem left is restoring the polynomial from 
+its NTT form. This problem is equivalent to solving the interpolation problem:
+\begin{equation*}
+    m(\omega^j) = \hat{m}_j, \quad j \in [N]
+\end{equation*}
+
+This problem was extensively discussed in \Cref{section:mult-cyclic-g}, where 
+it was shown that the complexity of such problem is $O(N \log N)$.
+
+To summarize, consider the \Cref{fig:ntt}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=2.5cm, >=Stealth]
+    % Zones
+    \node[very thick, draw=blue, fill=blue, fill opacity=0.1,minimum width=9.5cm, minimum height=1.75cm,dashed,on background layer](targetbox) at (2.25, 0.1) {};
+    \node(targetzonelabel)[above=0.6cm of targetbox,anchor=north,color=blue!90!black]{\textbf{Polynomial Space}};
+
+    \node[very thick, draw=green, fill=green!80!black, fill opacity=0.1,minimum width=9.5cm, minimum height=2.0cm,dashed,on background layer](targetbox) at (2.25, -2.0) {};
+    \node(targetzonelabel)[below=0.15cm of targetbox,anchor=north,color=green!60!black]{\textbf{NTT Space}};
+
+    % Nodes
+    \node (pq) at (0,0) {\( p, q \)};
+    \node (m) [right=3cm of pq] {\( m = p \cdot q \)};
+    \node (pHatqHat) [below=2cm of pq] {\( \hat{p}, \hat{q} \)};
+    \node (mHat) [below=2cm of m] {\( \hat{m} = \hat{p} \odot \hat{q} \)};
+    
+    % Arrows
+    \draw[->, line width = 0.5mm] (pq) -- (m) node[midway, above] {$O(N^2)$};
+    \draw[->, dashed, line width = 0.5mm] (pq) -- (pHatqHat) node[midway, left] {$O(N \log N)$};
+    \draw[->, dashed, line width = 0.5mm] (pHatqHat) -- (mHat) node[midway, above] {$O(N)$};
+    \draw[->, dashed, line width = 0.5mm] (mHat) -- (m) node[midway, right] {$O(N \log N)$};
+
+    % Labels
+    \node at ($(pq)!0.5!(pHatqHat)$) [left] {};
+    
+    \end{tikzpicture}
+\caption{Illustration of the NTT Algorithm}
+\label{fig:ntt}
+\end{figure}
+
 \subsection{Plonk Arithmetization}
 
 Consider we have a certain relation $\mathcal{R}$, which we would like to write
@@ -366,24 +699,10 @@ equation:
 
 Notice that this essentially means that the left polynomial $aq_L + bq_R + abq_M
 + cq_O + q_C + \pi$ has roots at $\omega^j$ for all $j \in [N]$. This is
-equivalent to stating that the polynomial $z_{\Omega}(X) =
-\prod_{j=0}^{N-1}(X-\omega^j)$ divides the left hand side. Now, the interesting
-fact\dots
-
-\begin{lemma}
-    It so happens that if $\Omega$ is a set of $N$-th roots of unity, then the
-    polynomial $z_{\Omega}(X) = X^N - 1$ is the vanishing polynomial of $\Omega$.
-\end{lemma}
-
-\textbf{Proof Idea.} If $\omega$ is the $N$th primitive root, then for any $h
-\in \Omega$ we have $h^N = 1$ and therefore all elements of $\Omega$ are the
-roots of $X^N-1$. There are precisely $N$ such roots, so $X^N-1$ can be 
-decomposed as a product of linear factors $c \cdot \prod_{j=0}^{N-1}(X-\omega^j)$. 
-It is easy to see that $c=1$ by comparing the leading coefficient. 
-
-\vspace{5px}
-Aha! So we have that $X^N-1$ must divide the left polynomial. Let us wrap this up 
-in the following proposition.
+equivalent to stating that the vanishing polynomial of $\Omega$ divides the left
+hand side. Due to the proposition \Cref{prop:vanishing-polynomial}, this
+vanishing polynomial is $X^N-1$.  Let us wrap this up in the following
+proposition.
 
 \begin{proposition}
     Now we can reduce down our first condition of \Cref{prop:plonk-conditions}
