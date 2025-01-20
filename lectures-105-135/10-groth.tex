@@ -25,12 +25,12 @@ Notice that we transferred $O(\tau)$ to the right side of the equation to furthe
 \begin{remark}
     One might ask: why is the above equation correct? Well, let us see:
     \begin{flalign*}
-        & e(\mathsf{com}(L), \mathsf{com}(R)) = e(\mathsf{com}(Z), \mathsf{com}(H)) \cdot e(\mathsf{com}(O), g) & \textit{\textcolor{gray!80!black}{// Initial statement}} \\
-        \Leftrightarrow \quad & e(g^{L(\tau)}, g^{R(\tau)}) = e(g^{Z(\tau)}, g^{H(\tau)}) \cdot e(g^{O(\tau)}, g) & \textit{\textcolor{gray!80!black}{// KZG commitment def.}} \\
-        \Leftrightarrow \quad & e(g,g)^{L(\tau)R(\tau)} = e(g,g)^{Z(\tau)H(\tau)}e(g,g)^{O(\tau)} & \textit{\textcolor{gray!80!black}{// Pairing bilinearity}} \\
-        \Leftrightarrow \quad & e(g,g)^{L(\tau)R(\tau)} = e(g,g)^{Z(\tau)H(\tau) + O(\tau)} & \textit{\textcolor{gray!80!black}{// Exponent product rule}} \\
-        \Leftrightarrow \quad & L(\tau)R(\tau) = Z(\tau)H(\tau) + O(\tau) & \textit{\textcolor{gray!80!black}{// QAP Check}} \\
-        \Leftrightarrow \quad & L(x)R(x) \equiv Z(x)H(x) + O(x) & \textit{\textcolor{gray!80!black}{// Schwarz-Zippel Lemma}}
+        & e(\mathsf{com}(L), \mathsf{com}(R)) =\\ &= e(\mathsf{com}(Z), \mathsf{com}(H)) \cdot e(\mathsf{com}(O), g) \Leftrightarrow \\
+        \Leftrightarrow \quad & e(g^{L(\tau)}, g^{R(\tau)}) = e(g^{Z(\tau)}, g^{H(\tau)}) \cdot e(g^{O(\tau)}, g) \\
+        \Leftrightarrow \quad & e(g,g)^{L(\tau)R(\tau)} = e(g,g)^{Z(\tau)H(\tau)}e(g,g)^{O(\tau)} \\
+        \Leftrightarrow \quad & e(g,g)^{L(\tau)R(\tau)} = e(g,g)^{Z(\tau)H(\tau) + O(\tau)} \\
+        \Leftrightarrow \quad & L(\tau)R(\tau) = Z(\tau)H(\tau) + O(\tau) \\
+        \Leftrightarrow \quad & L(x)R(x) \equiv Z(x)H(x) + O(x) 
     \end{flalign*}
 \end{remark}
 
@@ -63,7 +63,9 @@ So, sounds like we are done. Let us summarize what we have done so far:
         \item Calculates $H(x) \gets (L(x)R(x) - O(x))\big/ Z(x)$.
         \item Calculates the KZG commitments as follows: 
         \begin{equation*}
-            \pi_L \gets \mathsf{com}(L), \pi_R \gets \mathsf{com}(R), \pi_O \gets \mathsf{com}(O), \pi_H \gets \mathsf{com}(H),
+            \begin{aligned}
+                &\pi_L \gets \mathsf{com}(L), \pi_R \gets \mathsf{com}(R), \\ &\pi_O \gets \mathsf{com}(O), \pi_H \gets \mathsf{com}(H),                
+            \end{aligned}
         \end{equation*}
         using powers of $\tau$ from the prover parameters $\mathsf{pp}$.
         \item Publishes $\boldsymbol{\pi} = (\pi_L,\pi_R,\pi_O,\pi_H)$ as a proof.
@@ -132,14 +134,14 @@ For that reason, we modify the SNARK protocol to include not only commitments to
             \pi_H \gets g^{H(\tau)}, & \quad\textcolor{green!50!black}{\pi_H' \gets g^{\alpha H(\tau)}}.
         \end{align*}
         using powers $\{g^{\tau^i}\}_{i \in [d]}$ and $\{g^{\alpha\tau^i}\}_{i \in [d]}$ from the proper parameters $\mathsf{pp}$.
-        \item Publishes $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H')$ as a proof.
+        \item Publishes the following proof $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H')$ as a proof.
     \end{itemize}
     \tcbsubtitle{$\mathsf{Verify}(\mathsf{vp}, \mathbf{x}, \boldsymbol{\pi})$}
-    Upon receiving $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H')$, the verifier $\mathcal{V}$ checks:
+    Upon receiving proof $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H')$, the verifier $\mathcal{V}$ checks:
     \begin{align*}
-        e(\pi_L, \pi_R) = e(g^{Z(\tau)}, \pi_H) \cdot e(\pi_O, g), && \textcolor{gray!80!black}{\textit{// Polynomial Equality Test}} \\
-        \textcolor{green!50!black}{e(\pi_L, g^{\alpha}) = e(\pi_L', g)}, \quad \textcolor{green!50!black}{e(\pi_R, g^{\alpha}) = e(\pi_R', g)}, && \textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        \textcolor{green!50!black}{e(\pi_O, g^{\alpha}) = e(\pi_O', g)}, \quad \textcolor{green!50!black}{e(\pi_H, g^{\alpha}) = e(\pi_H', g)}. && \textcolor{gray!80!black}{\textit{// Proof of Exponent}}
+        e(\pi_L, \pi_R) = e(g^{Z(\tau)}, \pi_H) \cdot e(\pi_O, g), \\
+        \textcolor{green!50!black}{e(\pi_L, g^{\alpha}) = e(\pi_L', g)}, \quad \textcolor{green!50!black}{e(\pi_R, g^{\alpha}) = e(\pi_R', g)}, \\
+        \textcolor{green!50!black}{e(\pi_O, g^{\alpha}) = e(\pi_O', g)}, \quad \textcolor{green!50!black}{e(\pi_H, g^{\alpha}) = e(\pi_H', g)}.
     \end{align*}
 \end{tcolorbox}
 
@@ -151,24 +153,30 @@ Besides fixing the issue with consistent use of witness $\mathbf{w}$, we additio
 
 \textcolor{blue!75!gray}{\textbf{Optimization. Left/Right/Output Polynomial Preprocessing.}} Recall that:
 \begin{equation*}
-    L(x) = \sum_{i=0}^n w_iL_i(x), \quad R(x) = \sum_{i=0}^n w_i R_i(x), \quad O(x) = \sum_{i=0}^n w_iO_i(x).
+    \begin{aligned}
+        &L(x) = \sum_{i=0}^n w_iL_i(x), \quad R(x) = \sum_{i=0}^n w_i R_i(x), \\ &\quad O(x) = \sum_{i=0}^n w_iO_i(x).        
+    \end{aligned}
 \end{equation*}
 while $M(x) = L(x)R(x) - O(x)$ is only known to the prover $\mathcal{P}$ since it contains the extended witness ($\mathbf{w}$) coefficients. However, the set of polynomials
 \begin{equation*}
     \{L_i(x)\}_{i \in [n]}, \{R_i(x)\}_{i \in [n]}, \{O_i(x)\}_{i \in [n]}
 \end{equation*}
-are known in advance. Meaning, we can precompute the values of $\{g^{L_i(\tau)}\}_{i \in [n]}$, $\{g^{\alpha L_i(\tau)}\}_{i \in [n]}$, $\{g^{R_i(\tau)}\}_{i \in [n]}$, $\{g^{\alpha R_i(\tau)}\}_{i \in [n]}$, $\{g^{O_i(\tau)}\}_{i \in [n]}$, $\{g^{\alpha O_i(\tau)}\}_{i \in [n]}$ and use them in the prover parameters $\mathsf{pp}$.
+are known in advance. Meaning, we can precompute the values of $\{g^{L_i(\tau)}\}_{i \in [n]}$, $\{g^{\alpha L_i(\tau)}\}_{i \in [n]}$, $\{g^{R_i(\tau)}\}_{i \in [n]}$, \\ $\{g^{\alpha R_i(\tau)}\}_{i \in [n]}$, $\{g^{O_i(\tau)}\}_{i \in [n]}$, $\{g^{\alpha O_i(\tau)}\}_{i \in [n]}$ and use them in the prover parameters $\mathsf{pp}$.
 
 How? Suppose the prover $\mathcal{P}$ knows the extended witness $\mathbf{w}$. Consider the polynomial $L(x) = \sum_{i=0}^n w_iL_i(x)$. $\mathcal{P}$ can compute the KZG commitment $\pi_L$ and its PoE $\pi_L'$ as follows:
 \begin{equation*}
-    \pi_L \triangleq g^{L(\tau)} = g^{\sum_{i=0}^n w_iL_i(\tau)} = \prod_{i=0}^n (g^{L_i(\tau)})^{w_i}, \quad \pi_L' \triangleq g^{\alpha L(\tau)} = g^{\alpha \sum_{i=0}^n w_iL_i(\tau)} = \prod_{i=0}^n (g^{\alpha L_i(\tau)})^{w_i}.
+    \begin{aligned}
+        &\pi_L \triangleq g^{L(\tau)} = g^{\sum_{i=0}^n w_iL_i(\tau)} = \prod_{i=0}^n (g^{L_i(\tau)})^{w_i}, \quad \\ &\pi_L' \triangleq g^{\alpha L(\tau)} = g^{\alpha \sum_{i=0}^n w_iL_i(\tau)} = \prod_{i=0}^n (g^{\alpha L_i(\tau)})^{w_i}.        
+    \end{aligned}
 \end{equation*}
 
 \textcolor{green!50!black}{\textbf{Fix. Witness consistency check.}} 
 
 \textbf{Introducing new term with $\beta$}. To prove that the same $\mathbf{w}$ is used in all commitments, we need some ``checksum'' term that will somehow combine all polynomials $L(x)$, $R(x)$, and $O(x)$ with the witness $\mathbf{w}$. Moreover, we will need to compare this term with proofs $\pi_L$, $\pi_R$, and $\pi_O$. The best candidate for this is the following group element for some other random $\beta \xleftarrow{R} \mathbb{F}$:
 \begin{equation*}
-    \pi_{\beta} = g^{L(\tau) + R(\tau) + O(\tau)} = \prod_{i=1}^n (g^{L_i(\tau) + R_i(\tau) + O_i(\tau)})^{w_i}, \; \pi_{\beta}' = \prod_{i=1}^n (g^{\beta(L_i(\tau) + R_i(\tau) + O_i(\tau))})^{w_i}
+    \begin{aligned}
+        &\pi_{\beta} = g^{L(\tau) + R(\tau) + O(\tau)} = \prod_{i=1}^n (g^{L_i(\tau) + R_i(\tau) + O_i(\tau)})^{w_i}, \\ &\pi_{\beta}' = \prod_{i=1}^n (g^{\beta(L_i(\tau) + R_i(\tau) + O_i(\tau))})^{w_i}        
+    \end{aligned}
 \end{equation*}
 
 This way, we get a term that includes all three polynomials $L(x)$, $R(x)$, and $O(x)$, and all coefficients of the extended witness $\mathbf{w}$. Moreover, verifier $\mathcal{V}$ can compare $\pi_{\beta}$ with three other commitments $\pi_L$, $\pi_R$, $\pi_O$ to ensure that all of them are consistent. This is done through the following check:
@@ -178,7 +186,9 @@ This way, we get a term that includes all three polynomials $L(x)$, $R(x)$, and 
 
 Again, this approach still has a weakness (yeah-yeah, I am also tired of this). Indeed, this check is complete (meaning, if $\mathbf{w}$ is used consistently across $\pi_L$, $\pi_R$, $\pi_O$, then the check will pass), but it is still not sound with an overwhelming probability. Indeed, suppose $\mathbf{w}$ is used inconsistently, meaning, we have extended witnesses $\mathbf{w}_L$, $\mathbf{w}_R$, $\mathbf{w}_O$, and $\mathbf{w}_{\beta}$, each for corresponding polynomials. If the witness is consistent, the following condition must hold:
 \begin{equation*}
-    (w_{L,i}L_i(\tau) + w_{R,i}R_i(\tau) + w_{O,i}O_i(\tau))\beta = w_{\beta,i}\beta(L_i(\tau) + R_i(\tau) + O_i(\tau)) \quad \forall i \in [n]
+    \begin{aligned}
+        &\forall i \in [n] \quad (w_{L,i}L_i(\tau) + w_{R,i}R_i(\tau) + w_{O,i}O_i(\tau))\beta = \\ &= w_{\beta,i}\beta(L_i(\tau) + R_i(\tau) + O_i(\tau))       
+    \end{aligned}
 \end{equation*}
 
 Assume otherwise. Consider a simple situation where it happens that $L_i \equiv R_i$, meaning $L_i(\tau)$ and $R_i(\tau)$ are the same (call them $q$). Then,
@@ -221,14 +231,18 @@ Oof, that was a long fix! Let us come back to the new version of the SNARK proto
 
     \tcbsubtitle{$\mathsf{Setup}(1^{\lambda})$}
     The \emph{trusted party} conducts the following steps:
-    \begin{itemize}[label=\ding{51}]
+    \begin{itemize}[label=\ding{51}, left=0.7em]
         \item Picks random values $\tau, \alpha, \textcolor{green!50!black}{\beta_L, \beta_R, \beta_O, \gamma} \xleftarrow{R} \mathbb{F}$.
         \item \textbf{Outputs} prover parameters $\mathsf{pp}$ and verification parameters $\mathsf{vp}$:
-        \begin{align*}
-            \mathsf{pp} &\gets \big\{\{g^{\tau^i}\}_{i \in [d]}, \textcolor{green!50!black}{\{g^{L_i(\tau)}, g^{\alpha L_i(\tau)}, g^{R_i(\tau)}, g^{\alpha R_i(\tau)}}, \\ 
-            & \textcolor{green!50!black}{g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, g^{\beta_LL_i(\tau)+\beta_RR_i(\tau)+\beta_OO_i(\tau)}\}_{i \in [n]}}\big\} \\
-            \mathsf{vp} &\gets \big\{ g^{Z(\tau)}, g^{\alpha}, \textcolor{green!50!black}{g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, g^{\beta_O\gamma}, g^{\gamma}} \big\}
-        \end{align*}
+        \begin{equation*}
+            \begin{aligned}
+                \mathsf{pp} & \gets \big\{\{g^{\tau^i}\}_{i \in [d]}, \textcolor{green!50!black}{\{g^{L_i(\tau)}, g^{\alpha L_i(\tau)}, g^{R_i(\tau)},} \\ 
+                            & \textcolor{green!50!black}{, g^{\alpha R_i(\tau)}, g^{O_i(\tau)}, g^{\alpha O_i(\tau)},} \\
+                            & \textcolor{green!50!black}{, g^{\beta_LL_i(\tau)+\beta_RR_i(\tau)+\beta_OO_i(\tau)}\}_{i \in [n]}}  \big\}. \\
+                \mathsf{vp} & \gets \big\{ g^{Z(\tau)}, g^{\alpha}, \textcolor{green!50!black}{g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma},} \\
+                            & \textcolor{green!50!black}{, g^{\beta_O\gamma}, g^{\gamma}}  \big\}.
+            \end{aligned}
+        \end{equation*}
         \item \textbf{Deletes} aforementioned random scalars (toxic waste).
     \end{itemize}
     \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbf{x}, \mathbf{w})$}
@@ -247,16 +261,16 @@ Oof, that was a long fix! Let us come back to the new version of the SNARK proto
         \begin{equation*}
             \textcolor{green!50!black}{\pi_{\beta} \gets g^{\beta_LL(\tau) + \beta_RR(\tau) + \beta_OO(\tau)}}
         \end{equation*}
-        \item Publishes $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\textcolor{green!50!black}{\pi_{\beta}})$ as a proof.
+        \item Publishes the following proof $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\textcolor{green!50!black}{\pi_{\beta}})$.
     \end{itemize}
 
     \tcbsubtitle{$\mathsf{Verify}(\mathsf{vp}, \mathbf{x}, \boldsymbol{\pi})$}
-    Upon receiving $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\textcolor{green!50!black}{\pi_{\beta}})$, the verifier $\mathcal{V}$ checks:
+    Upon receiving $\boldsymbol{\pi}$, the verifier $\mathcal{V}$ checks:
     \begin{align*}
-        e(\pi_L, \pi_R) = e(g^{Z(\tau)}, \pi_H) \cdot e(\pi_O, g),&&\textcolor{gray!80!black}{\textit{// Polynomial Equality Test}} \\
-        e(\pi_L, g^{\alpha}) = e(\pi_L', g), \quad e(\pi_R, g^{\alpha}) = e(\pi_R', g),&&\textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        e(\pi_O, g^{\alpha}) = e(\pi_O', g), \quad e(\pi_H, g^{\alpha}) = e(\pi_H', g),&&\textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        \textcolor{green!50!black}{e(\pi_L, g^{\gamma\beta_L}) \cdot e(\pi_R, g^{\gamma\beta_R}) \cdot e(\pi_O, g^{\gamma\beta_O}) = e(\pi_{\beta}, g^{\gamma})}.&&\textcolor{gray!80!black}{\textit{// Extended Witness Consistency}}
+        e(\pi_L, \pi_R) = e(g^{Z(\tau)}, \pi_H) \cdot e(\pi_O, g), \\
+        e(\pi_L, g^{\alpha}) = e(\pi_L', g), \quad e(\pi_R, g^{\alpha}) = e(\pi_R', g), \\
+        e(\pi_O, g^{\alpha}) = e(\pi_O', g), \quad e(\pi_H, g^{\alpha}) = e(\pi_H', g), \\
+        \textcolor{green!50!black}{e(\pi_L, g^{\gamma\beta_L}) \cdot e(\pi_R, g^{\gamma\beta_R}) \cdot e(\pi_O, g^{\gamma\beta_O}) = e(\pi_{\beta}, g^{\gamma})}.
     \end{align*}
 \end{tcolorbox}
 
@@ -314,11 +328,15 @@ Now, let us formulate the updated SNARK protocol with the extended witness split
     \begin{itemize}[label=\ding{51}]
         \item Picks random values $\tau, \alpha, \beta_L, \beta_R, \beta_O, \gamma \xleftarrow{R} \mathbb{F}$.
         \item \textbf{Outputs} prover parameters $\mathsf{pp}$ and verification parameters $\mathsf{vp}$:
-        \begin{align*}
-            \mathsf{pp} &\gets \big\{\{g^{\tau^i}\}_{i \in [d]}, \{g^{L_i(\tau)}, g^{\alpha L_i(\tau)}, g^{R_i(\tau)}, g^{\alpha R_i(\tau)}, \\ 
-            & g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, g^{\beta_LL_i(\tau)+\beta_RR_i(\tau)+\beta_OO_i(\tau)}\}_{\textcolor{green!50!black}{i \in \mathcal{I}_{\text{mid}}}}\big\} \\
-            \mathsf{vp} &\gets \big\{ g^{Z(\tau)}, g^{\alpha}, g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, g^{\beta_O\gamma}, g^{\gamma}, \textcolor{green!50!black}{ \{g^{L_i(\tau)}, g^{R_i(\tau)}, g^{O_i(\tau)}\}_{i \in \mathcal{I}_{\text{io}}} } \big\}
-        \end{align*}
+        \begin{equation*}
+            \begin{aligned}
+                \mathsf{pp} & \gets \big\{\{g^{\tau^i}\}_{i \in [d]}, \{g^{L_i(\tau)}, g^{\alpha L_i(\tau)}, g^{R_i(\tau)}, \\
+                            & g^{\alpha R_i(\tau)}, g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, \\
+                            & g^{\beta_LL_i(\tau)+\beta_RR_i(\tau)+\beta_OO_i(\tau)}\}_{\textcolor{green!50!black}{i \in \mathcal{I}_{\text{mid}}}}\big\} \\
+                \mathsf{vp} & \gets \big\{ g^{Z(\tau)}, g^{\alpha}, g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, \\ 
+                            & g^{\beta_O\gamma}, g^{\gamma}, \textcolor{green!50!black}{ \{g^{L_i(\tau)}, g^{R_i(\tau)}, g^{O_i(\tau)}\}_{i \in \mathcal{I}_{\text{io}}} } \big\}
+            \end{aligned}
+        \end{equation*}
         \item \textbf{Deletes} aforementioned random scalars (toxic waste).
     \end{itemize}
     \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbf{x}, \mathbf{w})$}
@@ -329,26 +347,26 @@ Now, let us formulate the updated SNARK protocol with the extended witness split
         \item \textcolor{green!50!black}{Splits $L(x) = L_{\text{mid}}(x) + L_{\text{io}}(x)$ --- intermediate and input/output parts. That being said, $L_{\text{mid}}(x) = \sum_{i \in \mathcal{I}_{\text{mid}}}L_i(x)$. Repeat for $R(x)$ and $O(x)$.}
         \item Calculates the following values: 
         \begin{align*}
-            \pi_L \gets g^{\textcolor{green!50!black}{L_{\text{mid}}(\tau)}}, \quad \pi_L' \gets g^{\alpha \textcolor{green!50!black}{L_{\text{mid}}(\tau)}}, \\
-            \pi_R \gets g^{\textcolor{green!50!black}{R_{\text{mid}}(\tau)}}, \quad \pi_R' \gets g^{\alpha \textcolor{green!50!black}{R_{\text{mid}}(\tau)}}, \\
-            \pi_O \gets g^{\textcolor{green!50!black}{O_{\text{mid}}(\tau)}}, \quad \pi_O' \gets g^{\alpha \textcolor{green!50!black}{O_{\text{mid}}(\tau)}}, \\
-            \pi_H \gets g^{H(\tau)}, \quad \pi_H' \gets g^{\alpha H(\tau)}, \\
-            \pi_{\beta} \gets g^{\beta_LL(\tau) + \beta_RR(\tau) + \beta_OO(\tau)}.
+            &\pi_L \gets g^{\textcolor{green!50!black}{L_{\text{mid}}(\tau)}}, \quad \pi_L' \gets g^{\alpha \textcolor{green!50!black}{L_{\text{mid}}(\tau)}}, \\
+            &\pi_R \gets g^{\textcolor{green!50!black}{R_{\text{mid}}(\tau)}}, \quad \pi_R' \gets g^{\alpha \textcolor{green!50!black}{R_{\text{mid}}(\tau)}}, \\
+            &\pi_O \gets g^{\textcolor{green!50!black}{O_{\text{mid}}(\tau)}}, \quad \pi_O' \gets g^{\alpha \textcolor{green!50!black}{O_{\text{mid}}(\tau)}}, \\
+            &\pi_H \gets g^{H(\tau)}, \quad \pi_H' \gets g^{\alpha H(\tau)}, \\
+            &\pi_{\beta} \gets g^{\beta_LL(\tau) + \beta_RR(\tau) + \beta_OO(\tau)}.
         \end{align*}
-        \item Publishes $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\pi_{\beta})$ as a proof.
+        \item Publishes the following proof $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\pi_{\beta})$.
     \end{itemize}
 
     \tcbsubtitle{$\mathsf{Verify}(\mathsf{vp}, \mathbf{x}, \boldsymbol{\pi})$}
-    Upon receiving $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\pi_{\beta})$, the verifier $\mathcal{V}$:
+    Upon receiving proof $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\pi_{\beta})$, the verifier $\mathcal{V}$:
     \begin{itemize}[label=\ding{51}]
         \item \textcolor{green!50!black}{Finds $\pi_L^* \gets \pi_L\prod_{i \in \mathcal{I}_{\text{io}}} (g^{L_i(\tau)})^{w_i},\pi_R^* \gets \pi_R\prod_{i \in \mathcal{I}_{\text{io}}} (g^{R_i(\tau)})^{w_i},\pi_O^* \gets \pi_O\prod_{i \in \mathcal{I}_{\text{io}}} (g^{O_i(\tau)})^{w_i}$}
         \item Checks whether all of the following conditions hold:
     \end{itemize}
     \begin{align*}
-        e(\textcolor{green!50!black}{\pi_L^*}, \textcolor{green!50!black}{\pi_R^*}) = e(g^{Z(\tau)}, \pi_H) \cdot e(\textcolor{green!50!black}{\pi_O^*}, g),&&\textcolor{gray!80!black}{\textit{// Polynomial Equality Test}} \\
-        e(\pi_L, g^{\alpha}) = e(\pi_L', g), \quad e(\pi_R, g^{\alpha}) = e(\pi_R', g),&&\textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        e(\pi_O, g^{\alpha}) = e(\pi_O', g), \quad e(\pi_H, g^{\alpha}) = e(\pi_H', g),&&\textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        e(\pi_L, g^{\gamma\beta_L}) \cdot e(\pi_R, g^{\gamma\beta_R}) \cdot e(\pi_O, g^{\gamma\beta_O}) = e(\pi_{\beta}, g^{\gamma}).&&\textcolor{gray!80!black}{\textit{// Extended Witness Consistency}}
+        &e(\textcolor{green!50!black}{\pi_L^*}, \textcolor{green!50!black}{\pi_R^*}) = e(g^{Z(\tau)}, \pi_H) \cdot e(\textcolor{green!50!black}{\pi_O^*}, g),\\
+        &e(\pi_L, g^{\alpha}) = e(\pi_L', g), \quad e(\pi_R, g^{\alpha}) = e(\pi_R', g), \\
+        &e(\pi_O, g^{\alpha}) = e(\pi_O', g), \quad e(\pi_H, g^{\alpha}) = e(\pi_H', g), \\
+        &e(\pi_L, g^{\gamma\beta_L}) \cdot e(\pi_R, g^{\gamma\beta_R}) \cdot e(\pi_O, g^{\gamma\beta_O}) = e(\pi_{\beta}, g^{\gamma}).
     \end{align*}
 \end{tcolorbox}
 
@@ -363,20 +381,26 @@ Finally, we came to the point where we need to make the protocol zero-knowledge.
 \end{remark}
 
 The main idea to make our protocol zero-knowledge is to ``shift'' our commitments by some random factor $\delta$. Of course, this ``shift'' $\delta$ must be different for each commitment and must be chosen by the prover $\mathcal{P}$. This way, we propose to modify the commitments as follows:
-\begin{align*}
-    \pi_L = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iL_i(\tau) + \textcolor{purple}{\delta_LZ(\tau)}} = \textcolor{purple}{(g^{Z(\tau)})^{\delta_L}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{L_i(\tau)})^{w_i}, && \pi_L' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_L}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha L_i(\tau)})^{w_i} \\
-    \pi_R = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iR_i(\tau) + \textcolor{purple}{\delta_RZ(\tau)}} = \textcolor{purple}{(g^{Z(\tau)})^{\delta_R}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{R_i(\tau)})^{w_i}, && \pi_R' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_R}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha R_i(\tau)})^{w_i} \\
-    \pi_O = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iO_i(\tau) + \textcolor{purple}{\delta_OZ(\tau)}} = \textcolor{purple}{(g^{Z(\tau)})^{\delta_O}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{O_i(\tau)})^{w_i}, && \pi_O' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_O}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha O_i(\tau)})^{w_i}
-\end{align*}
+\begin{equation*}    
+    \begin{aligned}
+        &\pi_L = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iL_i(\tau) + \textcolor{purple}{\delta_LZ(\tau)}} = \textcolor{purple}{(g^{Z(\tau)})^{\delta_L}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{L_i(\tau)})^{w_i}, \\ &\pi_L' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_L}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha L_i(\tau)})^{w_i} \\
+        &\pi_R = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iR_i(\tau) + \textcolor{purple}{\delta_RZ(\tau)}} = \textcolor{purple}{(g^{Z(\tau)})^{\delta_R}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{R_i(\tau)})^{w_i}, \\ &\pi_R' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_R}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha R_i(\tau)})^{w_i} \\
+        &\pi_O = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iO_i(\tau) + \textcolor{purple}{\delta_OZ(\tau)}} = \textcolor{purple}{(g^{Z(\tau)})^{\delta_O}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{O_i(\tau)})^{w_i}, \\ &\pi_O' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_O}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha O_i(\tau)})^{w_i}
+    \end{aligned}
+\end{equation*}
 
 for randomly selected $\delta_L, \delta_R, \delta_O \xleftarrow{R} \mathbb{Z}_q$. Good, we concealed all the information about the witness $\mathbf{w}$ in the commitment. However, we need to make sure that the verifier $\mathcal{V}$ can still verify the proof, but without modifying the verification mechanism itself. Notice that PoE verifications are still valid, but we need to modify something to make polynomial equality test hold. This can be done by perturbating the polynomial $H(x)$ by some (currently) unknown value $\Delta_H$. Let us derive it from the polynomial equality test:
 \begin{equation*}
-    (L(x) + \delta_L Z(x))(R(x) + \delta_R Z(x)) = (H(x) + \Delta_H)Z(x) + (O(x) + \delta_O Z(x)), \\
+    \begin{aligned}    
+        &(L(x) + \delta_L Z(x))(R(x) + \delta_R Z(x)) = \\ &= (H(x) + \Delta_H)Z(x) + (O(x) + \delta_O Z(x)),
+    \end{aligned}
 \end{equation*}
 
 which, by expanding, gives us the following equation:
 \begin{equation*}
-    \cancel{L(x)R(x)} + \delta_R L(x)Z(x) + \delta_L Z(x)R(x) + \delta_L \delta_R Z(x)^2 = \cancel{H(x)Z(x) + O(x)} + \Delta_HZ(x) + \delta_O Z(x), \\
+    \begin{aligned}
+        &\cancel{L(x)R(x)} + \delta_R L(x)Z(x) + \delta_L Z(x)R(x) + \delta_L \delta_R Z(x)^2 = \\ &= \cancel{H(x)Z(x) + O(x)} + \Delta_HZ(x) + \delta_O Z(x), \\        
+    \end{aligned}
 \end{equation*}
 
 where we can cancel out $L(x)R(x)$ and $H(x)Z(x) + O(x)$ terms since they are equal based on initial construction. This way, we get the following expression for $\Delta_H$:
@@ -386,14 +410,18 @@ where we can cancel out $L(x)R(x)$ and $H(x)Z(x) + O(x)$ terms since they are eq
 
 Therefore, our fourth proof system becomes:
 \begin{equation*}
-    \pi_H = g^{H(\tau) + \textcolor{purple}{\delta_O + \delta_R L(\tau) + \delta_L R(\tau) + \delta_L \delta_R Z(\tau)}}, \quad \pi_H' = g^{\alpha(H(\tau) + \textcolor{purple}{\delta_O + \delta_R L(\tau) + \delta_L R(\tau) + \delta_L \delta_R Z(\tau)})}.
+    \begin{aligned}
+        &\pi_H = g^{H(\tau) + \textcolor{purple}{\delta_O + \delta_R L(\tau) + \delta_L R(\tau) + \delta_L \delta_R Z(\tau)}}, \\
+        &\pi_H' = g^{\alpha(H(\tau) + \textcolor{purple}{\delta_O + \delta_R L(\tau) + \delta_L R(\tau) + \delta_L \delta_R Z(\tau)})}.        
+    \end{aligned}
 \end{equation*}
 
 Finally, we need to make sure that our witness consistency proof $\pi_{\beta}$ is still valid. Since previously we had $\pi_{\beta} = g^{\beta_LL(\tau) + \beta_RR(\tau) + \beta_OO(\tau)}$, we need to modify it to include the new $\delta$ values. Namely, we change $L(\tau)$ to $L(\tau)+\delta_LZ(\tau)$, $R(\tau)$ to $R(\tau)+\delta_RZ(\tau)$, and $O(\tau)$ to $O(\tau)+\delta_OZ(\tau)$. This way, our new $\pi_{\beta}$ becomes:
 
 This can be done by changing it into:
 \begin{align*}
-    \pi_{\beta} &= g^{\beta_LL(\tau) + \beta_RR(\tau) + \beta_OO(\tau) + \textcolor{purple}{(\delta_L\beta_L + \delta_R\beta_R + \delta_O\beta_O)Z(\tau)}} \\&= \textcolor{purple}{\left(g^{\beta_L Z(\tau)}\right)^{\delta_L}\left(g^{\beta_R Z(\tau)}\right)^{\delta_R}\left(g^{\beta_O Z(\tau)}\right)^{\delta_O}}g^{\beta_LL(\tau) + \beta_RR(\tau) + \beta_OO(\tau)}.
+    \pi_{\beta} &= g^{\beta_LL(\tau) + \beta_RR(\tau) + \beta_OO(\tau) + \textcolor{purple}{(\delta_L\beta_L + \delta_R\beta_R + \delta_O\beta_O)Z(\tau)}} = \\
+                &= \textcolor{purple}{\left(g^{\beta_L Z(\tau)}\right)^{\delta_L}\left(g^{\beta_R Z(\tau)}\right)^{\delta_R}\left(g^{\beta_O Z(\tau)}\right)^{\delta_O}} \cdot \\ &\cdot g^{\beta_LL(\tau) + \beta_RR(\tau) + \beta_OO(\tau)}.
 \end{align*}
 
 Oof. Finally, we also have a zero-knowledge property for our SNARK. Let us summarize what has changed for the prover $\mathcal{P}$.
@@ -402,18 +430,26 @@ Oof. Finally, we also have a zero-knowledge property for our SNARK. Let us summa
     Now, the prover $\mathcal{P}$ samples random scalars $\delta_L, \delta_R, \delta_O \xleftarrow{R} \mathbb{Z}_q$ and calculates the following commitments:
     \begin{itemize}
         \item \textbf{Updated Commitments for $L,R,O$:} Now, the prover $\mathcal{P}$ needs to calculate the commitments $\pi_L,\pi_R,\pi_O$ with the additional $\delta$'s values to ensure zero-knowledge property:
-        \begin{align*}
-            \pi_L &\gets g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iL_i(\tau) + \textcolor{purple}{\delta_LZ(\tau)}}, \quad \pi_L' \gets g^{\alpha\sum_{i \in \mathcal{I}_{\text{mid}}}w_iL_i(\tau) + \textcolor{purple}{\delta_LZ(\tau)}}, \\
-            \pi_R &\gets g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iR_i(\tau) + \textcolor{purple}{\delta_RZ(\tau)}}, \quad \pi_R' \gets g^{\alpha\sum_{i \in \mathcal{I}_{\text{mid}}}w_iR_i(\tau) + \textcolor{purple}{\delta_RZ(\tau)}}, \\
-            \pi_O &\gets g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iO_i(\tau) + \textcolor{purple}{\delta_OZ(\tau)}}, \quad \pi_O' \gets g^{\alpha\sum_{i \in \mathcal{I}_{\text{mid}}}w_iO_i(\tau) + \textcolor{purple}{\delta_OZ(\tau)}}.
-        \end{align*}
+        \begin{equation*}
+            \begin{aligned}
+                &\pi_L \gets g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iL_i(\tau) + \textcolor{purple}{\delta_LZ(\tau)}}, \\ & \pi_L' \gets g^{\alpha\sum_{i \in \mathcal{I}_{\text{mid}}}w_iL_i(\tau) + \textcolor{purple}{\delta_LZ(\tau)}}, \\
+                &\pi_R \gets g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iR_i(\tau) + \textcolor{purple}{\delta_RZ(\tau)}}, \\ & \pi_R' \gets g^{\alpha\sum_{i \in \mathcal{I}_{\text{mid}}}w_iR_i(\tau) + \textcolor{purple}{\delta_RZ(\tau)}}, \\
+                &\pi_O \gets g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iO_i(\tau) + \textcolor{purple}{\delta_OZ(\tau)}}, \\ & \pi_O' \gets g^{\alpha\sum_{i \in \mathcal{I}_{\text{mid}}}w_iO_i(\tau) + \textcolor{purple}{\delta_OZ(\tau)}}.
+            \end{aligned}
+        \end{equation*}
+        
         \item \textbf{Updated Commitment for $H$:} The prover $\mathcal{P}$ needs to calculate the commitment $\pi_H$ with the additional $\delta$'s values to ensure polynomial equality test is satisfied:
         \begin{equation*}
-            \pi_H \gets g^{H(\tau) + \textcolor{purple}{\delta_O + \delta_R L(\tau) + \delta_L R(\tau) + \delta_L \delta_R Z(\tau)}}, \quad \pi_H' \gets g^{\alpha(H(\tau) + \textcolor{purple}{\delta_O + \delta_R L(\tau) + \delta_L R(\tau) + \delta_L \delta_R Z(\tau)})}.
+            \begin{aligned}
+                & \pi_H \gets g^{H(\tau) + \textcolor{purple}{\delta_O + \delta_R L(\tau) + \delta_L R(\tau) + \delta_L \delta_R Z(\tau)}}, \\
+                & \pi_H' \gets g^{\alpha(H(\tau) + \textcolor{purple}{\delta_O + \delta_R L(\tau) + \delta_L R(\tau) + \delta_L \delta_R Z(\tau)})}.
+            \end{aligned}
         \end{equation*}
         \item \textbf{Updated Witness Consistency Proof:} The prover $\mathcal{P}$ needs to calculate the commitment $\pi_{\beta}$ with the additional $\delta$'s values to ensure witness consistency:
         \begin{equation*}
-            \pi_{\beta} \gets \textcolor{purple}{\left(g^{\beta_L Z(\tau)}\right)^{\delta_L}\left(g^{\beta_R Z(\tau)}\right)^{\delta_R}\left(g^{\beta_O Z(\tau)}\right)^{\delta_O}}g^{\beta_LL(\tau) + \beta_RR(\tau) + \beta_OO(\tau)}.
+            \begin{aligned}
+                &\pi_{\beta} \gets \textcolor{purple}{\left(g^{\beta_L Z(\tau)}\right)^{\delta_L}\left(g^{\beta_R Z(\tau)}\right)^{\delta_R}\left(g^{\beta_O Z(\tau)}\right)^{\delta_O}} \cdot \\ \cdot &g^{\beta_LL(\tau) + \beta_RR(\tau) + \beta_OO(\tau)}.            
+            \end{aligned}
         \end{equation*}
     \end{itemize}
 \end{proposition}
@@ -443,37 +479,39 @@ Let us now look at the final version of our basic SNARK protocol.
             & g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, \textcolor{purple}{g^{\beta_LL_i(\tau)}, g^{\beta_RR_i(\tau)}, g^{\beta_OO_i(\tau)}}\}_{i \in \mathcal{I}_{\text{mid}}}\big\} \\
             \mathsf{vp} &\gets \big\{ g^{Z(\tau)}, g^{\alpha}, g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, g^{\beta_O\gamma}, g^{\gamma}, \{g^{L_i(\tau)}, g^{R_i(\tau)}, g^{O_i(\tau)}\}_{i \in \mathcal{I}_{\text{io}}} \big\}
         \end{align*}
-        \item \textbf{Deletes} aforementioned random scalars (toxic waste).
+        \item \textbf{Deletes} aforementioned random scalars.
     \end{itemize}
     \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbf{x}, \mathbf{w})$}
     The prover $\mathcal{P}$ conducts the following steps:
-    \begin{itemize}[label=\ding{51}]
+    \begin{itemize}[label=\ding{51}, left=0.5em]
         \item Runs the circuit to get $\mathbf{w}$ and $L(x),R(x),O(x)$.
         \item Calculates $H(x) \gets (L(x)R(x) - O(x))\big/ Z(x)$.
         \item Splits $L(x) = L_{\text{mid}}(x) + L_{\text{io}}(x)$ --- intermediate and input/output parts. That being said, $L_{\text{mid}}(x) = \sum_{i \in \mathcal{I}_{\text{mid}}}L_i(x)$. Repeat for $R(x)$ and $O(x)$.
-        \item \textcolor{purple}{Samples $\delta_L, \delta_R, \delta_O \xleftarrow{R} \mathbb{F}$} and calculates the following values: 
-        \begin{align*}
-            \pi_L \gets g^{L_{\text{mid}}(\tau)}\textcolor{purple}{\left(g^{Z(\tau)}\right)^{\delta_L}}, \quad \pi_L' \gets g^{\alpha L_{\text{mid}}(\tau)}\textcolor{purple}{\left(g^{\alpha Z(\tau)}\right)^{\delta_L}}, \\
-            \pi_R \gets g^{R_{\text{mid}}(\tau)}\textcolor{purple}{\left(g^{Z(\tau)}\right)^{\delta_R}}, \quad \pi_R' \gets g^{\alpha R_{\text{mid}}(\tau)}\textcolor{purple}{\left(g^{Z(\tau)}\right)^{\delta_R}}, \\
-            \pi_O \gets g^{O_{\text{mid}}(\tau)}\textcolor{purple}{\left(g^{Z(\tau)}\right)^{\delta_O}}, \quad \pi_O' \gets g^{\alpha O_{\text{mid}}(\tau)}\textcolor{purple}{\left(g^{Z(\tau)}\right)^{\delta_O}}, \\
-            \pi_H \gets g^{H(\tau)}\textcolor{purple}{(g^{\delta_O})(g^{R(\tau)})^{\delta_L}(g^{L(\tau)})^{\delta_R}(g^{Z(\tau)})^{\delta_L\delta_R}}, \\ 
-            \pi_H' \gets g^{\alpha H(\tau)}\textcolor{purple}{(g^{\delta_O})(g^{R(\tau)})^{\delta_L}(g^{L(\tau)})^{\delta_R}(g^{Z(\tau)})^{\delta_L\delta_R}}, \\
-            \pi_{\beta} \gets \textcolor{purple}{\left(g^{\beta_L Z(\tau)}\right)^{\delta_L}\left(g^{\beta_R Z(\tau)}\right)^{\delta_R}\left(g^{\beta_O Z(\tau)}\right)^{\delta_O}}g^{\beta_LL(\tau) + \beta_RR(\tau) + \beta_OO(\tau)}.
-        \end{align*}
-        \item Publishes $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\pi_{\beta})$ as a proof.
+        \item \textcolor{purple}{Samples $\delta_L, \delta_R, \delta_O \xleftarrow{R} \mathbb{F}$} and finds the values: 
+        \begin{equation*}
+            \begin{aligned}
+                &\pi_L \gets g^{L_{\text{mid}}(\tau)}\textcolor{purple}{\left(g^{Z(\tau)}\right)^{\delta_L}}, \\ & \pi_L' \gets g^{\alpha L_{\text{mid}}(\tau)}\textcolor{purple}{\left(g^{\alpha Z(\tau)}\right)^{\delta_L}}, \\
+                &\pi_R \gets g^{R_{\text{mid}}(\tau)}\textcolor{purple}{\left(g^{Z(\tau)}\right)^{\delta_R}}, \\ & \pi_R' \gets g^{\alpha R_{\text{mid}}(\tau)}\textcolor{purple}{\left(g^{Z(\tau)}\right)^{\delta_R}}, \\
+                &\pi_O \gets g^{O_{\text{mid}}(\tau)}\textcolor{purple}{\left(g^{Z(\tau)}\right)^{\delta_O}}, \\ & \pi_O' \gets g^{\alpha O_{\text{mid}}(\tau)}\textcolor{purple}{\left(g^{Z(\tau)}\right)^{\delta_O}}, \\
+                &\pi_H \gets g^{H(\tau)}\textcolor{purple}{(g^{\delta_O})(g^{R(\tau)})^{\delta_L}(g^{L(\tau)})^{\delta_R}(g^{Z(\tau)})^{\delta_L\delta_R}}, \\ 
+                &\pi_H' \gets g^{\alpha H(\tau)}\textcolor{purple}{(g^{\delta_O})(g^{R(\tau)})^{\delta_L}(g^{L(\tau)})^{\delta_R}(g^{Z(\tau)})^{\delta_L\delta_R}}, \\
+                &\pi_{\beta} \gets \textcolor{purple}{\left(g^{\beta_L Z(\tau)}\right)^{\delta_L}\left(g^{\beta_R Z(\tau)}\right)^{\delta_R}\left(g^{\beta_O Z(\tau)}\right)^{\delta_O}} \\ & g^{\beta_LL(\tau) + \beta_RR(\tau) + \beta_OO(\tau)}.
+            \end{aligned}
+        \end{equation*}
+        \item Publishes the following proof $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\pi_{\beta})$.
     \end{itemize}
 
     \tcbsubtitle{$\mathsf{Verify}(\mathsf{vp}, \mathbf{x}, \boldsymbol{\pi})$}
-    Upon receiving $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\pi_{\beta})$, the verifier $\mathcal{V}$:
+    Upon receiving proof $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\pi_{\beta})$, the verifier $\mathcal{V}$:
     \begin{itemize}[label=\ding{51}]
         \item Finds $\pi_L^* \gets \pi_L\prod_{i \in \mathcal{I}_{\text{io}}} (g^{L_i(\tau)})^{w_i},\pi_R^* \gets \pi_R\prod_{i \in \mathcal{I}_{\text{io}}} (g^{R_i(\tau)})^{w_i},\pi_O^* \gets \pi_O\prod_{i \in \mathcal{I}_{\text{io}}} (g^{O_i(\tau)})^{w_i}$
         \item Checks whether all of the following conditions hold:
     \end{itemize}
     \begin{align*}
-        e(\pi_L^*, \pi_R^*) = e(g^{Z(\tau)}, \pi_H) \cdot e(\pi_O^*, g),&& \textcolor{gray!80!black}{\textit{// Polynomial Equality Test}} \\
-        e(\pi_L, g^{\alpha}) = e(\pi_L', g), \quad e(\pi_R, g^{\alpha}) = e(\pi_R', g),&& \textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        e(\pi_O, g^{\alpha}) = e(\pi_O', g), \quad e(\pi_H, g^{\alpha}) = e(\pi_H', g),&& \textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        e(\pi_L, g^{\gamma\beta_L}) \cdot e(\pi_R, g^{\gamma\beta_R}) \cdot e(\pi_O, g^{\gamma\beta_O}) = e(\pi_{\beta}, g^{\gamma}).&& \textcolor{gray!80!black}{\textit{// Extended Witness Consistency}}
+        e(\pi_L^*, \pi_R^*) = e(g^{Z(\tau)}, \pi_H) \cdot e(\pi_O^*, g), \\
+        e(\pi_L, g^{\alpha}) = e(\pi_L', g), \quad e(\pi_R, g^{\alpha}) = e(\pi_R', g), \\
+        e(\pi_O, g^{\alpha}) = e(\pi_O', g), \quad e(\pi_H, g^{\alpha}) = e(\pi_H', g), \\
+        e(\pi_L, g^{\gamma\beta_L}) \cdot e(\pi_R, g^{\gamma\beta_R}) \cdot e(\pi_O, g^{\gamma\beta_O}) = e(\pi_{\beta}, g^{\gamma}).
     \end{align*}
 \end{tcolorbox}
 
@@ -527,7 +565,6 @@ And finally, since we also have a $\gamma \xleftarrow{R} \mathbb{F}$ for the ext
 \end{equation*}
 
 \textcolor{green!50!black}{\textbf{Proving.}} Again, suppose intermediate polynomials for indices $\mathcal{I}_{\text{mid}}$ are $L_{\text{mid}}(x) = \sum_{i \in \mathcal{I}_{\text{mid}}}w_iL_i(x)$ and similarly for $R_{\text{mid}}(x)$ and $O_{\text{mid}}(x)$. The prover $\mathcal{P}$ calculates the following commitments:
-
 \begin{align*}
     \pi_L \gets g_L^{L_{\text{mid}}(\tau)}, & \quad \pi_L' \gets g_L^{\alpha_LL_{\text{mid}}(\tau)}, \\
     \pi_R \gets g_R^{R_{\text{mid}}(\tau)}, & \quad \pi_R' \gets g_R^{\alpha_RR_{\text{mid}}(\tau)}, \\
@@ -538,9 +575,11 @@ And finally, since we also have a $\gamma \xleftarrow{R} \mathbb{F}$ for the ext
 and then uses these commitments in the proof $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_{\beta})$.
 
 \textcolor{purple}{\textbf{Verification.}} First, the verifier checks the PoE properties:
-\begin{align*}
-    e(\pi_L, g_L^{\alpha_L}) = e(\pi_L', g_L), \quad e(\pi_R, g_R^{\alpha_R}) = e(\pi_R', g_R), \quad e(\pi_O, g_O^{\alpha_O}) = e(\pi_O', g_O).
-\end{align*}
+\begin{equation*}
+    \begin{aligned}
+        &e(\pi_L, g_L^{\alpha_L}) = e(\pi_L', g_L), \\ & e(\pi_R, g_R^{\alpha_R}) = e(\pi_R', g_R), \\ & e(\pi_O, g_O^{\alpha_O}) = e(\pi_O', g_O).
+    \end{aligned}
+\end{equation*}
 
 Next, we check the extended witness consistency:
 \begin{equation*}
@@ -548,9 +587,13 @@ Next, we check the extended witness consistency:
 \end{equation*}
 
 The verifier restores the full proof $\pi_L^*,\pi_R^*,\pi_O^*$ by multiplying the public part of the proof with the corresponding private part. This is done as follows:
-\begin{align*}
-    \pi_L^* \gets \pi_L\prod_{i \in \mathcal{I}_{\text{io}}} (g_L^{L_i(\tau)})^{w_i}, & \quad \pi_R^* \gets \pi_R\prod_{i \in \mathcal{I}_{\text{io}}} (g_R^{R_i(\tau)})^{w_i}, \quad \pi_O^* \gets \pi_O\prod_{i \in \mathcal{I}_{\text{io}}} (g_O^{O_i(\tau)})^{w_i}.
-\end{align*}
+\begin{equation*}
+    \begin{aligned}
+        & \pi_L^* \gets \pi_L\prod_{i \in \mathcal{I}_{\text{io}}} (g_L^{L_i(\tau)})^{w_i}, \\ 
+        & \pi_R^* \gets \pi_R\prod_{i \in \mathcal{I}_{\text{io}}} (g_R^{R_i(\tau)})^{w_i}, \\
+        & \pi_O^* \gets \pi_O\prod_{i \in \mathcal{I}_{\text{io}}} (g_O^{O_i(\tau)})^{w_i}.        
+    \end{aligned}
+\end{equation*}
 
 And finally, we check the polynomial equality test:
 \begin{equation*}
@@ -558,13 +601,20 @@ And finally, we check the polynomial equality test:
 \end{equation*}
 
 \textcolor{blue!75!gray}{\textbf{Zero-Knowledge Extension.}} The zero-knowledge extension of the Pinocchio Protocol is done exactly in the same way as we did for the basic SNARK protocol. Namely, we introduce random scalars $\delta_L, \delta_R, \delta_O \xleftarrow{R} \mathbb{F}$ and calculate the following commitments:
-\begin{align*}
-    \pi_L &\gets g_L^{L_{\text{mid}}(\tau)}\textcolor{purple}{\left(g_L^{Z(\tau)}\right)^{\delta_L}}, \quad \pi_L' \gets g_L^{\alpha_LL_{\text{mid}}(\tau)}\textcolor{purple}{\left(g_L^{\alpha_L Z(\tau)}\right)^{\delta_L}}, \\
-    \pi_R &\gets g_R^{R_{\text{mid}}(\tau)}\textcolor{purple}{\left(g_R^{Z(\tau)}\right)^{\delta_R}}, \quad \pi_R' \gets g_R^{\alpha_RR_{\text{mid}}(\tau)}\textcolor{purple}{\left(g_R^{\alpha_R Z(\tau)}\right)^{\delta_R}}, \\
-    \pi_O &\gets g_O^{O_{\text{mid}}(\tau)}\textcolor{purple}{\left(g_O^{Z(\tau)}\right)^{\delta_O}}, \quad \pi_O' \gets g_O^{\alpha_OO_{\text{mid}}(\tau)}\textcolor{purple}{\left(g_O^{\alpha_O Z(\tau)}\right)^{\delta_O}}, \\
-    \pi_H &\gets g^{H(\tau)}\textcolor{purple}{(g^{\delta_O})(g^{\delta_L})(g^{\delta_R})(g^{\delta_L\delta_R})}, \\ 
-    \pi_{\beta} &\gets \textcolor{purple}{\left(g_L^{\beta Z(\tau)}\right)^{\delta_L}\left(g_R^{\beta Z(\tau)}\right)^{\delta_R}\left(g_O^{\beta Z(\tau)}\right)^{\delta_O}}g_L^{\beta L_{\text{mid}}(\tau)}g_R^{\beta R_{\text{mid}}(\tau)}g_O^{\beta O_{\text{mid}}(\tau)}
-\end{align*}
+\begin{center}    
+    \begin{equation*}
+        \begin{aligned}    
+            &\pi_L \gets g_L^{L_{\text{mid}}(\tau)}\textcolor{purple}{\left(g_L^{Z(\tau)}\right)^{\delta_L}}, \\ 
+            &\pi_L' \gets g_L^{\alpha_LL_{\text{mid}}(\tau)}\textcolor{purple}{\left(g_L^{\alpha_L Z(\tau)}\right)^{\delta_L}}, \\
+            &\pi_R \gets g_R^{R_{\text{mid}}(\tau)}\textcolor{purple}{\left(g_R^{Z(\tau)}\right)^{\delta_R}}, \\ 
+            &\pi_R' \gets g_R^{\alpha_RR_{\text{mid}}(\tau)}\textcolor{purple}{\left(g_R^{\alpha_R Z(\tau)}\right)^{\delta_R}}, \\
+            &\pi_O \gets g_O^{O_{\text{mid}}(\tau)}\textcolor{purple}{\left(g_O^{Z(\tau)}\right)^{\delta_O}}, \\
+            &\pi_O' \gets g_O^{\alpha_OO_{\text{mid}}(\tau)}\textcolor{purple}{\left(g_O^{\alpha_O Z(\tau)}\right)^{\delta_O}}, \\
+            &\pi_H \gets g^{H(\tau)}\textcolor{purple}{(g^{\delta_O})(g^{\delta_L})(g^{\delta_R})(g^{\delta_L\delta_R})}, \\ 
+            &\pi_{\beta} \gets \textcolor{purple}{\left(g_L^{\beta Z(\tau)}\right)^{\delta_L}\left(g_R^{\beta Z(\tau)}\right)^{\delta_R}\left(g_O^{\beta Z(\tau)}\right)^{\delta_O}} \cdot \\ &  \cdot g_L^{\beta L_{\text{mid}}(\tau)}g_R^{\beta R_{\text{mid}}(\tau)}g_O^{\beta O_{\text{mid}}(\tau)}
+        \end{aligned}
+    \end{equation*}
+\end{center}
 
 Let us see what has changed in the Pinocchio Protocol.
 
@@ -597,12 +647,16 @@ Let us see the complete specification of the Pinocchio Protocol.
         \item Picks random values $\tau, \alpha_L, \alpha_R, \alpha_O, \beta, \gamma, \rho_L, \rho_R \xleftarrow{R} \mathbb{F}$.
         \item Calculates $\rho_O \gets \rho_L\rho_R$ and defines generators $g_L \gets g^{\rho_L}, g_R \gets g^{\rho_R}, g_O \gets g^{\rho_O}$.
         \item \textbf{Outputs} prover parameters $\mathsf{pp}$ and verification parameters $\mathsf{vp}$:
-        \begin{align*}
-            \mathsf{pp} &\gets \big\{\{g^{\tau^i}\}_{i \in [d]}, \{g_L^{L_i(\tau)}, g_L^{\alpha_LL_i(\tau)}, g_R^{R_i(\tau)}, g_R^{\alpha_RR_i(\tau)}, g_O^{O_i(\tau)}, g_O^{\alpha_O O_i(\tau)}, \\ 
-            & g_L^{\beta L_i(\tau)}, g_R^{\beta R_i(\tau)}, g_O^{\beta O_i(\tau)}\}_{i \in \mathcal{I}_{\text{mid}}}, \\ 
-            & g_L^{\alpha_L Z(\tau)}, g_L^{Z(\tau)}, g_R^{Z(\tau)}, g_O^{Z(\tau)}, g_R^{\alpha_R Z(\tau)}, g_O^{\alpha_O Z(\tau)}, g_L^{\beta Z(\tau)}, g_R^{\beta Z(\tau)}, g_O^{\beta Z(\tau)}\big\} \\
-            \mathsf{vp} &\gets \big\{ g_O^{Z(\tau)}, g^{\alpha_L}, g^{\alpha_R}, g^{\alpha_O}, g^{\beta\gamma}, g^{\gamma}, \{g_L^{L_i(\tau)}, g_R^{R_i(\tau)}, g_O^{O_i(\tau)}\}_{i \in \mathcal{I}_{\text{io}}} \big\}
-        \end{align*}
+        \begin{equation*}
+            \begin{aligned}                
+                \mathsf{pp} &\gets \big\{\{g^{\tau^i}\}_{i \in [d]}, \{g_L^{L_i(\tau)}, g_L^{\alpha_LL_i(\tau)}, g_R^{R_i(\tau)}, \\
+                            & g_R^{\alpha_RR_i(\tau)}, g_O^{O_i(\tau)}, g_O^{\alpha_O O_i(\tau)}, g_L^{\beta L_i(\tau)}, g_R^{\beta R_i(\tau)}, \\ 
+                            & g_O^{\beta O_i(\tau)}\}_{i \in \mathcal{I}_{\text{mid}}}, g_L^{\alpha_L Z(\tau)}, g_L^{Z(\tau)}, g_R^{Z(\tau)}, g_O^{Z(\tau)}, \\ 
+                            & g_R^{\alpha_R Z(\tau)}, g_O^{\alpha_O Z(\tau)}, g_L^{\beta Z(\tau)}, g_R^{\beta Z(\tau)}, g_O^{\beta Z(\tau)}\big\} \\
+                \mathsf{vp} &\gets \big\{ g_O^{Z(\tau)}, g^{\alpha_L}, g^{\alpha_R}, g^{\alpha_O}, g^{\beta\gamma}, g^{\gamma}, \\
+                            & \{g_L^{L_i(\tau)}, g_R^{R_i(\tau)}, g_O^{O_i(\tau)}\}_{i \in \mathcal{I}_{\text{io}}} \big\}
+            \end{aligned}
+        \end{equation*}
         \item \textbf{Deletes} aforementioned random scalars (toxic waste).
     \end{itemize}
     \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbf{x}, \mathbf{w})$}
@@ -612,27 +666,29 @@ Let us see the complete specification of the Pinocchio Protocol.
         \item Calculates $H(x) \gets (L(x)R(x) - O(x))\big/ Z(x)$.
         \item Splits $L(x) = L_{\text{mid}}(x) + L_{\text{io}}(x)$ --- intermediate and input/output parts. Repeat for $R(x)$ and $O(x)$.
         \item Samples $\delta_L, \delta_R, \delta_O \xleftarrow{R} \mathbb{F}$ and publishes the following values as a proof $\boldsymbol{\pi}$: 
-        \begin{align*}
-            \pi_L \gets g_L^{L_{\text{mid}}(\tau)}\left(g_L^{Z(\tau)}\right)^{\delta_L}, \quad \pi_L' \gets g_L^{\alpha_LL_{\text{mid}}(\tau)}\left(g_L^{\alpha_L Z(\tau)}\right)^{\delta_L}, \\
-            \pi_R \gets g_R^{R_{\text{mid}}(\tau)}\left(g_R^{Z(\tau)}\right)^{\delta_R}, \quad \pi_R' \gets g_R^{\alpha_RR_{\text{mid}}(\tau)}\left(g_R^{\alpha_R Z(\tau)}\right)^{\delta_R}, \\
-            \pi_O \gets g_O^{O_{\text{mid}}(\tau)}\left(g_O^{Z(\tau)}\right)^{\delta_O}, \quad \pi_O' \gets g_O^{\alpha_OO_{\text{mid}}(\tau)}\left(g_O^{\alpha_O Z(\tau)}\right)^{\delta_O}, \\
-            \pi_H \gets g^{H(\tau)}(g^{\delta_O})(g^{\delta_L})(g^{\delta_R})(g^{\delta_L\delta_R}), \\ 
-            \pi_{\beta} \gets \left(g_L^{\beta Z(\tau)}\right)^{\delta_L}\left(g_R^{\beta Z(\tau)}\right)^{\delta_R}\left(g_O^{\beta Z(\tau)}\right)^{\delta_O}g_L^{\beta L_{\text{mid}}(\tau)}g_R^{\beta R_{\text{mid}}(\tau)}g_O^{\beta O_{\text{mid}}(\tau)}
-        \end{align*}
+        \begin{equation*}
+            \begin{aligned} 
+                &\pi_L \gets g_L^{L_{\text{mid}}(\tau)}\left(g_L^{Z(\tau)}\right)^{\delta_L}, \\ & \pi_L' \gets g_L^{\alpha_LL_{\text{mid}}(\tau)}\left(g_L^{\alpha_L Z(\tau)}\right)^{\delta_L}, \\
+                &\pi_R \gets g_R^{R_{\text{mid}}(\tau)}\left(g_R^{Z(\tau)}\right)^{\delta_R}, \\ & \pi_R' \gets g_R^{\alpha_RR_{\text{mid}}(\tau)}\left(g_R^{\alpha_R Z(\tau)}\right)^{\delta_R}, \\
+                &\pi_O \gets g_O^{O_{\text{mid}}(\tau)}\left(g_O^{Z(\tau)}\right)^{\delta_O}, \\ & \pi_O' \gets g_O^{\alpha_OO_{\text{mid}}(\tau)}\left(g_O^{\alpha_O Z(\tau)}\right)^{\delta_O}, \\
+                &\pi_H \gets g^{H(\tau)}(g^{\delta_O})(g^{\delta_L})(g^{\delta_R})(g^{\delta_L\delta_R}), \\ 
+                &\pi_{\beta} \gets \left(g_L^{\beta Z(\tau)}\right)^{\delta_L}\left(g_R^{\beta Z(\tau)}\right)^{\delta_R}\left(g_O^{\beta Z(\tau)}\right)^{\delta_O} \cdot \\ & \cdot g_L^{\beta L_{\text{mid}}(\tau)}g_R^{\beta R_{\text{mid}}(\tau)}g_O^{\beta O_{\text{mid}}(\tau)}
+            \end{aligned}
+        \end{equation*}
     \end{itemize}
 
     \tcbsubtitle{$\mathsf{Verify}(\mathsf{vp}, \mathbf{x}, \boldsymbol{\pi})$}
-    Upon receiving $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_{\beta})$, the verifier $\mathcal{V}$:
-    \begin{itemize}[label=\ding{51}]
-        \item Finds $\pi_L^* \gets \pi_L\prod_{i \in \mathcal{I}_{\text{io}}} (g_L^{L_i(\tau)})^{w_i},\pi_R^* \gets \pi_R\prod_{i \in \mathcal{I}_{\text{io}}} (g_R^{R_i(\tau)})^{w_i},\pi_O^* \gets \pi_O\prod_{i \in \mathcal{I}_{\text{io}}} (g_O^{O_i(\tau)})^{w_i}$
+    Upon receiving proof $\boldsymbol{\pi}$, the verifier $\mathcal{V}$:
+    \begin{itemize}[label=\ding{51}, left=0.6em]
+        \item Finds $\pi_L^* \gets \pi_L\prod_{i \in \mathcal{I}_{\text{io}}} (g_L^{L_i(\tau)})^{w_i},\pi_R^* \gets \pi_R\prod_{i \in \mathcal{I}_{\text{io}}} (g_R^{R_i(\tau)})^{w_i},\pi_O^*~\gets~\pi_O\prod_{i \in \mathcal{I}_{\text{io}}} (g_O^{O_i(\tau)})^{w_i}$
         \item Checks whether all of the following conditions hold:
         
     \end{itemize}
     \begin{align*}
-        e(\pi_L^*, \pi_R^*) = e(g_O^{Z(\tau)}, \pi_H)\cdot e(\pi_O^*, g),&& \textcolor{gray!80!black}{\textit{// Polynomial Equality Test}} \\
-        e(\pi_L, g_L^{\alpha_L}) = e(\pi_L', g_L), \quad e(\pi_R, g_R^{\alpha_R}) = e(\pi_R', g_R),&& \textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        e(\pi_O, g_O^{\alpha_O}) = e(\pi_O', g_O),&& \textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        e(\pi_L\pi_R\pi_O, g^{\gamma\beta}) = e(\pi_{\beta}, g^{\gamma}).&& \textcolor{gray!80!black}{\textit{// Extended Witness Consistency}}
+        e(\pi_L^*, \pi_R^*) = e(g_O^{Z(\tau)}, \pi_H)\cdot e(\pi_O^*, g),\\
+        e(\pi_L, g_L^{\alpha_L}) = e(\pi_L', g_L), \quad e(\pi_R, g_R^{\alpha_R}) = e(\pi_R', g_R),\\
+        e(\pi_O, g_O^{\alpha_O}) = e(\pi_O', g_O), \\
+        e(\pi_L\pi_R\pi_O, g^{\gamma\beta}) = e(\pi_{\beta}, g^{\gamma}).
     \end{align*}
 \end{tcolorbox}
 
@@ -646,13 +702,18 @@ Let us now concretely describe the Groth16 construction.
 
 \textcolor{blue!75!gray}{\textbf{Setup Procedure.}} In Groth16, we need only five random scalars: $\alpha,\beta,\gamma,\delta,\tau \xleftarrow{R} \mathbb{F}$. Now, the prover key $\mathsf{pk}$ looks as follows:
 \begin{equation*}
-    \mathsf{pp} \gets \left(g_1^{\alpha},g_1^{\beta},g_1^{\delta},\left\{g_1^{\tau^i},\frac{\beta L_i(\tau) + \alpha R_i(\tau) + O_i(\tau)}{\gamma}, \frac{\tau^i Z(\tau)}{\delta}\right\}_{i \in [n]},g_2^{\beta}, g_2^{\delta}, g_2^{\gamma}, \{g_2^{\tau^i}\}_{i \in [d]}\right)
+    \begin{aligned}
+        &\mathsf{pp} \gets \left(g_1^{\alpha},g_1^{\beta},g_1^{\delta},\left\{g_1^{\tau^i},\frac{\beta L_i(\tau) + \alpha R_i(\tau) + O_i(\tau)}{\gamma}, \frac{\tau^i Z(\tau)}{\delta}\right\}_{i \in [n]} \right., \\
+        & \left. g_2^{\beta}, g_2^{\delta}, g_2^{\gamma}, \{g_2^{\tau^i}\}_{i \in [d]}\right).        
+    \end{aligned}
 \end{equation*}
 
 \textcolor{green!50!black}{\textbf{Proving.}} Sample random $\delta_L,\delta_R \xleftarrow{R} \mathbb{F}$ and compute the following values:
-\begin{gather*}
-    \pi_L \gets g_1^{\alpha + \sum_{i=1}^n w_iL_i(\tau) + \delta_L\delta}, \quad \pi_R \gets g_2^{\beta + \sum_{i=0}^n w_iR_i(\tau) + \delta_R\delta}, \quad \pi_O \gets g_1^{\frac{Q_{\text{mid}}(\tau)+H(\tau)Z(\tau)}{\delta} + L\delta_R + R\delta_L - \delta_L\delta_R\delta},
-\end{gather*}
+\begin{equation*}
+    \begin{aligned}
+        &\pi_L \gets g_1^{\alpha + \sum_{i=1}^n w_iL_i(\tau) + \delta_L\delta}, \\ & \pi_R \gets g_2^{\beta + \sum_{i=0}^n w_iR_i(\tau) + \delta_R\delta}, \\ & \pi_O \gets g_1^{\frac{Q_{\text{mid}}(\tau)+H(\tau)Z(\tau)}{\delta} + L\delta_R + R\delta_L - \delta_L\delta_R\delta},        
+    \end{aligned}
+\end{equation*}
 
 where we denoted $Q_{\text{mid}} := \sum_{i \in \mathcal{I}_{\text{mid}}}w_i(\beta L_i(\tau) + \alpha R_i(\tau) + O_i(\tau))$.
 
