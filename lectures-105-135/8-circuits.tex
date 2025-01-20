@@ -200,14 +200,15 @@ from some finite field $\mathbb{F}$ (see right figure below).
     arrow/.style={-Stealth, ultra thick}
 }
 
-\begin{figure}[h!]
+% \begin{figure}[h!]
+\begin{figure}[H]
     \centering
-    \vspace*{1em}
+    % \vspace*{1em}
     \begin{minipage}{0.46\textwidth}
         \centering
         % Boolean AND and OR gates
         \begin{tabular}{cc}
-            \scalebox{0.5}{
+            \scalebox{0.4}{
             \begin{tikzpicture}
                 % Nodes
                 \node[var] (a) at (0, -1.5) {$a$};
@@ -222,7 +223,7 @@ from some finite field $\mathbb{F}$ (see right figure below).
             \end{tikzpicture}
             }
             &
-            \scalebox{0.5}{
+            \scalebox{0.4}{
             \begin{tikzpicture}
                 % Nodes
                 \node[var] (a) at (0, -1.5) {$a$};
@@ -245,7 +246,7 @@ from some finite field $\mathbb{F}$ (see right figure below).
         \centering
         % Addition and Multiplication gates
         \begin{tabular}{cc}
-            \scalebox{0.45}{
+            \scalebox{0.4}{
             \begin{tikzpicture}
                 % Nodes
                 \node[var] (a) at (0, -1.5) {$a$};
@@ -260,7 +261,7 @@ from some finite field $\mathbb{F}$ (see right figure below).
             \end{tikzpicture}
             }
             &
-            \scalebox{0.45}{
+            \scalebox{0.4}{
             \begin{tikzpicture}
                 % Nodes
                 \node[var] (a) at (0, -1.5) {$a$};
@@ -275,14 +276,14 @@ from some finite field $\mathbb{F}$ (see right figure below).
             \end{tikzpicture}
             }
         \end{tabular}
-        \caption{Addition and Multiplication Gates}
+        \caption{Addition and Multiplication Gates.}
     \end{minipage}
-    \vspace*{1em}
+    \vspace*{0em}
 \end{figure}
 
 \begin{wraptable}{r}{0.4\textwidth}
     \centering
-    \vspace{-0.5em}
+    \vspace{0.5em}
     \begin{tabular}{|c|c|c|}
         \hline
         \textbf{A} & \textbf{B} & \textbf{A AND B} \\
@@ -298,7 +299,7 @@ from some finite field $\mathbb{F}$ (see right figure below).
     \end{tabular}
     \caption{\texttt{AND} Gate Truth Table}
     \label{tab:and-truth-table}
-    \vspace{0.5em}
+    % \vspace{0.5em}
 \end{wraptable}
 
 % --- Finish Writing diagrams ---
@@ -306,7 +307,7 @@ from some finite field $\mathbb{F}$ (see right figure below).
 Let us come back to boolean circuits for a moment and consider the \texttt{AND} gate. The \textit{\texttt{AND} Gate Truth \Cref{tab:and-truth-table}} shows us the results we receive if 
 particular values are supplied to the gate. The main point here is that with this table, we can 
 verify the validity of logical statements. Boolean circuits receive an input vector of $\{0, 1\}$ 
-and~resolve~to \texttt{true} (1) or \texttt{false} (0); basically, they determine if the input values satisfy the 
+and resolve to \texttt{true} (1) or \texttt{false} (0); basically, they determine if the input values satisfy the 
 statement.
 
 However, more notably, we can combine these gates to create more complex circuits that can resolve
@@ -315,7 +316,7 @@ calculating $(a \;\texttt{AND}\; b) \,\texttt{OR}\; c$.
 
 \begin{figure}[h!]
     \centering
-    \scalebox{0.7}{
+    \scalebox{0.45}{
     \begin{tikzpicture}
         % Nodes
         \node[var] (a) at (0, -1.5) {$a$};
@@ -982,11 +983,15 @@ The last unresolved question is where the ``rank-1`` comes from. Using the outer
 products: 
 \[ \left(\sum_{i=1}^{n} a_i w_i\right) \times \left(\sum_{j=1}^{n} b_j w_j\right) = \sum_{k=1}^{n} c_k w_k \]
 
-Combine the products into a double sum on the left side:
-\[ \sum_{i=1}^{n} \sum_{j=1}^{n} a_i b_j w_i w_j = \mathbf{w}^{\top} (\mathbf{a} \otimes \mathbf{b}) \mathbf{w} = \mathbf{w}^{\top} A \mathbf{w} \]
+Combine the products into a double sum on the left side: 
+\begin{center}
+    $\sum_{i=1}^{n} \sum_{j=1}^{n} a_i b_j w_i w_j = \mathbf{w}^{\top} (\mathbf{a} \otimes \mathbf{b}) \mathbf{w} = \mathbf{w}^{\top} A \mathbf{w}$
+\end{center}
 
 Thus, the constraint can be written as:
-\[ \mathbf{w}^{\top} A \mathbf{w} + \mathbf{c}^{\top} \mathbf{w} = 0 \]
+\begin{center}
+    $\mathbf{w}^{\top} A \mathbf{w} + \mathbf{c}^{\top} \mathbf{w} = 0$
+\end{center}
 
 So, the rank-1 means the rank of the coefficients matrix $A$ in one of the constraint formats.
 
