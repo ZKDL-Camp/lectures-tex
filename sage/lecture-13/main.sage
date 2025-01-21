@@ -1,3 +1,5 @@
+from utils import pad
+
 # Part I: Multiplicative subgroup
 p = 15 * (1<<27) + 1
 Fp = GF(p)
@@ -46,8 +48,8 @@ def ntt(w: Fp, p: list[Fp]) -> list[Fp]:
 # Compute NTTS
 w = g**((p-1) // (2*N))
 print(P.list() + [0]*(1<<r))
-p_ntt = ntt(w, P.list() + [0]*(1<<r))
-q_ntt = ntt(w, Q.list() + [0]*(1<<r))
+p_ntt = ntt(w, pad(P, 2*N))
+q_ntt = ntt(w, pad(Q, 2*N))
 
 print('Now let us verify that NTTs are correct!')
 print('NTT gives:', p_ntt)
@@ -73,5 +75,5 @@ def ntt_product(w: Fp, p: list[Fp], q: list[Fp]) -> list[Fp]:
 
 # Check that NTT product is correct
 print('Now let us verify that NTT product is correct!')
-print('NTT product gives:', ntt_product(w, P.list() + [0]*(1<<r), Q.list() + [0]*(1<<r)))
+print('NTT product gives:', ntt_product(w, pad(P, 2*N), pad(Q, 2*N)))
 print('Actual product is:', P*Q)
