@@ -28,6 +28,7 @@
 \setlist{topsep=2pt,itemsep=2pt,parsep=0pt,partopsep=0pt}
 \RequirePackage[dvipsnames,table]{xcolor}
 \RequirePackage[utf8]{inputenc}
+\usepackage{datetime}
 \RequirePackage[
     paperwidth=105mm,
     paperheight=135mm,
@@ -258,9 +259,21 @@ ruled
 \newenvironment{talign*}{\let\displaystyle\textstyle\csname align*\endcsname}{\endalign}
 
 \usepackage[explicit]{titlesec}
-\titleformat{\section}{\fontsize{13}{16}\sffamily\bfseries}{\thesection}{14pt}{#1}
-\titleformat{\subsection}{\fontsize{11}{14}\sffamily\bfseries}{\thesubsection}{12pt}{#1}
-\titleformat{\subsubsection}{\fontsize{10}{12}\sffamily\large\bfseries}{\thesubsubsection}{8pt}{#1}
+
+% Format for section (12pt)
+\titleformat{\section}[block]
+  {\fontsize{12}{14}\sffamily\bfseries}  % 12pt font size, 14pt line spacing, sans-serif and bold
+  {\thesection}{1em}{#1}  % 1em space between the section number and title text
+
+% Format for subsection (10pt)
+\titleformat{\subsection}[block]
+  {\fontsize{10}{13}\sffamily\bfseries}  % 11pt font size, 13pt line spacing, sans-serif and bold
+  {\thesubsection}{1em}{#1}  % 1em space between the subsection number and title text
+
+% Format for subsubsection (9pt)
+\titleformat{\subsubsection}[block]
+  {\fontsize{9}{12}\sffamily\bfseries}  % 10pt font size, 12pt line spacing, sans-serif and bold
+  {\thesubsubsection}{1em}{#1}  % 1em space between the subsubsection number and title text
 
 \titlespacing*{\section}{0pt}{5pt}{5pt}
 \titlespacing*{\subsection}{0pt}{5pt}{5pt}
