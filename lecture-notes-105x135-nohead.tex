@@ -2,53 +2,30 @@
 
 \usepackage{opencolor}
 
-\title{\huge\sffamily\bfseries ZKDL Lecture Notes}
-\author{\Large\sffamily by \emph{Distributed Lab}}
-\date{\sffamily \monthname[\the\month] \ \the\year \\ \vspace{1mm} Version 0.1}
+\makeatletter
+\def\maketitle{
+    \begin{center}
+        {\Large\sffamily \emph{Distributed Lab}} \\ \vspace{30mm}
+        {\huge\sffamily\bfseries ZKDL Lecture Notes} \\ \vspace{5mm}
+        {Version 0.1} \\ \vspace{10mm}
+    \end{center}
+    
+    \vfill
+
+    \begin{center}
+        {Ukraine} \\ \vspace{2mm}
+        {\sffamily \the\year}
+    \end{center}
+
+    \thispagestyle{empty}
+    \pagebreak
+}
+\makeatother
 
 \begin{document}
-
-    \pagestyle{fancy}
-
-% --- Drawing a book cover ---
-
-    \colorlet{coverBackground}{oc-gray-0}
-    \colorlet{coverBoxBackground}{oc-gray-7}
-
-    \pagecolor{coverBackground}
-    \begin{tcolorbox}[
-        standard jigsaw,
-        colframe=coverBoxBackground,
-        colback=oc-gray-3,
-        width=\textwidth,
-        halign=center,
-        valign=center,
-    %opacityback=0,
-        arc=1em,
-        shadow={4mm}{-3mm}{0mm}{black!30!white},
-        enhanced,
-        boxrule=5pt,
-        rightrule=9pt,
-        bottomrule=9pt]
-        \maketitle
-    \end{tcolorbox}
-
-% Include figure below
-
-    \vspace{1.5cm}
-    \begin{figure}[h]
-        \centering
-        \includegraphics[width=0.8\textwidth]{lectures/images/cover-image-1.png}
-    \end{figure}
-
-    \thispagestyle{empty}
-    \pagebreak
+    \maketitle
 
 %  Inverse title page
-
-    \thispagestyle{empty}
-    \pagebreak
-    
     \pagecolor{white}
     
     \begin{abstract}
@@ -70,6 +47,7 @@
         suitable and necessary.
     \end{abstract}
     
+    \thispagestyle{empty}
     \newpage
 % --- Table of Contents ---
 
