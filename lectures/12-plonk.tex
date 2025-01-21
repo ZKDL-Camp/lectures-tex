@@ -303,11 +303,11 @@ its NTT form. This problem is equivalent to solving the interpolation problem:
     m(\omega^j) = \hat{m}_j, \quad j \in [N]
 \end{equation*}
 
-This problem was extensively discussed in \Cref{section:mult-cyclic-g}, where it
-was shown that the complexity of such problem is $O(N \log N)$. Alternatively,
-one can find the inverse NTT by using equality $p_j =
-\frac{1}{N}\sum_{j=0}^{N-1}\hat{p}_j\omega^{-ij}$. Either way, we summarize the
-whole discussion in \Cref{fig:ntt}.
+Suprisingly, the \textbf{Inverse NTT} is given by $p_j =
+\frac{1}{N}\sum_{j=0}^{N-1}\hat{p}_j\omega^{-ij}$, which can be computed by
+running the forward NTT, but with generator $\omega^{-1}$. Division by $N$ is
+done over $\mathbb{F}_p$, which is surely trivial. We summarize the whole
+discussion in \Cref{fig:ntt}.
 
 \begin{figure}[H]
 \centering
