@@ -92,7 +92,7 @@
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 \lstset{
-    numbers=left,
+    numbers=none,
     aboveskip=3mm,
     belowskip=3mm,
     showstringspaces=false,
@@ -122,9 +122,9 @@
 \RequirePackage{fancyhdr}
 \lhead{}
 \rhead{}
-\cfoot{Page \thepage}
+\cfoot{\fontsize{7pt}{8pt}\selectfont \thepage}
 \renewcommand{\headrulewidth}{0.0mm}
-\renewcommand{\footrulewidth}{0.1mm}
+\renewcommand{\footrulewidth}{0.0mm}
 
 % --- Shortcuts ---
 \newcommand{\F}{\mathbb{F}}
