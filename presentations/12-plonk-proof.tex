@@ -21,6 +21,29 @@
         \tableofcontents
     \end{frame}
 
+    \section{Gadgets}
+
+    \begin{frame}{Gadgets - Commitments}
+        \begin{enumerate}
+            \item Commit($f$) $\rightarrow$ $com(f) \in G$
+            \item Open($f, \zeta$) $\rightarrow$ $\pi \in G$
+            \item Verify($com(f), \pi, \zeta, y$) $\rightarrow$ $Accept$ if $f(\zeta) = y$ w.h.p.
+        \end{enumerate}
+    \end{frame}
+
+    \begin{frame}{Gadgets - Blindings}
+        \textbf{Hide the polynomial} \\
+        Let $a \in \mathbb{F}[X]$ be a polynomial of degree $N$. Select $M \geq N$.
+        Then polynomial $a_{\text{blinded}}$ will be of degree $M$ and is defined as:
+
+        \begin{align*}
+            z_H &= X^N - 1 \\
+            k &= M - N \\
+            b_0, \dots, b_k &\xleftarrow{R} \mathbb{F} \\
+            a_{\text{blinded}} &= (b_0 + b_1 X + \dots + b_k X^k) z_H + a
+        \end{align*}
+    \end{frame}
+
     \section{Setup}
 
     \begin{frame}{Transcript Setup}
