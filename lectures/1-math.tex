@@ -608,8 +608,11 @@ in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the po
 \end{figure}
 
 \begin{theorem}
-    Given a set of points $\{(x_0,y_0),(x_1,y_1),\dots,(x_n,y_n)\} \subset \mathbb{F} \times \mathbb{F}$, there is a unique polynomial $L(x)$ of degree $n$ such that $L(x_i) = y_i$ for all $i=0,\dots,n$. This polynomial is called the \textbf{Lagrange interpolation polynomial} and can be 
-    found through the following formula:
+    Given a set of points $\{(x_0,y_0),(x_1,y_1),\dots,(x_n,y_n)\} \subset
+    \mathbb{F} \times \mathbb{F}$, there is a unique polynomial $L(x)$ of degree
+    $n$ such that $L(x_i) = y_i$ for all $i=0,\dots,n$. This polynomial is
+    called the \textbf{Lagrange interpolation polynomial} and can be found
+    through the following formula:
     \begin{equation}
         L(x) = \sum_{i=0}^{n} y_i \ell_i(x), \quad \ell_i(x) = \prod_{j=0, j \neq i}^{n} \frac{x-x_j}{x_i-x_j}.
     \end{equation}  
