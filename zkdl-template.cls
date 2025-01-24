@@ -2,7 +2,7 @@
 \ProvidesClass{zkdl-template}[2024/07/09 ZKDL Template]
 
 % --- Defining the basic article style ---
-\providecommand\mtfntsize{12pt}
+\providecommand\mtfntsize{10pt}
 \ProcessOptions\relax
 \LoadClass[a4paper,\mtfntsize]{extarticle}
 \usepackage{titlepic} % For the image on the title page
@@ -28,7 +28,17 @@
 \setlist{topsep=2pt,itemsep=2pt,parsep=0pt,partopsep=0pt}
 \RequirePackage[dvipsnames,table]{xcolor}
 \RequirePackage[utf8]{inputenc}
-\RequirePackage[a4paper, top=1.0in,bottom=1.0in, left=0.8in, right=0.8in, footskip=0.4in, includefoot]{geometry}
+\RequirePackage[
+    paperwidth=148mm,
+    paperheight=210mm,
+    top=28mm,
+    bottom=12mm, 
+    left=15mm, 
+    right=15mm, 
+    footskip=8mm, 
+    includefoot
+]{geometry}
+% 15 12
 \RequirePackage[most]{tcolorbox}
 \RequirePackage{multicol}
 \RequirePackage{bm}
@@ -106,11 +116,12 @@
 
 % --- Footers ---
 \RequirePackage{fancyhdr}
-\lhead{Distributed Lab}
-\rhead{ZKDL Camp}
-\cfoot{Page \thepage}
-\renewcommand{\headrulewidth}{1.25pt}
-\renewcommand{\footrulewidth}{1.25pt}
+\lhead{}
+\rhead{}
+\chead{\leftmark}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.2mm}
+\renewcommand{\footrulewidth}{0.2mm}
 
 % --- Shortcuts ---
 \newcommand{\F}{\mathbb{F}}
@@ -210,17 +221,17 @@
 \node at (0,-1) {\fontsize{48}{60}\selectfont\bfseries!};}}
 
 % --- Box styles ---
-\tcolorboxenvironment{definition}{boxrule=0pt,boxsep=0pt,colback={blue!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{blue},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{proposition}{boxrule=0pt,boxsep=0pt,colback={Orange!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{Orange},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{theorem}{boxrule=0pt,boxsep=0pt,colback={blue!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{blue},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{lemma}{boxrule=0pt,boxsep=0pt,colback={Cyan!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{Cyan},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{corollary}{boxrule=0pt,boxsep=0pt,colback={violet!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{violet},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{proof}{boxrule=0pt,boxsep=0pt,blanker,borderline west={2pt}{0pt}{CadetBlue!80!white},left=8pt,right=8pt,sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{remark}{boxrule=0pt,boxsep=0pt,blanker,borderline west={2pt}{0pt}{Green},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{remarks}{boxrule=0pt,boxsep=0pt,blanker,borderline west={2pt}{0pt}{Green},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{example}{boxrule=0pt,boxsep=0pt,colback={Gray!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{Gray},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{examples}{boxrule=0pt,boxsep=0pt,blanker,borderline west={2pt}{0pt}{Black},left=8pt,right=8pt,sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{cthm}{boxrule=0pt,boxsep=0pt,colback={gray!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{gray},sharp corners,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{definition}{   breakable, boxrule=0pt, boxsep=0pt, colback={blue!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{blue},sharp corners,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{proposition}{  breakable, boxrule=0pt, boxsep=0pt, colback={Orange!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{Orange},sharp corners,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{theorem}{      breakable, boxrule=0pt, boxsep=0pt, colback={blue!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{blue},sharp corners,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{lemma}{        breakable, boxrule=0pt, boxsep=0pt, colback={Cyan!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{Cyan},sharp corners,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{corollary}{    breakable, boxrule=0pt, boxsep=0pt, colback={violet!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{violet},sharp corners,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{proof}{        breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{CadetBlue!80!white},left=8pt,right=8pt,sharp corners,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{remark}{       breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{Green},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{remarks}{      breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{Green},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{example}{      breakable, boxrule=0pt, boxsep=0pt, colback={Gray!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{Gray},sharp corners,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{examples}{     breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{Black},left=8pt,right=8pt,sharp corners,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{cthm}{         breakable, boxrule=0pt, boxsep=0pt, colback={gray!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{gray},sharp corners,before skip=10pt,after skip=10pt}
 
 % --- Algorithm packages ---
 \RequirePackage[
