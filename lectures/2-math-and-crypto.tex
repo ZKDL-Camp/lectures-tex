@@ -119,24 +119,24 @@ Let us see some more examples of how to define the security of certain crypograp
 
 \subsubsection{Message recovery attacks}
 
-Essentially, message recovery attacks are types of attacks that, from given cipher text, recover the message with significantly better probability then random guessing, which is obvious $1/|\mathcal{M}|$.
+Essentially, message recovery attacks are types of attacks that, from given ciphertext, recover the message with significantly better probability than random guessing, which is obvious $1/|\mathcal{M}|$.
 Of course, any reasonable notion of security should rule out such an attack, and indeed, semantic security does.
 
 Although this might seem intuitively obvious, we provide a formal proof to clarify the reasoning. 
-One of the reasons for doing this is to thoroughly demonstrate the concept of a security reduction, which is the primary method used to assess the security of systems.
+One of the reasons for doing this is to thoroughly demonstrate the concept of a \emph{security reduction}, which is the primary method used to assess the security of systems.
 
-Let us play the following attack game message recovery between adversary $\mathcal{A}$ and challenger $\mathcal{B}$.
-For a given cipher $\mathcal{E} = (E, D)$, defined over $\mathcal{K}, \mathcal{M}, \mathcal{C}$, and for given adversary $\mathcal{A}$, the attack game proceeds as follows: 
+Let us play the following attack game message recovery between adversary $\mathcal{A}$ and challenger $\mathcal{C}h$.
+For a given cipher $\mathcal{E} = (E, D)$, defined over $\mathcal{K}, \mathcal{M}, \mathcal{C}$, and for a given adversary $\mathcal{A}$, the attack game proceeds as follows: 
 
 \begin{itemize}
     \item The challenger computes $m \xleftarrow{R} \mathcal{M}$, $k \xleftarrow{R} \mathcal{K}$, $c \xleftarrow{R} E(k, m)$ and sends c to the adversary.
     \item the adversary output a message $\hat{m} \in \mathcal{M}$.
 \end{itemize}
 
-Let $W$ be the event that $\hat{m} = m$. We say that $\mathcal{A}$ wins the game in this case, and we define $\mathcal{A}$'s message recovery advantage with respect to $\mathcal{E}$ as:
+We say that $\mathcal{A}$ wins the game in this case, and we define $\mathcal{A}$'s message recovery advantage with respect to $\mathcal{E}$ as:
 
 \begin{equation*}
-    \text{MRadv}[\mathcal{A}, \mathcal{E}] := \Bigg|\text{Pr}[W] - \frac{1}{|\mathcal{M}|}\Bigg|.
+    \text{MRadv}[\mathcal{A}, \mathcal{E}] := \Bigg|\text{Pr}[\hat{m} = m] - \frac{1}{|\mathcal{M}|}\Bigg|.
 \end{equation*}
 
 \begin{definition} [Security against message recovery]
@@ -148,32 +148,35 @@ Let $W$ be the event that $\hat{m} = m$. We say that $\mathcal{A}$ wins the game
 \end{theorem}
 
 $\blacktriangleright$ 
-We will demonstrate how to construct an efficient adversary $\mathcal{B}$, whose advantage
-in the semantic security game is linked to the message recovery advantage of $\mathcal{A}$.
+Let us prove by assuming the opposite statement. 
+In other words if $\mathcal{E}$ is not secure against message recovery, then $\mathcal{E}$ is not semantically secure.
 
+Assume that $\mathcal{E}$ is not secure against message recovery. 
+We have efficient adversary $\mathcal{A}$ who have significant advantage in 
+message recovery game and efficient adversary $\mathcal{B}$ who is trying to 
+compromise $\mathcal{E}$.  
 The proof idea is to use efficient adversary $\mathcal{A}$ as a "black box" (or oracle machine). % that wins message recovery game.
-
 We construct $\mathcal{B}$ as follows:
 \begin{enumerate}
-    \item Adversary $\mathcal{B}$ generates $m_0, m_1 \in \mathcal{M}$ and sends to SS challenger.
-    \item SS challenger returns ciphertext $c$ which goes to adversary $\mathcal{A}$.
+    \item Adversary $\mathcal{B}$ generates $m_0, m_1 \in \mathcal{M}$ and sends to semantic security challenger.
+    \item Semantic security challenger returns ciphertext $c$ which goes to adversary $\mathcal{A}$.
     \item $\mathcal{A}$ returns $\hat{m}$. If $\hat{m} = m_0$, then $b = 0$, otherwise $b = 1$.
-    \item Sends $b$ to SS challenger. 
+    \item Sends $b$ to semantic security challenger. 
 \end{enumerate}
 
-Intuitively, this implies that $\text{SSadv}[\mathcal{B}, \mathcal{E}]$ is exactly equal to $\text{MRadv}[\mathcal{A}, \mathcal{E}]$. $\blacktriangleleft$
+Intuitively, this implies that $\text{SSadv}[\mathcal{B}, \mathcal{E}]$ is exactly equal 
+to $\text{MRadv}[\mathcal{A}, \mathcal{E}]$. $\blacktriangleleft$
 
-\begin{remark} 
-    % todo ref
-    More formal proof you can find in A Graduate Course in Applied Cryptography, Dan Boneh and Victor Shoup, 2023.
-\end{remark}
+% This essentially means that if an adversary is capable of successfully winning the 
+This means that if an adversary is capable of successfully winning the 
+message recovery game, then they can also effectively win the semantic security game.
+In essence, security against message recovery is a stronger property than
+semantic security. 
 
-The reader could have a reasonable question. Why did we describe this proof at all? 
-One of our motivations for doing this is to illustrate in detail the notion of a security reduction, which is the main technique used to reason about the security of systems.
+% The reader could have a reasonable question. Why did we describe this proof at all? 
+% One of our motivations for doing this is to illustrate in detail the notion of a security reduction, which is the main technique used to reason about the security of systems.
 
 To be more formal, we introduce how security reduction works in general. 
-% Most cryptosystems are based on computational hard problems such as integer factorization, discrete logarithm and other.
-
 \begin{definition} [Security Reduction]
     \hfill
     \begin{enumerate}
