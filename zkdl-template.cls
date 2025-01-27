@@ -88,6 +88,7 @@
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 \lstset{
+    numbers=none,
     numbers=left,  
     aboveskip=3mm,
     belowskip=3mm,
@@ -118,7 +119,7 @@
 \RequirePackage{fancyhdr}
 \lhead{}
 \rhead{}
-\chead{\leftmark}
+\chead{\fontsize{8}{10}\selectfont\leftmark}
 \cfoot{\thepage}
 \renewcommand{\headrulewidth}{0.2mm}
 \renewcommand{\footrulewidth}{0.2mm}
@@ -256,9 +257,21 @@
 \newenvironment{talign*}{\let\displaystyle\textstyle\csname align*\endcsname}{\endalign}
 
 \usepackage[explicit]{titlesec}
-\titleformat{\section}{\fontsize{20}{22}\sffamily\bfseries}{\thesection}{20pt}{#1}
-\titleformat{\subsection}{\fontsize{16}{18}\sffamily\bfseries}{\thesubsection}{12pt}{#1}
-\titleformat{\subsubsection}{\fontsize{10}{12}\sffamily\large\bfseries}{\thesubsubsection}{8pt}{#1}
+
+% Format for section (14pt)
+\titleformat{\section}[block]
+  {\fontsize{14}{16}\sffamily\bfseries}
+  {\thesection}{1em}{#1}
+
+% Format for subsection (12pt)
+\titleformat{\subsection}[block]
+  {\fontsize{13}{14}\sffamily\bfseries}
+  {\thesubsection}{1em}{#1}
+
+% Format for subsubsection (11pt)
+\titleformat{\subsubsection}[block]
+  {\fontsize{11}{12}\sffamily\bfseries}
+  {\thesubsubsection}{1em}{#1}
 
 \titlespacing*{\section}{0pt}{5pt}{5pt}
 \titlespacing*{\subsection}{0pt}{5pt}{5pt}
