@@ -119,10 +119,10 @@ Let us see some more examples of how to define the security of certain crypograp
 
 \subsubsection{Message recovery attacks}
 
-Essentially, message recovery attacks are types of attacks that, from given ciphertext, recover the message with significantly better probability than random guessing, which is obvious $1/|\mathcal{M}|$.
+Essentially, message recovery attacks are types of attacks that, from given ciphertext, recover the message with significantly better probability than random guessing, which is obviously $1/|\mathcal{M}|$.
 Of course, any reasonable notion of security should rule out such an attack, and indeed, semantic security does.
 
-Although this might seem intuitively obviously, we provide a formal proof to clarify the reasoning. 
+Although this might seem intuitively obvious, we provide a formal proof to clarify the reasoning. 
 One of the reasons for doing this is to thoroughly demonstrate the concept of a \emph{security reduction}, which is the primary method used to assess the security of systems.
 
 Let us play the following attack game message recovery between adversary $\mathcal{A}$ and challenger $\mathcal{C}h$.
@@ -136,11 +136,11 @@ For a given cipher $\mathcal{E} = (E, D)$, defined over $\mathcal{K}, \mathcal{M
 We say that $\mathcal{A}$ wins the game in this case, and we define $\mathcal{A}$'s message recovery advantage with respect to $\mathcal{E}$ as:
 
 \begin{equation*}
-    \text{MRadv}[\mathcal{A}, \mathcal{E}] := \Bigg|\text{Pr}[\hat{m} = m] - \frac{1}{|\mathcal{M}|}\Bigg|.
+    \text{MRadv}[\mathcal{E}, \mathcal{A}] := \Bigg|\text{Pr}[\hat{m} = m] - \frac{1}{|\mathcal{M}|}\Bigg|.
 \end{equation*}
 
 \begin{definition} [Security against message recovery]
-    A cipher $\mathcal{E}$ is secure against message recovery if for all efficient adversaries $\mathcal{A}$, the value MRadv[$\mathcal{A}$, $\mathcal{E}$] is negligible.
+    A cipher $\mathcal{E}$ is secure against message recovery if for all efficient adversaries $\mathcal{A}$, the value MRadv[$\mathcal{E}, \mathcal{A}$] is negligible.
 \end{definition}
 
 \begin{theorem}
@@ -154,20 +154,20 @@ In other words, if $\mathcal{E}$ is not secure against message recovery, then $\
 Assume that $\mathcal{E}$ is not secure against message recovery. 
 We have an efficient adversary $\mathcal{A}$ who has a significant advantage in the 
 message recovery game and an efficient adversary $\mathcal{B}$ who is trying to 
-compromise $\mathcal{E}$.  
-The proof idea is to use efficient adversary $\mathcal{A}$ as a "black box" (or oracle machine). % that wins message recovery game.
+compromise $\mathcal{E}$.
+The proof idea is to use an efficient adversary $\mathcal{A}$ as a "black box" (or oracle machine). % that wins message recovery game.
 We construct $\mathcal{B}$ as follows:
 \begin{enumerate}
-    \item Adversary $\mathcal{B}$ generates $m_0, m_1 \in \mathcal{M}$ and sends to semantic security challenger.
-    \item Semantic security challenger returns ciphertext $c$ which goes to adversary $\mathcal{A}$.
-    \item $\mathcal{A}$ returns $\hat{m}$. If $\hat{m} = m_0$, then $b = 0$, otherwise $b = 1$.
-    \item Sends $b$ to semantic security challenger. 
+    \item Adversary $\mathcal{B}$ generates $m_0, m_1 \in \mathcal{M}$ and sends them to the semantic security challenger.
+    \item The semantic security challenger returns ciphertext $c$ to adversary $\mathcal{B}$ 
+    and then redirects to $\mathcal{A}$.
+    \item $\mathcal{A}$ returns $\hat{m}$. If $\hat{m} = m_0$, then $b = 0$ otherwise, $b = 1$.
+    \item Sends $b$ to the semantic security challenger. 
 \end{enumerate}
 
-Intuitively, this implies that $\text{SSadv}[\mathcal{B}, \mathcal{E}]$ is exactly equal 
-to $\text{MRadv}[\mathcal{A}, \mathcal{E}]$. $\blacktriangleleft$
+Intuitively, this implies that $\text{SSadv}[\mathcal{E}, \mathcal{B}]$ is exactly equal 
+to $\text{MRadv}[\mathcal{E}, \mathcal{A}]$. $\blacktriangleleft$
 
-% This essentially means that if an adversary is capable of successfully winning the 
 This means that if an adversary is capable of successfully winning the 
 message recovery game, then they can also effectively win the semantic security game.
 In essence, security against message recovery is a stronger property than
@@ -182,9 +182,9 @@ we will now explain how security reduction operates in general.
     \hfill
     \begin{enumerate}
         \item Let $\mathcal{A}$ be an efficient adversary who is trying to compromise the cryptosystem $\mathcal{E}$.
-        \item Construct efficient algorithm $\mathcal{A}'$, which we will call the reduction that will solve computational hard problem $\mathcal{X}$ while using oracle access to A. 
+        \item Construct efficient algorithm $\mathcal{A}'$, which we call the reduction that will solve computational hard problem $\mathcal{X}$ while using oracle access to $\mathcal{A}$. 
         For any input $x$ of the problem $\mathcal{X}$, the algorithm $\mathcal{A}'$ generates the input of the cryptosystem $\mathcal{E}$ for $\mathcal{A}$.
-        Once it wins the corresponding experiment, $\mathcal{A}'$ solves $\mathcal{X}$ for input $x$ with probability $\leq 1/n^c, c \in \mathbb{N}$.
+        Once it wins the corresponding experiment, $\mathcal{A}'$ solves $\mathcal{X}$ for input $x$ with certain probability. Typically, such probability turns out to be bounded above by $1/n^c, c \in \mathbb{N}$.
         \item Thus, the algorithm $\mathcal{A}'$ solves $\mathcal{X}$ with the negligible probability $\varepsilon(n)/n^c$ if $\varepsilon(n)$ is negligible.
         \item Since the problem $\mathcal{X}$ is computationally hard, we get a contradiction. It follows that no attacker $\mathcal{A}$ can effectively crack $\mathcal{E}$, i.e., this cryptosystem is computationally strong.
     \end{enumerate}
@@ -192,8 +192,8 @@ we will now explain how security reduction operates in general.
 
 \subsubsection{Case study: RSA}
 
-In this section we will demonstrate one of the oldest widely used for secure data transmission public-key cryptosystem RSA.
-Our main goal is to describe cryptosystem, proof correctness and talk about security considerations. 
+In this section we will demonstrate one of the oldest widely used secure data transmission public-key cryptosystem, RSA.
+Our main goal is to describe the cryptosystem, proof of correctness, and talk about security considerations. 
 
 The RSA encryption and decryption process can be described as follows:
 \begin{definition}[RSA Cryptosystem]
