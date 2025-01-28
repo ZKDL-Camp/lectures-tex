@@ -117,7 +117,165 @@ Do not be afraid of such complex notation, it is quite simple. Notation $\text{P
 
 Let us see some more examples of how to define the security of certain crypographic objects.
 
-\subsubsection{Discrete Logarithm Assumption (DL)}
+\subsubsection{Message recovery attacks}
+
+Essentially, message recovery attacks are types of attacks that, from given ciphertext, recover the message with significantly better probability than random guessing, which is obviously $1/|\mathcal{M}|$.
+Of course, any reasonable notion of security should rule out such an attack, and indeed, semantic security does.
+
+Although this might seem intuitively obvious, we provide a formal proof to clarify the reasoning. 
+One of the reasons for doing this is to thoroughly demonstrate the concept of a \emph{security reduction}, which is the primary method used to assess the security of systems.
+
+Let us play the following attack game message recovery between adversary $\mathcal{A}$ and challenger $\mathcal{C}h$.
+For a given cipher $\mathcal{E} = (E, D)$, defined over $\mathcal{K}, \mathcal{M}, \mathcal{C}$, and for a given adversary $\mathcal{A}$, the attack game proceeds as follows: 
+
+\begin{itemize}
+    \item The challenger computes $m \xleftarrow{R} \mathcal{M}$, $k \xleftarrow{R} \mathcal{K}$, $c \xleftarrow{R} E(k, m)$ and sends c to the adversary.
+    \item the adversary output a message $\hat{m} \in \mathcal{M}$.
+\end{itemize}
+
+We say that $\mathcal{A}$ wins the game in this case, and we define $\mathcal{A}$'s message recovery advantage with respect to $\mathcal{E}$ as:
+
+\begin{equation*}
+    \text{MRadv}[\mathcal{E}, \mathcal{A}] := \Bigg|\text{Pr}[\hat{m} = m] - \frac{1}{|\mathcal{M}|}\Bigg|.
+\end{equation*}
+
+\begin{definition} [Security against message recovery]
+    A cipher $\mathcal{E}$ is secure against message recovery if for all efficient adversaries $\mathcal{A}$, the value MRadv[$\mathcal{E}, \mathcal{A}$] is negligible.
+\end{definition}
+
+\begin{theorem}
+    Let $\mathcal{E} = (E, D)$ be a cipher defined over $(\mathcal{K}, \mathcal{M}, \mathcal{C})$. If $\mathcal{E}$ is semantically secure then $\mathcal{E}$ is secure against message recovery.
+\end{theorem}
+
+$\blacktriangleright$ 
+Let us prove by assuming the opposite statement. 
+In other words, if $\mathcal{E}$ is not secure against message recovery, then $\mathcal{E}$ is not semantically secure.
+
+Assume that $\mathcal{E}$ is not secure against message recovery. 
+We have an efficient adversary $\mathcal{A}$ who has a significant advantage in the 
+message recovery game and an efficient adversary $\mathcal{B}$ who is trying to 
+compromise $\mathcal{E}$.
+The proof idea is to use an efficient adversary $\mathcal{A}$ as a "black box" (or oracle machine). % that wins message recovery game.
+We construct $\mathcal{B}$ as follows:
+\begin{enumerate}
+    \item Adversary $\mathcal{B}$ generates $m_0, m_1 \in \mathcal{M}$ and sends them to the semantic security challenger.
+    \item The semantic security challenger returns ciphertext $c$ to adversary $\mathcal{B}$. Since $\mathcal{B}$ can use 
+    the message recovery oracle, it sends $c$ to $\mathcal{A}$. 
+    \item $\mathcal{A}$ returns $\hat{m}$. If $\hat{m} = m_0$, then $b = 0$ otherwise, $b = 1$.
+    \item Sends $b$ to the semantic security challenger. 
+\end{enumerate}
+
+Intuitively, this implies that $\text{SSadv}[\mathcal{E}, \mathcal{B}]$ is exactly equal 
+to $\text{MRadv}[\mathcal{E}, \mathcal{A}]$. $\blacktriangleleft$
+
+This means that if an adversary is capable of successfully winning the 
+message recovery game, then they can also effectively win the semantic security game.
+In essence, security against message recovery is a stronger property than
+semantic security. 
+
+Our motivation for demonstrating proof is to illustrate in detail the notion of a security
+reduction, which is the main technique used to reason about the security of systems.
+
+Security reduction is typically applied to certain computational problems. To be more precise, 
+we will now explain how security reduction operates in general.
+\begin{definition} [Security Reduction]
+    \hfill
+    \begin{enumerate}
+        \item Let $\mathcal{A}$ be an efficient adversary who is trying to
+        compromise the cryptosystem $\mathcal{E}$.
+        \item We construct an efficient algorithm $\mathcal{A}'$, which we call the
+        \textbf{reduction}, that will solve the computationally hard problem
+        $\mathcal{X}$ while using an oracle access to $\mathcal{A}$. For any
+        input $x$ of the problem $\mathcal{X}$, the algorithm $\mathcal{A}'$
+        generates the input of the cryptosystem $\mathcal{E}$ for $\mathcal{A}$.
+        Once it wins the corresponding experiment, $\mathcal{A}'$ solves
+        $\mathcal{X}$ for input $x$ with a certain non-negligible probability
+        $\mu(n)$. Typically, such probability turns out to be bounded below by
+        $1/n^c, c \in \mathbb{N}$.
+        \item Thus, the algorithm $\mathcal{A}'$ solves $\mathcal{X}$ with the
+        non-negligible probability $\varepsilon(n)\mu(n)$ (or typically
+        $\varepsilon(n)/n^c$). This quantity is non-negligible 
+        if $\varepsilon(n)$ is assumed to be non-negligible.
+        \item Since the problem $\mathcal{X}$ is computationally hard, we get a
+        contradiction. It follows that no attacker $\mathcal{A}$ can effectively
+        crack $\mathcal{E}$, i.e., this cryptosystem is computationally strong.
+    \end{enumerate}
+\end{definition}
+
+% TODO: Make use of this in the future
+% \subsubsection{Case study: RSA}
+
+% In this section we will demonstrate one of the oldest widely used secure data transmission public-key cryptosystem, RSA.
+% Our main goal is to describe the cryptosystem, proof of correctness, and talk about security considerations. 
+
+% The RSA encryption and decryption process can be described as follows:
+% \begin{definition}[RSA Cryptosystem]
+%     \hfill
+%     \begin{enumerate}
+%         \item \textit{Setup}: Generates two prime numbers $p, q \xleftarrow{R} Prime$ and computes $n \gets pq$.
+%         An integer $e$ is selected such that $\gcd(e, \varphi(n)) = 1$, where $\varphi()$ is Euler's totient function.
+%         Then compute such $d \equiv e^{-1} \pmod{\varphi(n)}$.
+%         Returns ($e, n$) as a public key and ($d, n$) as a private key.
+%         \item \textit{Encryption:} Given a plaintext message $M$, $0 \leq M \leq n-1$, ciphertext $C$, $0 \leq C \leq n-1$ is computed as follows:
+%             $$
+%             C = M^e \pmod{n}
+%             $$
+%             where $e$ is the public exponent and $n$ is the modulus (part of the public key).
+        
+%         \item \textit{Decryption:} Given a ciphertext $C$, $0 \leq C \leq n-1$, the corresponding plaintext message $M$, $0 \leq M \leq n-1$ is computed as follows:
+%             $$
+%             M = C^d \pmod{n}
+%             $$
+%             where $d$ is the private exponent and $n$ is the modulus (part of the private key).
+%     \end{enumerate}
+% \end{definition}
+
+% \begin{remark}
+%     (\textbf{Caution}): the description above is a so-called “textbook RSA" and you should 
+%     never use this implementation in practice.
+% \end{remark}
+
+% % \begin{remark}
+%     % In real world usually $e = 2^{16} + 1$.
+% % \end{remark}
+
+% \begin{theorem} [Correctness of RSA]
+%     For all integers $M$, $0 \leq M \leq n-1$, it holds $M^{ed} \equiv M \pmod{n}$.
+% \end{theorem}
+% \textbf{Proof.}
+% $\blacktriangleright$ 
+% It suffices to show that the two following congruences hold.
+% $$
+%     M^{ed} \equiv M \pmod{p} \text{ and } M^{ed} \equiv M \pmod{q}
+% $$
+% As we know, $p$ and $q$ are coprimes, and the above congruences imply 
+% $M^{ed} \equiv M \pmod{n}$ by the Chinese Remainder Theorem \ref{th:chinese_remainder_theorem}.
+
+% First we need to prove that $M^{ed} \equiv M \pmod{p}$.
+% We know that $M^{p-1} \equiv 1 \pmod{p}$ by \Cref{th:fermat_little_theorem}, 
+% and $ed = 1 \pmod{\varphi(n)}$, then $ed = k(p - 1)(q - 1) + 1$ for some integer $k$.
+% Hence, 
+% $$
+%     M^{ed} \equiv M^{k(p - 1)(q - 1) + 1} \equiv M(M^{p - 1})^{k(q - 1)} \equiv M \cdot 1^{k(q - 1)} \equiv M \pmod{p}.
+% $$
+% By symmetry, replacing $p$ by $q$ in the previous arguments, we also have $M^{ed} \equiv M \pmod{q}$.
+% $\blacktriangleleft$ 
+
+% \textbf{Security consideration.} 
+% Intuitively, it may seem that RSA security relies on the difficulty of the factorization 
+% and discrete logarithm problems. However, while there is a proven reduction for the 
+% discrete logarithm assumption, no such proof exists for the factorization problem. 
+
+% There are also practical considerations like key length, generating strong pseudo-random prime 
+% numbers, padding, and other implementation details. Additionally, there are security 
+% measures aimed at preventing side-channel attacks, among other things.
+% If you ever need to implement RSA, you should look for RSA NIST or other standard 
+% specifications—or, even better, use an already implemented library.
+
+% In summary, the security of cryptosystems depends on a blend of both theoretical 
+% principles and practical considerations.
+
+\subsubsection{Discrete Logarithm Assumption}
 
 Now, let us define the fundamental assumption used in cryptography formally: the \textbf{Discrete Logarithm Assumption} (DL).
 
@@ -138,7 +296,7 @@ Now, let us define the fundamental assumption used in cryptography formally: the
 
 Informally, this assumption means that given $u$, it is very hard to find $\alpha$ such that $u = g^{\alpha}$. But now we can write down this formally!
 
-\subsubsection{Computational Diffie-Hellman (CDH)}
+\subsubsection{Computational Diffie-Hellman}
 
 Another fundamental problem in cryptography is the \textbf{Computational Diffie-Hellman} (CDH) problem. It states that given $g^{\alpha},g^{\beta}$ it is hard to find $g^{\alpha\beta}$. This property is frequently used in the construction of cryptographic protocols such as the Diffie-Hellman key exchange.
 
@@ -159,7 +317,7 @@ Let us define this problem formally.
     The \textbf{Computational Diffie-Hellman Assumption} holds in the group $\mathbb{G}$ if for any efficient adversary $\mathcal{A}$ the advantage $\text{CDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$ is negligible.
 \end{definition}
 
-\subsubsection{Decisional Diffie-Hellman (DDH)}
+\subsubsection{Decisional Diffie-Hellman}
 
 Now, we loosen the requirements a bit. The \textbf{Decisional Diffie-Hellman} (DDH) problem states that given $g^{\alpha},g^{\beta},g^{\alpha\beta}$ it is ``hard'' to distinguish $g^{\alpha\beta}$ from a random element in $\mathbb{G}$. Formally, we define this problem as follows.
 
@@ -681,7 +839,7 @@ This means that we can cancel out the same left and right parts respectively, bu
     In particular, the example above shows why the division operation is fundamentally different from the regular real/rational numbers. We will see that, in fact, the arithmetic modulo $n$ is not always what mathematicians call a \textbf{field}. You will see more details in \Cref{section:field_extensions}.
 \end{remark}
 
-\begin{lemma}
+\begin{lemma} \label{lemma:congruence_scale}
     Modulo congruence can be scaled in both directions:
     
     \begin{enumerate}
@@ -769,8 +927,8 @@ Based on Extended Euclidean \Cref{alg:extended_euclidean} and \Cref{th:inverse_e
 The $\mathbb{Z}_{n}^{\times}$ is a fundamental object in number theory and 
 plays a crucial role in cryptography, forming the basis almost for every cryptographic primitive.
 
-\begin{definition}
-    \textbf{Euler's Totient Functiom} $\varphi(n)$ is the cardinality of the multiplication 
+\begin{definition} \label{def:euler_totient_function}
+    \textbf{Euler's Totient Function} $\varphi(n)$ is the cardinality of the multiplication 
     group of integers $\mathbb{Z}_n^{\times}$. In other words, $\varphi(n) = |\mathbb{Z}_n^{\times}|$.
 \end{definition}
 
@@ -804,6 +962,91 @@ plays a crucial role in cryptography, forming the basis almost for every cryptog
         \item $\varphi(729) = \varphi(3^6) = 3^6 - 3^5 = 486$
     \end{itemize}
 \end{example}
+
+\subsubsection{Chinese Remainder Theorem}
+
+\begin{theorem} [Chinese Remainder Theorem] \label{th:chinese_remainder_theorem}
+    Suppose there is the following system
+    \begin{equation*}    
+        \begin{cases}
+            x \equiv x_1 \pmod{n_1} \\
+            x \equiv x_2 \pmod{n_2} \\
+            x \equiv x_3 \pmod{n_3} \\
+            \cdots \\
+            x \equiv x_k \pmod{n_t} \\
+        \end{cases}
+    \end{equation*}
+    where the $n_i$ are pairwise coprime and $x_1, x_2, \cdots x_t$ are fixed numbers. 
+    Then there is unique solution in modulo $N = n_1n_2 \cdots n_t$.
+\end{theorem}
+
+In fact, we can easily find such solution. Let $N_i = N/n_i$ since $n_i$ are pairwise coprime one, 
+for all $i$ has $\gcd(N_i, n_i) = 1$, and by the Extended Euclidean Algorithm, there exists an integer
+$a_i$ such that $a_iN_i \equiv 1 \pmod{n_i}$. Thus, the solution is given by 
+\begin{equation*}
+    x = a_1N_1x_1 + a_2N_2x_2 + \cdots + a_tN_tx_t .
+\end{equation*}
+This expression provides the unique solution modulo \( N \), where \( N = n_1 n_2 \cdots n_t \). 
+Beside, using this idea, we can write an efficient algorithm to compute \( x \) iteratively.
+
+\subsubsection{Euler's Theorem}
+% Now we introduce a fundamental result in Number Theory.
+
+\begin{theorem} [Euler's]
+    For all $n \in \mathbb{N}$ and $a \in \mathbb{Z}_n^{\times}$ 
+    holds $a^{\varphi{n}} \equiv 1 \pmod{n}$.
+\end{theorem}
+
+$\blacktriangleright$ To prove this fact, we prove the following auxiliary lemma.
+
+\begin{lemma}
+    Suppose $a \in \mathbb{Z}_n^{\times}$. Denote by $a\mathbb{Z}_n^{\times} =
+    \{ax: x \in \mathbb{Z}_n^{\times}\}$. Then, $\mathbb{Z}_n^{\times} =
+    a\mathbb{Z}_n^{\times}$. In other words, elementwise multiplication by $a$
+    permutes the elements of $\mathbb{Z}_n^{\times}$.
+\end{lemma}
+
+\textbf{Proof.} Our statement is equivalent to claiming that the 
+function $f: \mathbb{Z}_n^{\times} \to a\mathbb{Z}_n^{\times}$ defined 
+as $f(x) = ax \pmod{n}$ is a \textbf{bijection}. To show this, we need to prove the following 
+three staments:
+\begin{enumerate}
+    \item \textbf{Correctness} is obvious since $ax$ is in $a\mathbb{Z}_n^{\times}$ if $x$ is in $\mathbb{Z}_n^{\times}$.
+    \item \textbf{Injectivity}: we need to prove that if $f(x_1)=f(x_2)$ for two $x_1 \neq x_2 \in \mathbb{Z}_n^{\times}$, then 
+    $x_1=x_2$. From the function definition, we have $ax_1=ax_2 \pmod{n}$. Following the \Cref{lemma:congruence_scale}, 
+    we can cancel $a$ modulo $n$ as $a$ is coprime to $n$. Thus, $x_1=x_2$.
+    \item \textbf{Surjectivity}: We need to prove that every element $y \in a\mathbb{Z}_n^{\times}$ has at least 
+    one pre-image $f^{-1}(y)$. Indeed, in this case we have $ax \equiv y \pmod{n}$. Then, set $x := a^{-1}y \pmod {n}$. This 
+    expression is well-defined as $a$ is coprime to $n$ and has an inverse.
+\end{enumerate}
+
+Therefore, $f$ is bijective and thus $\mathbb{Z}_n^{\times} = a\mathbb{Z}_n^{\times}$.
+
+\vspace{10px}
+
+So we know $a\mathbb{Z}_n^{\times} = \mathbb{Z}_n^{\times}$, how do we proceed? Notice that 
+from the set equality follows the equality of the products of all elements. Let us write this down:
+\begin{equation*}
+    \prod_{i = 1}^{\varphi(n)} x_i \equiv \prod_{i = 1}^{\varphi(n)} a x_i \pmod{n} \implies \prod_{i = 1}^{\varphi(n)} x_i \equiv a^{\varphi(n)} \prod_{i = 1}^{\varphi(n)} x_i \pmod{n}
+\end{equation*}    
+    
+Since all $x_i$ are coprime to $n$ by definition, we can cancel out the product
+of all $x_i$ from both sides, leading to the conclusion of Euler's theorem.
+$\blacktriangleleft$
+
+\begin{corollary} \label{cor:fermat_little_theorem}
+    If $p$ is a prime and $a$ is not divisible by $p$, then $a^{p - 1} \equiv 1 \pmod{p}$.
+\end{corollary}
+% Sometimes this result denote as Fermat's little theorem, but in order not to lose generality,
+% we describe the theorem more generally.
+This result is commonly known as Fermat's Little Theorem. However, to maintain generality, 
+we state the theorem in a more general form below.
+
+\begin{theorem} [Fermat's Little Theorem.] \label{th:fermat_little_theorem}
+    Let $p$ is prime number. For any integer $a$, the following holds $a^{p} \equiv a \pmod{p}$.
+\end{theorem}
+
+Note that Euler's theorem is a generalization of Fermat's Little Theorem.
 
 \subsubsection{Schwartz-Zippel Lemma}
 
