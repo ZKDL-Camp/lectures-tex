@@ -4,7 +4,13 @@
 
 \subsection{Linear Algebra Basics}
 
-Although linear algebra is out of the main scope of this course, familiarity with its basic definitions and concepts is still essential. In this section, we provide a brief review of the key principles that are used throughout the course. You can skip this section without any doubts if you are already familiare with that, and come back to it whenever you need to refresh your memory.
+Although linear algebra is out of the main scope of this course, familiarity
+with its basic definitions and concepts is still essential (especially when
+considering Linear PCPs further from \Cref{section:r1cs}). In this section, we
+provide a brief review of the key principles that are used throughout the
+course. You can skip this section without any doubts if you are already
+familiare with that, and come back to it whenever you need to refresh your
+memory.
 
 \subsubsection{Vector Space}
 
@@ -37,13 +43,21 @@ the vector space might be simply $\mathbb{F}^n$: the set of all $n$-tuples $(x_1
     \begin{equation*}
         \begin{aligned}
             &V_1 = \{(x_1,x_2,\dots,x_n) \in \mathbb{F}^n: x_1 = 0\} \\
-            &V_2 = \{(x_1,x_2,\dots,x_n) \in \mathbb{F}^n: x_3 = 2\} \\
-            &V_3 = \{(x_1,x_2,\dots,x_n) \in \mathbb{F}^n: x_1+x_2+\dots+x_n = 1\}
+            &V_2 = \{(x_1,x_2,\dots,x_n) \in \mathbb{F}^n: x_1-x_3 = 0\} \\
+            &V_3 = \{(x_1,x_2,\dots,x_n) \in \mathbb{F}^n: x_1+x_2+\dots+x_n = 0\}
         \end{aligned}
     \end{equation*}
+
+    \textbf{Reasoning.} Let us see why, for example, $V_3$ is a valid vector space. Since all operations 
+    are inherited from $\mathbb{F}^n$, we only need to check that $V_3$ is closed under addition and scalar multiplication.
+    Suppose $\mathbf{v}_1=(x_1,\dots,x_n),\mathbf{v}_2=(y_1,\dots,y_n) \in V_3$. Then:
+    \begin{equation*}
+        \mathbf{v}_1 + \mathbf{v_2} = (x_1+x_2,\dots,x_n+y_n)
+    \end{equation*}
+    Note that $\sum_{i=1}^n x_i+y_i = \left(\sum_{i=1}^n x_i\right) + \left(\sum_{i=1}^ny_i\right) = 0 + 0 = 0$, so the sum is indeed closed.
 \end{example}
 
-We'll also need to define one very important notion: the linear dependence, independence of vectors.
+We will also need to define one very important notion: the linear dependence and independence of vectors.
 
 \begin{definition}
     A set of vectors $\{\mathbf{v}_1, \mathbf{v}_2, \dots, \mathbf{v}_k\}$ in a vector space $V$ over a field $\mathbb{F}$ is said to be \textbf{linearly independent} if the only scalars $\lambda_1, \lambda_2, \dots, \lambda_k \in \mathbb{F}$ that satisfy the equation
@@ -71,7 +85,13 @@ We'll also need to define one very important notion: the linear dependence, inde
 
 \subsubsection{Matrix}
 
-Besides vectors, frequently we are working with \textbf{matrices}. The matrix is a rectangular array of numbers, symbols, or expressions, arranged in rows and columns. For example, the matrix $A$ with $m$ rows and $n$ columns, consisting of elements from the finite field $\mathbb{F}$ is denoted as $A \in \mathbb{F}^{m \times n}$. Additionally, we use notation $A = \{a_{i,j}\}_{i,j=1}^{m \times n}$ to denote the square matrix $A$ of size $m \times n$ with elements $a_{i,j}$. Now, let us define operations on matrices.
+Besides vectors, frequently we are working with \textbf{matrices}. In the most
+basic sense, the matrix is a rectangular array of numbers, symbols, or
+expressions, arranged in rows and columns. For example, the matrix $A$ with $m$
+rows and $n$ columns, consisting of elements from the finite field $\mathbb{F}$
+is denoted as $A \in \mathbb{F}^{m \times n}$. Additionally, we use notation $A
+= \{a_{i,j}\}_{i,j=1}^{m \times n}$ to denote the square matrix $A$ of size $m
+\times n$ with elements $a_{i,j}$. Now, let us define operations on matrices.
 
 \begin{definition}
     Let $A,B$ be two matrices over the field $\mathbb{F}$. The following operations are defined:
@@ -128,23 +148,26 @@ Sometimes we may derive some rows or columns of the matrix from the others. Ther
 \end{remark}
 
 \begin{example}
-    Consider the matrix $A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$. To determine the rank of $A$, we can perform some rows (or columns) permutations to show that the rows (or columns) are linearly independent vectors. For example, we can perform the following operations:
+    Consider the matrix $A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$. To
+    determine the rank of $A$, we can perform certain linear rows (or columns)
+    permutations to show that the rows (or columns) are linearly independent
+    vectors. For example, we can perform the following operations:
     \begin{equation*}
         \begin{bmatrix} 
             1 & 2 \\ 
             3 & 4 
         \end{bmatrix} 
-        \xrightarrow{\text{R2} \leftarrow \text{R2} - 3\text{R1}} 
+        \xrightarrow{R_2 \gets R_2 - 3R_1} 
         \begin{bmatrix} 
             1 & 2 \\ 
             0 & -2 
         \end{bmatrix} 
-        \xrightarrow{\text{R2} \leftarrow -\frac{1}{2}\text{R2}} 
+        \xrightarrow{R_2 \gets - \frac{1}{2}R_2} 
         \begin{bmatrix} 
             1 & 2 \\ 
             0 & 1 
         \end{bmatrix} 
-        \xrightarrow{\text{R1} \leftarrow \text{R1} - 2\text{R2}} 
+        \xrightarrow{R_1 \gets R_1 - 2R_2} 
         \begin{bmatrix}
             1 & 0 \\
             0 & 1 
@@ -160,7 +183,7 @@ Sometimes we may derive some rows or columns of the matrix from the others. Ther
             1 & 2 \\ 
             2 & 4 
         \end{bmatrix} 
-        \xrightarrow{\text{R2} \leftarrow \text{R2} - 2\text{R1}} 
+        \xrightarrow{R_2 \gets R_2 - 2R_1} 
         \begin{bmatrix} 
             1 & 2 \\ 
             0 & 0 
