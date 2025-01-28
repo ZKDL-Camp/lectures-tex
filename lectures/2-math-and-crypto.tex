@@ -202,77 +202,78 @@ we will now explain how security reduction operates in general.
     \end{enumerate}
 \end{definition}
 
-\subsubsection{Case study: RSA}
+% TODO: Make use of this in the future
+% \subsubsection{Case study: RSA}
 
-In this section we will demonstrate one of the oldest widely used secure data transmission public-key cryptosystem, RSA.
-Our main goal is to describe the cryptosystem, proof of correctness, and talk about security considerations. 
+% In this section we will demonstrate one of the oldest widely used secure data transmission public-key cryptosystem, RSA.
+% Our main goal is to describe the cryptosystem, proof of correctness, and talk about security considerations. 
 
-The RSA encryption and decryption process can be described as follows:
-\begin{definition}[RSA Cryptosystem]
-    \hfill
-    \begin{enumerate}
-        \item \textit{Setup}: Generates two prime numbers $p, q \xleftarrow{R} Prime$ and computes $n \gets pq$.
-        An integer $e$ is selected such that $\gcd(e, \varphi(n)) = 1$, where $\varphi()$ is Euler's totient function.
-        Then compute such $d \equiv e^{-1} \pmod{\varphi(n)}$.
-        Returns ($e, n$) as a public key and ($d, n$) as a private key.
-        \item \textit{Encryption:} Given a plaintext message $M$, $0 \leq M \leq n-1$, ciphertext $C$, $0 \leq C \leq n-1$ is computed as follows:
-            $$
-            C = M^e \pmod{n}
-            $$
-            where $e$ is the public exponent and $n$ is the modulus (part of the public key).
+% The RSA encryption and decryption process can be described as follows:
+% \begin{definition}[RSA Cryptosystem]
+%     \hfill
+%     \begin{enumerate}
+%         \item \textit{Setup}: Generates two prime numbers $p, q \xleftarrow{R} Prime$ and computes $n \gets pq$.
+%         An integer $e$ is selected such that $\gcd(e, \varphi(n)) = 1$, where $\varphi()$ is Euler's totient function.
+%         Then compute such $d \equiv e^{-1} \pmod{\varphi(n)}$.
+%         Returns ($e, n$) as a public key and ($d, n$) as a private key.
+%         \item \textit{Encryption:} Given a plaintext message $M$, $0 \leq M \leq n-1$, ciphertext $C$, $0 \leq C \leq n-1$ is computed as follows:
+%             $$
+%             C = M^e \pmod{n}
+%             $$
+%             where $e$ is the public exponent and $n$ is the modulus (part of the public key).
         
-        \item \textit{Decryption:} Given a ciphertext $C$, $0 \leq C \leq n-1$, the corresponding plaintext message $M$, $0 \leq M \leq n-1$ is computed as follows:
-            $$
-            M = C^d \pmod{n}
-            $$
-            where $d$ is the private exponent and $n$ is the modulus (part of the private key).
-    \end{enumerate}
-\end{definition}
-
-\begin{remark}
-    (\textbf{Caution}): the description above is a so-called “textbook RSA" and you should 
-    never use this implementation in practice.
-\end{remark}
+%         \item \textit{Decryption:} Given a ciphertext $C$, $0 \leq C \leq n-1$, the corresponding plaintext message $M$, $0 \leq M \leq n-1$ is computed as follows:
+%             $$
+%             M = C^d \pmod{n}
+%             $$
+%             where $d$ is the private exponent and $n$ is the modulus (part of the private key).
+%     \end{enumerate}
+% \end{definition}
 
 % \begin{remark}
-    % In real world usually $e = 2^{16} + 1$.
+%     (\textbf{Caution}): the description above is a so-called “textbook RSA" and you should 
+%     never use this implementation in practice.
 % \end{remark}
 
-\begin{theorem} [Correctness of RSA]
-    For all integers $M$, $0 \leq M \leq n-1$, it holds $M^{ed} \equiv M \pmod{n}$.
-\end{theorem}
-\textbf{Proof.}
-$\blacktriangleright$ 
-It suffices to show that the two following congruences hold.
-$$
-    M^{ed} \equiv M \pmod{p} \text{ and } M^{ed} \equiv M \pmod{q}
-$$
-As we know, $p$ and $q$ are coprimes, and the above congruences imply 
-$M^{ed} \equiv M \pmod{n}$ by the Chinese Remainder Theorem \ref{th:chinese_remainder_theorem}.
+% % \begin{remark}
+%     % In real world usually $e = 2^{16} + 1$.
+% % \end{remark}
 
-First we need to prove that $M^{ed} \equiv M \pmod{p}$.
-We know that $M^{p-1} \equiv 1 \pmod{p}$ by \Cref{th:fermat_little_theorem}, 
-and $ed = 1 \pmod{\varphi(n)}$, then $ed = k(p - 1)(q - 1) + 1$ for some integer $k$.
-Hence, 
-$$
-    M^{ed} \equiv M^{k(p - 1)(q - 1) + 1} \equiv M(M^{p - 1})^{k(q - 1)} \equiv M \cdot 1^{k(q - 1)} \equiv M \pmod{p}.
-$$
-By symmetry, replacing $p$ by $q$ in the previous arguments, we also have $M^{ed} \equiv M \pmod{q}$.
-$\blacktriangleleft$ 
+% \begin{theorem} [Correctness of RSA]
+%     For all integers $M$, $0 \leq M \leq n-1$, it holds $M^{ed} \equiv M \pmod{n}$.
+% \end{theorem}
+% \textbf{Proof.}
+% $\blacktriangleright$ 
+% It suffices to show that the two following congruences hold.
+% $$
+%     M^{ed} \equiv M \pmod{p} \text{ and } M^{ed} \equiv M \pmod{q}
+% $$
+% As we know, $p$ and $q$ are coprimes, and the above congruences imply 
+% $M^{ed} \equiv M \pmod{n}$ by the Chinese Remainder Theorem \ref{th:chinese_remainder_theorem}.
 
-\textbf{Security consideration.} 
-Intuitively, it may seem that RSA security relies on the difficulty of the factorization 
-and discrete logarithm problems. However, while there is a proven reduction for the 
-discrete logarithm assumption, no such proof exists for the factorization problem. 
+% First we need to prove that $M^{ed} \equiv M \pmod{p}$.
+% We know that $M^{p-1} \equiv 1 \pmod{p}$ by \Cref{th:fermat_little_theorem}, 
+% and $ed = 1 \pmod{\varphi(n)}$, then $ed = k(p - 1)(q - 1) + 1$ for some integer $k$.
+% Hence, 
+% $$
+%     M^{ed} \equiv M^{k(p - 1)(q - 1) + 1} \equiv M(M^{p - 1})^{k(q - 1)} \equiv M \cdot 1^{k(q - 1)} \equiv M \pmod{p}.
+% $$
+% By symmetry, replacing $p$ by $q$ in the previous arguments, we also have $M^{ed} \equiv M \pmod{q}$.
+% $\blacktriangleleft$ 
 
-There are also practical considerations like key length, generating strong pseudo-random prime 
-numbers, padding, and other implementation details. Additionally, there are security 
-measures aimed at preventing side-channel attacks, among other things.
-If you ever need to implement RSA, you should look for RSA NIST or other standard 
-specifications—or, even better, use an already implemented library.
+% \textbf{Security consideration.} 
+% Intuitively, it may seem that RSA security relies on the difficulty of the factorization 
+% and discrete logarithm problems. However, while there is a proven reduction for the 
+% discrete logarithm assumption, no such proof exists for the factorization problem. 
 
-In summary, the security of cryptosystems depends on a blend of both theoretical 
-principles and practical considerations.
+% There are also practical considerations like key length, generating strong pseudo-random prime 
+% numbers, padding, and other implementation details. Additionally, there are security 
+% measures aimed at preventing side-channel attacks, among other things.
+% If you ever need to implement RSA, you should look for RSA NIST or other standard 
+% specifications—or, even better, use an already implemented library.
+
+% In summary, the security of cryptosystems depends on a blend of both theoretical 
+% principles and practical considerations.
 
 \subsubsection{Discrete Logarithm Assumption}
 
