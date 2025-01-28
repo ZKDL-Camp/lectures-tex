@@ -159,8 +159,8 @@ The proof idea is to use an efficient adversary $\mathcal{A}$ as a "black box" (
 We construct $\mathcal{B}$ as follows:
 \begin{enumerate}
     \item Adversary $\mathcal{B}$ generates $m_0, m_1 \in \mathcal{M}$ and sends them to the semantic security challenger.
-    \item The semantic security challenger returns ciphertext $c$ to adversary $\mathcal{B}$ 
-    and then redirects to $\mathcal{A}$.
+    \item The semantic security challenger returns ciphertext $c$ to adversary $\mathcal{B}$. Since $\mathcal{B}$ can use 
+    the message recovery oracle, it sends $c$ to $\mathcal{A}$. 
     \item $\mathcal{A}$ returns $\hat{m}$. If $\hat{m} = m_0$, then $b = 0$ otherwise, $b = 1$.
     \item Sends $b$ to the semantic security challenger. 
 \end{enumerate}
@@ -181,12 +181,24 @@ we will now explain how security reduction operates in general.
 \begin{definition} [Security Reduction]
     \hfill
     \begin{enumerate}
-        \item Let $\mathcal{A}$ be an efficient adversary who is trying to compromise the cryptosystem $\mathcal{E}$.
-        \item Construct efficient algorithm $\mathcal{A}'$, which we call the reduction that will solve computational hard problem $\mathcal{X}$ while using oracle access to $\mathcal{A}$. 
-        For any input $x$ of the problem $\mathcal{X}$, the algorithm $\mathcal{A}'$ generates the input of the cryptosystem $\mathcal{E}$ for $\mathcal{A}$.
-        Once it wins the corresponding experiment, $\mathcal{A}'$ solves $\mathcal{X}$ for input $x$ with certain probability. Typically, such probability turns out to be bounded above by $1/n^c, c \in \mathbb{N}$.
-        \item Thus, the algorithm $\mathcal{A}'$ solves $\mathcal{X}$ with the negligible probability $\varepsilon(n)/n^c$ if $\varepsilon(n)$ is negligible.
-        \item Since the problem $\mathcal{X}$ is computationally hard, we get a contradiction. It follows that no attacker $\mathcal{A}$ can effectively crack $\mathcal{E}$, i.e., this cryptosystem is computationally strong.
+        \item Let $\mathcal{A}$ be an efficient adversary who is trying to
+        compromise the cryptosystem $\mathcal{E}$.
+        \item We construct an efficient algorithm $\mathcal{A}'$, which we call the
+        \textbf{reduction}, that will solve the computationally hard problem
+        $\mathcal{X}$ while using an oracle access to $\mathcal{A}$. For any
+        input $x$ of the problem $\mathcal{X}$, the algorithm $\mathcal{A}'$
+        generates the input of the cryptosystem $\mathcal{E}$ for $\mathcal{A}$.
+        Once it wins the corresponding experiment, $\mathcal{A}'$ solves
+        $\mathcal{X}$ for input $x$ with a certain non-negligible probability
+        $\mu(n)$. Typically, such probability turns out to be bounded below by
+        $1/n^c, c \in \mathbb{N}$.
+        \item Thus, the algorithm $\mathcal{A}'$ solves $\mathcal{X}$ with the
+        non-negligible probability $\varepsilon(n)\mu(n)$ (or typically
+        $\varepsilon(n)/n^c$). This quantity is non-negligible 
+        if $\varepsilon(n)$ is assumed to be non-negligible.
+        \item Since the problem $\mathcal{X}$ is computationally hard, we get a
+        contradiction. It follows that no attacker $\mathcal{A}$ can effectively
+        crack $\mathcal{E}$, i.e., this cryptosystem is computationally strong.
     \end{enumerate}
 \end{definition}
 
@@ -983,33 +995,42 @@ Beside, using this idea, we can write an efficient algorithm to compute \( x \) 
     For all $n \in \mathbb{N}$ and $a \in \mathbb{Z}_n^{\times}$ 
     holds $a^{\varphi{n}} \equiv 1 \pmod{n}$.
 \end{theorem}
-\textbf{Proof.} 
-$\blacktriangleright$
-    Let $Z_n^{\times} = \{ x_1, x_2, \cdots , x_{\varphi(n)} \}$, from \Cref{def:euler_totient_function}. 
-    Let $a$ be any integer that is coprime to $n$. 
-    Proof based on the fact that multiplication by $a$ permutes the $x_i$. Thus, the product of two coprimes
-    to $n$ is also coprime to $n$, and if $x \neq y$, then the product is also different.
-    If $ax \equiv ay \pmod{n} \; \text{, } \; \gcd(a, n) = 1 \text{, then } x \equiv y \pmod{n}$.
 
-    That is the $aZ_n^{\times} = \{ ax_1, ax_2, \cdots, ax_{\varphi(n)}\}$ considered to be identical 
-    (they may be listed in different orders), $Z_n^{\times} = aZ_n^{\times}$. So the product of all the
-    elements in $Z_n^{\times}$ is congruent $\pmod{n}$ to the product of all the elements
-    in $aZ_n^{\times}$. In other words, 
-    % \begin{equation*}
-    %     \prod_{i = 1}^{\varphi(n)} x_i \equiv \prod_{i = 1}^{\varphi(n)} ax_i \pmod{n} \implies 
-    %     \prod_{i = 1}^{\varphi(n)} x_i \equiv a^{\varphi(n)} \prod_{i = 1}^{\varphi(n)} x_i \pmod{n} \implies 
-    %     a^{\varphi(n)} \equiv 1 \pmod{n}
-    % \end{equation*}
-    \begin{equation*}
-        \begin{aligned}
-            \prod_{i = 1}^{\varphi(n)} x_i \equiv \prod_{i = 1}^{\varphi(n)} a x_i \pmod{n} &\implies \\
-            &\implies \prod_{i = 1}^{\varphi(n)} x_i \equiv a^{\varphi(n)} \prod_{i = 1}^{\varphi(n)} x_i \pmod{n} \\
-            &\implies a^{\varphi(n)} \equiv 1 \pmod{n}
-        \end{aligned}
-    \end{equation*}    
+$\blacktriangleright$ To prove this fact, we prove the following auxiliary lemma.
+
+\begin{lemma}
+    Suppose $a \in \mathbb{Z}_n^{\times}$. Denote by $a\mathbb{Z}_n^{\times} =
+    \{ax: x \in \mathbb{Z}_n^{\times}\}$. Then, $\mathbb{Z}_n^{\times} =
+    a\mathbb{Z}_n^{\times}$. In other words, elementwise multiplication by $a$
+    permutes the elements of $\mathbb{Z}_n^{\times}$.
+\end{lemma}
+
+\textbf{Proof.} Our statement is equivalent to claiming that the 
+function $f: \mathbb{Z}_n^{\times} \to a\mathbb{Z}_n^{\times}$ defined 
+as $f(x) = ax \pmod{n}$ is a \textbf{bijection}. To show this, we need to prove the following 
+three staments:
+\begin{enumerate}
+    \item \textbf{Correctness} is obvious since $ax$ is in $a\mathbb{Z}_n^{\times}$ if $x$ is in $\mathbb{Z}_n^{\times}$.
+    \item \textbf{Injectivity}: we need to prove that if $f(x_1)=f(x_2)$ for two $x_1 \neq x_2 \in \mathbb{Z}_n^{\times}$, then 
+    $x_1=x_2$. From the function definition, we have $ax_1=ax_2 \pmod{n}$. Following the \Cref{lemma:congruence_scale}, 
+    we can cancel $a$ modulo $n$ as $a$ is coprime to $n$. Thus, $x_1=x_2$.
+    \item \textbf{Surjectivity}: We need to prove that every element $y \in a\mathbb{Z}_n^{\times}$ has at least 
+    one pre-image $f^{-1}(y)$. Indeed, in this case we have $ax \equiv y \pmod{n}$. Then, set $x := a^{-1}y \pmod {n}$. This 
+    expression is well-defined as $a$ is coprime to $n$ and has an inverse.
+\end{enumerate}
+
+Therefore, $f$ is bijective and thus $\mathbb{Z}_n^{\times} = a\mathbb{Z}_n^{\times}$.
+
+\vspace{10px}
+
+So we know $a\mathbb{Z}_n^{\times} = \mathbb{Z}_n^{\times}$, how do we proceed? Notice that 
+from the set equality follows the equality of the products of all elements. Let us write this down:
+\begin{equation*}
+    \prod_{i = 1}^{\varphi(n)} x_i \equiv \prod_{i = 1}^{\varphi(n)} a x_i \pmod{n} \implies \prod_{i = 1}^{\varphi(n)} x_i \equiv a^{\varphi(n)} \prod_{i = 1}^{\varphi(n)} x_i \pmod{n}
+\end{equation*}    
     
-    all $x_i$ are coprime to $n$ by definition, then we can apply \Cref{lemma:congruence_scale}.
-    This allows us to cancel each $x_i$ modulo $n$, which in turn leads to the conclusion of Euler's theorem.
+Since all $x_i$ are coprime to $n$ by definition, we can cancel out the product
+of all $x_i$ from both sides, leading to the conclusion of Euler's theorem.
 $\blacktriangleleft$
 
 \begin{corollary} \label{cor:fermat_little_theorem}
