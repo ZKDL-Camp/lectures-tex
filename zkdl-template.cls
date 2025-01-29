@@ -31,12 +31,15 @@
 \RequirePackage[
     paperwidth=148mm,
     paperheight=210mm,
-    top=28mm,
+    top=5mm,
     bottom=12mm, 
     left=15mm, 
     right=15mm, 
-    footskip=8mm, 
-    includefoot
+    includehead,
+    headheight=5mm,
+    headsep=2mm,
+    includefoot,
+    footskip=8mm
 ]{geometry}
 % 15 12
 \RequirePackage[most]{tcolorbox}
@@ -89,7 +92,6 @@
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 \lstset{
     numbers=none,
-    numbers=left,  
     aboveskip=3mm,
     belowskip=3mm,
     showstringspaces=false,
