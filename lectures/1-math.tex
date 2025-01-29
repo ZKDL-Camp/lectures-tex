@@ -605,7 +605,6 @@ in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the po
 
 \begin{figure}[H]
     \centering
-    % \scalebox{1.1}{text}
     \includegraphics[width=0.8\textwidth]{images/lecture_1/interpolation.pdf}
     \caption{$5$ points on the plane uniquely define the polynomial of degree $4$.}
     \label{fig:interpolation}
@@ -685,9 +684,7 @@ The intuition behind the Shamir's protocol is illustrated in Figure~\ref{fig:sha
 
 \begin{figure}[H]
     \centering
-    % \scalebox{0.5}{
-        \includegraphics[width=0.8\textwidth]{images/lecture_1/shamir_demo.pdf}
-    % }
+    \includegraphics[width=0.8\textwidth]{images/lecture_1/shamir_demo.pdf}
     \caption{Suppose we have $t=3$. Having only 2 points means knowing two \textcolor{blue}{blue} points without knowing the \textcolor{red}{red} one. There are infinitely many quadratic polynomials passing through these two points (\textcolor{gray}{gray dashed} lines). However, knowing the third \textcolor{red}{red} point allows us to uniquely determine the polynomial and thus get its value at $0$. Note that this is illustrated over $\mathbb{R}$, but for $\mathbb{F}_q$ the logic is similar.}
     \label{fig:shamir}
 \end{figure}

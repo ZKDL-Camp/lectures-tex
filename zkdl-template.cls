@@ -41,7 +41,6 @@
     includefoot,
     footskip=8mm
 ]{geometry}
-% 15 12
 \RequirePackage[most]{tcolorbox}
 \RequirePackage{multicol}
 \RequirePackage{bm}

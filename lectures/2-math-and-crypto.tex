@@ -30,7 +30,7 @@ Now let us play the following game between adversary $\mathcal{A}$ and challenge
 
 \begin{figure}[H]
     \centering
-    \scalebox{0.95}{
+    \scalebox{1}{
     \begin{tikzpicture}
         \node[inner sep=0pt, align=center] (challenger) {\includegraphics[width=0.75cm]{lectures/images/lecture_2/challenger.png}\\Challenger $\mathcal{C}h$};
         \node[inner sep=0pt, align=center, right=5cm of challenger] (adversary) {\includegraphics[width=0.75cm]{lectures/images/lecture_2/demon.png}\\Adversary $\mathcal{A}$};
@@ -487,7 +487,6 @@ Notice that the algorithm can be easily implemented in a single line.
 
 While the greatest common divisor (gcd) focuses on finding the largest shared factor between two numbers, the least common multiple (lcm) deals with finding the smallest multiple that both numbers have in common. The LCM is particularly useful when we need to synchronize cycles or work with fractions.
 
-\newpage
 \begin{definition}[LCM]
     For any $a, b \in \mathbb{Z}$, the \textbf{least common multiple} $\lcm(a,
     b)$ is defined as an integer $m \in \mathbb{N}$ such that:
@@ -966,6 +965,12 @@ plays a crucial role in cryptography, forming the basis almost for every cryptog
 \end{example}
 
 \subsubsection{Chinese Remainder Theorem}
+The Chinese Remainder Theorem is a fundamental result in number theory
+that provides an efficient method for solving congruence systems. It allows to
+decompose a complex problem with large integers into several simpler 
+problems with smaller modules. This decomposition reduces the required computational 
+complexity, especially when working with large numbers, and is widely used 
+in areas such as modular arithmetic, cryptography, and algorithmic number theory. 
 
 \begin{theorem} [Chinese Remainder Theorem] \label{th:chinese_remainder_theorem}
     Suppose there is the following system
@@ -975,7 +980,7 @@ plays a crucial role in cryptography, forming the basis almost for every cryptog
             x \equiv x_2 \pmod{n_2} \\
             x \equiv x_3 \pmod{n_3} \\
             \cdots \\
-            x \equiv x_k \pmod{n_t} \\
+            x \equiv x_t \pmod{n_t} \\
         \end{cases}
     \end{equation*}
     where the $n_i$ are pairwise coprime and $x_1, x_2, \cdots x_t$ are fixed numbers. 
