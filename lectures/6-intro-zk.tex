@@ -106,8 +106,9 @@ That being said, formally the interaction between prover $\mathcal{P}$ and verif
     \item Repeat the process for $\lambda \in \mathbb{N}$ rounds.
 \end{enumerate}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
+    \scalebox{0.9}{
     \begin{tikzpicture}
         \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
         \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
@@ -144,6 +145,7 @@ That being said, formally the interaction between prover $\mathcal{P}$ and verif
         Verify $z^2 \equiv a \times x^{b} \pmod{N}$ \\
         \noindent\rule{3.5cm}{0.8pt}};
     \end{tikzpicture}
+    }
 
     \caption{The interactive protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$ for the quadratic residue test.}
 \end{figure}
@@ -249,7 +251,9 @@ Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended w
 
     The view of the verifier $\mathcal{V}$ is the following: 
     \begin{equation*}
-        \mathsf{view}_{\mathcal{V}}(\mathcal{V}, \mathcal{P})[1286091780] = (672192003, 0, 2606437826, 2619047580, 1, 1768388249)
+        \scalebox{0.8}{
+            $\mathsf{view}_{\mathcal{V}}(\mathcal{V}, \mathcal{P})[1286091780] = (672192003, 0, 2606437826, 2619047580, 1, 1768388249)$
+        }
     \end{equation*}
 
     Essentially, the view that you currently has witnessed is the same as one that $\mathcal{V}$ has seen. After this interaction, you have not learned anything about the witness $w$ that prover $\mathcal{P}$ knows and which we, as of now, has not revealed to you.
@@ -385,6 +389,7 @@ Here how it goes. Suppose we have an interactive protocol $(\mathcal{P}, \mathca
 
 \begin{figure}[H]
     \centering
+    \scalebox{0.58}{
     \begin{tikzpicture}
         % Blue zone
         \node[very thick, draw=blue, fill=blue, fill opacity=0.1,minimum width=7cm, minimum height=7cm,dashed,on background layer](targetbox) at (2.25,-5.0) {};
@@ -416,6 +421,7 @@ Here how it goes. Suppose we have an interactive protocol $(\mathcal{P}, \mathca
         Verify $\pi$ \\
         \noindent\rule{3.5cm}{0.8pt}};
     \end{tikzpicture}
+    }
 
     \caption{The non-interactive protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$ using Fiat-Shamir Transformation. In \textcolor{blue!90!black}{\textbf{blue}} we marked a non-interactive part of the protocol, being the ``communication'' between a prover and a proof stream. In \textcolor{green!50!black}{\textbf{green}} we marked the final proof $\pi$ that is sent to the verifier.}
     \label{fig:fiat-shamir}
@@ -438,6 +444,7 @@ The reason why such transformation works is that the random oracle $\mathcal{O}_
     Suppose that $(\mathcal{P},\mathcal{V})$ is a public-coin interactive argument of knowledge for some language $\mathcal{L}_{\mathcal{R}}$ with a negligible soundness error. Then, the Fiat-Shamir transformation of $(\mathcal{P}^{\mathcal{O}_{\text{R}}},\mathcal{V}^{\mathcal{O}_{\text{R}}})$ is a non-interactive argument for $\mathcal{L}_{\mathcal{R}}$ with negligible soundness error in the random oracle model $\mathcal{O}_{\text{R}}$.
 \end{theorem}
 
+\newpage
 \subsection{Exercises}
 
 \textbf{Exercise 1.} When dealing with RSA protocol, one frequently encounters the following relation where $e$ is a prime number and $n \in \mathbb{N}$:
@@ -508,6 +515,7 @@ Suppose we use the protocol $(\mathcal{P}, \mathcal{V}^*)$ where the ``broken'' 
 
 \textbf{Hint:} View of the participant in the protocol consists of all data he has access to during the protocol execution. For example, verifier $\mathcal{V}$'s view consists of the messages he sends and receives, as well as the random coins he generates.
 
+\newpage
 \textbf{Exercise 7.} Which of the following is \textbf{not} true about the Fiat-Shamir heuristic?
 \begin{enumerate}[(A)]
     \item If the public-coin protocol is sound, the Fiat-Shamir transformation preserves the soundness.
