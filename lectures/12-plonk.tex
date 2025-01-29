@@ -5,7 +5,7 @@
 
 \begin{document}
 
-\subsection{Number Theoretical Trasnform: Universal Polynomial Accelerator}
+\subsection{Number Theoretical Trasnform: Universal Polynomial Accelerator}\label{section:ntt}
 
 In the previous sections, when considering Groth16, we have seen the idea that
 polynomials are powerful encoders of data. To encode a set of $N$ values
@@ -681,10 +681,16 @@ The matrix $T$ with columns $\mathbf{A}$, $\mathbf{B}$ and $\mathbf{C} \in \math
 sets of constraints on matrices to just a few equations on polynomials, as we
 have already done for Groth16. Let $\omega$ be a primitive $N$-th root of
 unity\footnote{Suppose such $\omega$ exists, then $\omega^N = 1$ and $\omega^j
-\neq 1$ for $0 \le j < N$.} and let $\Omega = \{\omega^j\}_{0 \le j < N}$.
-Although currently the choice of set $\Omega$ might seem totally random, in the
-next sections we will see how the usage of Fast-Fourier Transform (FFT) will
-make this choice convenient.
+\neq 1$ for $0 \le j < N$.} and let $\Omega = \{\omega^j\}_{0 \leq j < N}$. In
+the \Cref{section:ntt}, we have already discussed the reasoning for choosing
+such a set $\Omega$. In particular, denote by $\{L_j\}_{0 \leq j < N}$ the
+Lagrange basis polynomials\footnote{Recall that by definition the Lagrange basis
+$\{L_j\}_{0 \leq j < N}$ for set $\mathcal{X}=(x_0,\dots,x_{N-1})$ is given by
+$L_j(x_i) = \delta_{ij}$.} for the set $\Omega$, which for the selected domain
+$\Omega$ are given by the following convenient form:
+\begin{equation*}
+    L_j(x) = \frac{\gamma_j(x^N - 1)}{x-\omega^j}, \quad \text{where $\gamma_j$ is some normalizing constant.}
+\end{equation*}
 
 Let $a, b, c, q_L, q_R, q_M, q_O, q_C, \pi \in \mathbb{F}^{(\leq N)}[X]$ be
 polynomials of degree at most $N$ that interpolate corresponding columns from
@@ -701,15 +707,15 @@ equation:
 Notice that this essentially means that the left polynomial $aq_L + bq_R + abq_M
 + cq_O + q_C + \pi$ has roots at $\omega^j$ for all $j \in [N]$. This is
 equivalent to stating that the vanishing polynomial of $\Omega$ divides the left
-hand side. Due to the proposition \Cref{prop:vanishing-polynomial}, this
-vanishing polynomial is $X^N-1$.  Let us wrap this up in the following
-proposition.
+hand side. Due to the \Cref{lemma:vanishing-polynomial}, this vanishing
+polynomial is given by $z_{\Omega}(x) = x^N-1$.  Let us wrap this up in the
+following proposition.
 
 \begin{proposition}
     Now we can reduce down our first condition of \Cref{prop:plonk-conditions}
     to checking valid execution trace into the following claim over polynomials:
-    \[\exists t \in \mathbb{F}^{(\leq 3N)}[X]: \; aq_L + bq_R + abq_M + cq_O + q_C + \pi = z_{\Omega}t,\]
-    where $z_{\Omega}(X)$ is the vanishing polynomial $X^N - 1$.
+    \[\exists t \in \mathbb{F}^{(\leq 3N)}[x]: \; aq_L + bq_R + abq_M + cq_O + q_C + \pi = z_{\Omega}t,\]
+    where $z_{\Omega}(x)$ is the vanishing polynomial $x^N - 1$.
 \end{proposition}
 
 \textcolor{purple}{\textbf{Wiring Satisfability}.} The next step is to shrink the second condition imposed by the $V$ matrix. This
@@ -767,6 +773,8 @@ tedious part of PlonK. We split the following derivation into two parts:
     check whether a given function is a permutation using polynomials in several 
     forms.
 \end{itemize}
+
+Additionally, to avoid confusion, we denote the polynomial variable by capital letters ($X$, $Y$).
 
 \textbf{Set equality.} Having defined permutation, we can now reduce the second
 condition of \Cref{prop:plonk-conditions} of valid execution trace matrix into
@@ -839,12 +847,12 @@ overwhelming probability according to Schwartz-Zippel lemma.
 \textbf{Shorter Form.} Now, using the $3N$-th root of unity is a bit of overkill,
 so let us try compressing it down to $\Omega = \{\omega^j\}_{0 \leq j < N}$
 where $\omega$ is the $N$th root of unity. We will define three polynomials
-$S_{\sigma,1}$, $S_{\sigma,2}$, $S_{\sigma,3} \in \mathbb{F}[X]$, which are
+$S_{\sigma_1}$, $S_{\sigma_2}$, $S_{\sigma_3} \in \mathbb{F}[X]$, which are
 interpolated as follows:
 \begin{align*}
-    S_{\sigma,1}(\omega^i) &= \eta^{3k+\ell}, \quad (i, 0) \in \mathcal{I}, \quad \sigma((i, 0)) = (k, \ell) \\
-    S_{\sigma,2}(\omega^i) &= \eta^{3k+\ell}, \quad (i, 1) \in \mathcal{I}, \quad \sigma((i, 1)) = (k, \ell) \\
-    S_{\sigma,3}(\omega^i) &= \eta^{3k+\ell}, \quad (i, 2) \in \mathcal{I}, \quad \sigma((i, 2)) = (k, \ell)
+    S_{\sigma_1}(\omega^i) &= \eta^{3k+\ell}, \quad (i, 0) \in \mathcal{I}, \quad \sigma((i, 0)) = (k, \ell) \\
+    S_{\sigma_2}(\omega^i) &= \eta^{3k+\ell}, \quad (i, 1) \in \mathcal{I}, \quad \sigma((i, 1)) = (k, \ell) \\
+    S_{\sigma_3}(\omega^i) &= \eta^{3k+\ell}, \quad (i, 2) \in \mathcal{I}, \quad \sigma((i, 2)) = (k, \ell)
 \end{align*}
 
 Let $k_1$ and $k_2$ be two field elements such that $\omega^i \neq \omega^j k_1
@@ -853,14 +861,14 @@ $\beta$ and $\gamma$ are random field elements. Let $f$ and $g$ be the
 polynomials that interpolate, respectively, the following values at $\Omega$:
 \begin{align*}
     f(\omega^i) &=\left(T_{i,0} + \omega^i \beta + \gamma\right)\left(T_{i,1} + \omega^i k_1 \beta + \gamma\right)\left(T_{i,2} + \omega^i k_2 \beta + \gamma\right), \quad i \in [N] \\
-    g(\omega^i) &= \left(T_{i,0} + S_{\sigma,1}(\omega^i) \beta + \gamma\right)\left(T_{i,0} + S_{\sigma,2}(\omega^i) \beta + \gamma\right)\left(T_{i,0} + S_{\sigma,3}(\omega^i) \beta + \gamma\right), \quad i \in [N]
+    g(\omega^i) &= \left(T_{i,0} + S_{\sigma_1}(\omega^i) \beta + \gamma\right)\left(T_{i,0} + S_{\sigma_2}(\omega^i) \beta + \gamma\right)\left(T_{i,0} + S_{\sigma_3}(\omega^i) \beta + \gamma\right), \quad i \in [N]
 \end{align*}
 
 That being said, there is a polynomial $Z \in \mathbb{F}[X]$ such that $\forall
 d \in \mathcal{D}$ we have $Z(\omega^{0}) = 1$ and $Z(d)f(d) = g(d)Z(\omega d)$,
 implying $A = B$ with overwhelming probability. That being said, we now can
 encode our program using 8 polynomials mentioned at the very beginning:
-\[q_L, q_R, q_M, q_O, q_C, S_{\sigma,1}, S_{\sigma,2}, S_{\sigma,3}\]
+\[q_L, q_R, q_M, q_O, q_C, S_{\sigma_1}, S_{\sigma_2}, S_{\sigma_3}\]
 
 These are typically called \textbf{common preprocessed input}.
 
@@ -886,15 +894,15 @@ instance with public input given by $\boldsymbol{\Pi}$ if and only if:
 Then, we encode these conditions in terms of polynomials.
 
 \begin{definition}
-Let $z_{\Omega} = X^N - 1$ be a vanishing polynomial. Let $T \in \mathbb{F}^{N
+Let $z_{\Omega}(x) = x^N - 1$ be a vanishing polynomial. Let $T \in \mathbb{F}^{N
 \times 3}$ be a trace matrix with columns $\mathbf{A}, \mathbf{B}, \mathbf{C}
 \in \mathbb{F}^N$ and $\boldsymbol{\Pi} \in \mathbb{F}^N$ be a vector of public
 signals. They correspond to a valid execution instance with public input given
 by $\boldsymbol{\Pi}$ if and only if:
 
 \begin{enumerate}
-    \item \(\exists t_1 \in \mathbb{F}[X]: aq_L + bq_R + abq_M + cq_O + q_C + \pi = z_{\Omega}t_1\)
-    \item \(\exists t_2, t_3, z \in \mathbb{F}[X]: zf - gz' = z_{\Omega}t_2\) and \((z-1)L_1 = z_{\Omega}t_3\), where $z'(X) = z(X\omega)$.
+    \item \(\exists t_1 \in \mathbb{F}[x]: aq_L + bq_R + abq_M + cq_O + q_C + \pi = z_{\Omega}t_1\)
+    \item \(\exists t_2, t_3, z \in \mathbb{F}[x]: zf - gz' = z_{\Omega}t_2\) and \((z-1)L_1 = z_{\Omega}t_3\), where $z'(x) = z(\omega x)$.
 \end{enumerate}
 \end{definition}
 \begin{remark}
@@ -919,10 +927,10 @@ In this part, we will observe how the Plonk turns its arithmetization system
 into the non-interactive proof. We consider how the prover and verifier specifically interact
 in the protocol.
 
-As in the previous sections, let $N$ be the size of our program (number of
+As in the previous section, let $N$ be the size of our program (number of
 gates). Let $\omega$ be a primitive $N$-th root of unity. Let $\Omega =
-\{\omega^j\}_{0 \leq j < N}$. Define $Z_{\Omega}(X) := X^N - 1$ --- the vanishing 
-polynomial of $\Omega$.
+\{\omega^j\}_{0 \leq j < N}$ with the vanishing polynomial $z_{\Omega}(x) := x^N
+- 1$.
 
 Assume we have conducted arithmetization of this program, obtaining eight
 polynomials. Now we will demonstrate commitment-scheme agnostic non-interactive
@@ -944,198 +952,216 @@ Before diving into the protocol, let us introduce the gadgets that will be used.
 \textcolor{blue!60!black}{\textbf{Commitment Scheme.}} We use the polynomial
 commitment scheme to commit to the polynomials. Similarly to Groth16, one might
 safely think of KZG commitment scheme to commit to the polynomials: for $p(x)
-\in \mathbb{F}^{(\leq N)}[X]$, the commitment is $\mathsf{com}(p) =
+\in \mathbb{F}^{(\leq N)}[x]$, the commitment is $\mathsf{com}(p) =
 g^{p(\tau)}$, which is evaluated using the powers of the generator $g$. The
 opening procedure at point $\zeta \in \mathbb{F}$ of the commitment is simply
-finding the encryption $g^{Q(\tau)}$ of the quotient polynomial $Q(X) :=
-(p(X)-y)/(X-\zeta)$, where $y$ is the value of the polynomial at $\zeta$.
+finding the encryption $g^{Q(\tau)}$ of the quotient polynomial $Q(x) :=
+(p(x)-y)/(x-\zeta)$, where $y$ is the value of the polynomial at $\zeta$.
 Finally, verification simply involves applying pairing. Note that other
 commitment schemes might be used as well.
 
 \textcolor{blue!60!black}{\textbf{Blindings.}} In the protocol, to achieve 
 the HZVK property (honest verifier zero-knowledge), the prover must somehow 
 conceal the polynomials he works with. Specifically, consider the polynomial 
-$b(X)$ that is computed as the interpolated values from the trace table (namely, 
+$b(x)$ that is computed as the interpolated values from the trace table (namely, 
 $b(\omega^j) = T_{j,1}$). However, the prover, by providing the opening $b(\zeta)$,
-should not reveal any information on polynomial $b(X)$ itself. To achieve this, the prover
-extends $b(X) \in \mathbb{F}^{(\leq N)}[X]$ to the higher-degree polynomial $\widetilde{b}(X)$
+should not reveal any information on polynomial $b(x)$ itself. To achieve this, the prover
+extends $b(x) \in \mathbb{F}^{(\leq N)}[x]$ to the higher-degree polynomial $\widetilde{b}(x)$
 with the condition that $\widetilde{b}(\omega^j) = b(\omega^j) = T_{j,1}$. However, for higher 
-degrees, there are multitude of choices for $\widetilde{b}(X)$, so we need to standardize 
+degrees, there are multitude of choices for $\widetilde{b}(x)$, so we need to standardize 
 this choice. 
 
-Assume we extend $b(X)$ to $\widetilde{b}(X) \in \mathbb{F}^{(\leq N')}[X]$ of
+Assume we extend $b(x)$ to $\widetilde{b}(x) \in \mathbb{F}^{(\leq N')}[x]$ of
 higher degree $N'>N$. For convenience, assume $N' = N + \delta$ with $\delta \in
-\mathbb{N}$. How can we construct such $\widetilde{b}(X)$? We can do this by
+\mathbb{N}$. How can we construct such $\widetilde{b}(x)$? We can do this by
 sampling random values $\gamma_0,\gamma_1,\dots,\gamma_{\delta} \xleftarrow{R} \mathbb{F}$ and 
 letting:
 \begin{equation*}
-    \widetilde{b}(X) = b(X) + z_{\Omega}(X)\sum_{j=0}^{\delta}\beta_jX^j
+    \widetilde{b}(x) = b(x) + z_{\Omega}(x)\sum_{j=0}^{\delta}\gamma_jx^j
 \end{equation*}
 
 Why does this work? Let us substitute any $\omega^i \in \Omega$:
 \begin{equation*}
-    \widetilde{b}(\omega^i) = b(\omega^i) + z_{\Omega}(\omega^i)\sum_{j=0}^{\delta}\beta_j\omega^{ij} = b(\omega^i).
+    \widetilde{b}(\omega^i) = b(\omega^i) + z_{\Omega}(\omega^i)\sum_{j=0}^{\delta}\gamma_j\omega^{ij} = b(\omega^i).
 \end{equation*}
 
 Here, we use the fact that $z_{\Omega}(\omega^i) = 0$ for all $i \in [N]$ since $z_{\Omega}$ is, 
 by definition, the vanishing polynomial of $\Omega \ni \omega^i$.
 
 \subsubsection{Proving}
-First, the prover computes execution trace table $T \in \mathbb{F}^{N\times 3}$.
-Then,  Let us 
-finally proceed with the protocol.
+Let us finally proceed with the prover protocol.
 
 \textcolor{green!60!black}{\textbf{Round 1.}} Add to the transcript commitments
 of 8 arithmetizational polynomials:
 \begin{equation*}
-    \mathsf{com}(S_{\sigma,1}), \mathsf{com}(S_{\sigma,2}), \mathsf{com}(S_{\sigma,3}), \mathsf{com}(q_L), \mathsf{com}(q_R), \mathsf{com}(q_M), \mathsf{com}(q_O), \mathsf{com}(q_C)
+    (\mathsf{com}(S_{\sigma_1}), \mathsf{com}(S_{\sigma_2}), \mathsf{com}(S_{\sigma_3}), \mathsf{com}(q_L), \mathsf{com}(q_R), \mathsf{com}(q_M), \mathsf{com}(q_O), \mathsf{com}(q_C))
 \end{equation*}
-Interpolate polynomials $a', b', c'$ over corresponding columns of $T$ matrix at
+Interpolate polynomials $a'(x), b'(x), c'(x)$ over corresponding columns of $T$ matrix at
 the domain $\Omega$. Sample random $b_1, b_2, b_3, b_4, b_5, b_6 \xleftarrow{R}
 \mathbb{F}$. Let the blinded polynomials be:
 \begin{align*}
 \centering
-a &:= (b_1 X + b_2)Z_{\Omega}(X) + a'(X) \\
-b &:= (b_3 X + b_4)Z_{\Omega}(X) + b'(X) \\
-c &:= (b_5 X + b_6)Z_{\Omega}(X) + c'(X)
+a &:= (b_1 x + b_2)z_{\Omega}(x) + a'(x) \\
+b &:= (b_3 x + b_4)z_{\Omega}(x) + b'(x) \\
+c &:= (b_5 x + b_6)z_{\Omega}(x) + c'(x)
 \end{align*}
-Add to the transcript commitments of computed above polynomials:
-\begin{equation*}
-    \mathsf{com}(a), \mathsf{com}(b), \mathsf{com}(c)
-\end{equation*}
+Add to the transcript commitments $(\mathsf{com}(a), \mathsf{com}(b),
+\mathsf{com}(c))$ of computed above polynomials.
 
 \textcolor{green!60!black}{\textbf{Round 2.}}  Sample random scalars $\beta,
 \gamma \xleftarrow{R} \mathbb{F}$ from the transcript. Let $z_0 = 1$ and define
-recursively for $k = 0, \dots, N$:
+recursively the following sequence $\{z_k\}_{0 \leq k < N}$:
 \begin{equation*}
-    z_{k+1} = z_k \times \frac{(a_k + \beta \omega^{k} + \gamma) (b_k + \beta \omega^{k}k_1 + \gamma) (c_k + \beta \omega^{k}k_2 + \gamma)}{(a_k + \beta S_{\sigma,1}(\omega^{k}) + \gamma) (b_k + \beta S_{\sigma,2}(\omega^{k}) + \gamma) (c_k + \beta S_{\sigma,3}(\omega^{k}) + \gamma)}     
+    z_{k+1} = \frac{(a_k + \beta \omega^{k} + \gamma) (b_k + \beta \omega^{k}k_1 + \gamma) (c_k + \beta \omega^{k}k_2 + \gamma)}{(a_k + \beta S_{\sigma_1}(\omega^{k}) + \gamma) (b_k + \beta S_{\sigma_2}(\omega^{k}) + \gamma) (c_k + \beta S_{\sigma_3}(\omega^{k}) + \gamma)} \cdot z_k, \quad k \in [N]
 \end{equation*}
 
-Interpolate polynomial $z'$ over evaluations $(z_0, \dots, z_{N-1})$ at the domain $\Omega$.
+Interpolate polynomial $z'(x)$ over evaluations $(z_0, \dots, z_{N-1})$ at the
+domain $\Omega$. Sample random $b_7, b_8, b_9 \xleftarrow{R} \mathbb{F}$. Let $z(x)
+= (b_7 x^2 + b_8 x + b_9)z_{\Omega}(x) + z'(x)$. Add $\mathsf{com}(z)$ to the transcript.
 
-Sample random $b_7, b_8, b_9 \xleftarrow{R} \mathbb{F}$. Let $z = (b_7 X^2 + b_8
-X + b_9)Z_H + z'$. Add to the transcript $\mathsf{com}(z)$.
-
-\textcolor{green!60!black}{\textbf{Round 3}} Sample $\alpha \xleftarrow{R}
+\textcolor{green!60!black}{\textbf{Round 3.}} Sample $\alpha \xleftarrow{R}
 \mathbb{F}$ from the transcript. Let $\pi(X)$ be the interpolation polynomial of the
-input matrix $\Pi$ at the domain $\Omega$. Let
+input matrix $\Pi$ at the domain $\Omega$. Define three new polynomials:
 \begin{align*}
-p_1 &= aq_L + bq_R + abq_M + cq_o + q_C + \pi \\
-p_2 &= (a + \beta X + \gamma)(b + \beta k_1 X + \gamma)(c + \beta k_2 X + \gamma)z - \\
-    &- (a + \beta S_{\sigma,1} + \gamma)(b + \beta S_{\sigma,2} + \gamma)(c + \beta S_{\sigma,3} + \gamma)z(\omega X) \\
-p_3 &= (z - 1)L_1
+p_1(x) &= aq_L + bq_R + abq_M + cq_O + q_C + \pi \\
+p_2(x) &= (a + \beta X + \gamma)(b + \beta k_1 X + \gamma)(c + \beta k_2 X + \gamma)z - \\
+    &- (a + \beta S_{\sigma_1} + \gamma)(b + \beta S_{\sigma_2} + \gamma)(c + \beta S_{\sigma_3} + \gamma)z(\omega x) \\
+p_3(x) &= (z(x) - 1)L_1(x)
 \end{align*}
 
 Define the composite polynomial $p = p_1 + \alpha p_2 + \alpha^2 p_3$. Compute
-$t$ such that $p = tZ_{\Omega}$. Write $t = t_{\text{lo}} +
-X^{N+2}t_{\text{mid}} + X^{2(N+2)}t_{\text{hi}}$, with $t_{\text{lo}},
-t_{\text{mid}}$, and $t_{\text{hi}} \in \mathbb{F}^{\leq (N+1)}[X]$ polynomials
-of degree at most $N+1$. Sample random $b_{10}, b_{11} \xleftarrow{R} \mathbb{F}$ and define:
+$t$ such that $p = tz_{\Omega}$. Write $t = t_{\text{low}} +
+x^{N+2}t_{\text{mid}} + x^{2(N+2)}t_{\text{high}}$, with $t_{\text{low}},
+t_{\text{mid}}$, and $t_{\text{high}} \in \mathbb{F}^{\leq (N+1)}[x]$
+polynomials of degree at most $N+1$. Sample random $b_{10}, b_{11}
+\xleftarrow{R} \mathbb{F}$ and define:
 \begin{align*}
-t_{\text{lo}} &= t'_{\text{lo}} + b_{10}X^{N+2} \\
-t_{\text{mid}} &= t'_{\text{mid}} - b_{10} + b_{11}X^{N+2} \\
-t_{\text{hi}} &= t'_{\text{hi}} - b_{11}
+t_{\text{low}} &= t'_{\text{low}} + b_{10}x^{N+2} \\
+t_{\text{mid}} &= t'_{\text{mid}} - b_{10} + b_{11}x^{N+2} \\
+t_{\text{high}} &= t'_{\text{high}} - b_{11}
 \end{align*}
 
-Add to the transcript commitments: com($t_{\text{lo}}$), com($t_{\text{mid}}$), com($t_{\text{hi}})$.
+Add to the transcript commitments $(\mathsf{com}(t_{\text{low}}), \mathsf{com}(t_{\text{mid}}), \mathsf{com}(t_{\text{high}}))$.
 
-\textcolor{green!60!black}{\textbf{Round 4}} Sample random $\zeta \xleftarrow{R}
+\textcolor{green!60!black}{\textbf{Round 4.}} Sample random $\zeta \xleftarrow{R}
 \mathbb{F}$ from the transcript. Compute:
-\[\bar{a} = a(\zeta), \bar{b} = b(\zeta), \bar{c} = c(\zeta), \bar{S}_{\sigma,1} = S_{\sigma,1}(\zeta), \bar{S}_{\sigma,2} = S_{\sigma,2}(\zeta), \bar{z}_{\omega} = z(\zeta \omega)\]
+\[\bar{a} = a(\zeta), \bar{b} = b(\zeta), \bar{c} = c(\zeta), \bar{S}_{\sigma_1} = S_{\sigma_1}(\zeta), \bar{S}_{\sigma_2} = S_{\sigma_2}(\zeta), \bar{S}_{\sigma_3} = S_{\sigma_3}(\zeta), \bar{z}_{\omega} = z(\zeta \omega)\]
 and add them to the transcript.
 
-\textcolor{green!60!black}{\textbf{Round 5}} Sample random $v \xleftarrow{R}
+\textcolor{green!60!black}{\textbf{Round 5.}} Sample random $v \xleftarrow{R}
 \mathbb{F}$ from the transcript. Let:
 \begin{align*}
-\hat{p}_{nc1} &= \bar{a}q_L + \bar{b}q_R + \bar{a}\bar{b}q_M + \bar{c}q_o + q_C \\
-\hat{p}_{nc2} &= (\bar{a} + \beta \zeta_1 + \gamma)(\bar{b} + \beta k_1 \zeta_1 + \gamma)(\bar{c} + \beta k_2 \zeta_1 + \gamma) z -\\
-&- (\bar{a} + \beta \bar{S}_{\sigma_1} + \gamma)(\bar{b} + \beta \bar{S}_{\sigma_2} + \gamma)(\bar{c} + \beta \bar{S}_{\sigma_3} + \gamma) z(\omega \zeta_1) \\
-\hat{p}_{nc3} &= L_1(\zeta_1)z
+\hat{p}_{\text{nc},1}(x) &= \bar{a}q_L + \bar{b}q_R + \bar{a}\bar{b}q_M + \bar{c}q_O + q_C \\
+\hat{p}_{\text{nc},2}(x) &= (\bar{a} + \beta \zeta + \gamma)(\bar{b} + \beta k_1 \zeta + \gamma)(\bar{c} + \beta k_2 \zeta + \gamma) z
+- (\bar{a} + \beta \bar{S}_{\sigma_1} + \gamma)(\bar{b} + \beta \bar{S}_{\sigma_2} + \gamma)\beta \overline{z}_{\omega}S_{\sigma_3} \\
+\hat{p}_{\text{nc},3}(x) &= L_1(\zeta)z(x)
 \end{align*}
 Define:
 \begin{align*}
-p_{nc} &= p_{nc1} + \alpha p_{nc2} + \alpha^2 p_{nc3} \\
-t_{partial} &= t_{lo} + \zeta^{N+2}t_{mid} + \zeta^{2(N+2)}t_{hi}
+p_{\text{nc}} &= p_{\text{nc},1} + \alpha p_{\text{nc}, 2} + \alpha^2 p_{\text{nc}, 3} \\
+t_{\text{partial}} &= t_{\text{low}} + \zeta^{N+2}t_{\text{mid}} + \zeta^{2(N+2)}t_{\text{high}}
 \end{align*}
-The subscript $nc$ stands for "nonconstant," as it is the part of the linearization of $p$ with nonconstant factors. The subscript $partial$ indicates that it is a partial evaluation of $t$ at $\zeta$. Partial means that only some power of $X$ is replaced by the powers of $\zeta$. So in particular $t_{partial}(\zeta) = t(\zeta)$.
-Let $\pi_{batch}$ be the opening proof at $\zeta$ of the polynomial $f_{batch}$ defined as: 
-\[t_{partial} + v p_{nc} + v^2 a + v^3 b + v^4 c + v^5 S_{o1} + v^6 S_{o2}\]
-Let $\pi_{single}$ be the opening proof at $\zeta\omega$ of the polynomial $z$. \\
-Compute $\bar{p}_{nc} := p_{nc}(\zeta)$ and $\bar{t} = t(\zeta)$.
+The subscript \emph{nc} stands for ``non-constant,'' as it is the part of the
+linearization of $p$ with nonconstant factors. The subscript \emph{partial} indicates
+that it is a partial evaluation of $t$ at $\zeta$. Partial means that only some
+power of $x$ is replaced by the powers of $\zeta$. So in particular
+$t_{\text{partial}}(\zeta) = t(\zeta)$. Let $\pi_B$ be the opening (\textbf{B}atch) proof at
+$\zeta$ of the polynomial $f_B$ defined as: 
+\[
+f_B = t_{\text{partial}} + v p_{\text{nc}} + v^2 a + v^3 b + v^4 c + v^5 S_{\sigma_1} + v^6 S_{\sigma_2}
+\]
+Let $\pi_{S}$ be the (\textbf{S}ingle) opening proof at $\zeta\omega$ of the polynomial
+$z$. Finally, compute $\bar{p}_{\text{nc}} := p_{\text{nc}}(\zeta)$ and $\bar{t} = t(\zeta)$.
 
-\paragraph{Proof}
-\[com(a), com(b), com(c), com(z), com(t_{lo}), com(t_{mid}), com(t_{hi}),\] 
-\[\bar{a}, \bar{b}, \bar{c}, \bar{S}_{o1}, \bar{S}_{o2}, \bar{z}_w, T_{batch}, T_{single}, \bar{p}_{nc}, \bar{t}\]
+\textcolor{purple}{\textbf{Proof.}} All in all, our proof $\pi$ looks as follows:
+\begin{equation*}
+    \pi = \begin{pmatrix}\mathsf{com}(a), \mathsf{com}(b), \mathsf{com}(c), \mathsf{com}(z), \mathsf{com}(t_{\text{low}}), \mathsf{com}(t_{\text{mid}}), \mathsf{com}(t_{\text{high}}), \\
+        \bar{a}, \bar{b}, \bar{c}, \bar{S}_{\sigma_1}, \bar{S}_{\sigma_2}, \bar{z}_{\omega}, \pi_{B}, \pi_{S}, \bar{p}_{\text{nc}}, \bar{t}
+    \end{pmatrix}
+\end{equation*}
 
 \subsubsection{Verification}
 
-\paragraph{Transcript Initialization}
+\textcolor{blue!60!black}{\textbf{Transcript Initialization.}} Similarly to
+prover, the verifier adds the following commitments to the transcript:
+\begin{equation*}
+    (\mathsf{com}(S_{\sigma_1}), \mathsf{com}(S_{\sigma_2}), \mathsf{com}(S_{\sigma_3}), \mathsf{com}(q_L), \mathsf{com}(q_R), \mathsf{com}(q_M), \mathsf{com}(q_O), \mathsf{com}(q_C))
+\end{equation*}
 
-Same as prover, verified adds the following to the transcript:
-
-\begin{center}
-com($S_{o1}$), com($S_{o2}$), com($S_{o3}$), com($q_L$), com($q_R$), com($q_M$), com($q_o$), com($q_C$)
-\end{center}
-
-\paragraph{Extraction of values and commitments}
-
-Firstly, the verifier needs to compute all the challenges. For that, he follows these steps:
+\textcolor{blue!60!black}{\textbf{Extraction of values and commitments}.}
+Firstly, the verifier needs to compute all the challenges. For that, he follows
+the following steps:
 \begin{itemize}
     \item Add com($a$), com($b$), com($c$) to the transcript.
     \item Sample two challenges $\beta$, $\gamma$.
     \item Add com($z$) to the transcript.
-    \item Sample a challenge $\alpha$.
-    \item Add com($t_{lo}$), com($t_{mid}$), com($t_{hi}$) to the transcript.
-    \item Sample a challenge $\zeta$.
-    \item Add $\bar{a}$, $\bar{b}$, $\bar{c}$, $\bar{S}_{o1}$, $\bar{S}_{o2}$, $\bar{z}_w$ to the transcript.
-    \item Sample a challenge $v$.
+    \item Sample the challenge $\alpha$.
+    \item Add com($t_{\text{low}}$), com($t_{\text{mid}}$), com($t_{\text{high}}$) to the transcript.
+    \item Sample the challenge $\zeta$.
+    \item Add $\bar{a}$, $\bar{b}$, $\bar{c}$, $\bar{S}_{\sigma_1}$, $\bar{S}_{\sigma_2}$, $\bar{z}_{\omega}$ to the transcript.
+    \item Sample the challenge $v$.
 \end{itemize}
 
-\paragraph{Compute $pi(\zeta)$}
-Also, he needs to compute a few values of all these data. First, he computes the $\Pi$ matrix with the public inputs and outputs. He needs to compute $pi(\zeta)$, where $pi$ is the interpolation of $\Pi$ at the domain $H$. But he doesn't need to compute pi. He can instead compute $pi(\zeta)$ as:
-\[\sum_{i=0}^{n} L_{i}(\zeta) P_{I_i}\]
-where $n$ is the number of public inputs and $L_i$ is the Lagrange basis at the domain H.
+\textcolor{blue!60!black}{\textbf{Compute $\pi(\zeta)$.}} Besides, the verifier
+needs to compute a few values of all these data. First, he computes the $\Pi$
+matrix with the public inputs and outputs. He needs to compute $\pi(\zeta)$,
+where $\pi(x)$ is the interpolation of $\Pi$ over the domain $\Omega$. But he
+does not need to compute $\pi$. He can instead compute $\pi(\zeta)$ as follows:
+\begin{equation*}
+    \pi(\zeta) = \sum_{i=0}^n L_i(\zeta)\Pi_{i},
+\end{equation*}
+where $n$ is the number of public inputs.
 
-\paragraph{Compute claimed values $p(\zeta)$ and $t(\zeta)$}
-Compute: 
-\[\bar{p}_c = p_1(\zeta) + \alpha z_{w} \left( \bar{c} + \gamma \right) \left( \bar{a} + \beta \bar{S}_{\sigma_1} + \gamma \right) \left( \bar{b} + \beta \bar{S}_{\sigma_2} + \gamma \right) - \alpha^2 L_1(\zeta)\]
-This is the constant part of the linearization of $p$. So, adding it to what the prover claims to be $\bar{p}_{nc}$, he obtains $p(\zeta) = \bar{p}_c + \bar{p}_{nc}$.
+\textcolor{blue!60!black}{\textbf{Compute claimed values $p(\zeta)$ and
+$t(\zeta)$.}} Next, the verifier computes: 
+\[\bar{p}_C = p_1(\zeta) + \alpha z_{\omega} \left( \bar{c} + \gamma \right)
+\left( \bar{a} + \beta \bar{S}_{\sigma_1} + \gamma \right) \left( \bar{b} +
+\beta \bar{S}_{\sigma_2} + \gamma \right) - \alpha^2 L_1(\zeta)\] This is the
+constant part of the linearization of $p$. So, adding it to what the prover
+claims to be $\bar{p}_{\text{nc}}$, he obtains $p(\zeta) = \bar{p}_C + \bar{p}_{\text{nc}}$.
 
-\paragraph{Compute com($t_{partial}$) and com($p_{nc}$)}
-He computes these of the commitments in the proof as follows:
-\[com(t_{partial}) = com(t_{lo}) + \zeta^{N+2}com(t_{mid}) + \zeta^{2(N+2)}com(t_{hi})\]
+Compute $\mathsf{com}(t_{\text{partial}})$ and
+$\mathsf{com}(p_{\text{nc}})$. He computes these of the commitments in the
+proof as follows:
+\begin{equation*}
+    \mathsf{com}(t_{\text{partial}}) = \mathsf{com}(t_{\text{low}}) + \zeta^{N+2}\mathsf{com}(t_{\text{mid}}) + \zeta^{2(N+2)}\mathsf{com}(t_{\text{high}})
+\end{equation*}
+
 For the second one, compute those:
 \begin{align*}
-\hat{p}_{nc1} &= \bar{a} * com(q_L) + \bar{b} * com(q_R) + (\bar{a}\bar{b}) * com(q_M) + \bar{c} * com(q_o) + com(q_C) \\
-\hat{p}_{nc2} &= (\bar{a} + \beta \zeta_1 + \gamma)(\bar{b} + \beta k_1 \zeta_1 + \gamma)(\bar{c} + \beta k_2 \zeta_1 + \gamma) * com(z) - \\ 
-&- (\bar{a} + \beta \bar{S}_{\sigma_1} + \gamma)(\bar{b} + \beta \bar{S}_{\sigma_2} + \gamma)(\bar{c} + \beta \bar{S}_{\sigma_3} + \gamma) * com(z)(\omega \zeta_1) \\
-\hat{p}_{nc3} &= L_1(\zeta_1) * com(z)
+\mathsf{com}(p_{\text{nc},1}) &= \bar{a}\cdot\mathsf{com}(q_L) + \bar{b} \cdot \mathsf{com}(q_R) + \bar{a}\bar{b} \cdot \mathsf{com}(q_M) + \bar{c} \cdot \mathsf{com}(q_O) + \mathsf{com}(q_C) \\
+\mathsf{com}(p_{\text{nc},2}) &= (\bar{a} + \beta \zeta + \gamma)(\bar{b} + \beta k_1 \zeta + \gamma)(\bar{c} + \beta k_2 \zeta + \gamma) \cdot\mathsf{com}(z) \\ 
+&- (\bar{a} + \beta \bar{S}_{\sigma_1} + \gamma)(\bar{b} + \beta \bar{S}_{\sigma_2} + \gamma)\beta z_{\omega}\cdot \mathsf{com}(S_{\sigma_3}) \\
+\mathsf{com}(p_{\text{nc},3}) &= L_1(\zeta)\cdot\mathsf{com}(z)
 \end{align*}
-Then: \[com(p_{nc}) = com(p_{nc1}) + com(p_{nc2}) + com(p_{nc3})\].
 
-\paragraph{Compute claimed value $f_{batch}(\zeta)$ and $com(f_{batch})$}
+Then $\mathsf{com}(p_{\text{nc}}) = \mathsf{com}(p_{\text{nc},1}) + \mathsf{com}(p_{\text{nc},2}) + \mathsf{com}(p_{\text{nc},3})$.
 
+\textcolor{blue!60!black}{\textbf{Compute claimed value $f_{B}(\zeta)$ and $\mathsf{com}(f_{B})$.}} The verifier computes 
+the following two final quantities:
 \begin{align*}
-f_{batch}(\zeta) &= \bar{t} + v \bar{p}_{nc} + v^2 \bar{a} + v^3 \bar{b} + v^4 \bar{c} + v^5 \bar{S}_{o1} + v^6 \bar{S}_{o2} \\
-com(f_{batch}) &= com(t_{partial}) + v * com(p_{nc}) + v^2 * com(a) + \\
-&+ v^3 * com(b) + v^4 * com(c) + v^5 * com(S_{o1}) + v^6 * com(S_{o2})
+f_{B}(\zeta) &= \bar{t} + v \bar{p}_{\text{nc}} + v^2 \bar{a} + v^3 \bar{b} + v^4 \bar{c} + v^5 \bar{S}_{\sigma_1} + v^6 \bar{S}_{\sigma_2} \\
+\mathsf{com}(f_{B}) &= \mathsf{com}(t_{\text{partial}}) + v \cdot \mathsf{com}(p_{nc}) + v^2 \cdot \mathsf{com}(a) + \\
+&+ v^3 \cdot \mathsf{com}(b) + v^4 \cdot \mathsf{com}(c) + v^5 \cdot \mathsf{com}(S_{\sigma_1}) + v^6 \cdot \mathsf{com}(S_{\sigma_2})
 \end{align*}
-\paragraph{Proof check}
 
-Now the verifier has all the necessary values to proceed with the checks.
-
+\textcolor{blue!60!black}{\textbf{Proof check.}} Now the verifier has all the
+necessary values to proceed with the checks.
 \begin{itemize}
     \item Check that $p(\zeta)$ equals $(\zeta^N - 1)t(\zeta)$.
-    \item Verify the opening of $f_{batch}$ at $\zeta$. That is, check that 
+    \item Verify the opening of $f_{B}$ at $\zeta$. That is, run the check:
         \begin{equation*}
-            \text{Verify}([f_{batch}], \pi_{batch}, \zeta, f_{batch}(\zeta)) \text{ outputs Accept.}
+            \text{Verify}(\mathsf{com}(f_{B}), \pi_{B}, \zeta, f_{B}(\zeta))
         \end{equation*}
-    \item Verify the opening of $z$ at $\zeta_w$. That is, check the validity of the proof $\pi_{single}$ using the commitment $com(z)$ and the value $\bar{z}_w$. 
+    \item Verify the opening of $z$ at $\zeta\omega$. That is, check the
+    validity of the proof $\pi_{S}$ using the commitment $\mathsf{com}(z)$ and the
+    value $\bar{z}_{\omega}$:
         \begin{equation*}
-            \text{That is, check that } \text{Verify}(com(z), \pi_{single}, \zeta_w, \bar{z}_w) \text{ outputs Accept.}
+            \text{Verify}(\mathsf{com}(z), \pi_{S}, \zeta\omega, \bar{z}_{\omega})
         \end{equation*}
 \end{itemize}
 
-If all checks pass, output Accept. Otherwise, output Reject.
+If all checks pass, output $\textcolor{green!60!black}{\mathsf{accept}}$.
+Otherwise, output $\textcolor{red!60!black}{\mathsf{reject}}$.
 
 \end{document}
