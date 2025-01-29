@@ -48,7 +48,10 @@
 \RequirePackage[makeroom]{cancel}
 
 % --- Configuring Figure settings ---
-\usepackage[labelfont=bf]{caption}
+\usepackage[labelfont=bf]{caption} 
+% \captionsetup[figure]{margin=10pt} % Set caption margin for figures
+\setlength{\belowcaptionskip}{0mm}  % Set space after the caption (adjust the value as needed)
+\setlength{\textfloatsep}{1mm}      % Space between float and text (affects figures/tables)
 \counterwithin{figure}{section}
 
 % --- Hyperref settings ---
