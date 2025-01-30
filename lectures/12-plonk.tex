@@ -1162,16 +1162,22 @@ f_{B}(\zeta) &= \bar{t} + v \bar{p}_{\text{nc}} + v^2 \bar{a} + v^3 \bar{b} + v^
 necessary values to proceed with the checks.
 \begin{itemize}
     \item Check that $p(\zeta)$ equals $(\zeta^N - 1)t(\zeta)$.
-    \item Verify the opening of $f_{B}$ at $\zeta$. That is, run the check:
-        \begin{equation*}
+    \item Verify the opening of $f_{B}$ at $\zeta$. 
+    % That is, 
+    Run the check: $
+        % \begin{equation*}
             \text{Verify}(\mathsf{com}(f_{B}), \pi_{B}, \zeta, f_{B}(\zeta))
-        \end{equation*}
-    \item Verify the opening of $z$ at $\zeta\omega$. That is, check the
+            $.
+        % \end{equation*}
+    \item Verify the opening of $z$ at $\zeta\omega$. 
+    % That is,
+    Check the
     validity of the proof $\pi_{S}$ using the commitment $\mathsf{com}(z)$ and the
-    value $\bar{z}_{\omega}$:
-        \begin{equation*}
+    value $\bar{z}_{\omega}$: $
+        % \begin{equation*}
             \text{Verify}(\mathsf{com}(z), \pi_{S}, \zeta\omega, \bar{z}_{\omega})
-        \end{equation*}
+            $.
+        % \end{equation*}
 \end{itemize}
 
 If all checks pass, output $\textcolor{green!60!black}{\mathsf{accept}}$.
