@@ -219,6 +219,8 @@ Note that such $\omega$ exists if and only if $n \mid (p-1)$.
 
 Consider the following interesting question: suppose we have a field $\mathbb{F}$. Is there an extension $\mathbb{K}/\mathbb{F}$ such that $\mathbb{K}$ contains all roots of any polynomial in $\mathbb{F}[X]$? The answer is yes, and such a field is called the \textbf{algebraic closure} of $\mathbb{F}$, although not always this algebraic closure has a nice form. But first, let us define what it means for field $\mathbb{F}$ to be algebraically closed.
 
+\vspace{-0.75em}
+
 \begin{definition}
     A field $\mathbb{F}$ is called \textbf{algebraically closed} if every non-constant polynomial $p(x) \in \mathbb{F}[X]$ has a root in $\mathbb{F}$.
 \end{definition}
@@ -282,14 +284,14 @@ So, let us formally define what an elliptic curve is. Further assume that, when 
 
 \begin{example}
     Consider the curve $E/\mathbb{Q}: y^2=x^3-x+9$. This is an elliptic curve. Consider $P=(0,3), Q=(-1,-3) \in \mathbb{A}^2(\mathbb{Q})$: both are valid affine points on the curve. See \Cref{fig:ec_1}.
-
-    \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.5\textwidth]{images/lecture_3/ec_illustration_1.pdf}
-        \caption{Elliptic curve $E/\mathbb{Q}: y^2=x^3-x+9$ with points $P=(0,3),Q=(-1,-3)$ depicted on it.}
-        \label{fig:ec_1}
-    \end{figure}
 \end{example}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/lecture_3/ec_illustration_1.pdf}
+    \caption{Elliptic curve $E/\mathbb{Q}: y^2=x^3-x+9$ with points $P=(0,3),Q=(-1,-3)$ depicted on it.}
+    \label{fig:ec_1}
+\end{figure}
 
 Typically, our elliptic curve is defined over a finite field $\mathbb{F}_p$, so we are interested in this paricular case. 
 
@@ -317,6 +319,8 @@ Now, elliptic curves are useless without any operation defined on top of them. B
 
 Now, the reason we introduced the point at infinity $\mathcal{O}$ is because it allows us to define the group binary operation $\oplus$ on the elliptic curve. The operation is sometimes called the \textbf{chord-tangent law}. Let us define it.
 
+\vspace{-0.5em}
+
 \begin{definition}
     Consider the curve $E(\mathbb{F}_{p^m})$. We define $\mathcal{O}$ as the identity element of the group. That is, for all points $P$, we set $P \oplus \mathcal{O} = \mathcal{O} \oplus P = P$. For any other non-identity elements $P=(x_P,y_P),Q=(x_Q,y_Q) \in E(\mathbb{F}_{p^m})$, define the $P\oplus Q = (x_R,y_R)$ as follows:
     \begin{enumerate}
@@ -336,7 +340,7 @@ The aforementioned definition is illustrated in the Figure below\footnote{Illust
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.85\textwidth]{images/lecture_3/group_law.png}
+    \includegraphics[width=0.95\textwidth]{images/lecture_3/group_law.png}
     \label{fig:group_law}
 \end{figure}
 
@@ -408,33 +412,40 @@ Now, if the curve is ``good'', then the discrete logarithm problem is hard. In f
     Now, assume that we represent $\mathbb{F}_{5^4}$ as $\mathbb{F}_{5^2}[j]/(j^2-\xi)$ for $\xi = i+1$. Given such representation, the value of $j^4$ is $\boxed{\textcolor{blue}{\textbf{6}}}$. Finally, given $c_0+c_1j \in \mathbb{F}_{5^4}$ we call $c_0 \in \mathbb{F}_{5^2}$ a \textbf{real part}, while $c_1 \in \mathbb{F}_{5^2}$ an \textbf{imaginary part}. For example, the imaginary part of number $j^3+2i^2\xi$ is $\boxed{\textcolor{blue}{\textbf{7}}}$, while the real part of $(a_0+a_1j)b_1j$ is $\boxed{\textcolor{blue}{\textbf{8}}}$. Similarly to complex numbers, it motivates us to define the number's \textbf{conjugate}: for $z = c_0+c_1j$, define the conjugate as $\overline{z} := c_0-c_1j$. The expression $z\overline{z}$ is then $\boxed{\textcolor{blue}{\textbf{9}}}$.
 \end{tcolorbox}
 
+\newpage
 \subsubsection*{Warmup (Oleksandr in search of perfect field extension)}
 \textbf{Exercise 1.} Oleksandr decided to build $\mathbb{F}_{49}$ as $\mathbb{F}_7[i]/(i^2+1)$. Compute $(3+i)(4+i)$. 
 
-\begin{enumerate}[a)]
-    \item $6+i$.
-    \item $6$.
-    \item $4+i$.
-    \item $4$.
-    \item $2+4i$.
-\end{enumerate}
+\begin{multicols}{5}
+    \begin{enumerate}[a)]
+        \item $6+i$.
+        \item $6$.
+        \item $4+i$.
+        \item $4$.
+        \item $2+4i$.
+    \end{enumerate}
+\end{multicols}
 
 \textbf{Exercise 2.} Oleksandr came up with yet another extension $\mathbb{F}_{p^2} = \mathbb{F}_p[i]/(i^2+2)$. He asked interns to calculate $2/i$. Based on five answers given below, help Oleksandr to find the correct one.
-\begin{enumerate}[a)]
-    \item $1$.
-    \item $p-2$.
-    \item $(p-3)i$.
-    \item $(p-1)i$.
-    \item $p-1$.
-\end{enumerate}
+\begin{multicols}{5}
+    \begin{enumerate}[a)]
+        \item $1$.
+        \item $p-2$.
+        \item $(p-3)i$.
+        \item $(p-1)i$.
+        \item $p-1$.
+    \end{enumerate}
+\end{multicols}
 
 \textbf{Exercise 3*.} After endless tries, Oleksandr has finally found the perfect field extension: $\mathbb{F}_{p^2} := \mathbb{F}_p[v] / (v^2+v+1)$. However, Oleksandr became very frustrated since not for any $p$ this would be a valid field extension. For which of the following values $p$ such construction would \textbf{not} be a valid field extension? Use the fact that equation $\omega^3=1$ over $\mathbb{F}_p$ has non-trivial solutions (meaning, two others except for $\omega=1$) if $p \equiv 1 \pmod{3}$. You can assume that listed numbers are primes.
-\begin{enumerate}[a)]
-    \item $8431$.
-    \item $9173$.
-    \item $9419$.
-    \item $6947$.
-\end{enumerate}
+\begin{multicols}{4}
+    \begin{enumerate}[a)]
+        \item $8431$.
+        \item $9173$.
+        \item $9419$.
+        \item $6947$.
+    \end{enumerate}
+\end{multicols}
 
 \begin{center}
     \begin{tabular}{p{4.5cm}p{3cm}p{4cm}}
@@ -496,30 +507,37 @@ Now, if the curve is ``good'', then the discrete logarithm problem is hard. In f
 \textbf{Exercise 10.} Suppose that elliptic curve is defined as $E/\mathbb{F}_{7}: y^2=x^3+b$. Suppose $(2,3)$ lies on the curve. What is the value of $b$?
 
 \textbf{Exercise 11.} Sum of which of the following pairs of points on the elliptic curve $E/\mathbb{F}_{11}$ is equal to the point at infinity $\mathcal{O}$ for any valid curve equation?
-\begin{enumerate}[a)]
-    \item $P=(2,3),Q=(2,8)$.
-    \item $P=(9,2),Q=(2,8)$.
-    \item $P=(9,9),Q=(5,7)$.
-    \item $P=\mathcal{O},Q=(2,3)$.
-    \item $P=[10]G,Q=G$ where $G$ is a generator.
-\end{enumerate}
+\begin{multicols}{2}    
+    \begin{enumerate}[a)]
+        \item $P=(2,3),Q=(2,8)$.
+        \item $P=(9,2),Q=(2,8)$.
+        \item $P=(9,9),Q=(5,7)$.
+        \item $P=\mathcal{O},Q=(2,3)$.
+        \item $P=[10]G,Q=G$ where $G$ is a generator.
+    \end{enumerate}
+\end{multicols}
 
+% \newpage
 \textbf{Exercise 12.} Consider an elliptic curve $E$ over $\mathbb{F}_{167^2}$. Denote by $r$ the order of the group of points on $E$ (that is, $r=|E|$). Which of the following \textbf{can} be the value of $r$?
-\begin{enumerate}[a)]
-    \item $167^2 - 5$
-    \item $167^2-1000$
-    \item $167^2+5 \cdot 167$
-    \item $170^2$
-    \item $160^2$
-\end{enumerate}
+\begin{multicols}{3}    
+    \begin{enumerate}[a)]
+        \item $167^2 - 5$
+        \item $167^2-1000$
+        \item $167^2+5 \cdot 167$
+        \item $170^2$
+        \item $160^2$
+    \end{enumerate}
+\end{multicols}
 
 \textbf{Exercise 13.} Suppose that for some elliptic curve $E$ the order is $|E| = qr$ where both $q$ and $r$ are prime numbers. Among listed, what is the most optimal complexity of algorithm to solve the discrete logarithm problem on $E$?
-\begin{enumerate}[a)]
-    \item $O(qr)$
-    \item $O(\sqrt{qr})$
-    \item $O(\sqrt{\max\{q,r\}})$
-    \item $O(\sqrt{\min\{q,r\}})$
-    \item $O(\max\{q,r\})$
-\end{enumerate}
+\begin{multicols}{3}    
+    \begin{enumerate}[a)]
+        \item $O(qr)$
+        \item $O(\sqrt{qr})$
+        \item $O(\sqrt{\max\{q,r\}})$
+        \item $O(\sqrt{\min\{q,r\}})$
+        \item $O(\max\{q,r\})$
+    \end{enumerate}
+\end{multicols}
 
 \end{document}

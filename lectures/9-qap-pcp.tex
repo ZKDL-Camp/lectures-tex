@@ -20,41 +20,24 @@ To define a constraint in the R1CS we need four vectors: three coefficient vecto
 $\mathbf{c}$) and the witness one ($\mathbf{w}$). And that's just for one constraint. As you can imagine, many of
 the values in these vectors are zeros. In circuits with thousands of inputs, outputs, and auxiliary
 variables, where there are also thousands of constraints, you could end up with a millions of zeroes.
+
 \begin{remark}
     A matrix in which most of the elements are zero in numerical analysis is usually called \textbf{sparse
     matrix}.
 \end{remark}
 
-So, we need to change the way how we manage coefficients and make the representation of such matrices and vectors succint (as required by the definition of SNARK).
+So, we need to change the way how we manage coefficients and make the representation of such matrices and vectors succint.
+(as required by the definition of SNARK).
 
 \begin{theorem} 
     Consider a Rank-1 Constraint System (R1CS) defined by $m$ constraints. Each constraint is
     associated with coefficient vectors $\mathbf{a}_i$, $\mathbf{b}_i$, and $\mathbf{c}_i$, where $i \in \{1, 2, \dots, m\}$ and
     also a witness vector $\mathbf{w}$ consisting of $n$ elements.
 
-    Then this system can also be represented using the corresponding matrices $A$, $B$, and $C$.
-    \begin{align*}
-        A = \begin{bmatrix}
-            a_{11} & a_{12} & \dots & a_{1n} \\
-            a_{21} & a_{22} & \dots & a_{2n} \\
-            \vdots & \vdots & \ddots & \vdots \\
-            a_{m1} & a_{m2} & \dots & a_{mn}
-        \end{bmatrix} & \quad
-        B = \begin{bmatrix}
-            b_{11} & b_{12} & \dots & b_{1n} \\
-            b_{21} & b_{22} & \dots & b_{2n} \\
-            \vdots & \vdots & \ddots & \vdots \\
-            b_{m1} & b_{m2} & \dots & b_{mn}
-        \end{bmatrix} & \\
-        C = \begin{bmatrix}
-            c_{11} & c_{12} & \dots & c_{1n} \\
-            c_{21} & c_{22} & \dots & c_{2n} \\
-            \vdots & \vdots & \ddots & \vdots \\
-            c_{m1} & c_{m2} & \dots & c_{mn}
-        \end{bmatrix}
-    \end{align*}
-
-    such that all constraints can be reduced to the single equation:
+    Then this system can also be represented using the corresponding matrices 
+    $A = \{a_{ij}\}_{1 \leq i \leq m, 1 \leq j \leq n}$, $B = \{b_{ij}\}_{1 \leq i \leq m, 1 \leq j \leq n}$,
+    and $C = \{c_{ij}\}_{1 \leq i \leq m, 1 \leq j \leq n}$ such that all constraints can be reduced to
+    the single equation:
     \begin{equation*}
         A\mathbf{w} \odot B\mathbf{w} = C\mathbf{w}
     \end{equation*}
@@ -115,8 +98,6 @@ Therefore, $A\mathbf{w} \odot B\mathbf{w} = C\mathbf{w}$ is equivalent to the sy
 \begin{equation*}
     \langle \mathbf{a}_j, \mathbf{w}\rangle \times \langle \mathbf{b}_j, \mathbf{w} \rangle = \langle \mathbf{c}_j, \mathbf{w} \rangle, \; j \in \{1,\dots,m\}.
 \end{equation*}
-
-\vspace{10px}
 
 \begin{example}
     The vectors $\mathbf{a}_i$ from the previous examples have the form:
@@ -424,6 +405,7 @@ We have managed to encode our computation to a single polynomial!
 
 \begin{figure}[H]
     \centering
+    \scalebox{0.9}{
     \begin{tikzpicture}
         \begin{axis}[
             axis lines = middle,
@@ -495,6 +477,7 @@ We have managed to encode our computation to a single polynomial!
 
         \end{axis}
     \end{tikzpicture}
+    }
     \caption{Addition of two polynomials}
     \label{fig:example-polynomial-addition}
 \end{figure}
@@ -538,7 +521,7 @@ resources. See \Cref{fig:pcp}.
     \end{equation*}
 \end{theorem}
 
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
 
     \scalebox{0.8}{
@@ -575,7 +558,7 @@ Three main extensions of PCPs that are frequently used in SNARKs are:
     \item \textbf{LPCP} (\textbf{Linear PCP}): The prover commits to a linear function and the verifier queries the function at specific points.
 \end{itemize}
 
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
 
     \scalebox{0.75}{
@@ -677,9 +660,11 @@ Of course, the above example cannot be used as it is: at the very least, we have
 
 When constructing a Quadratic Arithmetic Program (QAP) for a circuit $\Circ$, we represented the whole circuit's 
 computation using the following relation:
-\begin{equation*}
+$
+% \begin{equation*}
     L(x)R(x) - O(x) = Z(x)H(x),
-\end{equation*}
+% \end{equation*}
+$
 where by $L(x)$, $R(x)$, $O(x)$ we denote the polynomials that represent the left, right and output 
 wires of the circuit, respectively. $Z(x)$ is the target polynomial, while
 $H(x) := M(x)\big/Z(x)$ for master polynomial $M(x) = L(x)R(x) - O(x)$ is the quotient polynomial.
@@ -692,12 +677,13 @@ not quite clear why such a check is safe and how it can be used in a PCP. In oth
 \textbf{Soundness justification.} Why is it safe to use such a check? As it was said early, 
 we perform all the computations in some finite field $\mathbb{F}$. The 
 polynomials $L(x)$, $R(x)$ and $O(x)$ are interpolated polynomials using $\left| \Circ \right|$ (number of gates) points, so 
-\begin{equation*}
+$
+% \begin{equation*}
     \deg(L) \le \left| \Circ \right|, \quad 
     \deg(R) \le \left| \Circ \right|, \quad 
     \deg(O) \le \left| \Circ \right|
-\end{equation*}
-
+% \end{equation*}
+$
 Thus, using properties of polynomials' degrees, we can estimate the degree of polynomial $M(x) = L(x)R(x) - O(x)$.
 \begin{equation*}
     \deg(M) \leq \max\{\deg(L) + \deg(R), \deg(O)\} \leq 2 \left| \Circ \right|
