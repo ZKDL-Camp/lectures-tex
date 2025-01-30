@@ -27,7 +27,9 @@
 
 %  Inverse title page
     \pagecolor{white}
-    
+
+    \vspace*{\fill}
+
     \begin{abstract}
         \fontsize{10}{12}\selectfont
         Due to the rise of zero-knowledge technologies and their applications in
@@ -47,6 +49,8 @@
         suitable and necessary.
     \end{abstract}
     
+    \vspace*{\fill}
+
     \thispagestyle{empty}
     \newpage
 % --- Table of Contents ---
@@ -115,5 +119,23 @@
 \section{PlonK}\label{section:plonk}
 
 \subfile{lectures/12-plonk}
+
+% --- Contact  ---
+
+    \newpage
+    \pagestyle{empty}
+    
+    \ifodd\value{page}
+        \newpage
+    \fi
+    
+    \vspace*{\fill}
+    
+    \begin{center}
+        contact@distributedlab.com
+    \end{center}
+    
+    \vspace*{\fill}
+
 
 \end{document}

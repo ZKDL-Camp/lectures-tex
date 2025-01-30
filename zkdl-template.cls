@@ -47,6 +47,9 @@
 \RequirePackage[bottom,multiple]{footmisc} % ensures footnotes are at the bottom of the page, and separates footnotes by a comma if they are adjacent
 \RequirePackage[makeroom]{cancel}
 
+\RequirePackage{microtype} % Improves the spacing between words and letters
+% \linespread{0.95}  % Tightens the lines by about 5%
+
 % --- Configuring Figure settings ---
 \usepackage[labelfont=bf]{caption} 
 % \captionsetup[figure]{margin=10pt} % Set caption margin for figures
