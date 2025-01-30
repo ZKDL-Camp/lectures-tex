@@ -674,9 +674,14 @@ template parallel ParallelExample(n) {
     \end{remark}
 
     These three points $\pi_L$, $\pi_R$, $\pi_O$ are used by the verifier to check the equality:
+
+    \vspace{-0.5em}
+
     \[
         e(\pi_L, \pi_R) = e(g_1^\alpha, g_2^\beta)e(\pi_{\text{io}},g_2^\gamma)e(\pi_O,g_2^\delta).
     \]
+
+    \vspace{-0.5em}
 
     Other constants needed for the verifier (for example, points $g_1^{\alpha}$ or $g_2^{\beta}$) are defined
     in the following file: \\ \texttt{zkit/artifacts/circuits/Math.circom/Math.vkey.json}. 
