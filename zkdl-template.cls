@@ -186,8 +186,8 @@
 \makeatletter
 \renewenvironment{proof}[1][\proofname] {\par\pushQED{\qed}{\normalfont\sffamily\bfseries\topsep6\p@\@plus6\p@\relax #1\@addpunct{.} }}{\popQED\endtrivlist\@endpefalse}
 \makeatother
-\newcommand{\coolqed}[1]{\includegraphics[width=#1cm]{sunglasses_emoji.png}} %Defines the new QED symbol
-\renewcommand{\qedsymbol}{\coolqed{0.32}} %Implements the new QED symbol
+%\newcommand{\coolqed}[1]{\includegraphics[width=#1cm]{sunglasses_emoji.png}} %Defines the new QED symbol
+%\renewcommand{\qedsymbol}{\coolqed{0.32}} %Implements the new QED symbol
 \theoremstyle{mystyle}{\newtheorem{definition}{Definition}[section]}
 \theoremstyle{mystyle}{\newtheorem{proposition}[definition]{Proposition}}
 \theoremstyle{mystyle}{\newtheorem{theorem}[definition]{Theorem}}
