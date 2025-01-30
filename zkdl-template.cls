@@ -123,10 +123,10 @@
 \RequirePackage{fancyhdr}
 \lhead{}
 \rhead{}
-\chead{\fontsize{8}{10}\selectfont\leftmark}
+% \chead{\fontsize{8}{10}\selectfont\leftmark}
 \cfoot{\thepage}
-\renewcommand{\headrulewidth}{0.2mm}
-\renewcommand{\footrulewidth}{0.2mm}
+\renewcommand{\headrulewidth}{0.0mm}
+\renewcommand{\footrulewidth}{0.0mm}
 
 % --- Shortcuts ---
 \newcommand{\F}{\mathbb{F}}
