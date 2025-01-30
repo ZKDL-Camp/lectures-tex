@@ -5,6 +5,340 @@
 
 \begin{document}
 
+\subsection{Number Theoretical Trasnform: Universal Polynomial Accelerator}\label{section:ntt}
+
+In the previous sections, when considering Groth16, we have seen the idea that
+polynomials are powerful encoders of data. To encode a set of $N$ values
+$a_0,\dots,a_{N-1} \in \mathbb{F}$, we interpolate a polynomial $p(x)$ that at
+specific points $x_0,\dots,x_{N-1} \in \mathbb{F}$ evaluates to these values. The
+only condition we impose on these points is that they are distinct (unless, the
+interpolation would not be properly defined). This way, generally, we have the
+following interpolation problem:
+\begin{equation*}
+    p(x_j) = a_j, \quad j = 0,\dots,N-1
+\end{equation*}
+
+Particularly, in Groth16 our choice of points was $x_j = j$ for $j = 0,\dots,N-1$, which, 
+for the large enough finite field $\mathbb{F}$, does not cause any issues. However, the 
+complexity of interpolation in this case is not optimal. Let us see why.
+
+Recall that the interpolation formula (see \Cref{section:math-crypto-2} for details)
+is given by:
+\begin{equation*}
+    p(x) = \sum_{i=0}^{N-1} a_i \ell_i(x), \quad \ell_i(x) = \prod_{j=0, j \neq i}^{N-1} \frac{x-x_j}{x_i-x_j}.
+\end{equation*}
+
+The naive evaluation of this formula requires $O(N^2)$ operations: we
+need to compute each $\ell_i$, costing $O(N)$ operations, and then sum
+them up with, again, $O(N)$ operations.
+
+With the specific choice of points $\{x_j\}_{0 \leq j < N}$, we can do much
+better: in fact, we can reduce the complexity to $O(N \log N)$ operations or
+even $O(N)$. This is done by utilizing several techniques, including the
+\textbf{Barycentric Interpolation} and the \textbf{$N$th roots of unity}. 
+
+\subsubsection{Barycentric Interpolation}
+
+The idea of $O(N \log N)$ is to exploit the barycentric formula for polynomial
+interpolation. Let us derive the formula and see how it helps.
+
+First, introduce the quantity $\gamma(x) = \prod_{j=0}^{N-1}(x-x_j)$. Now note that 
+the Lagrange basis polynomials $\ell_j(x)$ can be rewritten as:
+\begin{equation*}
+    \ell_j(x) = \gamma(x) \cdot \frac{w_j}{x-x_j}, \quad w_j = \frac{1}{\prod_{k=0,k \neq j}^{N-1}(x_j-x_k)}, \quad j \in [N]
+\end{equation*}
+
+\begin{remark}
+    This step might seem unobvious, so let us be careful here. Let us see why expression $\gamma(x) \cdot \frac{w_j}{x-x_j}$ 
+    indeed gives the desired basis polynomial:
+    \begin{equation*}
+        \textcolor{blue!60!black}{\gamma(x)} \cdot \frac{\textcolor{green!60!black}{w_j}}{x-x_j} = \textcolor{blue!60!black}{\left(\prod_{k=0}^{N-1}(x-x_k) \right)} \cdot \frac{1}{\textcolor{green!60!black}{\left(\prod_{k=0,k \neq j}^{N-1}(x_j-x_k)\right)}(x-x_j)}
+    \end{equation*}
+
+    Note that we can cancel out $(x-x_j)$ from both numerator and denominator and get
+    \begin{equation*}
+        \textcolor{blue!60!black}{\left(\prod_{k=0,k\neq j}^{N-1}(x-x_j) \right)} \cdot \frac{1}{\textcolor{green!60!black}{\prod_{k=0,k \neq j}^{N-1}(x_j-x_k)}} = \prod_{k=0,k \neq j}^{N-1} \frac{x-x_j}{x_j-x_k} = \ell_j(x),
+    \end{equation*}
+    which is exactly what we wanted to show.
+\end{remark}
+
+Good, so why do we even need such an expression for $\ell_j$? Let us substitute it back into the interpolation formula:
+\begin{equation*}
+    p(x) = \sum_{i=0}^{N-1} a_i \ell_i(x) = \sum_{i=0}^{N-1}a_i \gamma(x) \cdot \frac{w_i}{x-x_i} = \gamma(x) \sum_{i=0}^{N-1} \frac{w_i}{x-x_i}a_i
+\end{equation*}
+
+In regards to this formula, we give the following definition.
+\begin{proposition}\label{prop:barycentric}
+    The \textbf{barycentric interpolation formula} for the interpolation problem
+    $p(x_j)=a_j, j \in [N]$, given by $p(x) = \gamma(x) \sum_{i \in [N]}
+    \frac{w_i}{x-x_i}a_i$ with $\gamma(x)=\prod_{i \in [N]}(x-x_i)$, requires $O(N)$ operations to compute and $O(N^2)$
+    operations to pre-compute.
+\end{proposition}
+
+\textbf{Proof.} Coefficients $\{w_j\}_{j \in [N]}$ are independent of $x$, and so 
+are the values $\{a_j\}_{j \in [N]}$. To compute $\{w_j\}_{j \in [N]}$, one needs 
+$O(N)$ operations for each $w_j$, and thus $O(N^2)$ operations in total. To compute
+the polynomial $p(x)$, one needs $O(N)$ operations to compute $\gamma(x)$ and 
+$O(N)$ operations to compute the sum, knowing $\{w_ja_j\}_{j \in [N]}$. $\hfill\Box$
+
+Of course, in reality, storing $N$ values $\{w_j\}_{j \in [N]}$ requires $O(N)$
+memory, which is not optimal. Moreover, these points on their own are useless 
+and typically are not used in any other parts of the protocol. This is where the
+\textbf{$N$th roots of unity} come into play.
+
+\subsubsection{Multiplicative Cyclic Subgroup}\label{section:mult-cyclic-g}
+
+Again, assume we have the prime field $\mathbb{F}_p$. Let $\omega$ be a
+\textbf{primitive $N$-th root of unity}, i.e., $\omega^N = 1$ and $\omega^j \neq
+1$ for $j < N$. The set $\Omega = \{\omega^j\}_{0 \le j < N}$ is called
+the \textbf{$N$-th root of unity subgroup} of $\mathbb{F}_p$ of order $N$. One
+might ask the following question: why such primitive root even exists? Consider
+the following lemma, briefly mentioned in
+\Cref{section:multiplicative_subgroup}.
+
+\begin{lemma}
+    For $\mathbb{F}_p$ there exists a primitive $N$-th root of unity
+    if and only if $N \mid (p-1)$. 
+\end{lemma}
+What is so special about the set $\Omega$? The magic of $\Omega$ is that it
+allows to compute certain polynomial operations (such as interpolation or
+multiplication) using the \textbf{Discrete Fourier Transform} (DFT) or, 
+equivalently, the \textbf{Number Theoretic Transform} (NTT) algorithm. 
+Consider the first central lemma.
+
+\begin{lemma}\label{lemma:vanishing-polynomial}
+    The vanishing polynomial of the set $\Omega$ is given by $z_{\Omega}(X) = X^N - 1$.
+\end{lemma}
+
+\textbf{Proof Idea.} If $\omega$ is the $N$th primitive root, then for any $h
+\in \Omega$ we have $h^N = 1$ and therefore all elements of $\Omega$ are the
+roots of $X^N-1$. There are precisely $N$ such roots, so $X^N-1$ can be 
+decomposed as a product of linear factors $c \cdot \prod_{j=0}^{N-1}(X-\omega^j)$. 
+It is easy to see that $c=1$ by comparing the leading coefficient. 
+
+Now, let us come back to the barycentric formula. We have seen that the
+interpolation polynomial $p(x)$ can be written as $p(x) = \gamma(x) 
+\sum_{i=0}^{N-1} \frac{w_i}{x-x_i}a_i$. The key idea of the FFT is to
+set $x_j = \omega^j$. What does it give us? We give the following proposition.
+
+\begin{proposition}
+    Suppose the interpolation domain is chosen so that $a_i = \omega^i$. Then, 
+    following the notation of \Cref{prop:barycentric}, certain expressions 
+    simplify to the following:
+    \begin{itemize}
+        \item $\gamma(x) = x^N-1$.
+        \item $w_i = \omega^i/N$.
+    \end{itemize}
+\end{proposition}
+
+\textbf{Proof Idea.} For the first claim, notice that
+by definition $\gamma(x) = \prod_{i=0}^{N-1}(x-\omega^i)$, which is exactly 
+the vanishing polynomial of $\Omega$. Thus, $\gamma(x) = z_{\Omega}(x) = x^N-1$
+from \Cref{lemma:vanishing-polynomial}. 
+
+As for the second claim, recall that $w_i = 1/\prod_{j \neq
+i}^{N-1}(\omega^i-\omega^j)$. Intuitively, the real analysis
+shows that $w_i = 1/\gamma'(x_i)$ and since $\gamma(x)=x^N-1$, we 
+have exactly $w_i = 1/Nx^{N-1}\Big|_{x=\omega^i}=\omega^i/N$. The same 
+result can be obtained by direct computation. $\hfill\Box$
+
+That being said, the barycentric formula is now given by:
+\begin{equation*}
+    p(x) = \frac{x^N-1}{N} \sum_{j \in [N]} \frac{\omega^j}{x-\omega^j}a_j
+\end{equation*}
+
+This formula is a much more convenient form for the computation of the
+interpolation polynomial! First, the evaluation of the sum requires $O(N)$
+operations and it depends only on the values $\{\omega^j\}_{j \in [N]}$,
+which are typically pre-computed and used in many other parts of the protocol.
+Second, the evaluation of the vanishing polynomial $x^N-1$ requires $O(\log N)$
+operations using the fast exponentiation algorithm, compared to naive 
+$O(N)$ operations. 
+
+\subsubsection{Fast Polynomial Multiplication}
+
+\textcolor{blue!60!black}{\textbf{Forward NTT.}} Using the $N$th roots of unity $\Omega$, we can also compute the polynomial
+multiplication in $O(N \log N)$ operations. The idea is to use the \textbf{Number
+Theoretic Transform} (NTT) algorithm, which is a generalization of the Fast
+Fourier Transform (FFT) to the finite fields. But first, let us define 
+what NTT is.
+
+\begin{definition}[NTT]
+    Suppose the polynomial is given by $p(x) = \sum_{j=0}^{N-1}p_jx^j \in \mathbb{F}[x]$. In its
+    essence, the polynomial is defined as a vector of coefficients
+    $\boldsymbol{p}=(p_0,\dots,p_{N-1})$. The \textbf{Number Theoretic
+    Transform} (NTT) of polynomial $p(x)$ is the vector of evaluations at 
+    the $N$th roots of unity $\Omega$:
+    $\mathsf{NTT}(\boldsymbol{p}) =
+    (p(\omega^0),p(\omega^1),\dots,p(\omega^{N-1}))$.
+\end{definition}
+
+\begin{remark}
+    Typically, the $j$th component of the NTT vector is denoted as $\hat{p}_j = \mathsf{NTT}(\boldsymbol{p})_j$.
+\end{remark}
+
+If computed naively, the NTT requires $O(N^2)$ operations, since each 
+evaluation of $p(x)$ requires $O(N)$ operations. However, due to the 
+specifics of the selected domain $\Omega$, the NTT can be computed in
+$O(N \log N)$ operations. Let us emphasize this in the following lemma.
+
+\begin{lemma}
+    The \textbf{Number Theoretic Transform} (NTT) of a polynomial $p(x)$ can be
+    computed in $O(N \log N)$ operations using the $N$th roots of unity. This is
+    possible only if the prime field $\mathbb{F}_p$ allows to find the primitive
+    $2^k$ root of unity for $k \in [m]$ with large enough $m$. Equivalently, 
+    $2^k \mid (p-1)$ for $k \in [m]$.
+\end{lemma}
+
+To show this lemma is true, let us develop the concrete algorithm. Notice that 
+our task consists in computing:
+\begin{equation*}
+    p(\omega^i) = \sum_{j \in [N]} p_j (\omega^i)^j = \sum_{j \in [N]} p_j \omega^{ij} \; \text{for each} \; i \in [N]
+\end{equation*}
+
+Suppose the considered polynomial is such that $N=2^r$ (we can always pad the
+polynomial if that is not the case). Now, let us proceed with the polynomial as
+follows:
+\begin{equation*}
+    p(\omega^i) = \sum_{j=0}^{2^{r}-1}p_j\omega^{ij} = \sum_{j=0}^{2^{r-1}-1}p_{2j}\omega^{2ij} + \sum_{j=0}^{2^{r-1}-1}p_{2j+1}\omega^{i(2j+1)} = \sum_{j=0}^{2^{r-1}-1}p_{2j}(\omega^{2i})^j + \omega^i\sum_{j=0}^{2^{r-1}-1}p_{2j+1} (\omega^{2i})^j
+\end{equation*}
+
+This already looks interesting enough. Notice that we can introduce two new polynomials: $p_E(x)=\sum_{j=0}^{2^{r-1}-1}p_{2j}x^{j}$ and $p_O(x)=\sum_{j=0}^{2^{r-1}-1}p_{2j+1}x^{j}$, 
+which are polynomials, containing even and odd coefficients of $p$, respectively. In that case, 
+\begin{equation*}
+    p(\omega^i) = p_E(\omega^{2i}) + \omega^i p_O(\omega^{2i})
+\end{equation*}
+
+This is quite an interesting observation which already screams
+divide-and-conquer! However, currently it might still be unclear 
+how to use it: we still have to evaluate $N$ expressions of 
+form $p_E(\omega^{2i}) + \omega^i p_O(\omega^{2i})$ where both 
+polynomials $p_E$ and $p_O$ contain roughly $N/2$ coefficients, totalling 
+in $O(N^2)$ operations again. To counter this, we claim the following: 
+we need only half the domain of $\Omega$ to compute both $p_E$ and $p_O$.
+To see why, consider the expression $p(\omega^{i+N/2})$:
+\begin{equation*}
+    p(\omega^i) = p_E(\omega^{2(i+N/2)}) + \omega^{i+N/2}p_O(\omega^{2(i+N/2)}) = p_E(\omega^{2i}) + \omega^{i}\omega^{N/2}p_O(\omega^{2i})
+\end{equation*}
+
+In other words, having computed $p_E(\omega^{2i})$ and $p_O(\omega^{2i})$, we
+know not only $p(\omega^i)$, but also $p(\omega^{i+N/2})$ for free! This way, to
+compute the \textsf{NTT} for $N$-degree polynomial, we need to evaluate two
+$\frac{N}{2}$-degree polynomials at $\frac{N}{2}$ points. This way, on each
+step: (a) the evaluation domain shrinks in half, (b) the complexity of computing
+polynomials shrinks in half, (c) we get two new polynomials. This way, on each
+step, we reduce the problem complexity in half!
+
+The reason why the prime field should support multiplicative cyclic subgroups 
+of order $2^k$ for sufficiently many $k$ is that not always if $\omega$ is the 
+$N$th primitive root, then $\omega^2$ is the $\frac{N}{2}$th primitive root. If that is 
+not the case, all the aforementioned magic breaks.
+
+We summarize everything so far in the \Cref{alg:ntt}.
+
+\begin{algorithm}[H]
+    \caption{Number Theoretic Transform (NTT)}
+    \label{alg:ntt}
+    \Input{Polynomial $p(x) = \sum_{j=0}^{N-1}p_jx^j$}
+    \Output{Vector of evaluations $\mathsf{NTT}(\boldsymbol{p}, \omega)$ at $\Omega=\{\omega\}_{j \in [N]}$}
+
+    \If{$N=1$}{
+        \Return{$(p_0)$}
+    }
+
+    $H \gets N/2$ \Comment{Compute the domain half-size}
+
+    $\boldsymbol{p}_{E} \gets (p_0,p_2,\dots,p_{N-2})$ \Comment{Find even-indexed coefficients}
+
+    $\boldsymbol{p}_{O} \gets (p_1,p_3,\dots,p_{N-1})$ \Comment{Find odd-indexed coefficients}
+
+    $\boldsymbol{y}_E \gets \mathsf{NTT}(\boldsymbol{p}_{E}, \omega^2)$ \Comment{Compute NTT for even polynomial via $\frac{N}{2}$th primitive root $\omega^2$}
+
+    $\boldsymbol{y}_O \gets \mathsf{NTT}(\boldsymbol{p}_O, \omega^2)$ \Comment{Compute NTT for odd polynomial via $\frac{N}{2}$th primitive root $\omega^2$}
+
+    \Return{$(y_0,\dots,y_{N-1})$ with $y_j=y_{E, \;j \; \text{mod} \; H} + \omega^j y_{O, \; j \; \text{mod} \; H}$}
+\end{algorithm}
+
+\textcolor{purple}{\textbf{NTT Domain.}} OK, so what next? Suppose we want to
+multiply two polynomials $p(x), q(x) \in \mathbb{F}[X]$ of degree $N=2^r$ and we
+have successfully evaluated their NTTs. Say, we got $\hat{\boldsymbol{p}}$ and
+$\hat{\boldsymbol{q}}$. What can we do next? Here is another trick.
+
+\begin{proposition}
+    Suppose $m(x) = p(x)q(x)$ is the product of $p$ and $q$. Then,
+    \begin{equation*}
+        \hat{\boldsymbol{m}} = \hat{\boldsymbol{p}} \odot \hat{\boldsymbol{q}}
+    \end{equation*}
+
+    Speaking more formally, $\mathsf{NTT}: (\mathbb{F}^{(\leq N)}[X],\times) \to (\mathbb{F}^N, \odot)$ is 
+    a homomorphism between a set of polynomials of degree up to $N$ and their NTT domain. With certain 
+    appropriate technicalities, $\mathsf{NTT}$ can be extended to the isomorphism.
+\end{proposition}
+
+\textbf{Intuition.} Although this fact might come out of random, we give an
+intuitive explanation why this holds. One of NTT interpretations is well-known to you 
+\emph{interpolation}. Indeed, polynomials $p$ and $q$ satisfy the following 
+interpolation problem:
+\begin{equation*}
+    p(\omega^j) = \mathsf{NTT}(p)_j = \hat{p}_j, \quad q(\omega^j) = \mathsf{NTT}(q)_j = \hat{q}_j.
+\end{equation*}
+
+In turn, $\hat{m}_j$ is nothing but the evaluation of $m$ at $\omega^j$. But, if $m$ is the product of $p$ and $q$
+and values of $p$ and $q$ at $\omega^j$ are $\hat{p}_j$ and $\hat{q}_j$, this immediately implies that 
+$m(\omega^j)$ is nothing but $\hat{p}_j\hat{q}_j$. Meaning, $\hat{m}_j = \hat{p}_j\hat{q}_j$. This, in turn,
+implies $\hat{\boldsymbol{m}} = \hat{\boldsymbol{p}} \odot \hat{\boldsymbol{q}}$.
+
+Wow! What this essentially means is that multiplication in NTT domain is very cheap:
+it requires only $O(N)$ field multiplication operations! Now, the algorithm 
+of multiplication of $p$ and $q$ becomes a little bit more clear at this point:
+\begin{enumerate}
+    \item Compute NTTs $\hat{\boldsymbol{p}}$ and $\hat{\boldsymbol{q}}$ of $p$ and $q$.
+    \item Compute NTT $\hat{\boldsymbol{m}} = \hat{\boldsymbol{p}} \odot \hat{\boldsymbol{q}}$ of their product $m = pq$.
+    \item Restore $m(x)$ from NTT $\hat{\boldsymbol{m}}$ --- this problem is called Inverse NTT (INTT).
+\end{enumerate}
+
+\textcolor{green!60!black}{\textbf{Inverse NTT.}} So, the only problem left is restoring the polynomial from 
+its NTT form. This problem is equivalent to solving the interpolation problem:
+\begin{equation*}
+    m(\omega^j) = \hat{m}_j, \quad j \in [N]
+\end{equation*}
+
+Suprisingly, the \textbf{Inverse NTT} is given by $p_j =
+\frac{1}{N}\sum_{j=0}^{N-1}\hat{p}_j\omega^{-ij}$, which can be computed by
+running the forward NTT, but with generator $\omega^{-1}$. Division by $N$ is
+done over $\mathbb{F}_p$, which is surely trivial. We summarize the whole
+discussion in \Cref{fig:ntt}.
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[node distance=2.5cm, >=Stealth]
+    % Zones
+    \node[very thick, draw=blue, fill=blue, fill opacity=0.1,minimum width=9.5cm, minimum height=1.75cm,dashed,on background layer](targetbox) at (2.25, 0.1) {};
+    \node(targetzonelabel)[above=0.65cm of targetbox,anchor=north,color=blue!90!black]{\textbf{Polynomial Space $\mathbb{F}^{(\leq N)}[x]$}};
+
+    \node[very thick, draw=green, fill=green!80!black, fill opacity=0.1,minimum width=9.5cm, minimum height=2.0cm,dashed,on background layer](targetbox) at (2.25, -2.0) {};
+    \node(targetzonelabel)[below=0.15cm of targetbox,anchor=north,color=green!60!black]{\textbf{NTT Space}};
+
+    % Nodes
+    \node (pq) at (0,0) {\( p, q \)};
+    \node (m) [right=3cm of pq] {\( m = p \cdot q \)};
+    \node (pHatqHat) [below=2cm of pq] {\( \hat{p}, \hat{q} \)};
+    \node (mHat) [below=2cm of m] {\( \hat{m} = \hat{p} \odot \hat{q} \)};
+    
+    % Arrows
+    \draw[->, line width = 0.5mm] (pq) -- (m) node[midway, above] {$O(N^2)$};
+    \draw[->, dashed, line width = 0.5mm] (pq) -- (pHatqHat) node[midway, left] {$O(N \log N)$};
+    \draw[->, dashed, line width = 0.5mm] (pHatqHat) -- (mHat) node[midway, above] {$O(N)$};
+    \draw[->, dashed, line width = 0.5mm] (mHat) -- (m) node[midway, right] {$O(N \log N)$};
+
+    % Labels
+    \node at ($(pq)!0.5!(pHatqHat)$) [left] {};
+    
+    \end{tikzpicture}
+\caption{Illustration of the NTT Algorithm}
+\label{fig:ntt}
+\end{figure}
+
 \subsection{Plonk Arithmetization}
 
 Consider we have a certain relation $\mathcal{R}$, which we would like to write
@@ -347,10 +681,16 @@ The matrix $T$ with columns $\mathbf{A}$, $\mathbf{B}$ and $\mathbf{C} \in \math
 sets of constraints on matrices to just a few equations on polynomials, as we
 have already done for Groth16. Let $\omega$ be a primitive $N$-th root of
 unity\footnote{Suppose such $\omega$ exists, then $\omega^N = 1$ and $\omega^j
-\neq 1$ for $0 \le j < N$.} and let $\Omega = \{\omega^j\}_{0 \le j < N}$.
-Although currently the choice of set $\Omega$ might seem totally random, in the
-next sections we will see how the usage of Fast-Fourier Transform (FFT) will
-make this choice convenient.
+\neq 1$ for $0 \le j < N$.} and let $\Omega = \{\omega^j\}_{0 \leq j < N}$. In
+the \Cref{section:ntt}, we have already discussed the reasoning for choosing
+such a set $\Omega$. In particular, denote by $\{L_j\}_{0 \leq j < N}$ the
+Lagrange basis polynomials\footnote{Recall that by definition the Lagrange basis
+$\{L_j\}_{0 \leq j < N}$ for set $\mathcal{X}=(x_0,\dots,x_{N-1})$ is given by
+$L_j(x_i) = \delta_{ij}$.} for the set $\Omega$, which for the selected domain
+$\Omega$ are given by the following convenient form:
+\begin{equation*}
+    L_j(x) = \frac{\gamma_j(x^N - 1)}{x-\omega^j}, \quad \text{where $\gamma_j$ is some normalizing constant.}
+\end{equation*}
 
 Let $a, b, c, q_L, q_R, q_M, q_O, q_C, \pi \in \mathbb{F}^{(\leq N)}[X]$ be
 polynomials of degree at most $N$ that interpolate corresponding columns from
@@ -366,30 +706,16 @@ equation:
 
 Notice that this essentially means that the left polynomial $aq_L + bq_R + abq_M
 + cq_O + q_C + \pi$ has roots at $\omega^j$ for all $j \in [N]$. This is
-equivalent to stating that the polynomial $z_{\Omega}(X) =
-\prod_{j=0}^{N-1}(X-\omega^j)$ divides the left hand side. Now, the interesting
-fact\dots
-
-\begin{lemma}
-    It so happens that if $\Omega$ is a set of $N$-th roots of unity, then the
-    polynomial $z_{\Omega}(X) = X^N - 1$ is the vanishing polynomial of $\Omega$.
-\end{lemma}
-
-\textbf{Proof Idea.} If $\omega$ is the $N$th primitive root, then for any $h
-\in \Omega$ we have $h^N = 1$ and therefore all elements of $\Omega$ are the
-roots of $X^N-1$. There are precisely $N$ such roots, so $X^N-1$ can be 
-decomposed as a product of linear factors $c \cdot \prod_{j=0}^{N-1}(X-\omega^j)$. 
-It is easy to see that $c=1$ by comparing the leading coefficient. 
-
-\vspace{5px}
-Aha! So we have that $X^N-1$ must divide the left polynomial. Let us wrap this up 
-in the following proposition.
+equivalent to stating that the vanishing polynomial of $\Omega$ divides the left
+hand side. Due to the \Cref{lemma:vanishing-polynomial}, this vanishing
+polynomial is given by $z_{\Omega}(x) = x^N-1$.  Let us wrap this up in the
+following proposition.
 
 \begin{proposition}
     Now we can reduce down our first condition of \Cref{prop:plonk-conditions}
     to checking valid execution trace into the following claim over polynomials:
-    \[\exists t \in \mathbb{F}^{(\leq 3N)}[X]: \; aq_L + bq_R + abq_M + cq_O + q_C + \pi = z_{\Omega}t,\]
-    where $z_{\Omega}(X)$ is the vanishing polynomial $X^N - 1$.
+    \[\exists t \in \mathbb{F}^{(\leq 3N)}[x]: \; aq_L + bq_R + abq_M + cq_O + q_C + \pi = z_{\Omega}t,\]
+    where $z_{\Omega}(x)$ is the vanishing polynomial $x^N - 1$.
 \end{proposition}
 
 \textcolor{purple}{\textbf{Wiring Satisfability}.} The next step is to shrink the second condition imposed by the $V$ matrix. This
@@ -447,6 +773,8 @@ tedious part of PlonK. We split the following derivation into two parts:
     check whether a given function is a permutation using polynomials in several 
     forms.
 \end{itemize}
+
+Additionally, to avoid confusion, we denote the polynomial variable by capital letters ($X$, $Y$).
 
 \textbf{Set equality.} Having defined permutation, we can now reduce the second
 condition of \Cref{prop:plonk-conditions} of valid execution trace matrix into
@@ -519,12 +847,12 @@ overwhelming probability according to Schwartz-Zippel lemma.
 \textbf{Shorter Form.} Now, using the $3N$-th root of unity is a bit of overkill,
 so let us try compressing it down to $\Omega = \{\omega^j\}_{0 \leq j < N}$
 where $\omega$ is the $N$th root of unity. We will define three polynomials
-$S_{\sigma,1}$, $S_{\sigma,2}$, $S_{\sigma,3} \in \mathbb{F}[X]$, which are
+$S_{\sigma_1}$, $S_{\sigma_2}$, $S_{\sigma_3} \in \mathbb{F}[X]$, which are
 interpolated as follows:
 \begin{align*}
-    S_{\sigma,1}(\omega^i) &= \eta^{3k+\ell}, \quad (i, 0) \in \mathcal{I}, \quad \sigma((i, 0)) = (k, \ell) \\
-    S_{\sigma,2}(\omega^i) &= \eta^{3k+\ell}, \quad (i, 1) \in \mathcal{I}, \quad \sigma((i, 1)) = (k, \ell) \\
-    S_{\sigma,3}(\omega^i) &= \eta^{3k+\ell}, \quad (i, 2) \in \mathcal{I}, \quad \sigma((i, 2)) = (k, \ell)
+    S_{\sigma_1}(\omega^i) &= \eta^{3k+\ell}, \quad (i, 0) \in \mathcal{I}, \quad \sigma((i, 0)) = (k, \ell) \\
+    S_{\sigma_2}(\omega^i) &= \eta^{3k+\ell}, \quad (i, 1) \in \mathcal{I}, \quad \sigma((i, 1)) = (k, \ell) \\
+    S_{\sigma_3}(\omega^i) &= \eta^{3k+\ell}, \quad (i, 2) \in \mathcal{I}, \quad \sigma((i, 2)) = (k, \ell)
 \end{align*}
 
 Let $k_1$ and $k_2$ be two field elements such that $\omega^i \neq \omega^j k_1
@@ -533,14 +861,14 @@ $\beta$ and $\gamma$ are random field elements. Let $f$ and $g$ be the
 polynomials that interpolate, respectively, the following values at $\Omega$:
 \begin{align*}
     f(\omega^i) &=\left(T_{i,0} + \omega^i \beta + \gamma\right)\left(T_{i,1} + \omega^i k_1 \beta + \gamma\right)\left(T_{i,2} + \omega^i k_2 \beta + \gamma\right), \quad i \in [N] \\
-    g(\omega^i) &= \left(T_{i,0} + S_{\sigma,1}(\omega^i) \beta + \gamma\right)\left(T_{i,0} + S_{\sigma,2}(\omega^i) \beta + \gamma\right)\left(T_{i,0} + S_{\sigma,3}(\omega^i) \beta + \gamma\right), \quad i \in [N]
+    g(\omega^i) &= \left(T_{i,0} + S_{\sigma_1}(\omega^i) \beta + \gamma\right)\left(T_{i,0} + S_{\sigma_2}(\omega^i) \beta + \gamma\right)\left(T_{i,0} + S_{\sigma_3}(\omega^i) \beta + \gamma\right), \quad i \in [N]
 \end{align*}
 
 That being said, there is a polynomial $Z \in \mathbb{F}[X]$ such that $\forall
 d \in \mathcal{D}$ we have $Z(\omega^{0}) = 1$ and $Z(d)f(d) = g(d)Z(\omega d)$,
 implying $A = B$ with overwhelming probability. That being said, we now can
 encode our program using 8 polynomials mentioned at the very beginning:
-\[q_L, q_R, q_M, q_O, q_C, S_{\sigma,1}, S_{\sigma,2}, S_{\sigma,3}\]
+\[q_L, q_R, q_M, q_O, q_C, S_{\sigma_1}, S_{\sigma_2}, S_{\sigma_3}\]
 
 These are typically called \textbf{common preprocessed input}.
 
@@ -566,15 +894,15 @@ instance with public input given by $\boldsymbol{\Pi}$ if and only if:
 Then, we encode these conditions in terms of polynomials.
 
 \begin{definition}
-Let $z_{\Omega} = X^N - 1$ be a vanishing polynomial. Let $T \in \mathbb{F}^{N
+Let $z_{\Omega}(x) = x^N - 1$ be a vanishing polynomial. Let $T \in \mathbb{F}^{N
 \times 3}$ be a trace matrix with columns $\mathbf{A}, \mathbf{B}, \mathbf{C}
 \in \mathbb{F}^N$ and $\boldsymbol{\Pi} \in \mathbb{F}^N$ be a vector of public
 signals. They correspond to a valid execution instance with public input given
 by $\boldsymbol{\Pi}$ if and only if:
 
 \begin{enumerate}
-    \item \(\exists t_1 \in \mathbb{F}[X]: aq_L + bq_R + abq_M + cq_O + q_C + \pi = z_{\Omega}t_1\)
-    \item \(\exists t_2, t_3, z \in \mathbb{F}[X]: zf - gz' = z_{\Omega}t_2\) and \((z-1)L_1 = z_{\Omega}t_3\), where $z'(X) = z(X\omega)$.
+    \item \(\exists t_1 \in \mathbb{F}[x]: aq_L + bq_R + abq_M + cq_O + q_C + \pi = z_{\Omega}t_1\)
+    \item \(\exists t_2, t_3, z \in \mathbb{F}[x]: zf - gz' = z_{\Omega}t_2\) and \((z-1)L_1 = z_{\Omega}t_3\), where $z'(x) = z(\omega x)$.
 \end{enumerate}
 \end{definition}
 \begin{remark}
@@ -591,5 +919,249 @@ Let $\alpha$ be a random field element, then:
 The transition between second and third line is very unobvious and requires a 
 bit of algebraic manipulation. Don't worry if you don't see it immediately.
 \end{remark}
+
+
+\subsection{Plonk Prover and Verifier}
+
+In this part, we will observe how the Plonk turns its arithmetization system
+into the non-interactive proof. We consider how the prover and verifier specifically interact
+in the protocol.
+
+As in the previous section, let $N$ be the size of our program (number of
+gates). Let $\omega$ be a primitive $N$-th root of unity. Let $\Omega =
+\{\omega^j\}_{0 \leq j < N}$ with the vanishing polynomial $z_{\Omega}(x) := x^N
+- 1$.
+
+Assume we have conducted arithmetization of this program, obtaining eight
+polynomials. Now we will demonstrate commitment-scheme agnostic non-interactive
+(Fiat-Shamir) algorithms for both prover and verifier.
+
+\begin{remark}
+    Although the further discussion would involve statements like ``the prover
+    picks the random $\alpha,\beta$, \ldots'', it is important to note that
+    these values are not actually chosen by the prover, but rather computed
+    deterministically from the transcript using Fiat-Shamir heuristic. In case 
+    you are not familiar with Fiat-Shamir heuristic, we recommend you to revisit
+    the \Cref{section:zk}.
+\end{remark}
+
+\subsubsection{Gadgets}
+
+Before diving into the protocol, let us introduce the gadgets that will be used.
+
+\textcolor{blue!60!black}{\textbf{Commitment Scheme.}} We use the polynomial
+commitment scheme to commit to the polynomials. Similarly to Groth16, one might
+safely think of KZG commitment scheme to commit to the polynomials: for $p(x)
+\in \mathbb{F}^{(\leq N)}[x]$, the commitment is $\mathsf{com}(p) =
+g^{p(\tau)}$, which is evaluated using the powers of the generator $g$. The
+opening procedure at point $\zeta \in \mathbb{F}$ of the commitment is simply
+finding the encryption $g^{Q(\tau)}$ of the quotient polynomial $Q(x) :=
+(p(x)-y)/(x-\zeta)$, where $y$ is the value of the polynomial at $\zeta$.
+Finally, verification simply involves applying pairing. Note that other
+commitment schemes might be used as well.
+
+\textcolor{blue!60!black}{\textbf{Blindings.}} In the protocol, to achieve 
+the HZVK property (honest verifier zero-knowledge), the prover must somehow 
+conceal the polynomials he works with. Specifically, consider the polynomial 
+$b(x)$ that is computed as the interpolated values from the trace table (namely, 
+$b(\omega^j) = T_{j,1}$). However, the prover, by providing the opening $b(\zeta)$,
+should not reveal any information on polynomial $b(x)$ itself. To achieve this, the prover
+extends $b(x) \in \mathbb{F}^{(\leq N)}[x]$ to the higher-degree polynomial $\widetilde{b}(x)$
+with the condition that $\widetilde{b}(\omega^j) = b(\omega^j) = T_{j,1}$. However, for higher 
+degrees, there are multitude of choices for $\widetilde{b}(x)$, so we need to standardize 
+this choice. 
+
+Assume we extend $b(x)$ to $\widetilde{b}(x) \in \mathbb{F}^{(\leq N')}[x]$ of
+higher degree $N'>N$. For convenience, assume $N' = N + \delta$ with $\delta \in
+\mathbb{N}$. How can we construct such $\widetilde{b}(x)$? We can do this by
+sampling random values $\gamma_0,\gamma_1,\dots,\gamma_{\delta} \xleftarrow{R} \mathbb{F}$ and 
+letting:
+\begin{equation*}
+    \widetilde{b}(x) = b(x) + z_{\Omega}(x)\sum_{j=0}^{\delta}\gamma_jx^j
+\end{equation*}
+
+Why does this work? Let us substitute any $\omega^i \in \Omega$:
+\begin{equation*}
+    \widetilde{b}(\omega^i) = b(\omega^i) + z_{\Omega}(\omega^i)\sum_{j=0}^{\delta}\gamma_j\omega^{ij} = b(\omega^i).
+\end{equation*}
+
+Here, we use the fact that $z_{\Omega}(\omega^i) = 0$ for all $i \in [N]$ since $z_{\Omega}$ is, 
+by definition, the vanishing polynomial of $\Omega \ni \omega^i$.
+
+\subsubsection{Proving}
+Let us finally proceed with the prover protocol.
+
+\textcolor{green!60!black}{\textbf{Round 1.}} Add to the transcript commitments
+of 8 arithmetizational polynomials:
+\begin{equation*}
+    (\mathsf{com}(S_{\sigma_1}), \mathsf{com}(S_{\sigma_2}), \mathsf{com}(S_{\sigma_3}), \mathsf{com}(q_L), \mathsf{com}(q_R), \mathsf{com}(q_M), \mathsf{com}(q_O), \mathsf{com}(q_C))
+\end{equation*}
+Interpolate polynomials $a'(x), b'(x), c'(x)$ over corresponding columns of $T$ matrix at
+the domain $\Omega$. Sample random $b_1, b_2, b_3, b_4, b_5, b_6 \xleftarrow{R}
+\mathbb{F}$. Let the blinded polynomials be:
+\begin{align*}
+\centering
+a &:= (b_1 x + b_2)z_{\Omega}(x) + a'(x) \\
+b &:= (b_3 x + b_4)z_{\Omega}(x) + b'(x) \\
+c &:= (b_5 x + b_6)z_{\Omega}(x) + c'(x)
+\end{align*}
+Add to the transcript commitments $(\mathsf{com}(a), \mathsf{com}(b),
+\mathsf{com}(c))$ of computed above polynomials.
+
+\textcolor{green!60!black}{\textbf{Round 2.}}  Sample random scalars $\beta,
+\gamma \xleftarrow{R} \mathbb{F}$ from the transcript. Let $z_0 = 1$ and define
+recursively the following sequence $\{z_k\}_{0 \leq k < N}$:
+\begin{equation*}
+    z_{k+1} = \frac{(a_k + \beta \omega^{k} + \gamma) (b_k + \beta \omega^{k}k_1 + \gamma) (c_k + \beta \omega^{k}k_2 + \gamma)}{(a_k + \beta S_{\sigma_1}(\omega^{k}) + \gamma) (b_k + \beta S_{\sigma_2}(\omega^{k}) + \gamma) (c_k + \beta S_{\sigma_3}(\omega^{k}) + \gamma)} \cdot z_k, \quad k \in [N]
+\end{equation*}
+
+Interpolate polynomial $z'(x)$ over evaluations $(z_0, \dots, z_{N-1})$ at the
+domain $\Omega$. Sample random $b_7, b_8, b_9 \xleftarrow{R} \mathbb{F}$. Let $z(x)
+= (b_7 x^2 + b_8 x + b_9)z_{\Omega}(x) + z'(x)$. Add $\mathsf{com}(z)$ to the transcript.
+
+\textcolor{green!60!black}{\textbf{Round 3.}} Sample $\alpha \xleftarrow{R}
+\mathbb{F}$ from the transcript. Let $\pi(X)$ be the interpolation polynomial of the
+input matrix $\Pi$ at the domain $\Omega$. Define three new polynomials:
+\begin{align*}
+p_1(x) &= aq_L + bq_R + abq_M + cq_O + q_C + \pi \\
+p_2(x) &= (a + \beta X + \gamma)(b + \beta k_1 X + \gamma)(c + \beta k_2 X + \gamma)z - \\
+    &- (a + \beta S_{\sigma_1} + \gamma)(b + \beta S_{\sigma_2} + \gamma)(c + \beta S_{\sigma_3} + \gamma)z(\omega x) \\
+p_3(x) &= (z(x) - 1)L_1(x)
+\end{align*}
+
+Define the composite polynomial $p = p_1 + \alpha p_2 + \alpha^2 p_3$. Compute
+$t$ such that $p = tz_{\Omega}$. Write $t = t_{\text{low}} +
+x^{N+2}t_{\text{mid}} + x^{2(N+2)}t_{\text{high}}$, with $t_{\text{low}},
+t_{\text{mid}}$, and $t_{\text{high}} \in \mathbb{F}^{\leq (N+1)}[x]$
+polynomials of degree at most $N+1$. Sample random $b_{10}, b_{11}
+\xleftarrow{R} \mathbb{F}$ and define:
+\begin{align*}
+t_{\text{low}} &= t'_{\text{low}} + b_{10}x^{N+2} \\
+t_{\text{mid}} &= t'_{\text{mid}} - b_{10} + b_{11}x^{N+2} \\
+t_{\text{high}} &= t'_{\text{high}} - b_{11}
+\end{align*}
+
+Add to the transcript commitments $(\mathsf{com}(t_{\text{low}}), \mathsf{com}(t_{\text{mid}}), \mathsf{com}(t_{\text{high}}))$.
+
+\textcolor{green!60!black}{\textbf{Round 4.}} Sample random $\zeta \xleftarrow{R}
+\mathbb{F}$ from the transcript. Compute:
+\[\bar{a} = a(\zeta), \bar{b} = b(\zeta), \bar{c} = c(\zeta), \bar{S}_{\sigma_1} = S_{\sigma_1}(\zeta), \bar{S}_{\sigma_2} = S_{\sigma_2}(\zeta), \bar{S}_{\sigma_3} = S_{\sigma_3}(\zeta), \bar{z}_{\omega} = z(\zeta \omega)\]
+and add them to the transcript.
+
+\textcolor{green!60!black}{\textbf{Round 5.}} Sample random $v \xleftarrow{R}
+\mathbb{F}$ from the transcript. Let:
+\begin{align*}
+\hat{p}_{\text{nc},1}(x) &= \bar{a}q_L + \bar{b}q_R + \bar{a}\bar{b}q_M + \bar{c}q_O + q_C \\
+\hat{p}_{\text{nc},2}(x) &= (\bar{a} + \beta \zeta + \gamma)(\bar{b} + \beta k_1 \zeta + \gamma)(\bar{c} + \beta k_2 \zeta + \gamma) z
+- (\bar{a} + \beta \bar{S}_{\sigma_1} + \gamma)(\bar{b} + \beta \bar{S}_{\sigma_2} + \gamma)\beta \overline{z}_{\omega}S_{\sigma_3} \\
+\hat{p}_{\text{nc},3}(x) &= L_1(\zeta)z(x)
+\end{align*}
+Define:
+\begin{align*}
+p_{\text{nc}} &= p_{\text{nc},1} + \alpha p_{\text{nc}, 2} + \alpha^2 p_{\text{nc}, 3} \\
+t_{\text{partial}} &= t_{\text{low}} + \zeta^{N+2}t_{\text{mid}} + \zeta^{2(N+2)}t_{\text{high}}
+\end{align*}
+The subscript \emph{nc} stands for ``non-constant,'' as it is the part of the
+linearization of $p$ with nonconstant factors. The subscript \emph{partial} indicates
+that it is a partial evaluation of $t$ at $\zeta$. Partial means that only some
+power of $x$ is replaced by the powers of $\zeta$. So in particular
+$t_{\text{partial}}(\zeta) = t(\zeta)$. Let $\pi_B$ be the opening (\textbf{B}atch) proof at
+$\zeta$ of the polynomial $f_B$ defined as: 
+\[
+f_B = t_{\text{partial}} + v p_{\text{nc}} + v^2 a + v^3 b + v^4 c + v^5 S_{\sigma_1} + v^6 S_{\sigma_2}
+\]
+Let $\pi_{S}$ be the (\textbf{S}ingle) opening proof at $\zeta\omega$ of the polynomial
+$z$. Finally, compute $\bar{p}_{\text{nc}} := p_{\text{nc}}(\zeta)$ and $\bar{t} = t(\zeta)$.
+
+\textcolor{purple}{\textbf{Proof.}} All in all, our proof $\pi$ looks as follows:
+\begin{equation*}
+    \pi = \begin{pmatrix}\mathsf{com}(a), \mathsf{com}(b), \mathsf{com}(c), \mathsf{com}(z), \mathsf{com}(t_{\text{low}}), \mathsf{com}(t_{\text{mid}}), \mathsf{com}(t_{\text{high}}), \\
+        \bar{a}, \bar{b}, \bar{c}, \bar{S}_{\sigma_1}, \bar{S}_{\sigma_2}, \bar{z}_{\omega}, \pi_{B}, \pi_{S}, \bar{p}_{\text{nc}}, \bar{t}
+    \end{pmatrix}
+\end{equation*}
+
+\subsubsection{Verification}
+
+\textcolor{blue!60!black}{\textbf{Transcript Initialization.}} Similarly to
+prover, the verifier adds the following commitments to the transcript:
+\begin{equation*}
+    (\mathsf{com}(S_{\sigma_1}), \mathsf{com}(S_{\sigma_2}), \mathsf{com}(S_{\sigma_3}), \mathsf{com}(q_L), \mathsf{com}(q_R), \mathsf{com}(q_M), \mathsf{com}(q_O), \mathsf{com}(q_C))
+\end{equation*}
+
+\textcolor{blue!60!black}{\textbf{Extraction of values and commitments}.}
+Firstly, the verifier needs to compute all the challenges. For that, he follows
+the following steps:
+\begin{itemize}
+    \item Add com($a$), com($b$), com($c$) to the transcript.
+    \item Sample two challenges $\beta$, $\gamma$.
+    \item Add com($z$) to the transcript.
+    \item Sample the challenge $\alpha$.
+    \item Add com($t_{\text{low}}$), com($t_{\text{mid}}$), com($t_{\text{high}}$) to the transcript.
+    \item Sample the challenge $\zeta$.
+    \item Add $\bar{a}$, $\bar{b}$, $\bar{c}$, $\bar{S}_{\sigma_1}$, $\bar{S}_{\sigma_2}$, $\bar{z}_{\omega}$ to the transcript.
+    \item Sample the challenge $v$.
+\end{itemize}
+
+\textcolor{blue!60!black}{\textbf{Compute $\pi(\zeta)$.}} Besides, the verifier
+needs to compute a few values of all these data. First, he computes the $\Pi$
+matrix with the public inputs and outputs. He needs to compute $\pi(\zeta)$,
+where $\pi(x)$ is the interpolation of $\Pi$ over the domain $\Omega$. But he
+does not need to compute $\pi$. He can instead compute $\pi(\zeta)$ as follows:
+\begin{equation*}
+    \pi(\zeta) = \sum_{i=0}^n L_i(\zeta)\Pi_{i},
+\end{equation*}
+where $n$ is the number of public inputs.
+
+\textcolor{blue!60!black}{\textbf{Compute claimed values $p(\zeta)$ and
+$t(\zeta)$.}} Next, the verifier computes: 
+\[\bar{p}_C = p_1(\zeta) + \alpha z_{\omega} \left( \bar{c} + \gamma \right)
+\left( \bar{a} + \beta \bar{S}_{\sigma_1} + \gamma \right) \left( \bar{b} +
+\beta \bar{S}_{\sigma_2} + \gamma \right) - \alpha^2 L_1(\zeta)\] This is the
+constant part of the linearization of $p$. So, adding it to what the prover
+claims to be $\bar{p}_{\text{nc}}$, he obtains $p(\zeta) = \bar{p}_C + \bar{p}_{\text{nc}}$.
+
+Compute $\mathsf{com}(t_{\text{partial}})$ and
+$\mathsf{com}(p_{\text{nc}})$. He computes these of the commitments in the
+proof as follows:
+\begin{equation*}
+    \mathsf{com}(t_{\text{partial}}) = \mathsf{com}(t_{\text{low}}) + \zeta^{N+2}\mathsf{com}(t_{\text{mid}}) + \zeta^{2(N+2)}\mathsf{com}(t_{\text{high}})
+\end{equation*}
+
+For the second one, compute those:
+\begin{align*}
+\mathsf{com}(p_{\text{nc},1}) &= \bar{a}\cdot\mathsf{com}(q_L) + \bar{b} \cdot \mathsf{com}(q_R) + \bar{a}\bar{b} \cdot \mathsf{com}(q_M) + \bar{c} \cdot \mathsf{com}(q_O) + \mathsf{com}(q_C) \\
+\mathsf{com}(p_{\text{nc},2}) &= (\bar{a} + \beta \zeta + \gamma)(\bar{b} + \beta k_1 \zeta + \gamma)(\bar{c} + \beta k_2 \zeta + \gamma) \cdot\mathsf{com}(z) \\ 
+&- (\bar{a} + \beta \bar{S}_{\sigma_1} + \gamma)(\bar{b} + \beta \bar{S}_{\sigma_2} + \gamma)\beta z_{\omega}\cdot \mathsf{com}(S_{\sigma_3}) \\
+\mathsf{com}(p_{\text{nc},3}) &= L_1(\zeta)\cdot\mathsf{com}(z)
+\end{align*}
+
+Then $\mathsf{com}(p_{\text{nc}}) = \mathsf{com}(p_{\text{nc},1}) + \mathsf{com}(p_{\text{nc},2}) + \mathsf{com}(p_{\text{nc},3})$.
+
+\textcolor{blue!60!black}{\textbf{Compute claimed value $f_{B}(\zeta)$ and $\mathsf{com}(f_{B})$.}} The verifier computes 
+the following two final quantities:
+\begin{align*}
+f_{B}(\zeta) &= \bar{t} + v \bar{p}_{\text{nc}} + v^2 \bar{a} + v^3 \bar{b} + v^4 \bar{c} + v^5 \bar{S}_{\sigma_1} + v^6 \bar{S}_{\sigma_2} \\
+\mathsf{com}(f_{B}) &= \mathsf{com}(t_{\text{partial}}) + v \cdot \mathsf{com}(p_{nc}) + v^2 \cdot \mathsf{com}(a) + \\
+&+ v^3 \cdot \mathsf{com}(b) + v^4 \cdot \mathsf{com}(c) + v^5 \cdot \mathsf{com}(S_{\sigma_1}) + v^6 \cdot \mathsf{com}(S_{\sigma_2})
+\end{align*}
+
+\textcolor{blue!60!black}{\textbf{Proof check.}} Now the verifier has all the
+necessary values to proceed with the checks.
+\begin{itemize}
+    \item Check that $p(\zeta)$ equals $(\zeta^N - 1)t(\zeta)$.
+    \item Verify the opening of $f_{B}$ at $\zeta$. That is, run the check:
+        \begin{equation*}
+            \text{Verify}(\mathsf{com}(f_{B}), \pi_{B}, \zeta, f_{B}(\zeta))
+        \end{equation*}
+    \item Verify the opening of $z$ at $\zeta\omega$. That is, check the
+    validity of the proof $\pi_{S}$ using the commitment $\mathsf{com}(z)$ and the
+    value $\bar{z}_{\omega}$:
+        \begin{equation*}
+            \text{Verify}(\mathsf{com}(z), \pi_{S}, \zeta\omega, \bar{z}_{\omega})
+        \end{equation*}
+\end{itemize}
+
+If all checks pass, output $\textcolor{green!60!black}{\mathsf{accept}}$.
+Otherwise, output $\textcolor{red!60!black}{\mathsf{reject}}$.
 
 \end{document}

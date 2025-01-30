@@ -159,6 +159,7 @@
 \newcommand{\dx}{\,dx}
 \newcommand{\dy}{\,dy}
 \newcommand{\dt}{\,dt}
+\newcommand{\lcm}{\text{lcm}}
 \newcommand{\dax}{\,d\alpha(x)}
 \newcommand{\dbx}{\,d\beta(x)}
 \DeclareMathOperator{\glb}{\text{glb}}
@@ -169,6 +170,7 @@
 \newcommand{\<}{\langle}
 \renewcommand{\>}{\rangle}
 \renewcommand{\iff}{\Leftrightarrow}
+\renewcommand{\gcd}{\text{gcd}}
 \DeclareMathOperator{\im}{\text{im}}
 \let\spn\relax\let\Re\relax\let\Im\relax
 \DeclareMathOperator{\spn}{\text{span}}

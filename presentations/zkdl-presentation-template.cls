@@ -12,6 +12,20 @@
 % --- Listing settings ---
 \RequirePackage{listings, ../listings-circom}
 
+% --- Algorithm packages ---
+\RequirePackage[
+    titlenumbered,
+    linesnumbered,
+    ruled
+]{algorithm2e}
+\SetKwInOut{Input}{Input}
+\SetKwInOut{Output}{Output}
+\SetKwInOut{Return}{Return}
+
+\SetKwComment{Comment}{/* }{ */}
+\newcommand\mycommentstyle[1]{\footnotesize\ttfamily\textcolor{red!70!black}{#1}}
+\SetCommentSty{mycommentstyle}
+
 % --- Setting the theme ---
 \usetheme{altarguelles}
 \setbeamertemplate{sections/subsections in toc}[square]

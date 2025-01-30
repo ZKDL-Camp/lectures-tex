@@ -1,0 +1,372 @@
+\documentclass[../lecture-notes.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Linear Algebra Basics}
+
+Although linear algebra is out of the main scope of this course, familiarity
+with its basic definitions and concepts is still essential (especially when
+considering Linear PCPs further from \Cref{section:r1cs}). In this section, we
+provide a brief review of the key principles that are used throughout the
+course. You can skip this section without any doubts if you are already
+familiare with that, and come back to it whenever you need to refresh your
+memory.
+
+\subsubsection{Vector Space}
+
+Similarly to group theory working with \textit{groups}, the linear algebra also has a special designated primitive --- \textbf{vector space}. If previously we were working
+with the (finite) field $\mathbb{F}$, now we will work with the vector space $V$ over this field. In many practical applications,
+vector space is formed by \textbf{vectors} consisting of a finite fixed collection of elements from the field $\mathbb{F}$. For example,
+the vector space might be simply $\mathbb{F}^n$: the set of all $n$-tuples $(x_1,x_2,\dots,x_n)$ of elements from $\mathbb{F}$. Yet, let us give a bit more general definition.
+
+\begin{definition}
+    A \textbf{vector space} $V$ over the field $\mathbb{F}$ is an abelian group for addition $+$ together with a scalar multiplication operation $\cdot$ from $\mathbb{F} \times V$ to $V$, sending $(\lambda,x) \mapsto \lambda x$ and such that for any $\mathbf{v},\mathbf{u} \in V$ and $\lambda,\mu \in \mathbb{F}$ we have:
+    \begin{itemize}
+        \item $\lambda(\mathbf{u}+\mathbf{v}) = \lambda \mathbf{u} + \lambda \mathbf{v}$
+        \item $(\lambda + \mu)\mathbf{v} = \lambda \mathbf{v} + \mu \mathbf{v}$
+        \item $(\lambda \mu)\mathbf{v} = \lambda(\mu \mathbf{v})$
+        \item $1\mathbf{v} = \mathbf{v}$
+    \end{itemize}
+
+    Any element $\mathbf{v} \in V$ is called a \textbf{vector}, and any element $\lambda \in \mathbb{F}$ is called a \textbf{scalar}. We also mark vector elements in boldface.
+\end{definition}
+
+\begin{example}
+    For example, $V = \mathbb{F}^n$ with operations defined as:
+    \begin{equation*}
+        \begin{aligned}
+            \lambda \cdot (x_1,x_2,\dots,x_n) &= (\lambda x_1, \lambda x_2, \dots, \lambda x_n) \\
+            (x_1,x_2,\dots,x_n) + (y_1,y_2,\dots,y_n) &= (x_1+y_1, x_2+y_2, \dots, x_n+y_n)
+        \end{aligned}
+    \end{equation*}
+    is a vector space. Similarly, the following three sets $V_1,V_2,V_3$ with operations defined above are also valid vector spaces:
+    \begin{equation*}
+        \begin{aligned}
+            &V_1 = \{(x_1,x_2,\dots,x_n) \in \mathbb{F}^n: x_1 = 0\} \\
+            &V_2 = \{(x_1,x_2,\dots,x_n) \in \mathbb{F}^n: x_1-x_3 = 0\} \\
+            &V_3 = \{(x_1,x_2,\dots,x_n) \in \mathbb{F}^n: x_1+x_2+\dots+x_n = 0\}
+        \end{aligned}
+    \end{equation*}
+
+    \textbf{Reasoning.} Let us see why, for example, $V_3$ is a valid vector space. Since all operations 
+    are inherited from $\mathbb{F}^n$, we only need to check that $V_3$ is closed under addition and scalar multiplication.
+    Suppose $\mathbf{v}_1=(x_1,\dots,x_n),\mathbf{v}_2=(y_1,\dots,y_n) \in V_3$. Then:
+    \begin{equation*}
+        \mathbf{v}_1 + \mathbf{v_2} = (x_1+x_2,\dots,x_n+y_n)
+    \end{equation*}
+    Note that $\sum_{i=1}^n x_i+y_i = \left(\sum_{i=1}^n x_i\right) + \left(\sum_{i=1}^ny_i\right) = 0 + 0 = 0$, so the sum is indeed closed.
+\end{example}
+
+We will also need to define one very important notion: the linear dependence and independence of vectors.
+
+\begin{definition}
+    A set of vectors $\{\mathbf{v}_1, \mathbf{v}_2, \dots, \mathbf{v}_k\}$ in a vector space $V$ over a field $\mathbb{F}$ is said to be \textbf{linearly independent} if the only scalars $\lambda_1, \lambda_2, \dots, \lambda_k \in \mathbb{F}$ that satisfy the equation
+    \begin{equation*}
+        \lambda_1 \mathbf{v}_1 + \lambda_2 \mathbf{v}_2 + \cdots + \lambda_k \mathbf{v}_k = \mathbf{0}
+    \end{equation*}
+    are $\lambda_1 = \lambda_2 = \cdots = \lambda_k = 0$. If there exist scalars, not all zero, that satisfy this equation, then the vectors are said to be \textbf{linearly dependent}.
+\end{definition}
+
+\begin{example}
+    Consider the vectors $\mathbf{v}_1 = (1, 0, 0)$, $\mathbf{v}_2 = (0, 1, 0)$, and $\mathbf{v}_3 = (0, 0, 1)$ in $\mathbb{R}^3$. These vectors are linearly independent because the only solution to
+    \begin{equation*}
+        \lambda_1 \mathbf{v}_1 + \lambda_2 \mathbf{v}_2 + \lambda_3 \mathbf{v}_3 = \mathbf{0}
+    \end{equation*}
+    is $\lambda_1 = \lambda_2 = \lambda_3 = 0$.
+\end{example}
+
+\begin{example}
+    Consider the vectors $\mathbf{u}_1 = (1, 2, 3)$, $\mathbf{u}_2 = (2, 4, 6)$ in $\mathbb{R}^3$. These vectors are linearly dependent because $\mathbf{u}_2 = 2\mathbf{u}_1$, so the equation
+    \begin{equation*}
+        \lambda_1 \mathbf{u}_1 + \lambda_2 \mathbf{u}_2 = \mathbf{0}
+    \end{equation*}
+    has non-trivial solutions, such as $\lambda_1 = 2$ and $\lambda_2 = -1$.
+\end{example}
+
+\subsubsection{Matrix}
+
+Besides vectors, frequently we are working with \textbf{matrices}. In the most
+basic sense, the matrix is a rectangular array of numbers, symbols, or
+expressions, arranged in rows and columns. For example, the matrix $A$ with $m$
+rows and $n$ columns, consisting of elements from the finite field $\mathbb{F}$
+is denoted as $A \in \mathbb{F}^{m \times n}$. Additionally, we use notation $A
+= \{a_{i,j}\}_{i,j=1}^{m \times n}$ to denote the square matrix $A$ of size $m
+\times n$ with elements $a_{i,j}$. Now, let us define operations on matrices.
+
+\begin{definition}
+    Let $A,B$ be two matrices over the field $\mathbb{F}$. The following operations are defined:
+    \begin{itemize}
+        \item \textbf{Matrix addition/subtraction}: $A \pm B = \{a_{i,j} \pm b_{i,j}\}_{i,j=1}^{m \times n}$. The matrices $A$ and $B$ must have the same size $m \times n$.
+        \item \textbf{Scalar multiplication}: $\lambda A = \{\lambda a_{i,j}\}_{1\leq i,j \leq n}$ for any $\lambda \in \mathbb{F}$.
+        \item \textbf{Matrix multiplication}: $C = AB$ is a matrix $C \in \mathbb{F}^{m \times p}$ with elements $c_{i,j} = \sum_{\ell=1}^{n} a_{i,\ell}b_{\ell,j}$. The number of columns in $A$ must be equal to the number of rows in $B$, that is $A \in \mathbb{F}^{m \times n}$ and $B \in \mathbb{F}^{n \times p}$.
+    \end{itemize}
+\end{definition}
+
+\begin{example}
+    Suppose $\mathbb{F} = \mathbb{R}$. Then, consider 
+    \begin{equation*}
+        A = \begin{bmatrix}
+            1 & 1 & 2 \\
+            2 & 2 & 1
+        \end{bmatrix} \in \mathbb{R}^{2 \times 3}, \quad B = \begin{bmatrix}
+            2 & 1 \\
+            1 & 3 \\
+            1 & 1
+        \end{bmatrix} \in \mathbb{R}^{3 \times 2}
+    \end{equation*}
+
+    We cannot add $A$ and $B$ since they have different sizes. However, we can multiply them:
+    \begin{equation*}
+        AB = \begin{bmatrix}
+            5 & 6 \\ 7 & 9
+        \end{bmatrix}, \quad BA = \begin{bmatrix}
+            4 & 4 & 5 \\
+            7 & 7 & 5 \\
+            3 & 3 & 3
+        \end{bmatrix}
+    \end{equation*}
+
+    To see why, for example, the upper left element of $AB$ is $5$, we can calculate it as $\sum_{\ell=1}^3 a_{1,\ell}b_{\ell,1} = 1 \times 2 + 1 \times 1 + 2 \times 1 = 5$.
+\end{example}
+
+\begin{remark}
+    Now, we add a very important remark. It just so happens that when working with vectors, we usually assume that they are \textbf{column vectors}. This means that the vector $v = (v_1,v_2,\dots,v_n)$ is represented as a matrix:
+    \begin{equation*}
+        \mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{bmatrix}
+    \end{equation*} 
+    This is a common convention in linear algebra, and we will use it in the following sections.
+\end{remark}
+
+Sometimes we may derive some rows or columns of the matrix from the others. There is a very important notion related to this.
+
+\begin{definition}
+    The \textbf{rank} of a matrix $A \in \mathbb{F}^{m \times n}$ is the maximum number of linearly independent rows or columns in $A$. This is also known as the \textbf{row rank} or \textbf{column rank} of the matrix.
+\end{definition}
+
+\begin{remark}
+    The row rank and column rank of a matrix are always equal.
+\end{remark}
+
+\begin{example}
+    Consider the matrix $A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$. To
+    determine the rank of $A$, we can perform certain linear rows (or columns)
+    permutations to show that the rows (or columns) are linearly independent
+    vectors. For example, we can perform the following operations:
+    \begin{equation*}
+        \begin{bmatrix} 
+            1 & 2 \\ 
+            3 & 4 
+        \end{bmatrix} 
+        \xrightarrow{R_2 \gets R_2 - 3R_1} 
+        \begin{bmatrix} 
+            1 & 2 \\ 
+            0 & -2 
+        \end{bmatrix} 
+        \xrightarrow{R_2 \gets - \frac{1}{2}R_2} 
+        \begin{bmatrix} 
+            1 & 2 \\ 
+            0 & 1 
+        \end{bmatrix} 
+        \xrightarrow{R_1 \gets R_1 - 2R_2} 
+        \begin{bmatrix}
+            1 & 0 \\
+            0 & 1 
+        \end{bmatrix}
+    \end{equation*}
+    Since we can clearly see that the rows (and columns) are linearly independent, the rank of $A$ is $2$.
+\end{example}
+
+\begin{example}
+    Consider the matrix $B = \begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$. Let's perform the following operations:
+    \begin{equation*}
+        \begin{bmatrix} 
+            1 & 2 \\ 
+            2 & 4 
+        \end{bmatrix} 
+        \xrightarrow{R_2 \gets R_2 - 2R_1} 
+        \begin{bmatrix} 
+            1 & 2 \\ 
+            0 & 0 
+        \end{bmatrix}
+    \end{equation*}
+    Here we can see that the second row is a linear combination of the first row, so the rank of $B$ is $1$.
+\end{example}
+
+One important operation we will be frequently working with is the \textbf{transpose} of the matrix. The transpose of a matrix is an operator that flips a matrix over its diagonal, that is, it switches the row and column indices of the matrix by producing another matrix denoted as $A^{\top}$.
+
+\begin{definition}[Transposition]
+    Given a matrix $A \in \mathbb{F}^{m \times n}$, the \textbf{transpose} of $A$ is a matrix $A^{\top} \in \mathbb{F}^{n \times m}$ with elements $A^{\top}_{ij} = A_{ji}$.
+\end{definition}
+
+\begin{example}
+    For example, consider the square matrix $A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$. Then, the transpose of $A$ is $A^{\top} = \begin{bmatrix} 1 & 3 \\ 2 & 4 \end{bmatrix}$. However, we can transpose any matrix, for example, the matrix $B = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{bmatrix}$ has the transpose $B^{\top} = \begin{bmatrix} 1 & 4 \\ 2 & 5 \\ 3 & 6 \end{bmatrix}$. Finally, what is probably very important to us, the column vector $\mathbf{v} = \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}$ has the transpose $\mathbf{v}^{\top} = [1,2,3]$.
+\end{example}
+
+Finally, is just happens that we can construct matrix from the vectors. Therefore, let us introduce the corresponding notation.
+\begin{definition}[Composing Matrix from vectors]
+    Suppose we are given $n$ vectors $\mathbf{v}_1,\mathbf{v}_2,\dots,\mathbf{v}_n \in \mathbb{F}^m$. Then, we might define matrix $A$ as a matrix with columns $\mathbf{v}_1,\mathbf{v}_2,\dots,\mathbf{v}_n$ as follows:
+    \begin{equation*}
+        A = \begin{bmatrix}
+            \mathbf{v}_1 & \mathbf{v}_2 & \dots & \mathbf{v}_n
+        \end{bmatrix} = \begin{bmatrix}
+            v_{1,1} & v_{2,1} & \dots & v_{n,1} \\
+            v_{1,2} & v_{2,2} & \dots & v_{n,2} \\
+            \vdots & \vdots & \ddots & \vdots \\
+            v_{1,m} & v_{2,m} & \dots & v_{n,m}
+        \end{bmatrix}
+    \end{equation*}
+
+    Alternatively, vectors might be represented as rows, and the matrix $A$ might be defined as a matrix with rows $\mathbf{v}_1,\mathbf{v}_2,\dots,\mathbf{v}_n$:
+    \begin{equation*}
+        A = \begin{bmatrix}
+            \mathbf{v}_1^{\top} \\ \mathbf{v}_2^{\top} \\ \vdots \\ \mathbf{v}_n^{\top}
+        \end{bmatrix} = \begin{bmatrix}
+            v_{1,1} & v_{1,2} & \dots & v_{1,m} \\
+            v_{2,1} & v_{2,2} & \dots & v_{2,m} \\
+            \vdots & \vdots & \ddots & \vdots \\
+            v_{n,1} & v_{n,2} & \dots & v_{n,m}
+        \end{bmatrix}
+    \end{equation*}
+\end{definition}
+
+\begin{example}
+    For example, consider the vectors $\mathbf{v}_1 = (1,2,3)$ and $\mathbf{v}_2 = (4,5,6)$. Then, the matrix $A$ with columns $\mathbf{v}_1$ and $\mathbf{v}_2$ is:
+    \begin{equation*}
+        A = \begin{bmatrix}
+            \mathbf{v}_1 & \mathbf{v}_2
+        \end{bmatrix} = \begin{bmatrix}
+            1 & 4 \\
+            2 & 5 \\
+            3 & 6
+        \end{bmatrix}
+    \end{equation*}
+
+    Similarly, the matrix $B$ with rows $\mathbf{v}_1$ and $\mathbf{v}_2$ is:
+    \begin{equation*}
+        B = \begin{bmatrix}
+            \mathbf{v}_1^{\top} \\ \mathbf{v}_2^{\top}
+        \end{bmatrix} = \begin{bmatrix}
+            1 & 2 & 3 \\
+            4 & 5 & 6
+        \end{bmatrix}
+    \end{equation*}
+\end{example}
+
+\subsubsection{Inner Product}
+
+\begin{definition}
+    Consider the vector space $\mathbb{F}^n$. The \textbf{inner product} is a function $\langle \cdot, \cdot \rangle: \mathbb{F}^n \times \mathbb{F}^n \to \mathbb{F}$ satisfying the following conditions for all $\mathbf{u},\mathbf{v},\mathbf{w} \in \mathbb{F}^n$:
+    \begin{itemize}
+        \item $\langle \mathbf{u} + \mathbf{v}, \mathbf{w} \rangle = \langle \mathbf{u}, \mathbf{w} \rangle + \langle \mathbf{v}, \mathbf{w} \rangle$.
+        \item $\langle \mathbf{u}, \mathbf{v} + \mathbf{w} \rangle = \langle \mathbf{u}, \mathbf{v} \rangle + \langle \mathbf{u}, \mathbf{w} \rangle$.
+        \item $\langle \mathbf{u}, \mathbf{v} \rangle = 0$ for all $\mathbf{u} \in \mathbb{F}^n$ iff $\mathbf{v} = \mathbf{0}$.
+        \item $\langle \mathbf{u}, \mathbf{v} \rangle = 0$ for all $\mathbf{v} \in \mathbb{F}^n$ iff $\mathbf{u} = \mathbf{0}$.
+    \end{itemize}
+\end{definition}
+
+Plenty of functions can be built that satisfy the inner product definition, we will use the one that
+is usually called \textbf{dot product}.
+\begin{definition}
+    Consider the vector space $\mathbb{F}^n$. The \textbf{dot product} on $\mathbb{F}^n$ is a function $\langle \cdot, \cdot \rangle: \mathbb{V} \times \mathbb{V} \rightarrow \mathbb{F}$, 
+    defined for every $\mathbf{u}, \mathbf{v} \in \mathbb{F}^n$ as follows:
+    \begin{equation*}
+        \langle \mathbf{u}, \mathbf{v} \rangle := \mathbf{u}^{\top}\mathbf{v} = \sum_{i=1}^{n} u_i v_i
+    \end{equation*}
+
+    Alternatively, the dot product can also be denoted using the dot notation as $\mathbf{u} \cdot \mathbf{v}$. That is why it is called the ``dot`` product.
+\end{definition}
+
+\begin{example}
+    Let $\mathbf{u}, \mathbf{v}$ are vectors over the real number $\mathbb{R}$, where
+    \begin{equation*}
+        \mathbf{u} = (1, 2, 3), \quad \mathbf{v} = (2, 4, 3)
+    \end{equation*}
+    Then: 
+    \begin{equation*}
+        \langle \mathbf{u}, \mathbf{v}\rangle = \sum_{i=1}^{3}u_iv_i = 2 \cdot 1 + 2 \cdot 4 + 3 \cdot 3 = 2 + 8 + 9 = 19
+    \end{equation*}
+\end{example}
+
+\subsubsection{Hadamard Product}
+
+Yet another product we are going to use is the \textbf{Hadamard product}. Let us see how it works.
+\begin{definition}
+    Suppose $A,B \in \mathbb{F}^{m \times n}$. The \textbf{Hadamard product} $A \odot B$ gives a matrix $C$ such that $C_{i,j} = A_{i,j}B_{i,j}$. Essentially, we multiply elements elementwise.
+\end{definition}
+
+\begin{example}
+    Consider $A = \begin{bmatrix}
+        1 & 1 & 2 \\
+        3 & 0 & 3
+    \end{bmatrix}, B = \begin{bmatrix}
+        3 & 2 & 1 \\ 0 & 2 & 1
+    \end{bmatrix}$. Then, the Hadamard product is:
+    \begin{equation*}
+        A \odot B = \begin{bmatrix}
+            1 \cdot 3 & 1 \cdot 2 & 2 \cdot 1 \\
+            3 \cdot 0 & 0 \cdot 2 & 3 \cdot 1
+        \end{bmatrix} = \begin{bmatrix}
+            3 & 2 & 2 \\
+            0 & 0 & 3
+        \end{bmatrix}
+    \end{equation*}
+\end{example}
+
+\subsubsection{Outer Product}
+
+The final product we want to introduce is the \textbf{outer product} and some of its properties.
+
+\begin{definition}
+    Given two vectors $\mathbf{u} \in \mathbb{F}^n$, $\mathbf{v} \in \mathbb{F}^m$ the \textbf{outer product} is a
+    matrix whose entries are all products of an element in the first vector with an element 
+    in the second vector:
+    \begin{equation*}
+        \mathbf{u} \otimes \mathbf{v} := \mathbf{u}\mathbf{v}^{\top} = \begin{bmatrix}
+            u_1 v_1 & u_1 v_2 & \cdots & u_1 v_n \\
+            u_2 v_1 & u_2 v_2 & \cdots & u_2 v_n \\
+            \vdots & \vdots & \ddots & \vdots \\
+            u_m v_1 & u_m v_2 & \cdots & u_m v_n
+        \end{bmatrix}
+    \end{equation*}
+\end{definition}
+
+\begin{lemma}[Properties of outer product]
+    For any scalar $c \in \mathbb{F}$ and $(\mathbf{u}, \mathbf{v}, \mathbf{w}) \in \mathbb{F}^n \times \mathbb{F}^m \times \mathbb{F}^p$:
+    \begin{itemize}
+        \item Transpose: $(\mathbf{u} \otimes \mathbf{v}) = (\mathbf{v} \otimes \mathbf{u})^{\textsf{T}}$
+        \item Distributivity: $\mathbf{u} \otimes (\mathbf{v} + \mathbf{w}) = \mathbf{u} \otimes \mathbf{v} + \mathbf{u} \otimes \mathbf{w}$
+        \item Scalar Multiplication: $c(\mathbf{v} \otimes \mathbf{u}) = (c\mathbf{v}) \otimes \mathbf{u} = \mathbf{v} \otimes (c\mathbf{u})$
+        \item Rank: the outer product $\mathbf{u} \otimes \mathbf{v}$ is a rank-1 matrix if $\mathbf{u}$ and $\mathbf{v}$ are non-zero
+        vectors
+    \end{itemize}
+\end{lemma}
+
+\begin{example}
+    Let $\mathbf{u}, \mathbf{v}$ are vectors over the real number $\mathbb{R}$, where
+    \begin{equation*}
+        \mathbf{u} = (1, 2, 3), \quad \mathbf{v} = (2, 4, 3)
+    \end{equation*}
+    Then: 
+    \begin{equation*}
+        \mathbf{u} \otimes \mathbf{v} = \mathbf{u}\mathbf{v}^{\top} = \begin{bmatrix}
+        1 \\ 2 \\ 3
+        \end{bmatrix}\begin{bmatrix}
+        2 & 4 & 3
+        \end{bmatrix} = \begin{bmatrix}
+            1 \cdot 2 & 1 \cdot 4 & 1 \cdot 3 \\
+            2 \cdot 2 & 2 \cdot 4 & 2 \cdot 3 \\
+            3 \cdot 2 & 3 \cdot 4 & 3 \cdot 3
+        \end{bmatrix} = \begin{bmatrix}
+            2 & 4 & 3 \\
+            4 & 8 & 6 \\
+            6 & 12 & 9
+        \end{bmatrix}
+    \end{equation*}
+    Additionally, as we can see the rows number 2 and 3 in the result matrix can be represented
+    as a linear combination of the first row, specifically by multiplying it by 2 and 3, 
+    respectively. The same property applies to the columns. This demonstrates the property of the
+    outer product, that the resulting matrix has a rank of 1.
+\end{example}
+
+\end{document}
+
