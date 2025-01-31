@@ -9,6 +9,9 @@ STARKs, Bulletproofs, and other zero-knowledge proof systems, let us first defin
 that, we need to introduce some formalities. For example, what are ``proof'', ``witness'', and ``statement'' --- terms that are so widely used in zero-knowledge proofs.
 
 Let us describe the typical setup. We have two parties: \textbf{prover} $\mathcal{P}$ and a \textbf{verifier} $\mathcal{V}$. The prover wants to convince the verifier that some statement is true. Typically, the statement is not obvious (well, that is the reason for building proofs after all!) and therefore there might be some ``helper'' data, called \textbf{witness}, that helps the prover to prove the statement. The reasonable question is whether the prover can simply send witness to verifier and call it a day. Of course since you are here, reading this lecture, it is obvious that the answer is no. More specifically, by introducing zk-SNARKs, STARKs, and other proving systems, we will try to mitigate the following issues:
+
+\vspace{2mm}
+
 \begin{itemize}
     \item \textbf{Zero-knowledge:} The prover wants to convince the verifier that the statement is true without revealing the witness. 
     \item \textbf{Argument of knowledge:} Moreover, typically we want to make sure that the verifier, besides the statement correctness, ensures that the prover \textbf{knows} such a witness related to the statement.
@@ -108,7 +111,7 @@ That being said, formally the interaction between prover $\mathcal{P}$ and verif
 
 \begin{figure}[H]
     \centering
-    \scalebox{0.9}{
+    \scalebox{0.8}{
     \begin{tikzpicture}
         \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
         \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
@@ -196,7 +199,11 @@ Turns out that defining the zero-knowledge to even such a simplistic interactive
     The pair of algorithms $(\mathcal{P}, \mathcal{V})$ is called a \textbf{zero-knowledge interactive protocol} if it is \textit{complete}, \textit{sound}, and \textit{zero-knowledge}.
 \end{definition}
 
+\vspace{-1mm}
+
 Basically, the specified interaction is a \textbf{proof}! The prover $\mathcal{P}$ can convince the verifier $\mathcal{V}$ that the statement is true without revealing the witness -- that is what we need (quite of).
+
+\vspace{-1mm}
 
 \begin{remark}
     The above definition is very informal and, for the most part, complete for the purposes of this course. If you do not want to dive into the formalities, you can skip the next part of this section. However, if you are curious about some technicalities, feel free to continue reading.
@@ -205,37 +212,13 @@ Basically, the specified interaction is a \textbf{proof}! The prover $\mathcal{P
 \subsubsection{The Verifier's View}
 Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended with the successful verification. What has $\mathcal{V}$ learned? Well, first things first, he has learned that the statement is true, that is $x \in \mathcal{L}_{\mathcal{R}}$. However, he has also learned something more: he has learned the transcript of the interaction, that is the sequence of messages between $\mathcal{P}$ and $\mathcal{V}$.
 
+\vspace{-1mm}
+
 \begin{definition}
     Interaction between $\mathcal{P}$ and $\mathcal{V}$ consists of prover's messages (e.g., commitments and responses) $(m_1,m_2,\dots,m_{\ell})$, verifier's queries $(q_1,q_2,\dots,q_{\ell})$, and $\mathcal{V}$'s random coins $(r_1,r_2,\dots,r_{\ell})$. The view of the verifier $\mathcal{V}$, denoted as $\mathsf{view}_{\mathcal{V}}(\mathcal{P},\mathcal{V})[x]$, is a random variable $(m_1,r_1,q_1,m_2,r_2,q_2,\dots,m_{\ell},r_{\ell},q_{\ell})$ that is determined by the random coins of $\mathcal{V}$ and the messages of $\mathcal{P}$ after the interaction with the statement $x$. See Figure below.
 \end{definition}
 
-\begin{figure}[H]
-    \centering
-    \scalebox{0.99}{
-    \begin{tikzpicture}
-        \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
-        \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
-
-        \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]prover.south) -- ([yshift=-8cm]prover.south);
-        \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]verifier.south) -- ([yshift=-8cm]verifier.south);
-
-        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-1.5cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm, fill=white]{Send $m_1$};
-
-        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-2.5cm]verifier.south) coordinate (l2)--(l2-|prover) node[midway, above=0mm, fill=white]{Toss coin $r_1$ and send query $q_1$};
-
-        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-3.5cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm, fill=white]{Send $m_2$};
-
-        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-4.5cm]verifier.south) coordinate (l2)--(l2-|prover) node[midway, above=0mm, fill=white]{Toss coin $r_2$ and send query $q_2$};
-        
-        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-6.5cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm, fill=white]{Send $m_{\ell}$};
-
-        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-7.5cm]verifier.south) coordinate (l2)--(l2-|prover) node[midway, above=0mm, fill=white]{Toss coin $r_{\ell}$ and send query $q_{\ell}$};
-        
-    \end{tikzpicture}
-    }
-
-    \caption{The interactive protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$. Prover's messages consist of messages $\{m_k\}_{k=1}^{\ell}$, verifier's messages consist of queries $\{q_k\}_{k=1}^{\ell}$, and additionally verifier samples random coins $\{r_k\}_{k=1}^{\ell}$.}
-\end{figure}
+\vspace{-3mm}
 
 \begin{example}
     Suppose that for the aforementioned protocol with $N=3 \times 2^{30} + 1$, the conversation between the prover $\mathcal{P}$, who wants to convince that $1286091780 \in \mathcal{L}_R$, and $\mathcal{V}$ is the following:
@@ -264,6 +247,34 @@ Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended w
 
     One final note that is essential for the further discussion: variable $\mathsf{view}_{\mathcal{V}}(\mathcal{P}, \mathcal{V})[x]$ is a random variable. For example, for our particular case, both bits could be $0$ or both bits could be $1$. 
 \end{example}
+
+\begin{figure}[H]
+    \centering
+    \scalebox{0.95}{
+    \begin{tikzpicture}
+        \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
+        \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
+
+        \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]prover.south) -- ([yshift=-8cm]prover.south);
+        \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]verifier.south) -- ([yshift=-8cm]verifier.south);
+
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-1.5cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm, fill=white]{Send $m_1$};
+
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-2.5cm]verifier.south) coordinate (l2)--(l2-|prover) node[midway, above=0mm, fill=white]{Toss coin $r_1$ and send query $q_1$};
+
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-3.5cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm, fill=white]{Send $m_2$};
+
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-4.5cm]verifier.south) coordinate (l2)--(l2-|prover) node[midway, above=0mm, fill=white]{Toss coin $r_2$ and send query $q_2$};
+        
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-6.5cm]prover.south) coordinate (l2)--(l2-|verifier) node[midway, above=0mm, fill=white]{Send $m_{\ell}$};
+
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-7.5cm]verifier.south) coordinate (l2)--(l2-|prover) node[midway, above=0mm, fill=white]{Toss coin $r_{\ell}$ and send query $q_{\ell}$};
+        
+    \end{tikzpicture}
+    }
+
+    \caption{The interactive protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$. Prover's messages consist of messages $\{m_k\}_{k=1}^{\ell}$, verifier's messages consist of queries $\{q_k\}_{k=1}^{\ell}$, and additionally verifier samples random coins $\{r_k\}_{k=1}^{\ell}$.}
+\end{figure}
 
 \subsubsection{The Simulation Paradigm}
 
@@ -391,7 +402,7 @@ Here how it goes. Suppose we have an interactive protocol $(\mathcal{P}, \mathca
 
 \begin{figure}[H]
     \centering
-    \scalebox{0.58}{
+    \scalebox{0.9}{
     \begin{tikzpicture}
         % Blue zone
         \node[very thick, draw=blue, fill=blue, fill opacity=0.1,minimum width=7cm, minimum height=7cm,dashed,on background layer](targetbox) at (2.25,-5.0) {};
