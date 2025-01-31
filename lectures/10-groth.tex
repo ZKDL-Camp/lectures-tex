@@ -3,7 +3,7 @@
 \begin{document}
 
 \subsection{Building Pairing-based SNARK}
-\subsubsection{Attempt \#1: Encrypted Verification}
+\subsubsection*{Attempt \#1: Encrypted Verification}
 
 Now, assume we have the cyclic group $\mathbb{G}$ of prime order $q$ with a generator $g$. Typically, this is the group of points on an elliptic curve. Assume for simplicity that $e: \mathbb{G} \times \mathbb{G} \to \mathbb{G}_T$ is a symmetric pairing function, where $(\mathbb{G}_T, \times)$ is a target group.
 
@@ -25,17 +25,18 @@ Notice that we transferred $O(\tau)$ to the right side of the equation to furthe
 \begin{remark}
     One might ask: why is the above equation correct? Well, let us see:
     \begin{flalign*}
-        & e(\mathsf{com}(L), \mathsf{com}(R)) = e(\mathsf{com}(Z), \mathsf{com}(H)) \cdot e(\mathsf{com}(O), g) & \textit{\textcolor{gray!80!black}{// Initial statement}} \\
-        \Leftrightarrow \quad & e(g^{L(\tau)}, g^{R(\tau)}) = e(g^{Z(\tau)}, g^{H(\tau)}) \cdot e(g^{O(\tau)}, g) & \textit{\textcolor{gray!80!black}{// KZG commitment def.}} \\
-        \Leftrightarrow \quad & e(g,g)^{L(\tau)R(\tau)} = e(g,g)^{Z(\tau)H(\tau)}e(g,g)^{O(\tau)} & \textit{\textcolor{gray!80!black}{// Pairing bilinearity}} \\
-        \Leftrightarrow \quad & e(g,g)^{L(\tau)R(\tau)} = e(g,g)^{Z(\tau)H(\tau) + O(\tau)} & \textit{\textcolor{gray!80!black}{// Exponent product rule}} \\
-        \Leftrightarrow \quad & L(\tau)R(\tau) = Z(\tau)H(\tau) + O(\tau) & \textit{\textcolor{gray!80!black}{// QAP Check}} \\
-        \Leftrightarrow \quad & L(x)R(x) \equiv Z(x)H(x) + O(x) & \textit{\textcolor{gray!80!black}{// Schwarz-Zippel Lemma}}
+        & e(\mathsf{com}(L), \mathsf{com}(R)) = e(\mathsf{com}(Z), \mathsf{com}(H)) \cdot e(\mathsf{com}(O), g) \\
+        \Leftrightarrow \quad & e(g^{L(\tau)}, g^{R(\tau)}) = e(g^{Z(\tau)}, g^{H(\tau)}) \cdot e(g^{O(\tau)}, g) \\
+        \Leftrightarrow \quad & e(g,g)^{L(\tau)R(\tau)} = e(g,g)^{Z(\tau)H(\tau)}e(g,g)^{O(\tau)}\\
+        \Leftrightarrow \quad & e(g,g)^{L(\tau)R(\tau)} = e(g,g)^{Z(\tau)H(\tau) + O(\tau)} \\
+        \Leftrightarrow \quad & L(\tau)R(\tau) = Z(\tau)H(\tau) + O(\tau) \\
+        \Leftrightarrow \quad & L(x)R(x) \equiv Z(x)H(x) + O(x)
     \end{flalign*}
 \end{remark}
 
 So, sounds like we are done. Let us summarize what we have done so far:
 \begin{tcolorbox}[title=Attempt \#1: Non-sound SNARK Protocol,
+    breakable,
     colback=blue!5!white,
     colframe=blue!75!black,
     colbacktitle=blue!25!white,
@@ -77,7 +78,7 @@ So, sounds like we are done. Let us summarize what we have done so far:
 
 This sounds like an end to the story. However, there is a problem with this approach: there is no guarantee that commitments $\pi_L$, $\pi_R$, $\pi_O$, $\pi_H$ were indeed obtained through exponentiating the base $g$ by the corresponding values $L(\tau)$, $R(\tau)$, $O(\tau)$, and $H(\tau)$. In other words, how can the verifier know that prover indeed knows, say, polynomial $L(x)$ such that $\pi_L = g^{L(\tau)}$?
 
-\subsubsection{Attempt \#2: Including Proof of Exponent}
+\subsubsection*{Attempt \#2: Including Proof of Exponent}
 
 In this section, we introduce the \textbf{Proof of Exponent assumption} (PoE) which makes KZG knowledge sound. Let us define it below.
 
@@ -99,6 +100,7 @@ Indeed, what $\mathcal{P}^*$ needs to do is calculating $c^{\alpha}$, but he doe
 For that reason, we modify the SNARK protocol to include not only commitments to polynomials but also PoE for each of them. Let us see how it looks like.
 
 \begin{tcolorbox}[title=Attempt \#2: SNARK with PoE included,
+    breakable,
     colback=blue!5!white,
     colframe=blue!75!black,
     colbacktitle=blue!25!white,
@@ -137,15 +139,15 @@ For that reason, we modify the SNARK protocol to include not only commitments to
     \tcbsubtitle{$\mathsf{Verify}(\mathsf{vp}, \mathbf{x}, \boldsymbol{\pi})$}
     Upon receiving $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H')$, the verifier $\mathcal{V}$ checks:
     \begin{align*}
-        e(\pi_L, \pi_R) = e(g^{Z(\tau)}, \pi_H) \cdot e(\pi_O, g), && \textcolor{gray!80!black}{\textit{// Polynomial Equality Test}} \\
-        \textcolor{green!50!black}{e(\pi_L, g^{\alpha}) = e(\pi_L', g)}, \quad \textcolor{green!50!black}{e(\pi_R, g^{\alpha}) = e(\pi_R', g)}, && \textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        \textcolor{green!50!black}{e(\pi_O, g^{\alpha}) = e(\pi_O', g)}, \quad \textcolor{green!50!black}{e(\pi_H, g^{\alpha}) = e(\pi_H', g)}. && \textcolor{gray!80!black}{\textit{// Proof of Exponent}}
+        e(\pi_L, \pi_R) = e(g^{Z(\tau)}, \pi_H) \cdot e(\pi_O, g), \\
+        \textcolor{green!50!black}{e(\pi_L, g^{\alpha}) = e(\pi_L', g)}, \quad \textcolor{green!50!black}{e(\pi_R, g^{\alpha}) = e(\pi_R', g)}, \\
+        \textcolor{green!50!black}{e(\pi_O, g^{\alpha}) = e(\pi_O', g)}, \quad \textcolor{green!50!black}{e(\pi_H, g^{\alpha}) = e(\pi_H', g)}.
     \end{align*}
 \end{tcolorbox}
 
 The provided protocol is secure under the PoE assumption. However, it is still not fully sound. Currently, there is no guarantee that when evaluating $\pi_L$, $\pi_R$, $\pi_O$ we used the same extended witness $\mathbf{w}$. In other words, the prover can still cheat by using different extended witnesses for each polynomial (faking the proof system is still hard in this situation, but we want to make sure to eliminate all possible weaknesses). Let us see how to fix this!
 
-\subsubsection{Attempt \#3: Making SNARK Sound}
+\subsubsection*{Attempt \#3: Making SNARK Sound}
 
 Besides fixing the issue with consistent use of witness $\mathbf{w}$, we additionally include one more optimization we have not included so far.
 
@@ -161,14 +163,20 @@ are known in advance. Meaning, we can precompute the values of $\{g^{L_i(\tau)}\
 
 How? Suppose the prover $\mathcal{P}$ knows the extended witness $\mathbf{w}$. Consider the polynomial $L(x) = \sum_{i=0}^n w_iL_i(x)$. $\mathcal{P}$ can compute the KZG commitment $\pi_L$ and its PoE $\pi_L'$ as follows:
 \begin{equation*}
-    \pi_L \triangleq g^{L(\tau)} = g^{\sum_{i=0}^n w_iL_i(\tau)} = \prod_{i=0}^n (g^{L_i(\tau)})^{w_i}, \quad \pi_L' \triangleq g^{\alpha L(\tau)} = g^{\alpha \sum_{i=0}^n w_iL_i(\tau)} = \prod_{i=0}^n (g^{\alpha L_i(\tau)})^{w_i}.
+    \begin{aligned}
+        &\pi_L \triangleq g^{L(\tau)} = g^{\sum_{i=0}^n w_iL_i(\tau)} = \prod_{i=0}^n (g^{L_i(\tau)})^{w_i}, \\
+        &\pi_L' \triangleq g^{\alpha L(\tau)} = g^{\alpha \sum_{i=0}^n w_iL_i(\tau)} = \prod_{i=0}^n (g^{\alpha L_i(\tau)})^{w_i}.        
+    \end{aligned}
 \end{equation*}
 
 \textcolor{green!50!black}{\textbf{Fix. Witness consistency check.}} 
 
 \textbf{Introducing new term with $\beta$}. To prove that the same $\mathbf{w}$ is used in all commitments, we need some ``checksum'' term that will somehow combine all polynomials $L(x)$, $R(x)$, and $O(x)$ with the witness $\mathbf{w}$. Moreover, we will need to compare this term with proofs $\pi_L$, $\pi_R$, and $\pi_O$. The best candidate for this is the following group element for some other random $\beta \xleftarrow{R} \mathbb{F}$:
 \begin{equation*}
-    \pi_{\beta} = g^{L(\tau) + R(\tau) + O(\tau)} = \prod_{i=1}^n (g^{L_i(\tau) + R_i(\tau) + O_i(\tau)})^{w_i}, \; \pi_{\beta}' = \prod_{i=1}^n (g^{\beta(L_i(\tau) + R_i(\tau) + O_i(\tau))})^{w_i}
+    \begin{aligned}
+        &\pi_{\beta} = g^{L(\tau) + R(\tau) + O(\tau)} = \prod_{i=1}^n (g^{L_i(\tau) + R_i(\tau) + O_i(\tau)})^{w_i}, \\ 
+        &\pi_{\beta}' = \prod_{i=1}^n (g^{\beta(L_i(\tau) + R_i(\tau) + O_i(\tau))})^{w_i}        
+    \end{aligned}
 \end{equation*}
 
 This way, we get a term that includes all three polynomials $L(x)$, $R(x)$, and $O(x)$, and all coefficients of the extended witness $\mathbf{w}$. Moreover, verifier $\mathcal{V}$ can compare $\pi_{\beta}$ with three other commitments $\pi_L$, $\pi_R$, $\pi_O$ to ensure that all of them are consistent. This is done through the following check:
@@ -207,6 +215,7 @@ Even that is not the end of the story! We also need to make sure that $g^{\beta_
 Oof, that was a long fix! Let us come back to the new version of the SNARK protocol (not yet zero-knowledge)!
 
 \begin{tcolorbox}[title=Attempt \#3: Sound SNARK Protocol,
+    breakable,
     colback=blue!5!white,
     colframe=blue!75!black,
     colbacktitle=blue!25!white,
@@ -250,17 +259,19 @@ Oof, that was a long fix! Let us come back to the new version of the SNARK proto
         \item Publishes $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\textcolor{green!50!black}{\pi_{\beta}})$ as a proof.
     \end{itemize}
 
+    \newpage
+
     \tcbsubtitle{$\mathsf{Verify}(\mathsf{vp}, \mathbf{x}, \boldsymbol{\pi})$}
     Upon receiving $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\textcolor{green!50!black}{\pi_{\beta}})$, the verifier $\mathcal{V}$ checks:
     \begin{align*}
-        e(\pi_L, \pi_R) = e(g^{Z(\tau)}, \pi_H) \cdot e(\pi_O, g),&&\textcolor{gray!80!black}{\textit{// Polynomial Equality Test}} \\
-        e(\pi_L, g^{\alpha}) = e(\pi_L', g), \quad e(\pi_R, g^{\alpha}) = e(\pi_R', g),&&\textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        e(\pi_O, g^{\alpha}) = e(\pi_O', g), \quad e(\pi_H, g^{\alpha}) = e(\pi_H', g),&&\textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        \textcolor{green!50!black}{e(\pi_L, g^{\gamma\beta_L}) \cdot e(\pi_R, g^{\gamma\beta_R}) \cdot e(\pi_O, g^{\gamma\beta_O}) = e(\pi_{\beta}, g^{\gamma})}.&&\textcolor{gray!80!black}{\textit{// Extended Witness Consistency}}
+        e(\pi_L, \pi_R) = e(g^{Z(\tau)}, \pi_H) \cdot e(\pi_O, g), \\
+        e(\pi_L, g^{\alpha}) = e(\pi_L', g), \quad e(\pi_R, g^{\alpha}) = e(\pi_R', g), \\
+        e(\pi_O, g^{\alpha}) = e(\pi_O', g), \quad e(\pi_H, g^{\alpha}) = e(\pi_H', g), \\
+        \textcolor{green!50!black}{e(\pi_L, g^{\gamma\beta_L}) \cdot e(\pi_R, g^{\gamma\beta_R}) \cdot e(\pi_O, g^{\gamma\beta_O}) = e(\pi_{\beta}, g^{\gamma})}.
     \end{align*}
 \end{tcolorbox}
 
-\subsubsection{Attempt \#4: Splitting the Extended Witness}
+\subsubsection*{Attempt \#4: Splitting the Extended Witness}
 
 Now, recall that the actual circuit $\Circ$ is defined for some statement $\mathbf{x}$ and witness $\mathbf{w}$. According to the Circuit Satisfability Problem, 
 the prover $\mathcal{P}$ wants to convince the verifier $\mathcal{V}$ that he knows the witness $\mathbf{w}$ 
@@ -297,6 +308,7 @@ $|\mathcal{I}_{\text{mid}}|$). The same goes for other parts of the proof $\bold
 Now, let us formulate the updated SNARK protocol with the extended witness split.
 
 \begin{tcolorbox}[title=Attempt \#4: Sound SNARK for Public/Private Inputs,
+    breakable,
     colback=blue!5!white,
     colframe=blue!75!black,
     colbacktitle=blue!25!white,
@@ -314,12 +326,15 @@ Now, let us formulate the updated SNARK protocol with the extended witness split
     \begin{itemize}[label=\ding{51}]
         \item Picks random values $\tau, \alpha, \beta_L, \beta_R, \beta_O, \gamma \xleftarrow{R} \mathbb{F}$.
         \item \textbf{Outputs} prover parameters $\mathsf{pp}$ and verification parameters $\mathsf{vp}$:
-        \begin{align*}
-            \mathsf{pp} &\gets \big\{\{g^{\tau^i}\}_{i \in [d]}, \{g^{L_i(\tau)}, g^{\alpha L_i(\tau)}, g^{R_i(\tau)}, g^{\alpha R_i(\tau)}, \\ 
-            & g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, g^{\beta_LL_i(\tau)+\beta_RR_i(\tau)+\beta_OO_i(\tau)}\}_{\textcolor{green!50!black}{i \in \mathcal{I}_{\text{mid}}}}\big\} \\
-            \mathsf{vp} &\gets \big\{ g^{Z(\tau)}, g^{\alpha}, g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, g^{\beta_O\gamma}, g^{\gamma}, \textcolor{green!50!black}{ \{g^{L_i(\tau)}, g^{R_i(\tau)}, g^{O_i(\tau)}\}_{i \in \mathcal{I}_{\text{io}}} } \big\}
-        \end{align*}
-        \item \textbf{Deletes} aforementioned random scalars (toxic waste).
+        \begin{equation*}        
+            \begin{aligned}
+                \mathsf{pp} & \gets \big\{\{g^{\tau^i}\}_{i \in [d]}, \{g^{L_i(\tau)}, g^{\alpha L_i(\tau)}, g^{R_i(\tau)}, g^{\alpha R_i(\tau)}, \\ 
+                            & g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, g^{\beta_LL_i(\tau)+\beta_RR_i(\tau)+\beta_OO_i(\tau)}\}_{\textcolor{green!50!black}{i \in \mathcal{I}_{\text{mid}}}}\big\} \\
+                \mathsf{vp} & \gets \big\{ g^{Z(\tau)}, g^{\alpha}, g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, g^{\beta_O\gamma}, g^{\gamma}, \\
+                            & \;\;\;\;\;\; \textcolor{green!50!black}{ \{g^{L_i(\tau)}, g^{R_i(\tau)}, g^{O_i(\tau)}\}_{i \in \mathcal{I}_{\text{io}}} } \big\}
+            \end{aligned}
+        \end{equation*}
+    \item \textbf{Deletes} aforementioned random scalars (toxic waste).
     \end{itemize}
     \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbf{x}, \mathbf{w})$}
     The prover $\mathcal{P}$ conducts the following steps:
@@ -338,6 +353,7 @@ Now, let us formulate the updated SNARK protocol with the extended witness split
         \item Publishes $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\pi_{\beta})$ as a proof.
     \end{itemize}
 
+    \newpage
     \tcbsubtitle{$\mathsf{Verify}(\mathsf{vp}, \mathbf{x}, \boldsymbol{\pi})$}
     Upon receiving $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\pi_{\beta})$, the verifier $\mathcal{V}$:
     \begin{itemize}[label=\ding{51}]
@@ -345,14 +361,14 @@ Now, let us formulate the updated SNARK protocol with the extended witness split
         \item Checks whether all of the following conditions hold:
     \end{itemize}
     \begin{align*}
-        e(\textcolor{green!50!black}{\pi_L^*}, \textcolor{green!50!black}{\pi_R^*}) = e(g^{Z(\tau)}, \pi_H) \cdot e(\textcolor{green!50!black}{\pi_O^*}, g),&&\textcolor{gray!80!black}{\textit{// Polynomial Equality Test}} \\
-        e(\pi_L, g^{\alpha}) = e(\pi_L', g), \quad e(\pi_R, g^{\alpha}) = e(\pi_R', g),&&\textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        e(\pi_O, g^{\alpha}) = e(\pi_O', g), \quad e(\pi_H, g^{\alpha}) = e(\pi_H', g),&&\textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        e(\pi_L, g^{\gamma\beta_L}) \cdot e(\pi_R, g^{\gamma\beta_R}) \cdot e(\pi_O, g^{\gamma\beta_O}) = e(\pi_{\beta}, g^{\gamma}).&&\textcolor{gray!80!black}{\textit{// Extended Witness Consistency}}
+        e(\textcolor{green!50!black}{\pi_L^*}, \textcolor{green!50!black}{\pi_R^*}) = e(g^{Z(\tau)}, \pi_H) \cdot e(\textcolor{green!50!black}{\pi_O^*}, g), \\
+        e(\pi_L, g^{\alpha}) = e(\pi_L', g), \quad e(\pi_R, g^{\alpha}) = e(\pi_R', g), \\
+        e(\pi_O, g^{\alpha}) = e(\pi_O', g), \quad e(\pi_H, g^{\alpha}) = e(\pi_H', g), \\
+        e(\pi_L, g^{\gamma\beta_L}) \cdot e(\pi_R, g^{\gamma\beta_R}) \cdot e(\pi_O, g^{\gamma\beta_O}) = e(\pi_{\beta}, g^{\gamma}).
     \end{align*}
 \end{tcolorbox}
 
-\subsubsection{Attempt \#5: Making SNARK Zero-Knowledge}
+\subsubsection*{Attempt \#5: Making SNARK Zero-Knowledge}
 
 Finally, we came to the point where we need to make the protocol zero-knowledge. As it turns out, it is not that hard to do (compared to what we have done so far)!
 
@@ -363,11 +379,13 @@ Finally, we came to the point where we need to make the protocol zero-knowledge.
 \end{remark}
 
 The main idea to make our protocol zero-knowledge is to ``shift'' our commitments by some random factor $\delta$. Of course, this ``shift'' $\delta$ must be different for each commitment and must be chosen by the prover $\mathcal{P}$. This way, we propose to modify the commitments as follows:
-\begin{align*}
-    \pi_L = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iL_i(\tau) + \textcolor{purple}{\delta_LZ(\tau)}} = \textcolor{purple}{(g^{Z(\tau)})^{\delta_L}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{L_i(\tau)})^{w_i}, && \pi_L' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_L}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha L_i(\tau)})^{w_i} \\
-    \pi_R = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iR_i(\tau) + \textcolor{purple}{\delta_RZ(\tau)}} = \textcolor{purple}{(g^{Z(\tau)})^{\delta_R}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{R_i(\tau)})^{w_i}, && \pi_R' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_R}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha R_i(\tau)})^{w_i} \\
-    \pi_O = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iO_i(\tau) + \textcolor{purple}{\delta_OZ(\tau)}} = \textcolor{purple}{(g^{Z(\tau)})^{\delta_O}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{O_i(\tau)})^{w_i}, && \pi_O' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_O}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha O_i(\tau)})^{w_i}
-\end{align*}
+\begin{equation*}
+    \begin{aligned}
+        &\pi_L = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iL_i(\tau) + \textcolor{purple}{\delta_LZ(\tau)}} = \textcolor{purple}{(g^{Z(\tau)})^{\delta_L}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{L_i(\tau)})^{w_i}, \\ & \pi_L' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_L}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha L_i(\tau)})^{w_i}, \\
+        &\pi_R = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iR_i(\tau) + \textcolor{purple}{\delta_RZ(\tau)}} = \textcolor{purple}{(g^{Z(\tau)})^{\delta_R}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{R_i(\tau)})^{w_i}, \\ & \pi_R' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_R}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha R_i(\tau)})^{w_i}, \\
+        &\pi_O = g^{\sum_{i \in \mathcal{I}_{\text{mid}}}w_iO_i(\tau) + \textcolor{purple}{\delta_OZ(\tau)}} = \textcolor{purple}{(g^{Z(\tau)})^{\delta_O}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{O_i(\tau)})^{w_i}, \\ & \pi_O' = \textcolor{purple}{(g^{\alpha Z(\tau)})^{\delta_O}}\prod_{i \in \mathcal{I}_{\text{mid}}}(g^{\alpha O_i(\tau)})^{w_i}.
+    \end{aligned}
+\end{equation*}
 
 for randomly selected $\delta_L, \delta_R, \delta_O \xleftarrow{R} \mathbb{Z}_q$. Good, we concealed all the information about the witness $\mathbf{w}$ in the commitment. However, we need to make sure that the verifier $\mathcal{V}$ can still verify the proof, but without modifying the verification mechanism itself. Notice that PoE verifications are still valid, but we need to modify something to make polynomial equality test hold. This can be done by perturbating the polynomial $H(x)$ by some (currently) unknown value $\Delta_H$. Let us derive it from the polynomial equality test:
 \begin{equation*}
@@ -376,7 +394,10 @@ for randomly selected $\delta_L, \delta_R, \delta_O \xleftarrow{R} \mathbb{Z}_q$
 
 which, by expanding, gives us the following equation:
 \begin{equation*}
-    \cancel{L(x)R(x)} + \delta_R L(x)Z(x) + \delta_L Z(x)R(x) + \delta_L \delta_R Z(x)^2 = \cancel{H(x)Z(x) + O(x)} + \Delta_HZ(x) + \delta_O Z(x), \\
+    \begin{aligned}
+        &\cancel{L(x)R(x)} + \delta_R L(x)Z(x) + \delta_L Z(x)R(x) + \delta_L \delta_R Z(x)^2 = \\ 
+        &= \cancel{H(x)Z(x) + O(x)} + \Delta_HZ(x) + \delta_O Z(x), \\
+    \end{aligned}
 \end{equation*}
 
 where we can cancel out $L(x)R(x)$ and $H(x)Z(x) + O(x)$ terms since they are equal based on initial construction. This way, we get the following expression for $\Delta_H$:
@@ -386,7 +407,9 @@ where we can cancel out $L(x)R(x)$ and $H(x)Z(x) + O(x)$ terms since they are eq
 
 Therefore, our fourth proof system becomes:
 \begin{equation*}
+    \scalebox{0.95}{$
     \pi_H = g^{H(\tau) + \textcolor{purple}{\delta_O + \delta_R L(\tau) + \delta_L R(\tau) + \delta_L \delta_R Z(\tau)}}, \quad \pi_H' = g^{\alpha(H(\tau) + \textcolor{purple}{\delta_O + \delta_R L(\tau) + \delta_L R(\tau) + \delta_L \delta_R Z(\tau)})}.
+    $}
 \end{equation*}
 
 Finally, we need to make sure that our witness consistency proof $\pi_{\beta}$ is still valid. Since previously we had $\pi_{\beta} = g^{\beta_LL(\tau) + \beta_RR(\tau) + \beta_OO(\tau)}$, we need to modify it to include the new $\delta$ values. Namely, we change $L(\tau)$ to $L(\tau)+\delta_LZ(\tau)$, $R(\tau)$ to $R(\tau)+\delta_RZ(\tau)$, and $O(\tau)$ to $O(\tau)+\delta_OZ(\tau)$. This way, our new $\pi_{\beta}$ becomes:
@@ -409,7 +432,10 @@ Oof. Finally, we also have a zero-knowledge property for our SNARK. Let us summa
         \end{align*}
         \item \textbf{Updated Commitment for $H$:} The prover $\mathcal{P}$ needs to calculate the commitment $\pi_H$ with the additional $\delta$'s values to ensure polynomial equality test is satisfied:
         \begin{equation*}
-            \pi_H \gets g^{H(\tau) + \textcolor{purple}{\delta_O + \delta_R L(\tau) + \delta_L R(\tau) + \delta_L \delta_R Z(\tau)}}, \quad \pi_H' \gets g^{\alpha(H(\tau) + \textcolor{purple}{\delta_O + \delta_R L(\tau) + \delta_L R(\tau) + \delta_L \delta_R Z(\tau)})}.
+            \begin{aligned}
+                &\pi_H \gets g^{H(\tau) + \textcolor{purple}{\delta_O + \delta_R L(\tau) + \delta_L R(\tau) + \delta_L \delta_R Z(\tau)}}, \\ 
+                &\pi_H' \gets g^{\alpha(H(\tau) + \textcolor{purple}{\delta_O + \delta_R L(\tau) + \delta_L R(\tau) + \delta_L \delta_R Z(\tau)})}.                
+            \end{aligned}
         \end{equation*}
         \item \textbf{Updated Witness Consistency Proof:} The prover $\mathcal{P}$ needs to calculate the commitment $\pi_{\beta}$ with the additional $\delta$'s values to ensure witness consistency:
         \begin{equation*}
@@ -421,6 +447,7 @@ Oof. Finally, we also have a zero-knowledge property for our SNARK. Let us summa
 Let us now look at the final version of our basic SNARK protocol.
 
 \begin{tcolorbox}[title=Attempt \#5: Turning SNARK into zk-SNARK,
+    breakable,
     colback=blue!5!white,
     colframe=blue!75!black,
     colbacktitle=blue!25!white,
@@ -440,8 +467,9 @@ Let us now look at the final version of our basic SNARK protocol.
         \item \textbf{Outputs} prover parameters $\mathsf{pp}$ and verification parameters $\mathsf{vp}$:
         \begin{align*}
             \mathsf{pp} &\gets \big\{\{g^{\tau^i}\}_{i \in [d]}, \{\textcolor{purple}{g^{Z(\tau)}}, g^{L_i(\tau)}, g^{\alpha L_i(\tau)}, g^{R_i(\tau)}, g^{\alpha R_i(\tau)}, \\ 
-            & g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, \textcolor{purple}{g^{\beta_LL_i(\tau)}, g^{\beta_RR_i(\tau)}, g^{\beta_OO_i(\tau)}}\}_{i \in \mathcal{I}_{\text{mid}}}\big\} \\
-            \mathsf{vp} &\gets \big\{ g^{Z(\tau)}, g^{\alpha}, g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, g^{\beta_O\gamma}, g^{\gamma}, \{g^{L_i(\tau)}, g^{R_i(\tau)}, g^{O_i(\tau)}\}_{i \in \mathcal{I}_{\text{io}}} \big\}
+                        & g^{O_i(\tau)}, g^{\alpha O_i(\tau)}, \textcolor{purple}{g^{\beta_LL_i(\tau)}, g^{\beta_RR_i(\tau)}, g^{\beta_OO_i(\tau)}}\}_{i \in \mathcal{I}_{\text{mid}}}\big\} \\
+            \mathsf{vp} &\gets \big\{ g^{Z(\tau)}, g^{\alpha}, g^{\beta_L}, g^{\beta_R}, g^{\beta_O}, g^{\beta_L\gamma}, g^{\beta_R\gamma}, g^{\beta_O\gamma}, g^{\gamma}, \\
+                        & \;\;\;\;\;\; \{g^{L_i(\tau)}, g^{R_i(\tau)}, g^{O_i(\tau)}\}_{i \in \mathcal{I}_{\text{io}}} \big\}
         \end{align*}
         \item \textbf{Deletes} aforementioned random scalars (toxic waste).
     \end{itemize}
@@ -466,14 +494,15 @@ Let us now look at the final version of our basic SNARK protocol.
     \tcbsubtitle{$\mathsf{Verify}(\mathsf{vp}, \mathbf{x}, \boldsymbol{\pi})$}
     Upon receiving $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\pi_{\beta})$, the verifier $\mathcal{V}$:
     \begin{itemize}[label=\ding{51}]
-        \item Finds $\pi_L^* \gets \pi_L\prod_{i \in \mathcal{I}_{\text{io}}} (g^{L_i(\tau)})^{w_i},\pi_R^* \gets \pi_R\prod_{i \in \mathcal{I}_{\text{io}}} (g^{R_i(\tau)})^{w_i},\pi_O^* \gets \pi_O\prod_{i \in \mathcal{I}_{\text{io}}} (g^{O_i(\tau)})^{w_i}$
+        \item Finds $\pi_L^* \gets \pi_L\prod_{i \in \mathcal{I}_{\text{io}}} (g^{L_i(\tau)})^{w_i},\pi_R^* \gets \pi_R\prod_{i \in \mathcal{I}_{\text{io}}} (g^{R_i(\tau)})^{w_i}, \\
+        \pi_O^* \gets \pi_O\prod_{i \in \mathcal{I}_{\text{io}}} (g^{O_i(\tau)})^{w_i}$
         \item Checks whether all of the following conditions hold:
     \end{itemize}
     \begin{align*}
-        e(\pi_L^*, \pi_R^*) = e(g^{Z(\tau)}, \pi_H) \cdot e(\pi_O^*, g),&& \textcolor{gray!80!black}{\textit{// Polynomial Equality Test}} \\
-        e(\pi_L, g^{\alpha}) = e(\pi_L', g), \quad e(\pi_R, g^{\alpha}) = e(\pi_R', g),&& \textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        e(\pi_O, g^{\alpha}) = e(\pi_O', g), \quad e(\pi_H, g^{\alpha}) = e(\pi_H', g),&& \textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        e(\pi_L, g^{\gamma\beta_L}) \cdot e(\pi_R, g^{\gamma\beta_R}) \cdot e(\pi_O, g^{\gamma\beta_O}) = e(\pi_{\beta}, g^{\gamma}).&& \textcolor{gray!80!black}{\textit{// Extended Witness Consistency}}
+        e(\pi_L^*, \pi_R^*) = e(g^{Z(\tau)}, \pi_H) \cdot e(\pi_O^*, g), \\
+        e(\pi_L, g^{\alpha}) = e(\pi_L', g), \quad e(\pi_R, g^{\alpha}) = e(\pi_R', g), \\
+        e(\pi_O, g^{\alpha}) = e(\pi_O', g), \quad e(\pi_H, g^{\alpha}) = e(\pi_H', g), \\
+        e(\pi_L, g^{\gamma\beta_L}) \cdot e(\pi_R, g^{\gamma\beta_R}) \cdot e(\pi_O, g^{\gamma\beta_O}) = e(\pi_{\beta}, g^{\gamma}).
     \end{align*}
 \end{tcolorbox}
 
@@ -579,6 +608,7 @@ Let us see what has changed in the Pinocchio Protocol.
 Let us see the complete specification of the Pinocchio Protocol.
 
 \begin{tcolorbox}[title=Pinocchio Protocol,
+    breakable,
     colback=blue!5!white,
     colframe=blue!75!black,
     colbacktitle=blue!25!white,
@@ -629,10 +659,11 @@ Let us see the complete specification of the Pinocchio Protocol.
         
     \end{itemize}
     \begin{align*}
-        e(\pi_L^*, \pi_R^*) = e(g_O^{Z(\tau)}, \pi_H)\cdot e(\pi_O^*, g),&& \textcolor{gray!80!black}{\textit{// Polynomial Equality Test}} \\
-        e(\pi_L, g_L^{\alpha_L}) = e(\pi_L', g_L), \quad e(\pi_R, g_R^{\alpha_R}) = e(\pi_R', g_R),&& \textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        e(\pi_O, g_O^{\alpha_O}) = e(\pi_O', g_O),&& \textcolor{gray!80!black}{\textit{// Proof of Exponent}} \\
-        e(\pi_L\pi_R\pi_O, g^{\gamma\beta}) = e(\pi_{\beta}, g^{\gamma}).&& \textcolor{gray!80!black}{\textit{// Extended Witness Consistency}}
+        e(\pi_L^*, \pi_R^*) = e(g_O^{Z(\tau)}, \pi_H)\cdot e(\pi_O^*, g), \\
+        e(\pi_L, g_L^{\alpha_L}) = e(\pi_L', g_L), \\
+        e(\pi_R, g_R^{\alpha_R}) = e(\pi_R', g_R), \\
+        e(\pi_O, g_O^{\alpha_O}) = e(\pi_O', g_O), \\
+        e(\pi_L\pi_R\pi_O, g^{\gamma\beta}) = e(\pi_{\beta}, g^{\gamma}).
     \end{align*}
 \end{tcolorbox}
 
@@ -644,15 +675,20 @@ Let us now concretely describe the Groth16 construction.
 
 \textcolor{gray!75!black}{\textbf{Asymmetric Pairing.}} One change which was made in Groth16 is using the asymmetric pairing function $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ over groups $\mathbb{G}_1$ and $\mathbb{G}_2$ (for more details, see \Cref{section:ecpairing}). Suppose respective group generators are $g_1 \in \mathbb{G}_1$ and $g_2 \in \mathbb{G}_2$. The primary reason for this is that calculating the pairing in asymmetric setting is more efficient than in symmetric setting. Other than that, Groth16 can be easily formulated using symmetric pairings.
 
-\textcolor{blue!75!gray}{\textbf{Setup Procedure.}} In Groth16, we need only five random scalars: $\alpha,\beta,\gamma,\delta,\tau \xleftarrow{R} \mathbb{F}$. Now, the prover key $\mathsf{pk}$ looks as follows:
+\textcolor{blue!75!gray}{\textbf{Setup Procedure.}} In Groth16, we need only five random scalars: $\alpha,\beta,\gamma,\delta,$ \\ $\tau \xleftarrow{R} \mathbb{F}$. Now, the prover key $\mathsf{pk}$ looks as follows:
 \begin{equation*}
-    \mathsf{pp} \gets \left(g_1^{\alpha},g_1^{\beta},g_1^{\delta},\left\{g_1^{\tau^i},\frac{\beta L_i(\tau) + \alpha R_i(\tau) + O_i(\tau)}{\gamma}, \frac{\tau^i Z(\tau)}{\delta}\right\}_{i \in [n]},g_2^{\beta}, g_2^{\delta}, g_2^{\gamma}, \{g_2^{\tau^i}\}_{i \in [d]}\right)
+    \scalebox{0.95}{$
+        \mathsf{pp} \gets \left(g_1^{\alpha},g_1^{\beta},g_1^{\delta},\left\{g_1^{\tau^i},\frac{\beta L_i(\tau) + \alpha R_i(\tau) + O_i(\tau)}{\gamma}, \frac{\tau^i Z(\tau)}{\delta}\right\}_{i \in [n]},g_2^{\beta}, g_2^{\delta}, g_2^{\gamma}, \{g_2^{\tau^i}\}_{i \in [d]}\right)
+    $}
 \end{equation*}
 
 \textcolor{green!50!black}{\textbf{Proving.}} Sample random $\delta_L,\delta_R \xleftarrow{R} \mathbb{F}$ and compute the following values:
-\begin{gather*}
-    \pi_L \gets g_1^{\alpha + \sum_{i=1}^n w_iL_i(\tau) + \delta_L\delta}, \quad \pi_R \gets g_2^{\beta + \sum_{i=0}^n w_iR_i(\tau) + \delta_R\delta}, \quad \pi_O \gets g_1^{\frac{Q_{\text{mid}}(\tau)+H(\tau)Z(\tau)}{\delta} + L\delta_R + R\delta_L - \delta_L\delta_R\delta},
-\end{gather*}
+\begin{equation*}    
+    \begin{aligned}
+        &\pi_L \gets g_1^{\alpha + \sum_{i=1}^n w_iL_i(\tau) + \delta_L\delta}, \quad \pi_R \gets g_2^{\beta + \sum_{i=0}^n w_iR_i(\tau) + \delta_R\delta}, \\
+        &\pi_O \gets g_1^{\frac{Q_{\text{mid}}(\tau)+H(\tau)Z(\tau)}{\delta} + L\delta_R + R\delta_L - \delta_L\delta_R\delta},
+    \end{aligned}
+\end{equation*}
 
 where we denoted $Q_{\text{mid}} := \sum_{i \in \mathcal{I}_{\text{mid}}}w_i(\beta L_i(\tau) + \alpha R_i(\tau) + O_i(\tau))$.
 

@@ -16,9 +16,9 @@ Let us get into specifics. Suppose that we want to specify that the encryption s
 \end{itemize}
 
 Of course, we require the \textbf{correctness}:
-\begin{equation}
+\begin{equation*}
     (\forall k \in \mathcal{K}) \, (\forall m \in \mathcal{M}): \{D(k,E(k,m)) = m\}
-\end{equation}
+\end{equation*}
 
 Now let us play the following game between adversary $\mathcal{A}$ and challenger $\mathcal{C}h$:
 \begin{enumerate}
@@ -28,8 +28,9 @@ Now let us play the following game between adversary $\mathcal{A}$ and challenge
     \item $\mathcal{A}$ outputs the guess $\hat{b}$.
 \end{enumerate}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
+    \scalebox{1}{
     \begin{tikzpicture}
         \node[inner sep=0pt, align=center] (challenger) {\includegraphics[width=0.75cm]{lectures/images/lecture_2/challenger.png}\\Challenger $\mathcal{C}h$};
         \node[inner sep=0pt, align=center, right=5cm of challenger] (adversary) {\includegraphics[width=0.75cm]{lectures/images/lecture_2/demon.png}\\Adversary $\mathcal{A}$};
@@ -53,15 +54,15 @@ Now let us play the following game between adversary $\mathcal{A}$ and challenge
         Guess bit $\hat{b} \in \{0,1\}$\\
         \noindent\rule{3.5cm}{0.8pt}};
     \end{tikzpicture}
-
+    }
     \caption{The game between the adversary $\mathcal{A}$ and the challenger $\mathcal{C}h$ for defining the semantic security.}
 \end{figure}
 
 Now, what should happen if our encryption scheme is secure? The adversary should not be able to guess the bit $b$ with a probability significantly higher than $1/2$ (a random guess). Formally, define the 
 \textbf{advantage} of the adversary $\mathcal{A}$ as:
-\begin{equation}
+\begin{equation*}
     \text{SSAdv}[\mathcal{E}, \mathcal{A}] := \left| \Pr[\hat{b} = b] - \frac{1}{2} \right|
-\end{equation}
+\end{equation*}
 
 We say that the encryption scheme is \textbf{semantically secure}\footnote{This version of definition is called a \textbf{bit-guessing} version.} if for any efficient adversary $\mathcal{A}$ the advantage $\text{SSAdv}[\mathcal{A}]$ is negligible. In other words, the adversary cannot guess the bit $b$ with a probability significantly higher than $1/2$.
 
@@ -75,25 +76,25 @@ The alternative definition, which is problably easier to interpret, is the follo
 
 \begin{theorem}
     A function $f: \mathbb{N} \to \mathbb{R}$ is \textbf{negligible} if and only if for any $c \in \mathbb{R}_{>0}$, we have
-    \begin{equation}
+    \begin{equation*}
         \lim_{n \to \infty} f(n)n^c = 0
-    \end{equation}
+    \end{equation*}
 \end{theorem}
 
 \begin{example}
     The function $f(n) = 2^{-n}$ is negligible since for any $c \in \mathbb{R}_{>0}$ we have
-    \begin{equation}
+    \begin{equation*}
         \lim_{n \to \infty} 2^{-n}n^c = 0
-    \end{equation}
+    \end{equation*}
 
     The function $g(n) = \frac{1}{n!}$ is also negligible for similar reasons.
 \end{example}
 
 \begin{example}
     The function $h(n) = \frac{1}{n}$ is not negligible since for $c = 1$ we have
-    \begin{equation}
+    \begin{equation*}
         \lim_{n \to \infty} \frac{1}{n} \times n = 1 \neq 0
-    \end{equation}
+    \end{equation*}
 \end{example}
 
 Well, that is weird. For some reason we are considering a function the depends on some natural number $n$, but what is this number?
@@ -104,13 +105,13 @@ So all in all, we can define the semantic security as follows.
 
 \begin{definition}
     The encryption scheme $\mathcal{E}$ with a security paramter $\lambda \in \mathbb{N}$ is \textbf{semantically secure} if for any efficient adversary $\mathcal{A}$ we have:
-    \begin{equation}
+    \begin{equation*}
         \left|\text{Pr}\begin{bmatrix}[c|c]
             & m_0, m_1 \gets \mathcal{A}, \; k \xleftarrow{R} \mathcal{K}, \; b \xleftarrow{R} \{0,1\} \\
             b = \hat{b} & c \gets E(k,m_b) \\
             &\hat{b} \gets \mathcal{A}(c)
         \end{bmatrix} - \frac{1}{2}\right| < \text{negl}(\lambda)
-    \end{equation}
+    \end{equation*}
 \end{definition}
 
 Do not be afraid of such complex notation, it is quite simple. Notation $\text{Pr}[A \mid B]$ means ``the probability of $A$, given that $B$ occurred''. So our inner probability is read as ``the probability that the guessed bit $\hat{b}$ equals $b$ given the setup on the right''. Then, on the right we define the setup: first we generate two messages $m_0,m_1 \in \mathcal{M}$, then we choose a random bit $b$ and a key $k$, cipher the message $m_b$, send it to the adversary and the adversary, based on provided cipher, gives $\hat{b}$ as an output. We then claim that the probability of the adversary to guess the bit $b$ is close to $1/2$.
@@ -330,9 +331,9 @@ Now, we loosen the requirements a bit. The \textbf{Decisional Diffie-Hellman} (D
     \end{enumerate}
 
     We define $\mathcal{A}$'s \textbf{advantage in solving the Decisional Diffie-Hellman problem in $\mathbb{G}$}, denoted as $\text{DDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as
-    \begin{equation}
+    \begin{equation*}
         \text{DDH}\mathsf{adv}[\mathcal{A},\mathbb{G}] := \left| \Pr[b = \hat{b}] - \frac{1}{2} \right|
-    \end{equation}
+    \end{equation*}
 \end{definition}
 
 Now, let us break this assumption for some quite generic group! Consider the following example.
@@ -351,9 +352,9 @@ Now, if we could efficiently determine, based on group element $g \in \mathbb{G}
 \end{lemma}
 
 \textbf{Proof.} If $\alpha$ is even, then $\alpha = 2\alpha'$ and thus
-\begin{equation}
+\begin{equation*}
     u^n = (g^{2\alpha'})^n = g^{2n\alpha'} = (g^{2n})^{\alpha'} = 1^{\alpha'} = 1
-\end{equation}
+\end{equation*}
 
 Conversely, if $u^n = 1$ then $u^{\alpha n}=1$, meaning that $2n \mid \alpha n$, implying that $\alpha$ is even. Lemma is proven.
 
@@ -444,7 +445,7 @@ numbers. This is where the concept of the \textbf{greatest common divisor} (or
 \end{definition}
 
 \begin{definition}
-    Two numbers $a$ and $b$ are \textbf{coprime} if and only if $\gcd(a, b) = 1$.
+    Two numbers $a$ and $b$ are \textbf{coprime} if and only if $\gcd(a, b)~=~1$.
 \end{definition}
 
 As with any previous concept, let us check some basic properties of the GCD operation.
@@ -467,8 +468,8 @@ As with any previous concept, let us check some basic properties of the GCD oper
 The aforementioned lemma will be further extensively used for the Euclidean algorithm.
 
 \begin{corollary}\label{cor:euclidean}
-    As a corollary, for any $a,b \in \mathbb{Z}$ we also have $\gcd(a, b) =
-    \gcd(b, a \; \text{mod} \; b)$.
+    As a corollary, for any $a,b \in \mathbb{Z}$ we also have 
+    $\gcd(a,~b)~=~\gcd(b,~a~\,~\text{mod}~\,~b)$.
 \end{corollary}
 
 All these properties are interesting and useful from the theory standpoint, but
@@ -477,7 +478,7 @@ implement this function in the programming language). \emph{Euclidean algorithm}
 efficient method for computing the greatest common divisor. The main idea of 
 Euclidean algorithm is to recursively apply the \Cref{cor:euclidean}. The concrete implementation 
 in Python is specified below. 
-\begin{lstlisting}[language=Python]
+\begin{lstlisting}[language=Python, numbers=none]
 def gcd(a: int, b: int) -> int:
     return gcd(b, a % b) if b != 0 else a
 \end{lstlisting}
@@ -668,7 +669,7 @@ central to number theory, and they play a crucial role in various mathematical
 proofs and structures.
 
 \begin{definition}
-    Number $n \in \mathbb{N}$ is \textbf{prime} iff its only two divisors are $1$
+    Number $n \in \mathbb{N}$ is \textbf{prime} if and only if its only two divisors are $1$
     and $n$. 
 \end{definition}
 
@@ -734,7 +735,7 @@ The Fundamental Theorem of Arithmetic states that every integer greater than 1 c
 It plays a key role in areas like number theory, cryptography, and simplifying calculations involving divisibility. 
 But before formal description of the theorem, for better understanding it is good to know the following Lemma \ref{euclidean_lemma}.
 
-\begin{lemma}[Euclidean lemma] \label{euclidean_lemma}
+\begin{lemma}[Euclidean] \label{euclidean_lemma}
     If $p$ is a prime and $p \mid ab$, then $p \mid a$ or $p \mid b$.
 \end{lemma}
 
@@ -964,6 +965,12 @@ plays a crucial role in cryptography, forming the basis almost for every cryptog
 \end{example}
 
 \subsubsection{Chinese Remainder Theorem}
+The Chinese Remainder Theorem is a fundamental result in number theory
+that provides an efficient method for solving congruence systems. It allows to
+decompose a complex problem with large integers into several simpler 
+problems with smaller modules. This decomposition reduces the required computational 
+complexity, especially when working with large numbers, and is widely used 
+in areas such as modular arithmetic, cryptography, and algorithmic number theory. 
 
 \begin{theorem} [Chinese Remainder Theorem] \label{th:chinese_remainder_theorem}
     Suppose there is the following system
@@ -973,7 +980,7 @@ plays a crucial role in cryptography, forming the basis almost for every cryptog
             x \equiv x_2 \pmod{n_2} \\
             x \equiv x_3 \pmod{n_3} \\
             \cdots \\
-            x \equiv x_k \pmod{n_t} \\
+            x \equiv x_t \pmod{n_t} \\
         \end{cases}
     \end{equation*}
     where the $n_i$ are pairwise coprime and $x_1, x_2, \cdots x_t$ are fixed numbers. 
@@ -1062,11 +1069,14 @@ Let $F = \F_3$, $f(x) = x^2 - 5x + 6$, $S = F$, $r \xleftarrow{R} \mathbb{F}_3$.
 Schwartz-Zippel lemma says that the probability that $f(r) = 0$ is $\le \frac{2}{3}$.
 \end{example}
 
+\vspace{-0.5em}
+
 Given two polynomials $P, Q$ with  degree $d$ in a field $\F_p$, for $r \xleftarrow{R} \mathbb{F}_3$: $\Pr[P(r) == Q(r)] \le \frac{d}{p}$.
 For large fields, where  $\frac{d}{p}$ is negligible, this property allows to succinctly check the equality of polynomials.
 Let $H(x) := P(x) - Q(x)$. Than for each $P(x) = Q(x) \rightarrow H(x) = 0$. Applying Schwartz-Zippel lemma, 
 the probability of $H(x) = 0$ for $x \xleftarrow{R} \mathbb{F} $ is $\le \frac{d}{|S|}$.
 
+\newpage
 \subsection{Exercises}
 
 \textbf{Exercise 1.} Suppose that for the given cipher with a security parameter $\lambda$, the adversary $\mathcal{A}$ can deduce the least significant bit of the plaintext from the ciphertext. Recall that the advantage 
@@ -1074,14 +1084,15 @@ of a bit-guessing game is defined as $\text{SS}\mathsf{Adv}[\mathcal{A}] = \left
 $\hat{b}$ is the adversary's guess. What is the maximal advantage of $\mathcal{A}$ in this case?
 
 \textbf{Hint:} The adversary can choose which messages to send to challenger to further distinguish the plaintexts.
-
-\begin{enumerate}[a)]
-    \item $1$
-    \item $\frac{1}{2}$
-    \item $\frac{1}{4}$
-    \item $0$
-    \item Negligible value ($\text{negl}(\lambda)$).
-\end{enumerate}
+\begin{multicols}{3}
+    \begin{enumerate}[a)]
+        \item $1$
+        \item $\frac{1}{2}$
+        \item $\frac{1}{4}$
+        \item $0$
+        \item Negligible value ($\text{negl}(\lambda)$).
+    \end{enumerate}
+\end{multicols}
 
 \textbf{Exercise 2.} Consider the cipher $\mathcal{E} = (E,D)$ with encryption function $E: \mathcal{K} \times \mathcal{M} \to \mathcal{C}$ over the message space $\mathcal{M}$, ciphertext space $\mathcal{C}$, and key space $\mathcal{K}$. We want to define the security
 that, based on the cipher, the adversary $\mathcal{A}$ cannot restore the message (\textit{security against message recovery}). For that reason, we define the following game:
@@ -1111,33 +1122,39 @@ We say that the cipher $\mathcal{E}$ is secure against message recovery if the \
     \end{cases}$
 \end{enumerate}
 
+\newpage
 \textbf{Exercise 4.} Suppose that $f \in \mathbb{F}_p[x]$ is a $d$-degree polynomial with $d$ \textbf{distinct} roots in $\mathbb{F}_p$. What is the probability that, when evaluating $f$ at $n$ random points, the polynomial will be zero at all of them?
-
-\begin{enumerate}[a)]
-    \item Exactly $(d/p)^n$.
-    \item Strictly less that $(d/p)^n$.
-    \item Exactly $nd/p$.
-    \item Exactly $d/np$.
-\end{enumerate}
+\begin{multicols}{2}
+    \begin{enumerate}[a)]
+        \item Exactly $(d/p)^n$.
+        \item Strictly less that $(d/p)^n$.
+        \item Exactly $nd/p$.
+        \item Exactly $d/np$.
+    \end{enumerate}
+\end{multicols}
 
 \textbf{Exercise 5-6.} To demonstrate the idea of Reed-Solomon codes, consider the toy construction. Suppose that our message is a tuple of two elements $a,b \in \mathbb{F}_{13}$. Consider function $f: \mathbb{F}_{13} \to \mathbb{F}_{13}$, defined as $f(x) = ax+b$, and define the encoding of the message $(a,b)$ as $(a,b) \mapsto (f(0),f(1),f(2),f(3))$. 
 
 \textbf{Question 5.} Suppose that you received the encoded message $(3,5,6,9)$. Which number from the encoded message is corrupted?
-\begin{enumerate}[a)]
-    \item First element ($3$).
-    \item Second element ($5$).
-    \item Third element ($6$).
-    \item Fourth element ($9$).
-    \item The message is not corrupted.
-\end{enumerate}
+\begin{multicols}{2}
+    \begin{enumerate}[a)]
+        \item First element ($3$).
+        \item Second element ($5$).
+        \item Third element ($6$).
+        \item Fourth element ($9$).
+        \item The message is not corrupted.
+    \end{enumerate}
+\end{multicols}
 
 \textbf{Question 6.} Consider the previous question. Suppose that the original message was $(a,b)$. Find the value of $a \times b$ (in $\mathbb{F}_{13}$).
-\begin{enumerate}[a)]
-    \item $4$
-    \item $6$
-    \item $12$
-    \item $2$
-    \item $1$
-\end{enumerate}
+\begin{multicols}{5}
+    \begin{enumerate}[a)]
+        \item $4$
+        \item $6$
+        \item $12$
+        \item $2$
+        \item $1$
+    \end{enumerate}
+\end{multicols}
 
 \end{document}

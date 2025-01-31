@@ -200,7 +200,10 @@ Suppose the considered polynomial is such that $N=2^r$ (we can always pad the
 polynomial if that is not the case). Now, let us proceed with the polynomial as
 follows:
 \begin{equation*}
-    p(\omega^i) = \sum_{j=0}^{2^{r}-1}p_j\omega^{ij} = \sum_{j=0}^{2^{r-1}-1}p_{2j}\omega^{2ij} + \sum_{j=0}^{2^{r-1}-1}p_{2j+1}\omega^{i(2j+1)} = \sum_{j=0}^{2^{r-1}-1}p_{2j}(\omega^{2i})^j + \omega^i\sum_{j=0}^{2^{r-1}-1}p_{2j+1} (\omega^{2i})^j
+    \begin{aligned}
+        &p(\omega^i) = \sum_{j=0}^{2^{r}-1}p_j\omega^{ij} = \sum_{j=0}^{2^{r-1}-1}p_{2j}\omega^{2ij} + \sum_{j=0}^{2^{r-1}-1}p_{2j+1}\omega^{i(2j+1)} = \\
+        &= \sum_{j=0}^{2^{r-1}-1}p_{2j}(\omega^{2i})^j + \omega^i\sum_{j=0}^{2^{r-1}-1}p_{2j+1} (\omega^{2i})^j
+    \end{aligned}
 \end{equation*}
 
 This already looks interesting enough. Notice that we can introduce two new polynomials: $p_E(x)=\sum_{j=0}^{2^{r-1}-1}p_{2j}x^{j}$ and $p_O(x)=\sum_{j=0}^{2^{r-1}-1}p_{2j+1}x^{j}$, 
@@ -236,7 +239,7 @@ not the case, all the aforementioned magic breaks.
 
 We summarize everything so far in the \Cref{alg:ntt}.
 
-\begin{algorithm}[H]
+\begin{algorithm}[h!]
     \caption{Number Theoretic Transform (NTT)}
     \label{alg:ntt}
     \Input{Polynomial $p(x) = \sum_{j=0}^{N-1}p_jx^j$}
@@ -517,7 +520,8 @@ $Q=$
 \textcolor{blue}{0} & \textcolor{blue}{1} & \textcolor{blue}{1} & \textcolor{blue}{$-1$} & \textcolor{blue}{$-1$} \\ 
 \hline
 \end{tabular}
-\quad $V=$
+\vspace{0.2cm}
+\\ $V=$
 \begin{tabular}{|c|c|c|}
 \hline
 \rowcolor{gray!30}L & R & O \\
@@ -589,7 +593,8 @@ $-1$ & 0 & 0 & 0 & 8 \\
 1 & $-1$ & 0 & 0 & 0 \\ 
 \hline
 \end{tabular}
-\quad $V=$
+\vspace{0.2cm}
+\\ $V=$
 \begin{tabular}{|c|c|c|}
 \hline
 \rowcolor{gray!30} $\mathbf{L}$ & $\mathbf{R}$ & $\mathbf{O}$ \\
@@ -701,7 +706,9 @@ Notice that if our trace matrix is correct, then the first condition of
 \Cref{prop:plonk-conditions} can be reduced to the following polynomial
 equation:
 \begin{equation*}
-    a(\omega^j)q_L(\omega^j) + b(\omega^j)q_R(\omega^j) + a(\omega^j)b(\omega^j)q_M(\omega^j) + c(\omega^j)q_O(\omega^j) + q_C(\omega^j) + \pi(\omega^j) = 0, \; \forall j \in [N]
+    \scalebox{0.8}{$
+        a(\omega^j)q_L(\omega^j) + b(\omega^j)q_R(\omega^j) + a(\omega^j)b(\omega^j)q_M(\omega^j) + c(\omega^j)q_O(\omega^j) + q_C(\omega^j) + \pi(\omega^j) = 0, \; \forall j \in [N]
+    $}
 \end{equation*}
 
 Notice that this essentially means that the left polynomial $aq_L + bq_R + abq_M
@@ -833,7 +840,9 @@ consider the modified sets:
     B &= \{(\eta^{3k+\ell}, T_{i,j}) : (i, j) \in \mathcal{I}, \sigma((i, j)) = (k, \ell)\}
 \end{align*}
 
-Sample two random field elements $\beta$ and $\gamma \xleftarrow{R} \mathbb{R}$. Let $\mathcal{D} = \{1, \eta, \eta^2, \ldots, \eta^{3N-1}\}$. Then, interpolate two polynomials $f$ and $g$ over the defined set $\mathcal{D}$ as follows:
+Sample two random field elements $\beta$ and $\gamma \xleftarrow{R} \mathbb{R}$. \\
+Let $\mathcal{D} = \{1, \eta, \eta^2, \ldots, \eta^{3N-1}\}$. Then, interpolate two 
+polynomials $f$ and $g$ over the defined set $\mathcal{D}$ as follows:
 \begin{align*}
     f(\eta^{3i+j}) &= T_{i,j} + \eta^{3i+j}\beta + \gamma, \quad (i, j) \in \mathcal{I} \\
     g(\eta^{3k+\ell}) &= T_{i,j} + \eta^{3k+\ell}\beta + \gamma, \quad (i, j) \in \mathcal{I}, \quad \sigma((i, j)) = (k, \ell)
@@ -861,7 +870,7 @@ $\beta$ and $\gamma$ are random field elements. Let $f$ and $g$ be the
 polynomials that interpolate, respectively, the following values at $\Omega$:
 \begin{align*}
     f(\omega^i) &=\left(T_{i,0} + \omega^i \beta + \gamma\right)\left(T_{i,1} + \omega^i k_1 \beta + \gamma\right)\left(T_{i,2} + \omega^i k_2 \beta + \gamma\right), \quad i \in [N] \\
-    g(\omega^i) &= \left(T_{i,0} + S_{\sigma_1}(\omega^i) \beta + \gamma\right)\left(T_{i,0} + S_{\sigma_2}(\omega^i) \beta + \gamma\right)\left(T_{i,0} + S_{\sigma_3}(\omega^i) \beta + \gamma\right), \quad i \in [N]
+    g(\omega^i) &= \left(T_{i,0} + S_{\sigma_1}(\omega^i) \beta + \gamma\right)\left(T_{i,0} + S_{\sigma_2}(\omega^i) \beta + \gamma\right)\left(T_{i,0} + S_{\sigma_3}(\omega^i) \beta + \gamma\right).
 \end{align*}
 
 That being said, there is a polynomial $Z \in \mathbb{F}[X]$ such that $\forall
@@ -933,8 +942,8 @@ gates). Let $\omega$ be a primitive $N$-th root of unity. Let $\Omega =
 - 1$.
 
 Assume we have conducted arithmetization of this program, obtaining eight
-polynomials. Now we will demonstrate commitment-scheme agnostic non-interactive
-(Fiat-Shamir) algorithms for both prover and verifier.
+polynomials. Now we will demonstrate commitment-scheme \\
+agnostic non-interactive (Fiat-Shamir) algorithms for both prover and verifier.
 
 \begin{remark}
     Although the further discussion would involve statements like ``the prover
@@ -1012,7 +1021,7 @@ Add to the transcript commitments $(\mathsf{com}(a), \mathsf{com}(b),
 \gamma \xleftarrow{R} \mathbb{F}$ from the transcript. Let $z_0 = 1$ and define
 recursively the following sequence $\{z_k\}_{0 \leq k < N}$:
 \begin{equation*}
-    z_{k+1} = \frac{(a_k + \beta \omega^{k} + \gamma) (b_k + \beta \omega^{k}k_1 + \gamma) (c_k + \beta \omega^{k}k_2 + \gamma)}{(a_k + \beta S_{\sigma_1}(\omega^{k}) + \gamma) (b_k + \beta S_{\sigma_2}(\omega^{k}) + \gamma) (c_k + \beta S_{\sigma_3}(\omega^{k}) + \gamma)} \cdot z_k, \quad k \in [N]
+    z_{k+1} = \frac{(a_k + \beta \omega^{k} + \gamma) (b_k + \beta \omega^{k}k_1 + \gamma) (c_k + \beta \omega^{k}k_2 + \gamma)}{(a_k + \beta S_{\sigma_1}(\omega^{k}) + \gamma) (b_k + \beta S_{\sigma_2}(\omega^{k}) + \gamma) (c_k + \beta S_{\sigma_3}(\omega^{k}) + \gamma)} \cdot z_k.
 \end{equation*}
 
 Interpolate polynomial $z'(x)$ over evaluations $(z_0, \dots, z_{N-1})$ at the
@@ -1050,12 +1059,14 @@ and add them to the transcript.
 
 \textcolor{green!60!black}{\textbf{Round 5.}} Sample random $v \xleftarrow{R}
 \mathbb{F}$ from the transcript. Let:
-\begin{align*}
-\hat{p}_{\text{nc},1}(x) &= \bar{a}q_L + \bar{b}q_R + \bar{a}\bar{b}q_M + \bar{c}q_O + q_C \\
-\hat{p}_{\text{nc},2}(x) &= (\bar{a} + \beta \zeta + \gamma)(\bar{b} + \beta k_1 \zeta + \gamma)(\bar{c} + \beta k_2 \zeta + \gamma) z
-- (\bar{a} + \beta \bar{S}_{\sigma_1} + \gamma)(\bar{b} + \beta \bar{S}_{\sigma_2} + \gamma)\beta \overline{z}_{\omega}S_{\sigma_3} \\
-\hat{p}_{\text{nc},3}(x) &= L_1(\zeta)z(x)
-\end{align*}
+\begin{equation*}    
+    \begin{aligned}
+        \hat{p}_{\text{nc},1}(x) &= \bar{a}q_L + \bar{b}q_R + \bar{a}\bar{b}q_M + \bar{c}q_O + q_C \\
+        \hat{p}_{\text{nc},2}(x) &= (\bar{a} + \beta \zeta + \gamma)(\bar{b} + \beta k_1 \zeta + \gamma)(\bar{c} + \beta k_2 \zeta + \gamma) z - \\
+                                 &- (\bar{a} + \beta \bar{S}_{\sigma_1} + \gamma)(\bar{b} + \beta \bar{S}_{\sigma_2} + \gamma)\beta \overline{z}_{\omega}S_{\sigma_3} \\
+        \hat{p}_{\text{nc},3}(x) &= L_1(\zeta)z(x)
+    \end{aligned}
+\end{equation*}
 Define:
 \begin{align*}
 p_{\text{nc}} &= p_{\text{nc},1} + \alpha p_{\text{nc}, 2} + \alpha^2 p_{\text{nc}, 3} \\
@@ -1128,12 +1139,14 @@ proof as follows:
 \end{equation*}
 
 For the second one, compute those:
-\begin{align*}
-\mathsf{com}(p_{\text{nc},1}) &= \bar{a}\cdot\mathsf{com}(q_L) + \bar{b} \cdot \mathsf{com}(q_R) + \bar{a}\bar{b} \cdot \mathsf{com}(q_M) + \bar{c} \cdot \mathsf{com}(q_O) + \mathsf{com}(q_C) \\
-\mathsf{com}(p_{\text{nc},2}) &= (\bar{a} + \beta \zeta + \gamma)(\bar{b} + \beta k_1 \zeta + \gamma)(\bar{c} + \beta k_2 \zeta + \gamma) \cdot\mathsf{com}(z) \\ 
-&- (\bar{a} + \beta \bar{S}_{\sigma_1} + \gamma)(\bar{b} + \beta \bar{S}_{\sigma_2} + \gamma)\beta z_{\omega}\cdot \mathsf{com}(S_{\sigma_3}) \\
-\mathsf{com}(p_{\text{nc},3}) &= L_1(\zeta)\cdot\mathsf{com}(z)
-\end{align*}
+\begin{equation*}
+    \begin{aligned}
+        \mathsf{com}(p_{\text{nc},1}) &= \bar{a}\cdot\mathsf{com}(q_L) + \bar{b} \cdot \mathsf{com}(q_R) + \bar{a}\bar{b} \cdot \mathsf{com}(q_M) + \bar{c} \cdot \mathsf{com}(q_O) + \mathsf{com}(q_C) \\
+        \mathsf{com}(p_{\text{nc},2}) &= (\bar{a} + \beta \zeta + \gamma)(\bar{b} + \beta k_1 \zeta + \gamma)(\bar{c} + \beta k_2 \zeta + \gamma) \cdot\mathsf{com}(z) - \\ 
+                                      &- (\bar{a} + \beta \bar{S}_{\sigma_1} + \gamma)(\bar{b} + \beta \bar{S}_{\sigma_2} + \gamma)\beta z_{\omega}\cdot \mathsf{com}(S_{\sigma_3}) \\
+        \mathsf{com}(p_{\text{nc},3}) &= L_1(\zeta)\cdot\mathsf{com}(z)
+    \end{aligned}
+\end{equation*}
 
 Then $\mathsf{com}(p_{\text{nc}}) = \mathsf{com}(p_{\text{nc},1}) + \mathsf{com}(p_{\text{nc},2}) + \mathsf{com}(p_{\text{nc},3})$.
 
@@ -1149,16 +1162,22 @@ f_{B}(\zeta) &= \bar{t} + v \bar{p}_{\text{nc}} + v^2 \bar{a} + v^3 \bar{b} + v^
 necessary values to proceed with the checks.
 \begin{itemize}
     \item Check that $p(\zeta)$ equals $(\zeta^N - 1)t(\zeta)$.
-    \item Verify the opening of $f_{B}$ at $\zeta$. That is, run the check:
-        \begin{equation*}
+    \item Verify the opening of $f_{B}$ at $\zeta$. 
+    % That is, 
+    Run the check: $
+        % \begin{equation*}
             \text{Verify}(\mathsf{com}(f_{B}), \pi_{B}, \zeta, f_{B}(\zeta))
-        \end{equation*}
-    \item Verify the opening of $z$ at $\zeta\omega$. That is, check the
+            $.
+        % \end{equation*}
+    \item Verify the opening of $z$ at $\zeta\omega$. 
+    % That is,
+    Check the
     validity of the proof $\pi_{S}$ using the commitment $\mathsf{com}(z)$ and the
-    value $\bar{z}_{\omega}$:
-        \begin{equation*}
+    value $\bar{z}_{\omega}$: $
+        % \begin{equation*}
             \text{Verify}(\mathsf{com}(z), \pi_{S}, \zeta\omega, \bar{z}_{\omega})
-        \end{equation*}
+            $.
+        % \end{equation*}
 \end{itemize}
 
 If all checks pass, output $\textcolor{green!60!black}{\mathsf{accept}}$.

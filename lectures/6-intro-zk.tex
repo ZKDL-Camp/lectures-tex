@@ -106,8 +106,9 @@ That being said, formally the interaction between prover $\mathcal{P}$ and verif
     \item Repeat the process for $\lambda \in \mathbb{N}$ rounds.
 \end{enumerate}
 
-\begin{figure}
+\begin{figure}[H]
     \centering
+    \scalebox{0.9}{
     \begin{tikzpicture}
         \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
         \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
@@ -144,6 +145,7 @@ That being said, formally the interaction between prover $\mathcal{P}$ and verif
         Verify $z^2 \equiv a \times x^{b} \pmod{N}$ \\
         \noindent\rule{3.5cm}{0.8pt}};
     \end{tikzpicture}
+    }
 
     \caption{The interactive protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$ for the quadratic residue test.}
 \end{figure}
@@ -209,6 +211,7 @@ Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended w
 
 \begin{figure}[H]
     \centering
+    \scalebox{0.99}{
     \begin{tikzpicture}
         \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
         \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
@@ -229,13 +232,14 @@ Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended w
         \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-7.5cm]verifier.south) coordinate (l2)--(l2-|prover) node[midway, above=0mm, fill=white]{Toss coin $r_{\ell}$ and send query $q_{\ell}$};
         
     \end{tikzpicture}
+    }
 
     \caption{The interactive protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$. Prover's messages consist of messages $\{m_k\}_{k=1}^{\ell}$, verifier's messages consist of queries $\{q_k\}_{k=1}^{\ell}$, and additionally verifier samples random coins $\{r_k\}_{k=1}^{\ell}$.}
 \end{figure}
 
 \begin{example}
     Suppose that for the aforementioned protocol with $N=3 \times 2^{30} + 1$, the conversation between the prover $\mathcal{P}$, who wants to convince that $1286091780 \in \mathcal{L}_R$, and $\mathcal{V}$ is the following:
-    \begin{enumerate}
+    \begin{enumerate} %[left=0.3em]
         \item During the first round, $\mathcal{P}$ sends $672192003$ to $\mathcal{V}$.
         \item $\mathcal{V}$ sends $b=0$ to $\mathcal{P}$.
         \item $\mathcal{P}$ sends $2606437826$ to $\mathcal{V}$.
@@ -243,13 +247,15 @@ Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended w
         \item During the second round, $\mathcal{P}$ sends $2619047580$ to $\mathcal{V}$.
         \item $\mathcal{V}$ chooses $b=1$ and sends to $\mathcal{P}$.
         \item $\mathcal{P}$ sends $1768388249$ to $\mathcal{V}$.
-        \item $\mathcal{V}$ verifies that indeed $1768388249^2 \equiv 2619047580 \times 1286091780 \pmod{N}$.
+        \item $\mathcal{V}$ verifies that $1768388249^2 \equiv 2619047580 \times 1286091780~\pmod{N}$.
         \item Conversation ends.
     \end{enumerate}
 
     The view of the verifier $\mathcal{V}$ is the following: 
     \begin{equation*}
-        \mathsf{view}_{\mathcal{V}}(\mathcal{V}, \mathcal{P})[1286091780] = (672192003, 0, 2606437826, 2619047580, 1, 1768388249)
+        \scalebox{0.85}{
+            $\mathsf{view}_{\mathcal{V}}(\mathcal{V}, \mathcal{P})[1286091780] = (672192003, 0, 2606437826, 2619047580, 1, 1768388249)$
+        }
     \end{equation*}
 
     Essentially, the view that you currently has witnessed is the same as one that $\mathcal{V}$ has seen. After this interaction, you have not learned anything about the witness $w$ that prover $\mathcal{P}$ knows and which we, as of now, has not revealed to you.
@@ -385,6 +391,7 @@ Here how it goes. Suppose we have an interactive protocol $(\mathcal{P}, \mathca
 
 \begin{figure}[H]
     \centering
+    \scalebox{0.58}{
     \begin{tikzpicture}
         % Blue zone
         \node[very thick, draw=blue, fill=blue, fill opacity=0.1,minimum width=7cm, minimum height=7cm,dashed,on background layer](targetbox) at (2.25,-5.0) {};
@@ -416,6 +423,7 @@ Here how it goes. Suppose we have an interactive protocol $(\mathcal{P}, \mathca
         Verify $\pi$ \\
         \noindent\rule{3.5cm}{0.8pt}};
     \end{tikzpicture}
+    }
 
     \caption{The non-interactive protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$ using Fiat-Shamir Transformation. In \textcolor{blue!90!black}{\textbf{blue}} we marked a non-interactive part of the protocol, being the ``communication'' between a prover and a proof stream. In \textcolor{green!50!black}{\textbf{green}} we marked the final proof $\pi$ that is sent to the verifier.}
     \label{fig:fiat-shamir}
@@ -438,6 +446,7 @@ The reason why such transformation works is that the random oracle $\mathcal{O}_
     Suppose that $(\mathcal{P},\mathcal{V})$ is a public-coin interactive argument of knowledge for some language $\mathcal{L}_{\mathcal{R}}$ with a negligible soundness error. Then, the Fiat-Shamir transformation of $(\mathcal{P}^{\mathcal{O}_{\text{R}}},\mathcal{V}^{\mathcal{O}_{\text{R}}})$ is a non-interactive argument for $\mathcal{L}_{\mathcal{R}}$ with negligible soundness error in the random oracle model $\mathcal{O}_{\text{R}}$.
 \end{theorem}
 
+\newpage
 \subsection{Exercises}
 
 \textbf{Exercise 1.} When dealing with RSA protocol, one frequently encounters the following relation where $e$ is a prime number and $n \in \mathbb{N}$:
@@ -455,13 +464,15 @@ Which of the following is the language $\mathcal{L}_{\mathcal{R}}$ that correspo
 \end{enumerate}
 
 \textbf{Exercise 2.} Suppose that for some interactive protocol $(\mathcal{P}, \mathcal{V})$ during one round, the probability that the verifier $\mathcal{V}$ accepts a false statement is $1/8$. How many rounds of interaction are needed to guarantee $120$ bits of security? Assume here that $n$ bits of security means that the probability of accepting a false statement is at most $2^{-n}$.
-\begin{enumerate}[(A)]
-    \item $30$.
-    \item $40$.
-    \item $60$.
-    \item $90$.
-    \item $120$.
-\end{enumerate}
+\begin{multicols}{3}    
+    \begin{enumerate}[(A)]
+        \item $30$.
+        \item $40$.
+        \item $60$.
+        \item $90$.
+        \item $120$.
+    \end{enumerate}
+\end{multicols}
 
 \textbf{Exercise 3.} Recall that for relation $\mathcal{R} = \{(w,x) \in \mathbb{Z}_N^{\times} \times \mathbb{Z}_N^{\times}: x = w^2\}$ we defined the following interactive protocol $(\mathcal{P}, \mathcal{V})$ to prove that $x \in \mathcal{L}_{\mathcal{R}}$:
 \begin{itemize}
@@ -478,6 +489,8 @@ Suppose we use the protocol $(\mathcal{P}, \mathcal{V}^*)$ where the ``broken'' 
     \item The completeness of the protocol is preserved, but the soundness is broken.
     \item Both the soundness and completeness of the protocol are broken.
 \end{enumerate}
+
+\newpage
 
 \textbf{Exercise 4.} What is the difference between the cryptographic proof and the proof of knowledge?
 \begin{enumerate}[(A)]
@@ -508,13 +521,14 @@ Suppose we use the protocol $(\mathcal{P}, \mathcal{V}^*)$ where the ``broken'' 
 
 \textbf{Hint:} View of the participant in the protocol consists of all data he has access to during the protocol execution. For example, verifier $\mathcal{V}$'s view consists of the messages he sends and receives, as well as the random coins he generates.
 
-\textbf{Exercise 7.} Which of the following is \textbf{not} true about the Fiat-Shamir heuristic?
-\begin{enumerate}[(A)]
-    \item If the public-coin protocol is sound, the Fiat-Shamir transformation preserves the soundness.
-    \item The Fiat-Shamir heuristic does not break the completeness of the public-coin protocol it is applied to.
-    \item Practically, it allows to convert any interactive protocol into a non-interactive one.
-    \item To make Fiat-Shamir transformation pratical, the function modelling the random oracle should be hard to invert.
-    \item It is reasonable to use SHA256 to model the random oracle in the Fiat-Shamir transformation.
-\end{enumerate}
+% \newpage
+% \textbf{Exercise 7.} Which of the following is \textbf{not} true about the Fiat-Shamir heuristic?
+% \begin{enumerate}[(A)]
+%     \item If the public-coin protocol is sound, the Fiat-Shamir transformation preserves the soundness.
+%     \item The Fiat-Shamir heuristic does not break the completeness of the public-coin protocol it is applied to.
+%     \item Practically, it allows to convert any interactive protocol into a non-interactive one.
+%     \item To make Fiat-Shamir transformation pratical, the function modelling the random oracle should be hard to invert.
+%     \item It is reasonable to use SHA256 to model the random oracle in the Fiat-Shamir transformation.
+% \end{enumerate}
 
 \end{document}
