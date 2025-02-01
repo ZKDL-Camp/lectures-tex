@@ -328,7 +328,6 @@ Now, the main issue with the above definition is that \textit{we have proven the
 \end{example}
 
 That is why instead of \textbf{proof}, we need a \textbf{proof of knowledge}. This leads to even another weird paradigm used for the rigorous definition: the \textbf{extractor}. Basically, the knowledge of witness means that we can \textit{extract} the witness while interacting with the prover. Yet, the \textit{extractor} can do more than the verifier: he can call the prover however he wants and he can also rewind the prover (for example, run some pieces multiple times). This sometimes is referred to as ``extractor $\mathcal{E}$ uses $\mathcal{P}$ as an oracle''. 
-
 Now, let us move to the formal definition.
 
 \begin{definition}[Proof of Knowledge]
@@ -402,7 +401,7 @@ Here how it goes. Suppose we have an interactive protocol $(\mathcal{P}, \mathca
 
 \begin{figure}[H]
     \centering
-    \scalebox{0.9}{
+    \scalebox{0.92}{
     \begin{tikzpicture}
         % Blue zone
         \node[very thick, draw=blue, fill=blue, fill opacity=0.1,minimum width=7cm, minimum height=7cm,dashed,on background layer](targetbox) at (2.25,-5.0) {};
@@ -475,7 +474,7 @@ Which of the following is the language $\mathcal{L}_{\mathcal{R}}$ that correspo
 \end{enumerate}
 
 \textbf{Exercise 2.} Suppose that for some interactive protocol $(\mathcal{P}, \mathcal{V})$ during one round, the probability that the verifier $\mathcal{V}$ accepts a false statement is $1/8$. How many rounds of interaction are needed to guarantee $120$ bits of security? Assume here that $n$ bits of security means that the probability of accepting a false statement is at most $2^{-n}$.
-\begin{multicols}{3}    
+\begin{multicols}{5}    
     \begin{enumerate}[(A)]
         \item $30$.
         \item $40$.
