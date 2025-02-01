@@ -147,18 +147,23 @@ Now, the Schnorr Protocol is just one of the many examples of a so-called \textb
     \end{itemize}
 \end{definition}
 
+\vspace{-4mm}
+
 \begin{remark}
     The name ``Sigma'' protocol comes from the fact that the ``shape'' of the message flow vaguely resembles the Greek letter $\Sigma$: see \Cref{fig:sigma_protocol_illustration}.
 \end{remark}
 
+\vspace{-4mm}
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.3\linewidth]{images/lecture_7/sigma_protocol_illustration.pdf}
+    \includegraphics[width=0.4\linewidth]{images/lecture_7/sigma_protocol_illustration.pdf}
 
     \caption{Sigma Protocol Illustration: the flow of messages between prover $\mathcal{P}$ and verifier $\mathcal{V}$ closely resembles the Greek letter $\Sigma$, which is marked in \textcolor{red}{\textbf{red}} in the Figure.}
     \label{fig:sigma_protocol_illustration}
 \end{figure}
 
+\vspace{-5mm}
 
 \begin{example}
     In particular, for the Schnorr Protocol, the Sigma protocol is defined over the relation $\mathcal{R} \subset \mathcal{X} \times \mathcal{W}$ where:
@@ -169,7 +174,11 @@ Now, the Schnorr Protocol is just one of the many examples of a so-called \textb
     Here, the challenge space $\mathcal{C}$ is a subset of $\mathbb{Z}_q$ (or, typically, the whole set).
 \end{example}
 
+\vspace{-1mm}
+
 Similarly to interactive protocols, Sigma protocols also have a property called \textit{soundness}. However, there is an additional property called \textit{special soundness} that simplifies the general notion of soundness.
+
+\vspace{-1mm}
 
 \begin{definition}[Special Soundness]
     Let $(\mathcal{P}, \mathcal{V})$ be a $\Sigma$-protocol for $\mathcal{R} \subseteq \mathcal{X} \times \mathcal{Y}$. We that that $(\mathcal{P},\mathcal{V})$ is \textbf{special sound} if there exists a witness extractor $\mathcal{E}$ such that, given statement $x \in \mathcal{X}$ and two accepting conversations $(a,c,z)$ and $(a,c',z')$ (where $c \neq c'$)\footnote{Notice that initial commitments in both conversations are the same!}, the extractor can always efficiently compute the witness $w$ such that $(x,w) \in \mathcal{R}$.
@@ -367,8 +376,9 @@ The less trivial example is the following: define the relation
 Here, the statement is $x_0$ and $x_1$, but the witness is the witness $w$ to either $x_0$ or $x_1$, and the bit $b \in \{0,1\}$, marking to which of the statement $w$ belongs to. That being said, $w$ might be from either set $\mathcal{W}_0$ or $\mathcal{W}_1$: that is why we say that $w \in \mathcal{W}_0 \cup \mathcal{W}_1$.
 
 To make the interactive protocol work, we add one more assumption about both relations $\mathcal{R}_0$ and $\mathcal{R}_1$. Suppose that the challenge space $\mathcal{C} \subseteq \{0,1\}^{\ell}$. This assumption is not very strong as typically $\mathcal{C}$ is some subspace of integers and thus decomposing some $c \in \mathcal{C}$ into the fixed-length bit representation is a trivial task.
-
 Now, we describe the algorithm.
+
+\vspace{-2mm}
 
 \begin{definition}[The OR Sigma Protocol]
     Define a pair of algorithms $(\mathcal{P},\mathcal{V})$ for relation $\mathcal{R}_{\text{OR}}$ with $b^* := 1-b$ as follows:
@@ -382,9 +392,9 @@ Now, we describe the algorithm.
 
 \subsection{Exercises}
 
-\begin{tcolorbox}[colback=gray!10!white,fonttitle=\bfseries,colframe=purple!80!black,title=Exercises 1-5. In search of correct Schnorr's Identification Protocol\ldots]
+\begin{tcolorbox}[breakable, colback=gray!10!white,fonttitle=\bfseries,colframe=purple!80!black,title=Exercises 1-5. In search of correct Schnorr's Identification Protocol\ldots]
     \textit{You are given the protocol and five ways to implement it. Most of them lack the crucial properties. For each attempt, you need to determine whether the protocol is correct and, if not, specify which of the properties are violated.}
-    \vspace{10px}
+    \vspace{2px}
  
     Recall, that given the cyclic group $\mathbb{G}$ of order $q$, the prover wants to convince the verifier that he knows the discrete logarithm $\alpha$ of $h \in \mathbb{G}$ with respect to the generator $g \in \mathbb{G}$ (so that $g^{\alpha}=h$).
 
@@ -400,7 +410,7 @@ Now, we describe the algorithm.
 
     \textcolor{purple!80!black}{\textbf{Attempt 5.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$, calculates $a \gets g^r$, and sends $a$ to the verifier. Verifier chooses $e \xleftarrow{R} \mathbb{Z}_q$ and sends to the prover. Prover calculates $z \gets \alpha e + r$ and sends to the prover. Verifier checks whether $a \cdot h^e = g^z$.
 
-    \vspace{10px}
+    \vspace{2px}
 
     Below, mark whether the properties of \textit{completeness}, \textit{soundness}, and \textit{zero-knowledge} hold for each attempt.
 
@@ -415,11 +425,11 @@ Now, we describe the algorithm.
     \end{center}
 \end{tcolorbox}
 
-\newpage
+\vspace{10mm}
 
 \begin{tcolorbox}[breakable, colback=gray!10!white,fonttitle=\bfseries,colframe=purple!80!black,title=Exercises 6-10. Non-Interactive Chaum-Pedersen Protocol.]
     \textit{This section explores how to make the previously considered Chaum-Pedersen protocol non-interactive. Fill in the gaps in the following text with the correct statements.}
-    \vspace{10px}
+    \vspace{5px}
 
     Recall that the Chaum-Pedersen protocol allows the prover $\mathcal{P}$ to convince the skeptical verifier $\mathcal{V}$ that the given triplet $(u,v,w) \in \mathbb{G}^3$ is a Diffie-Hellman (DH) triplet in the cyclic group $\mathbb{G}$ of prime order $q$ with a generator $g \in \mathbb{G}$, meaning that $u=g^{\alpha},v=g^{\beta},w=g^{\alpha\beta}$ for some $\alpha,\beta \in \mathbb{Z}_q$. However, instead of making $(\alpha,\beta)$ as a witness, observe that $\beta$ is sufficient. Indeed, if $u=g^{\alpha},v=g^{\beta}$, then $w=\boxed{\textcolor{purple!80!black}{\textbf{6}}}$. Thus, the relation is:
     \begin{equation*}
@@ -427,6 +437,9 @@ Now, we describe the algorithm.
     \end{equation*}
 
     Now, we apply the \textit{Fiat-Shamir Transformation}. Recall that prover, instead of getting the random challenge $c \xleftarrow{R} \mathcal{C} \subset \mathbb{Z}_q$ from the verifier interactively, calculates it as the hash function from the public statement $(u,v,w)$ and the prover's commitment. For that reason, define the non-interactive proof system $\Phi = (\mathsf{Gen}, \mathsf{Verify})$ as follows:
+    
+    \newpage
+
     \begin{itemize}
         \item $\mathsf{Gen}$: On input $(u,v,w) \in \mathbb{G}^3$, 
         \begin{enumerate}
