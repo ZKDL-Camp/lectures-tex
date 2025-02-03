@@ -461,7 +461,7 @@ The reason why such transformation works is that the random oracle $\mathcal{O}_
 \end{equation*}
 
 Which of the following is the language $\mathcal{L}_{\mathcal{R}}$ that corresponds to the relation $\mathcal{R}$?
-\begin{enumerate}[(A)]
+\begin{enumerate}[(a)]
     \item Integers from $\mathbb{Z}_n^{\times}$ which have a modular root of $e$-th degree.
     \item Integers from $\mathbb{Z}_n^{\times}$ which are divisible by $e$.
     \item Integers $x \in \mathbb{Z}_n^{\times}$ with properly defined expression~$x^e$.
@@ -471,7 +471,7 @@ Which of the following is the language $\mathcal{L}_{\mathcal{R}}$ that correspo
 
 \textbf{Exercise 2.} Suppose that for some interactive protocol $(\mathcal{P}, \mathcal{V})$ during one round, the probability that the verifier $\mathcal{V}$ accepts a false statement is $1/8$. How many rounds of interaction are needed to guarantee $120$ bits of security? Assume here that $n$ bits of security means that the probability of accepting a false statement is at most~$2^{-n}$.
 \begin{multicols}{3}[]
-    \begin{enumerate}[(A)]
+    \begin{enumerate}[(a)]
         \item 30.
         \item 40.
         \item 60.
@@ -489,7 +489,7 @@ Which of the following is the language $\mathcal{L}_{\mathcal{R}}$ that correspo
 \end{itemize}
 
 Suppose we use the protocol $(\mathcal{P}, \mathcal{V}^*)$ where the ``broken'' verifier $\mathcal{V}^*$ always outputs $b=1$. Which of the following statements is true?
-\begin{enumerate}[(A)]
+\begin{enumerate}[(a)]
     \item Both the soundness and completeness of the protocol are preserved.
     \item The soundness of the protocol is preserved, but the completeness is broken.
     \item The completeness of the protocol is preserved, but the soundness is broken.
@@ -497,7 +497,7 @@ Suppose we use the protocol $(\mathcal{P}, \mathcal{V}^*)$ where the ``broken'' 
 \end{enumerate}
 
 \textbf{Exercise 4.} What is the difference between the cryptographic proof and the proof of knowledge?
-\begin{enumerate}[(A)]
+\begin{enumerate}[(a)]
     \item Cryptographic proof is a proof of knowledge that is secure against malicious verifiers.
     \item Cryptographic proof is a proof of knowledge that is secure against malicious provers.
     \item Cryptographic proof merely states the correctness of a statement, while the proof of knowledge also guarantees that the prover knows the witness.
@@ -506,7 +506,7 @@ Suppose we use the protocol $(\mathcal{P}, \mathcal{V}^*)$ where the ``broken'' 
 \end{enumerate}
 
 \textbf{Exercise 5.} What is the purpose of introducing the extractor?
-\begin{enumerate}[(A)]
+\begin{enumerate}[(a)]
     \item To introduce the algorithm that simulates the malicious verifier trying to extract the witness from the prover.
     \item To define what it means that the prover knows the witness.
     \item To give the verifier the ability to extract the witness from the prover during the interactive protocol.
@@ -515,7 +515,7 @@ Suppose we use the protocol $(\mathcal{P}, \mathcal{V}^*)$ where the ``broken'' 
 \end{enumerate}
 
 \textbf{Exercise 6.} What it means that the interactive protocol $(\mathcal{P}, \mathcal{V})$ is a zero-knowledge?
-\begin{enumerate}[(A)]
+\begin{enumerate}[(a)]
     \item The verifier $\mathcal{V}$ cannot know whether the given statement is true or false.
     \item The verifier $\mathcal{V}$ cannot know whether the prover $\mathcal{P}$ knows the witness.
     \item View of the prover $\mathcal{P}$ in the protocol is indistinguishable from the view of the verifier $\mathcal{V}$.
@@ -527,7 +527,7 @@ Suppose we use the protocol $(\mathcal{P}, \mathcal{V}^*)$ where the ``broken'' 
 % For example, verifier $\mathcal{V}$'s view consists of the messages he sends and receives, as well as the random coins he generates.
 
 \textbf{Exercise 7.} Which of the following is \textbf{not} true about the Fiat-Shamir heuristic?
-\begin{enumerate}[(A)]
+\begin{enumerate}[(a)]
     \item If the public-coin protocol is sound, the Fiat-Shamir transformation preserves the soundness.
     \item The Fiat-Shamir heuristic does not break the completeness of the public-coin protocol it is applied to.
     \item Practically, it allows to convert any interactive protocol into a non-interactive one.
