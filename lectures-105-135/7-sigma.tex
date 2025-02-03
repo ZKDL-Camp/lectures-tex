@@ -14,19 +14,22 @@ Let us formalize it using theory from \Cref{section:relations_and_languages}. Su
     \end{aligned}
 \end{equation*}
 
-Now, suppose prover $\mathcal{P}$ has a valid statement and a witness $(u,\alpha) \in \mathcal{R}$ and he wants to convince the verifier $\mathcal{V}$ that he knows the witness $\alpha$ to the public statement $u$ (that is, we are building the proof of knowledge). Well, the easiest way how to proceed is simply giving $\alpha$ to $\mathcal{V}$, but this is obviously not what we want. Instead, the Schnorr protocol allows $\mathcal{P}$ to prove the knowledge of $\alpha$ without revealing it. 
+\vspace{-1mm}
 
+Now, suppose prover $\mathcal{P}$ has a valid statement and a witness $(u,\alpha) \in \mathcal{R}$ and he wants to convince the verifier $\mathcal{V}$ that he knows the witness $\alpha$ to the public statement $u$ (that is, we are building the proof of knowledge). Well, the easiest way how to proceed is simply giving $\alpha$ to $\mathcal{V}$, but this is obviously not what we want. Instead, the Schnorr protocol allows $\mathcal{P}$ to prove the knowledge of $\alpha$ without revealing it. 
 First, let us start with the interactive version of the protocol. 
 
+\vspace{-2mm}
+
 \begin{definition}
-    \textbf{The Schnorr interactive identification protocol} $\Pi_{\text{Sch}} = (\mathsf{Gen}, \mathcal{P}, \mathcal{V})$ with a generation function $\mathsf{Gen}$ and prover $\mathcal{P}$ and verifier $\mathcal{V}$ is defined as follows:
+    \textbf{The Schnorr interactive identification protocol} $\Pi_{\text{Sch}} = (\mathsf{Gen}, \mathcal{P}, \mathcal{V})$ with a generation function $\mathsf{Gen}$, prover $\mathcal{P}$, verifier $\mathcal{V}$ is defined as follows:
     \begin{itemize}
         \item $\mathsf{Gen}(1^{\lambda})$: As with most public-key cryptosystems, we take $\alpha \xleftarrow{R} \mathbb{Z}_q$ and $u \gets g^{\alpha}$. We output the \textit{verification key} as $\mathsf{vk} := u$, and the \textit{secret key} as $\mathsf{sk} := \alpha$.
         \item The protocol between $(\mathcal{P},\mathcal{V})$ is run as follows:
         \begin{itemize}
-            \item $\mathcal{P}$ computes $r \gets \mathbb{Z}_q^{\times}, a \gets g^{r}$ and sends $a$ to $\mathcal{V}$.
+            \item $\mathcal{P}$ computes $r \gets \mathbb{Z}_q^{\times}, a \gets g^{r}$, sends $a$ to $\mathcal{V}$.
             \item $\mathcal{V}$ sends a random challenge $e \xleftarrow{R} \mathbb{Z}_q$ to $\mathcal{P}$.
-            \item $\mathcal{P}$ computes $\sigma \gets r + \alpha e \in \mathbb{Z}_q$ and sends $\sigma$ to $\mathcal{V}$.
+            \item $\mathcal{P}$ computes $\sigma \gets r + \alpha e \in \mathbb{Z}_q$, sends $\sigma$ to~$\mathcal{V}$.
             \item $\mathcal{V}$ accepts if $g^{\sigma} = a \cdot u^e$, otherwise it rejects.
         \end{itemize}
     \end{itemize}
@@ -34,9 +37,11 @@ First, let us start with the interactive version of the protocol.
     This protocol is illustrated in \Cref{fig:interactive_schnorr}. 
 \end{definition}
 
+\vspace{-6mm}
+
 \begin{figure}[H]
     \centering
-    \scalebox{0.7}{
+    \scalebox{0.65}{
     \begin{tikzpicture}
         \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
         \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
@@ -80,14 +85,23 @@ First, let us start with the interactive version of the protocol.
     An interaction between $\mathcal{P}$ and $\mathcal{V}$ produces the so-called \textbf{conversation} $(a,e,\sigma) \in \mathbb{G} \times \mathbb{Z}_q \times \mathbb{Z}_q$. We call such a conversation an \textbf{accepting conversation} if $\mathcal{V}$ accepts the proof.
 \end{definition}
 
+\vspace{-5mm}
+
 \begin{example}
     In case of a Schnorr protocol, the accepting conversation is such that $g^{\sigma} = a \cdot u^e$.
 \end{example}
 
+\vspace{-1mm}
+
 Now, one can prove the following theorem.
+
+\vspace{-1mm}
+
 \begin{theorem}
     The Schnorr protocol $\Pi_{\text{Sch}}$ is complete, sound, and (honest verifier) zero-knowledge proof of knowledge.
 \end{theorem}
+
+\vspace{-1mm}
 
 \textbf{Proof.} We are not going to prove the zero-knowledge and soundness properly, but completeness and proof of knowledge are quite straightforward to show.
 
@@ -155,7 +169,7 @@ Now, the Schnorr Protocol is just one of the many examples of a so-called \textb
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.3\linewidth]{images/lecture_7/sigma_protocol_illustration.pdf}
+    \includegraphics[width=0.4\linewidth]{images/lecture_7/sigma_protocol_illustration.pdf}
 
     \caption{Sigma Protocol Illustration: the flow of messages between prover $\mathcal{P}$ and verifier $\mathcal{V}$ closely resembles the Greek letter $\Sigma$, which is marked in \textcolor{red}{\textbf{red}} in the Figure.}
     \label{fig:sigma_protocol_illustration}
@@ -197,12 +211,21 @@ Again, let $\mathbb{G}$ be a cyclic group of prime order $q$ with a generator $g
     Notice that for the given $u$ there are exactly $q$ representations relative to $g$ and $h$. Indeed, $\forall \beta \in \mathbb{Z}_q \, \exists! \alpha \in \mathbb{Z}_q: g^{\alpha} = uh^{-\beta}$. 
 \end{remark}
 
+\vspace{-1mm}
+
 Now, the \textit{Okamoto's Protocol} is a Sigma protocol that allows one party to prove the knowledge of a representation of a given $u \in \mathbb{G}$ relative to $g$ and $h$. In other words, we are working with the relation
+
+\vspace{-1mm}
+
 \begin{equation*}
     \mathcal{R} = \left\{ (u,(\alpha,\beta)) \in \mathbb{G} \times \mathbb{Z}_q^2: u = g^{\alpha}h^{\beta} \right\}
 \end{equation*}
 
+\vspace{-1mm}
+
 Now, let us describe the protocol.
+
+\vspace{-1mm}
 
 \begin{definition}[Okamoto's Identification Protocol]
     \textbf{Okamoto's Protocol} consists of two algorithms: $(\mathcal{P}, \mathcal{V})$, where the prover is assumed to know $(u,(\alpha,\beta)) \in \mathcal{R}$ defined above. The protocol is defined as follows:
@@ -214,9 +237,13 @@ Now, let us describe the protocol.
     \end{enumerate}
 \end{definition}
 
+\vspace{-4mm}
+
 \begin{theorem}
     Okamoto's Protocol is a $\Sigma$-protocol for the relation $\mathcal{R}$ which is Honest-Verifier Zero-Knowledge.
 \end{theorem}
+
+\vspace{-1mm}
 
 \textbf{Part of the proof.} Again, let us show \textit{correctness} and \textit{special soundness} without honest-verifier zero-knowledge properties.
 
@@ -249,11 +276,15 @@ As with previous examples, suppose we are given the cyclic group $\mathbb{G}$ or
 \end{proposition}
 
 Now, this makes it easier to define the relation $\mathcal{R}$ for the Chaum-Pedersen protocol:
+\vspace{-2mm}
 \begin{equation*}
     \mathcal{R} = \left\{ ((u,v,w), \beta) \in \mathbb{G}^3 \times \mathbb{Z}_q: v = g^{\beta} \wedge w = u^{\beta} \right\}
 \end{equation*}
+\vspace{-4mm}
 
 In other words, here we have a witness $\beta \in \mathbb{Z}_q$, while the statement is a triplet $(u,v,w) \in \mathbb{G}^3$. Again, we want to convert this into a Sigma protocol. We do it as follows.
+
+\vspace{-2mm}
 
 \begin{definition}[Chaum-Pedersen Protocol]
     \textbf{Chaum-Pedersen Protocol} consists of two algorithms: $(\mathcal{P}, \mathcal{V})$, where the prover is assumed to know $(\beta,(u,v,w)) \in \mathcal{R}$ defined above. The protocol is defined as follows:
@@ -265,9 +296,13 @@ In other words, here we have a witness $\beta \in \mathbb{Z}_q$, while the state
     \end{enumerate}
 \end{definition}
 
+\vspace{-5mm}
+
 \begin{theorem}
     Chaum-Pedersen Protocol is a $\Sigma$-protocol for the relation $\mathcal{R}$ which is Honest-Verifier Zero-Knowledge.
 \end{theorem}
+
+\vspace{-1mm}
 
 \textbf{Part of the proof.} As always, let us show \textit{correctness} and \textit{special soundness} without honest-verifier zero-knowledge properties.
 
@@ -300,6 +335,9 @@ Let $(\mathbb{H}, \oplus)$ and $(\mathbb{T}, \otimes)$ be two finite abelian gro
 \end{equation*}
 
 And now the prover $\mathcal{P}$ wants to convince the verifier $\mathcal{V}$ that he knows the witness $h$ to the statement $(t,\psi)$. 
+
+\vspace{-1mm}
+
 \begin{proposition}
     Now, why does this generalize the previous protocols? Well, let us consider all previous examples:
     \begin{itemize}
@@ -315,7 +353,11 @@ And now the prover $\mathcal{P}$ wants to convince the verifier $\mathcal{V}$ th
     \end{itemize}
 \end{proposition}
 
+\vspace{-1mm}
+
 Now, we formulate the general Sigma protocol for the relation $\mathcal{R}$ over homomorphism.
+
+\vspace{-1mm}
 
 \begin{definition}[Sigma Protocol for the pre-image of a homomorphism]
     The protocol consists of two algorithms: $(\mathcal{P}, \mathcal{V})$, where the prover is assumed to know the witness $h \in \mathbb{H}$ defined above. The protocol is defined as follows:
@@ -430,32 +472,32 @@ Now, we describe the algorithm.
     \end{equation*}
 
     Now, we apply the \textit{Fiat-Shamir Transformation}. Recall that prover, instead of getting the random challenge $c \xleftarrow{R} \mathcal{C} \subset \mathbb{Z}_q$ from the verifier interactively, calculates it as the hash function from the public statement $(u,v,w)$ and the prover's commitment. For that reason, define the non-interactive proof system $\Phi = (\mathsf{Gen}, \mathsf{Verify})$ as follows:
-    \begin{itemize}
+    \begin{itemize}[left=0mm]
         \item $\mathsf{Gen}$: On input $(u,v,w) \in \mathbb{G}^3$, 
-        \begin{enumerate}
+        \begin{enumerate}[left=0mm]
             \item Sample $\beta_r \xleftarrow{R} \mathbb{Z}_q$ and compute the commitment $\boxed{\textcolor{purple!80!black}{\textbf{8}}}$.
             \item Use the hash function $\boxed{\textcolor{purple!80!black}{\textbf{9}}}$ to get the challenge $c \gets \boxed{\textcolor{purple!80!black}{\textbf{10}}}$.
             \item Compute response $\beta_z \gets \beta_r + \beta c$ and output commitment $(v_r,w_r)$ and $\beta_z$ as a proof $\pi$.
         \end{enumerate}
         \item $\mathsf{Verify}$: Upon receiving statement $(u,v,w)$ and a proof $\pi=(v_r,w_r,\beta_z)$, the verifier:
-        \begin{enumerate}
+        \begin{enumerate}[left=0mm]
             \item Recomputes the challenge $c$ using the hash function.
-            \item Accepts if and only if $g^{\beta_z} = v_r v^c$ and $u^{\beta_z} = w_r w^c$.
+            \item Accepts if and only if $g^{\beta_z} = v_r v^c$ and $u^{\beta_z}~=~w_r w^c$.
         \end{enumerate}
     \end{itemize}
 
-    \newpage
-    
     \textbf{Exercise 6.}
-    \begin{enumerate}[A)]
-        \item $v^{\beta}$
-        \item $u^{\beta}$
-        \item $vu$
-        \item $v^u$
-        \item $v^{\beta}u$
-    \end{enumerate}
+    \begin{multicols}{3}
+        \begin{enumerate}[A)]
+            \item $v^{\beta}$
+            \item $u^{\beta}$
+            \item $vu$
+            \item $v^u$
+            \item $v^{\beta}u$
+        \end{enumerate}
+    \end{multicols}
     
-    \vspace{10pt} % Add vertical space between exercises
+    % \vspace{10pt} % Add vertical space between exercises
     
     \textbf{Exercise 7.}
     \begin{enumerate}[A)]
