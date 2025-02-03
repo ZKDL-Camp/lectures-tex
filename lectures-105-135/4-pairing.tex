@@ -654,6 +654,7 @@ This scheme is also quite famous for its aggregation properties, which we are no
 \end{enumerate}
 
 \textbf{Exercise 5.} Suppose $k=19$ is a scalar and we are calculating $[k]P$ using the double-and-add algorithm. How many elliptic curve point addition operations will be performed?
+\vspace{-3mm}
 \begin{multicols}{5}
     \begin{enumerate}[(a)]
         \item $0$.
@@ -663,12 +664,14 @@ This scheme is also quite famous for its aggregation properties, which we are no
         \item $4$.
     \end{enumerate}
 \end{multicols}
+\vspace{-3mm}
 
 \textbf{Exercise 6.} What is the minimal number of inversions needed to calculate the value of expression (over $\mathbb{F}_p$)
 \begin{equation*}
     \frac{a-b}{(a+b)^4} + \frac{c}{a+b} + \frac{d}{a^2+c^2},
 \end{equation*}
 for the given scalars $a,b,c,d \in \mathbb{F}_p$?
+\vspace{-3mm}
 \begin{multicols}{5}
     \begin{enumerate}[(a)]
         \item $1$.
@@ -678,6 +681,7 @@ for the given scalars $a,b,c,d \in \mathbb{F}_p$?
         \item $5$.
     \end{enumerate}
 \end{multicols}
+\vspace{-3mm}
 
 \textbf{Exercise 7.} Given pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ with $G_1$ --- generator of $\mathbb{G}_1$ and $G_2 \in \mathbb{G}_2$ --- generator of $\mathbb{G}_2$, which of the following is \textbf{not} equal to $e([3]G_1, [5]G_2)$?
 \begin{enumerate}[(a)]
@@ -688,13 +692,13 @@ for the given scalars $a,b,c,d \in \mathbb{F}_p$?
     \item $e(G_1, G_2)^{15}$.
 \end{enumerate} 
 
-\textbf{Exercise 8*.} \textit{Unit Circle Proof.} Suppose Alice wants to convince Bob that she knows a point on the unit circle $x^2+y^2=1$. Suppose we are given a symmetric pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ for $\mathbb{G}_1=\mathbb{G}_2=\langle G \rangle$ and Alice computes $P \gets [x]G, Q \gets [y]G$. She then proceeds to sending $(P,Q)$ to Bob. Which of the following checks should Bob perform to verify that Alice indeed knows a point on the unit circle?
-\begin{enumerate}[(a)]
-    \item Check if $e(P,Q)e(Q,P)=1$.
-    \item Check if $e([2]P,[2]Q) = e(G,G)$.
-    \item Check if $e([2]P,Q)e(Q,[2]P) = 1$.
-    \item Check if $e(P,P)+e(Q,Q) = 1$.
-    \item Check if $e(P,P)e(Q,Q)=e(G,G)$.
-\end{enumerate}
+% \textbf{Exercise 8*.} \textit{Unit Circle Proof.} Suppose Alice wants to convince Bob that she knows a point on the unit circle $x^2+y^2=1$. Suppose we are given a symmetric pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ for $\mathbb{G}_1=\mathbb{G}_2=\langle G \rangle$ and Alice computes $P \gets [x]G, Q \gets [y]G$. She then proceeds to sending $(P,Q)$ to Bob. Which of the following checks should Bob perform to verify that Alice indeed knows a point on the unit circle?
+% \begin{enumerate}[(a)]
+%     \item Check if $e(P,Q)e(Q,P)=1$.
+%     \item Check if $e([2]P,[2]Q) = e(G,G)$.
+%     \item Check if $e([2]P,Q)e(Q,[2]P) = 1$.
+%     \item Check if $e(P,P)+e(Q,Q) = 1$.
+%     \item Check if $e(P,P)e(Q,Q)=e(G,G)$.
+% \end{enumerate}
 
 \end{document}
