@@ -205,7 +205,7 @@ A Merkle Tree is a data structure to efficiently and securely verify the commime
 To prove the inclusion of element into the tree, a corresponding Merkle Branch is used. On the example below, $M_1$ inclusion is proved, and 
 $(M_2, H(M_3 \parallel M_4), H(H(M_5 \parallel M_6) \parallel H(M_7 \parallel M_8)))$ is an inclusion branch vector.
 
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering\includegraphics[width=0.9\linewidth, clip]{images/lecture_5/MerkleTreeProof.png}
 
     \caption{Merkle Tree inclusion proof branch}
@@ -223,7 +223,7 @@ The commitment is generally succint, which means that it is much smaller than th
 The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
 
 
-\begin{enumerate}
+\begin{enumerate}[left=0mm]
     \item \textit{One-time ``Powers-of-tau`` trusted setup stage}. During trusted setup a set of elliptic curve points is generated. 
     Let $G$ be a generator point of some pairing-friendly
     elliptic curve group $\mathbb{G}$, $s$ some random value in the order of the $G$ point and $d$ be the maximum degree 
@@ -305,6 +305,8 @@ to $m_2 = 15$. Which values $(m_2, r_2)$ should he send to Dmytro at the opening
     \item $(15, 4)$
     \item $(3, 5)$
 \end{enumerate}
+
+\newpage
 
 \textbf{Exercise 3.} We define a dummy hash function $H(a, b) = (a \cdot 3 + b \cdot 7) \pmod{41}$. You have a Merkle tree built with depth $4$ 
 using hash function $H$ with root equal $37$. Which inclusion proof is valid for element $3$?
