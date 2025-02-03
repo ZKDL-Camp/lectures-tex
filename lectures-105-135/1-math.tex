@@ -38,7 +38,7 @@ The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \i
 
 \begin{figure}[H]
     \begin{center}
-\scalebox{0.5}{
+\scalebox{0.4}{
 \begin{tabular}{cc}
     % Set A and B
     \begin{tikzpicture}
@@ -118,7 +118,7 @@ As you can recall from the high school math, typically real-world processes are 
 When it comes to working with computers though, real numbers become very inconvenient to work with. For instance, different programming languages might output different values for quite a straightforward operation \textsf{2.01 + 2.00}. This becomes a huge problem when dealing with cryptography, which must check \textit{precisely} whether two quantities are equal. 
 For example, if the person's card number is $N$ and the developed system operates with a different, but very similar card with number $N + k$ for $k \ll N$, then this system can be safely thrown out of the window. See Figure \ref{fig:why_integers}.
 
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\textwidth]{images/lecture_1/why_integers.pdf}
     \caption{Alice pays to Bob to a card number $N$, but our awesome system pays to $N+k$ instead. Bob would not be happy...}
@@ -133,7 +133,11 @@ This motivates us to use a different primitive for dealing with cryptographic sy
     Further discussion with abstract objects should be regarded as ``interfaces'' which do not concretize the ``implementation'' of an object. It merely shows the nature of an object without going into the details.
 \end{remark}
 
+\vspace{-0.2em}
+
 Now, let us get dirty and define what the \textbf{group} is.
+
+\vspace{-0.5em}
 
 \begin{definition}
     \textbf{Group}, denoted by $(\mathbb{G}, \oplus)$, is a set with a binary operation $\oplus$, obeying the following rules:
@@ -369,13 +373,19 @@ Finally, we will define the concept of an endomorphism and automorphism to finis
     An \textbf{endomorphism} is a function $\varphi$ which maps set $X$ to itself ($\varphi: X \to X$).
 \end{definition}
 
+\vspace{-1.5em}
+
 \begin{definition}
     An \textbf{automorphism} is an isomorphic endomorphism.
 \end{definition}
 
+\vspace{-1.5em}
+
 \begin{example}
     Given a group $\mathbb{G}$, fixate $a \in \mathbb{G}$. The map $\varphi: x \mapsto axa^{-1}$ is an automorphism.
 \end{example}
+
+\vspace{-0.5em}
 
 Last two definitions are especially frequently used in Elliptic Curves theory.
 
@@ -606,7 +616,7 @@ The more general question is: suppose $\deg p = n$, how many points do I need to
 the polynomial is uniquely defined by $n+1$ distinct points on the plane. An example is depicted 
 in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the polynomial practically.
 
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.6\textwidth]{images/lecture_1/interpolation.pdf}
     \caption{$5$ points on the plane uniquely define the polynomial of degree $4$.}
@@ -682,14 +692,12 @@ Instead, suppose we have only $t-1$ (or less) pairs $\{i,\alpha_i\}_{i \in \math
 
 The intuition behind the Shamir's protocol is illustrated in Figure~\ref{fig:shamir}.
 
-\begin{figure}
+\begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{images/lecture_1/shamir_demo.pdf}
+    \includegraphics[width=0.5\textwidth]{images/lecture_1/shamir_demo.pdf}
     \caption{Suppose we have $t=3$. Having only 2 points means knowing two \textcolor{blue}{blue} points without knowing the \textcolor{red}{red} one. There are infinitely many quadratic polynomials passing through these two points (\textcolor{gray}{gray dashed} lines). However, knowing the third \textcolor{red}{red} point allows us to uniquely determine the polynomial and thus get its value at $0$. Note that this is illustrated over $\mathbb{R}$, but for $\mathbb{F}_q$ the logic is similar.}
     \label{fig:shamir}
 \end{figure}
-
-\pagebreak
 
 \subsubsection{Some Fun: Group Implementation in Rust}
 
@@ -812,15 +820,12 @@ impl Group for i64 {
     fn eq(&self, other: &Self) -> bool {
         self == other
     }
-
     fn identity() -> Self {
         0i64
     }
-
     fn add(&self, a: &Self) -> Self {
         self + a
     }
-
     fn negate(&self) -> Self {
         -self
     }
@@ -892,6 +897,8 @@ impl Group for Rotation3<f32> {
     }
 }
 
+
+
 impl Samplable for Rotation3<f32> {
     fn sample() -> Self {
         let mut gen = rand::thread_rng();
@@ -912,7 +919,7 @@ Here, there are two tricky moments:
     \item To generate a random rotation matrix, we generate three random angles and create a rotation matrix from these angles.
 \end{enumerate}
 
-\subsection{Exercises}
+\subsection*{Exercises}
 
 \textbf{Exercise 1.} Which of the following statements is \textbf{false}?
 \begin{enumerate}
@@ -922,6 +929,8 @@ Here, there are two tricky moments:
     \item $(\forall x \in \mathbb{Z} \setminus \{-1\}) \; (\exists! y \in \mathbb{Q}): \{(x+1)y = 2\}$.
 \end{enumerate}
 
+\newpage
+
 \textbf{Exercise 2.} Denote $X := \{(x,y) \in \mathbb{Q}^2: xy = 1\}$. Oleksandr claims the following:
 \begin{enumerate}
     \item $X \cap \mathbb{N}^2 = \{(1,1)\}$. 
@@ -930,13 +939,17 @@ Here, there are two tricky moments:
 \end{enumerate}
 
 Which statements are \textbf{true}?
-\begin{enumerate}[a)]
-    \item Only 1.
-    \item Only 1 and 2.
-    \item Only 1 and 3.
-    \item Only 2 and 3.
-    \item All statements are correct.
-\end{enumerate}
+\vspace{-4mm}
+\begin{multicols}{2}    
+    \begin{enumerate}[a)]
+        \item Only 1.
+        \item Only 1 and 2.
+        \item Only 1 and 3.
+        \item Only 2 and 3.
+        \item All statements are correct.
+    \end{enumerate}
+\end{multicols}
+\vspace{-4mm}
 
 \textbf{Exercise 3.} Does a tuple $(\mathbb{Z},\oplus)$ with operation $a \oplus b = a + b - 1$ define a group?
 \begin{enumerate}[a)]
@@ -956,13 +969,19 @@ as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \
     \item No, since the associativity property does not hold, but we might define an identity element nonetheless.
 \end{enumerate}
 
+\newpage
+
 \textbf{Exercise 5.} Find the inverse of $4$ in $\mathbb{F}_{11}$.
-\begin{enumerate}[a)]
-    \item 8
-    \item 5
-    \item 3
-    \item 7
-\end{enumerate}
+\vspace{-3mm}
+\begin{multicols}{4}    
+    \begin{enumerate}[a)]
+        \item 8
+        \item 5
+        \item 3
+        \item 7
+    \end{enumerate}
+\end{multicols}
+\vspace{-3mm}
 
 \textbf{Exercise 6.} Suppose for three polynomials $p,q,r \in \mathbb{F}[x]$ we have $\deg p = 3, \deg q = 4, \deg r = 5$. Which of the following is true for $n := \deg \{(p-q)r\}$?
 \begin{enumerate}[a)]
@@ -973,20 +992,24 @@ as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \
 \end{enumerate}
 
 \textbf{Exercise 7.} Define the polynomial over $\mathbb{F}_5$: $f(x) := 4x^2 + 7$. Which of the following is the root of $f(x)$?
-\begin{enumerate}[a)]
-    \item $2$
-    \item $3$
-    \item $4$
-    \item This polynomial has no roots over $\mathbb{F}_5$.
-\end{enumerate}
+\begin{multicols}{2}
+    \begin{enumerate}[a)]
+        \item $2$
+        \item $3$
+        \item $4$
+        \item No roots.
+    \end{enumerate}
+\end{multicols}
 
 \textbf{Exercise 8.} Quadratic polynomial $p(x) = ax^2+bx+c \in \mathbb{R}[x]$ has zeros at $1$ and $2$ and $p(0) = 2$. Find the value of $a+b+c$.
-\begin{enumerate}[a)]
-    \item $0$
-    \item $-1$
-    \item $1$
-    \item Not enough information to determine.
-\end{enumerate}
+\begin{multicols}{2}
+    \begin{enumerate}[a)]
+        \item $0$
+        \item $-1$
+        \item $1$
+        \item Not enough info.
+    \end{enumerate}
+\end{multicols}
 
 \textbf{Exercise 9.} Which of the following is a \textbf{valid} endomorphism $f: X \to X$? 
 \begin{enumerate}[a)]
@@ -996,6 +1019,7 @@ as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \
     \item $X = \mathbb{Q}_{>0}$, $f: x \mapsto \sqrt{x}$.
 \end{enumerate}
 
+\newpage
 \textbf{Exercise 10*.} Denote by $\text{GL}(2,\mathbb{R})$ a set of $2\times 2$ invertable matrices with real entries. Define two functions $\varphi: \text{GL}(2,\mathbb{R}) \to \mathbb{R}$:
 \begin{equation*}
     \varphi_1 \left(\begin{bmatrix}

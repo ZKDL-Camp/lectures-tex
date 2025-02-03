@@ -28,7 +28,7 @@ Now let us play the following game between adversary $\mathcal{A}$ and challenge
     \item $\mathcal{A}$ outputs the guess $\hat{b}$.
 \end{enumerate}
 
-\begin{figure}
+\begin{figure}[h!]
     \centering
     \scalebox{0.7}{
     \begin{tikzpicture}
@@ -118,7 +118,7 @@ Do not be afraid of such complex notation, it is quite simple. Notation $\text{P
 
 Let us see some more examples of how to define the security of certain crypographic objects.
 
-\subsubsection{Discrete Logarithm Assumption (DL)}
+\subsubsection{Discrete Logarithm Assumption}
 
 Now, let us define the fundamental assumption used in cryptography formally: the \textbf{Discrete Logarithm Assumption} (DL).
 
@@ -139,7 +139,7 @@ Now, let us define the fundamental assumption used in cryptography formally: the
 
 Informally, this assumption means that given $u$, it is very hard to find $\alpha$ such that $u = g^{\alpha}$. But now we can write down this formally!
 
-\subsubsection{Computational Diffie-Hellman (CDH)}
+\subsubsection{Computational Diffie-Hellman}
 
 Another fundamental problem in cryptography is the \textbf{Computational Diffie-Hellman} (CDH) problem. It states that given $g^{\alpha},g^{\beta}$ it is hard to find $g^{\alpha\beta}$. This property is frequently used in the construction of cryptographic protocols such as the Diffie-Hellman key exchange.
 
@@ -160,7 +160,7 @@ Let us define this problem formally.
     The \textbf{Computational Diffie-Hellman Assumption} holds in the group $\mathbb{G}$ if for any efficient adversary $\mathcal{A}$ the advantage $\text{CDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$ is negligible.
 \end{definition}
 
-\subsubsection{Decisional Diffie-Hellman (DDH)}
+\subsubsection{Decisional Diffie-Hellman}
 
 Now, we loosen the requirements a bit. The \textbf{Decisional Diffie-Hellman} (DDH) problem states that given $g^{\alpha},g^{\beta},g^{\alpha\beta}$ it is ``hard'' to distinguish $g^{\alpha\beta}$ from a random element in $\mathbb{G}$. Formally, we define this problem as follows.
 
@@ -499,7 +499,11 @@ find the GCD.
     sure to check yourself.
 \end{example}
 
+\vspace{-2mm}
+
 \subsubsection{Prime numbers}
+
+\vspace{-1mm}
 
 Prime numbers are fundamental in mathematics due to their role of the building
 blocks of all natural numbers. Every integer greater than 1 can be uniquely
@@ -508,10 +512,14 @@ Arithmetic}, which we introduce in the next section. This property makes primes
 central to number theory, and they play a crucial role in various mathematical
 proofs and structures.
 
+\vspace{-2mm}
+
 \begin{definition}
     Number $n \in \mathbb{N}$ is \textbf{prime} iff its only two divisors are $1$
     and $n$. 
 \end{definition}
+
+\vspace{-5mm}
 
 \begin{definition}
     Number $n \in \mathbb{N}$ is \textbf{composite} iff there exists an integer
@@ -727,15 +735,23 @@ The aforementioned lemmas and definitions describe the properties of addition, s
     A modular multiplicative inverse of an integer $a \in \mathbb{Z}$ modulo $n \in \mathbb{N}$ is such an integer $a^{-1}$ that satisfies $a \cdot a^{-1} \equiv a^{-1}a \equiv 1 \pmod{n}$.
 \end{definition}
 
+\vspace{-4mm}
+
 \begin{remark}
     (\textbf{Caution}): not all numbers have an inverse number!
 \end{remark}
+
+\vspace{-4mm}
 
 \begin{remark}
     The inverse (if exists) behaves similarly to the usual inverse over rations/reals. For example, $(a^{2})^{-1} = (a^{-1})^{2}$, which means, we can first find the inverse, then the squared value, and vice versa.
 \end{remark}
 
+\vspace{-2mm}
+
 The question then is when does the number have the inverse? Consider the following theorem.
+
+\vspace{-2mm}
 
 \begin{theorem}\label{th:inverse_existence}
     Modular inverse $a^{-1} \pmod{n}$ exists if and only if $\gcd(a, n) = 1$.
@@ -757,6 +773,8 @@ Based on Extended Euclidean \Cref{alg:extended_euclidean} and \Cref{th:inverse_e
     \textbf{return} $u$
 \end{algorithm}
 
+\vspace{-4mm}
+
 \begin{remark}
     Note that the complexity of this algorithm is the same as for \Cref{alg:extended_euclidean}, which is $O(\log a \log n)$ bit operations.
 \end{remark}
@@ -777,6 +795,8 @@ plays a crucial role in cryptography, forming the basis almost for every cryptog
     The alternative Euler's totient function intuition is following: $\varphi(n)$ counts all coprimes with $n$ in range $[1, n]$. 
 \end{remark}
 
+\vspace{-5mm}
+
 \begin{lemma} [Euler's totient function properties]
     \hfill
     \begin{enumerate}
@@ -787,12 +807,16 @@ plays a crucial role in cryptography, forming the basis almost for every cryptog
     \end{enumerate}    
 \end{lemma}
 
+\vspace{-5mm}
+
 \begin{corollary}
     For any number $n = p_{1}^{\alpha_1}p_{2}^{\alpha_2} \dots p_{t}^{\alpha_t}$ general formula for Euler's totient function is: 
     \begin{equation*}
         \varphi(n) = \prod_{i = 1}^{t} \left( p_{i}^{\alpha_i} - p_{i}^{\alpha_i - 1} \right) = n \prod_{i = 1}^{t} \left( 1 - \frac{1}{p_i} \right).
     \end{equation*}
 \end{corollary}
+
+\vspace{-5mm}
 
 \begin{example}
     \hfill
@@ -823,7 +847,7 @@ For large fields, where  $\frac{d}{p}$ is negligible, this property allows to su
 Let $H(x) := P(x) - Q(x)$. Than for each $P(x) = Q(x) \rightarrow H(x) = 0$. Applying Schwartz-Zippel lemma, 
 the probability of $H(x) = 0$ for $x \xleftarrow{R} \mathbb{F} $ is $\le \frac{d}{|S|}$.
 
-\subsection{Exercises}
+\subsection*{Exercises}
 
 \textbf{Exercise 1.} Suppose that for the given cipher with a security parameter $\lambda$, the adversary $\mathcal{A}$ can deduce the least significant bit of the plaintext from the ciphertext. Recall that the advantage 
 of a bit-guessing game is defined as $\text{SS}\mathsf{Adv}[\mathcal{A}] = \left|\Pr[b=\hat{b}] - \frac{1}{2}\right|$, where $b$ is the randomly chosen bit of a challenger, while 

@@ -238,7 +238,7 @@ coefficients matrices:
             &= -\frac{5}{6}x^3 + 6x^2 - \frac{79}{6}x + 9.
         \end{aligned}
     \end{equation*}
-Therefore, the final Lagrange interpolation polynomial is:
+    Therefore, the final Lagrange interpolation polynomial~is:
     \begin{equation*}
         A_1(x) = -\frac{5}{6}x^3 + 6x^2 - \frac{79}{6}x + 9
     \end{equation*}
@@ -248,7 +248,7 @@ Therefore, the final Lagrange interpolation polynomial is:
     coefficients of the $x_1$ witness element.
 
     \begin{center}
-        \scalebox{0.8}{
+        \scalebox{0.85}{
         \begin{tikzpicture}
             \begin{axis}[
                 axis lines = middle,
@@ -285,7 +285,9 @@ Therefore, the final Lagrange interpolation polynomial is:
         \end{tikzpicture}
         }
 
-        \scriptsize\textbf{Illustration:} The Lagrange inteprolation polynomial for points $\{(1,1), (2,0), (3,1), (4,-1)\}$ visualized over $\mathbb{R}$.
+        \vspace{2mm}
+
+        \textbf{Illustration:} The Lagrange inteprolation polynomial for points visualized over~$\mathbb{R}$.
     \end{center}
 \end{example}
 
@@ -318,6 +320,8 @@ Or, written more concisely:
     \left( \sum_{i = 1}^{n} w_iA_i(X) \right) \times \left( \sum_{i = 1}^{n} w_iB_i(X) \right) = \left( \sum_{i = 1}^{n} w_iC_i(X) \right)
 \end{equation*}
 
+\newpage
+
 \begin{remark}
     Hold on, but why does it hold? Let us substitute any $X=j$ into this equation:
     \begin{equation*}
@@ -338,11 +342,11 @@ Or, written more concisely:
 \end{remark}
 
 Now let us define polynomials $A(X)$, $B(X)$, $C(X)$ for easier notation: 
-\begin{equation*}
-    \begin{aligned}
-        A(X) = \sum_{i = 1}^{n} w_iA_i(X), \\ \quad B(X) = \sum_{i = 1}^{n} w_iB_i(X), \\ \quad C(X) = \sum_{i = 1}^{n} w_iC_i(X)        
-    \end{aligned}
-\end{equation*}
+\begin{gather*}
+    %\begin{aligned}
+        A(X) = \sum_{i = 1}^{n} w_iA_i(X), \quad B(X) = \sum_{i = 1}^{n} w_iB_i(X), \\ \quad C(X) = \sum_{i = 1}^{n} w_iC_i(X)        
+    %\end{aligned}
+\end{gather*}
 
 Therefore, our constraint can be rewritten as $A + B = C$ --- much less scary-looking than what we have written before. OK, but what does it give us? 
 
@@ -568,7 +572,7 @@ resources. See \Cref{fig:pcp}.
 However, despite the fact that PCP is a very powerful tool, it is not used directly in zk-SNARKs. We need to extend it a bit to make it more suitable for our purposes.
 
 Three main extensions of PCPs that are frequently used in SNARKs are:
-\begin{itemize}
+\begin{itemize}[left=0mm]
     \item \textbf{IPCP} (\textbf{Interactive PCP}): The prover commits to the PCP oracle and then, based on the interaction between the prover and verifier, the verifier queries the oracle and decides whether to accept the proof.
     \item \textbf{IOP} (\textbf{Interactive Oracle Proof}): The prover and verifier interact and on each round, the prover commits to a new oracle. The verifier queries the oracle and decides whether to accept the proof.
     \item \textbf{LPCP} (\textbf{Linear PCP}): The prover commits to a linear function and the verifier queries the function at specific points.
@@ -576,7 +580,7 @@ Three main extensions of PCPs that are frequently used in SNARKs are:
 
 \begin{figure}[H]
     \centering
-    \scalebox{0.5}{
+    \scalebox{0.66}{
     \begin{tikzpicture}
         \node[inner sep=0pt, align=center] at (-4.0, 0.0) (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
         \node[inner sep=0pt, align=center] at (4.0, 0.0) (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
@@ -617,8 +621,8 @@ Three main extensions of PCPs that are frequently used in SNARKs are:
         \node at (1.1, 2.35) (pcp) {$q_3''$};
         \node at (0, 0.85) (pcp) {\textbf{PCP Oracle \#3}};
 
-        \draw[-{Stealth[length=3mm]},line width=0.4mm] (prover)--(oracle_1_left) node[midway, left=3mm]{Commit to oracles ($\pi_1,\dots,\pi_r$)};
-        \draw[-{Stealth[length=3mm]},line width=0.4mm] (verifier)--(oracle_1_right) node[midway, right=3mm]{Point queries ($\mathbf{q}_1,\dots,\mathbf{q}_r$)};
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] (prover)--(oracle_1_left) node[midway, left=3mm]{($\pi_1,\dots,\pi_r$)};
+        \draw[-{Stealth[length=3mm]},line width=0.4mm] (verifier)--(oracle_1_right) node[midway, right=3mm]{($\mathbf{q}_1,\dots,\mathbf{q}_r$)};
         \draw[-{Stealth[length=3mm]},line width=0.4mm] (prover)--(oracle_2_left) node[midway, left=3mm]{};
         \draw[-{Stealth[length=3mm]},line width=0.4mm] (verifier)--(oracle_2_right) node[midway, right=3mm]{};
         \draw[-{Stealth[length=3mm]},line width=0.4mm] (prover)--(oracle_3_left) node[midway, left=3mm]{};        

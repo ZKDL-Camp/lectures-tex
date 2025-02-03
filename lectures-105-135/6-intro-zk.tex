@@ -9,7 +9,7 @@ STARKs, Bulletproofs, and other zero-knowledge proof systems, let us first defin
 that, we need to introduce some formalities. For example, what are ``proof'', ``witness'', and ``statement'' --- terms that are so widely used in zero-knowledge proofs.
 
 Let us describe the typical setup. We have two parties: \textbf{prover} $\mathcal{P}$ and a \textbf{verifier} $\mathcal{V}$. The prover wants to convince the verifier that some statement is true. Typically, the statement is not obvious (well, that is the reason for building proofs after all!) and therefore there might be some ``helper'' data, called \textbf{witness}, that helps the prover to prove the statement. The reasonable question is whether the prover can simply send witness to verifier and call it a day. Of course since you are here, reading this lecture, it is obvious that the answer is no. More specifically, by introducing zk-SNARKs, STARKs, and other proving systems, we will try to mitigate the following issues:
-\begin{itemize}
+\begin{itemize}[left=0mm]
     \item \textbf{Zero-knowledge:} The prover wants to convince the verifier that the statement is true without revealing the witness. 
     \item \textbf{Argument of knowledge:} Moreover, typically we want to make sure that the verifier, besides the statement correctness, ensures that the prover \textbf{knows} such a witness related to the statement.
     \item \textbf{Succinctness:} The proof should be short, ideally logarithmic in the size of the statement. This is crucial for practical applications, especially in the blockchain space where we cannot allow to publish long proofs on-chain. Moreover, verification should be efficient as well.
@@ -85,6 +85,8 @@ As mentioned above, we will bring two more ingredients to the table: \textbf{ran
     For those who have already worked with SNARKs, the above introduction might seem very confusing. After all, what we are aiming for is to build \textbf{non-interactive} zero-knowledge proofs. However, as it turns out, there are a plenty of ways to make \textit{some} interactive proofs non-interactive. We will discuss this in more detail later.
 \end{remark}
 
+\vspace{-1mm}
+
 Now, one of the drastic changes is the following: if $x \not\in \mathcal{L}_{\mathcal{R}}$, then the verifier $\mathcal{V}$ should reject the claim with overwhelming\footnote{Some technicality: as you know from the Lecture 2, the value $\varepsilon = \mathsf{negl}(\lambda)$ is called negligible since it is very close to $0$. In turn, the value $1-\varepsilon$ is called \textit{overwhelming} since it is close to $1$.} probability (in contrast to strict probability of $1$). Let us consider the concrete example.
 
 \subsubsection{Example: Quadratic Residue Test}\label{section:quadratic_residue_test}
@@ -93,13 +95,13 @@ Again, suppose for relation $\mathcal{R} = \{(x,w) \in (\mathbb{Z}_N^{\times})^2
 
 So here how it goes. The prover $\mathcal{P}$ can first sample a random $r \xleftarrow{R} \mathbb{Z}_N^{\times}$, calculate $a \gets r^2 \pmod{N}$ and say to the verifier $\mathcal{V}$: 
 \begin{itemize}
-    \item Hey, I could give you the square roots of both $a$ and $ax \pmod{N}$ and that would convince you that the statement is true! But in this case, you would know $w$\footnote{If verifier gets both $r$ and $rw \pmod{N}$, he can divide the latter by former and get $w$}.
+    \item Hey, I could give you the square roots of both $a$ and $ax \pmod{N}$ and that would convince you that the statement is true! But in this case, you would know~$w$\footnote{If verifier gets both $r$ and $rw \pmod{N}$, he can divide the latter by former and get $w$}.
     \item So instead of providing both values simultaneously, you will choose which one you want to see: either $r$ or $r\times w\pmod{N}$. This way, after a couple of such rounds, you will not learn $w$ but you will be convinced that I know it.
 \end{itemize}
 
 That being said, formally the interaction between prover $\mathcal{P}$ and verifier $\mathcal{V}$ can be described as follows:
 \begin{enumerate}
-    \item $\mathcal{P}$ samples $r \xleftarrow{R} \mathbb{Z}_N^{\times}$ and sends $a \gets r^2 \pmod{N}$ to $\mathcal{V}$.
+    \item $\mathcal{P}$ samples $r \xleftarrow{R} \mathbb{Z}_N^{\times}$ and sends $a \gets r^2 \pmod{N}$ to~$\mathcal{V}$.
     \item $\mathcal{V}$ sends a random bit $b \xleftarrow{R} \{0,1\}$ to $\mathcal{P}$.
     \item If $b=0$, the prover sends $z \gets r$, otherwise, if $b=1$, he sends $z \gets rw \pmod{N}$.
     \item The verifier checks whether $z^2 \equiv a\times x^{b} \pmod{N}$.
@@ -204,6 +206,12 @@ Basically, the specified interaction is a \textbf{proof}! The prover $\mathcal{P
 \subsubsection{The Verifier's View}
 Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended with the successful verification. What has $\mathcal{V}$ learned? Well, first things first, he has learned that the statement is true, that is $x \in \mathcal{L}_{\mathcal{R}}$. However, he has also learned something more: he has learned the transcript of the interaction, that is the sequence of messages between $\mathcal{P}$ and $\mathcal{V}$.
 
+\vspace{-1mm}
+
+\begin{definition}
+    Interaction between $\mathcal{P}$ and $\mathcal{V}$ consists of prover's messages (e.g., commitments and responses) $(m_1,m_2,\dots,m_{\ell})$, verifier's queries $(q_1,q_2,\dots,q_{\ell})$, and $\mathcal{V}$'s random coins $(r_1,r_2,\dots,r_{\ell})$. The view of the verifier $\mathcal{V}$, denoted as $\mathsf{view}_{\mathcal{V}}(\mathcal{P},\mathcal{V})[x]$, is a random variable $(m_1,r_1,q_1,m_2,r_2,q_2,\dots,m_{\ell},r_{\ell},q_{\ell})$ that is determined by the random coins of $\mathcal{V}$ and the messages of $\mathcal{P}$ after the interaction with the statement $x$. See in \Cref{fig:interactive_protocol}.
+\end{definition}
+
 \begin{figure}[H]
     \centering
     \scalebox{0.9}{
@@ -231,10 +239,6 @@ Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended w
     \caption{The interactive protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$. Prover's messages consist of messages $\{m_k\}_{k=1}^{\ell}$, verifier's messages consist of queries $\{q_k\}_{k=1}^{\ell}$, and additionally verifier samples random coins $\{r_k\}_{k=1}^{\ell}$.}
     \label{fig:interactive_protocol}
 \end{figure}
-
-\begin{definition}
-    Interaction between $\mathcal{P}$ and $\mathcal{V}$ consists of prover's messages (e.g., commitments and responses) $(m_1,m_2,\dots,m_{\ell})$, verifier's queries $(q_1,q_2,\dots,q_{\ell})$, and $\mathcal{V}$'s random coins $(r_1,r_2,\dots,r_{\ell})$. The view of the verifier $\mathcal{V}$, denoted as $\mathsf{view}_{\mathcal{V}}(\mathcal{P},\mathcal{V})[x]$, is a random variable $(m_1,r_1,q_1,m_2,r_2,q_2,\dots,m_{\ell},r_{\ell},q_{\ell})$ that is determined by the random coins of $\mathcal{V}$ and the messages of $\mathcal{P}$ after the interaction with the statement $x$. See in \Cref{fig:interactive_protocol}.
-\end{definition}
 
 \begin{example}
     Suppose that for the aforementioned protocol with $N=3 \times 2^{30} + 1$, the conversation between the prover $\mathcal{P}$, who wants to convince that $1286091780 \in \mathcal{L}_R$, and $\mathcal{V}$ is the following:
@@ -348,9 +352,13 @@ The extractor $\mathcal{E}$ will always output $w$ if $x \in \mathcal{L}_{\mathc
 
 In cryptography, one frequently encounters the term \textit{cryptographic oracle}. In this section, we are not going to dive into the technical details of what that is, yet it is useful to have a general understanding of what it is.
 
+\vspace{-1mm}
+
 \begin{definition}[Cryptographic Oracle]
     Informally, \textit{cryptographic oracle} is simply a function $\mathcal{O}$ that gives in $O(1)$ an answer to some typically very hard problem.     
 \end{definition}
+
+\vspace{-5mm}
 
 \begin{example}
     Consider the Computational Diffie-Hellman (CDH) problem on the cyclic elliptic curve $E(\mathbb{F}_p)$ of prime order $r$ with a generator $G$. Recall that such problem consists in computing $[\alpha\beta]G$ given $[\alpha]G$ and $[\beta]G$ where $\alpha,\beta \in \mathbb{Z}_r$. 
@@ -380,7 +388,7 @@ Here how it goes. Suppose we have an interactive protocol $(\mathcal{P}, \mathca
 
 \begin{remark}
     Sometimes, to simulate the ``interaction'' with the verifier, one uses the ``Fiat-Shamir Channel''. Its main purpose is to simulate the verifier's queries and random coins. For example, one might implement it as a class/struct with the following methods:
-    \begin{enumerate}
+    \begin{enumerate}[left=0mm]
         \item \texttt{send\_message($m$)}: ``sends'' the message $m$ to the verifier. Under the hood, the proof stream accumulates the current state $s$ and appends $m$ to it.
         \item \texttt{sample()}: returns the challenge $r$ from the random oracle $\mathcal{O}_{\text{R}}$, applied to the current state $s$.
         \item \texttt{get\_proof()}: returns the proof $\pi$, being the history of interaction, that the prover can publish.
@@ -389,7 +397,7 @@ Here how it goes. Suppose we have an interactive protocol $(\mathcal{P}, \mathca
     One can check the \href{https://github.com/facebook/winterfell/blob/main/prover/src/channel.rs}{\texttt{winterfell}} Rust library or a \href{https://github.com/actuallyachraf/zkstarks/blob/master/fs.go}{simpler non-production implementation} of the Fiat-Shamir Channel in Golang for more details.
 \end{remark}
 
-\begin{figure}[H]
+\begin{figure}[b!]
     \centering
     \scalebox{0.6}{
     \begin{tikzpicture}
@@ -445,7 +453,7 @@ The reason why such transformation works is that the random oracle $\mathcal{O}_
     Suppose that $(\mathcal{P},\mathcal{V})$ is a public-coin interactive argument of knowledge for some language $\mathcal{L}_{\mathcal{R}}$ with a negligible soundness error. Then, the Fiat-Shamir transformation of $(\mathcal{P}^{\mathcal{O}_{\text{R}}},\mathcal{V}^{\mathcal{O}_{\text{R}}})$ is a non-interactive argument for $\mathcal{L}_{\mathcal{R}}$ with negligible soundness error in the random oracle model $\mathcal{O}_{\text{R}}$.
 \end{theorem}
 
-\subsection{Exercises}
+\subsection*{Exercises}
 
 \textbf{Exercise 1.} When dealing with RSA protocol, one frequently encounters the following relation where $e$ is a prime number and $n \in \mathbb{N}$:
 \begin{equation*}
@@ -456,19 +464,21 @@ Which of the following is the language $\mathcal{L}_{\mathcal{R}}$ that correspo
 \begin{enumerate}[(A)]
     \item Integers from $\mathbb{Z}_n^{\times}$ which have a modular root of $e$-th degree.
     \item Integers from $\mathbb{Z}_n^{\times}$ which are divisible by $e$.
-    \item Integers $x$ from $\mathbb{Z}_n^{\times}$ with properly defined expression $x^e$.
+    \item Integers $x \in \mathbb{Z}_n^{\times}$ with properly defined expression~$x^e$.
     \item Integers from $\mathbb{Z}_n^{\times}$ which are prime.
     \item Integers from $\mathbb{Z}_n^{\times}$ for which $e$ is a primitive root.
 \end{enumerate}
 
-\textbf{Exercise 2.} Suppose that for some interactive protocol $(\mathcal{P}, \mathcal{V})$ during one round, the probability that the verifier $\mathcal{V}$ accepts a false statement is $1/8$. How many rounds of interaction are needed to guarantee $120$ bits of security? Assume here that $n$ bits of security means that the probability of accepting a false statement is at most $2^{-n}$.
-\begin{enumerate}[(A)]
-    \item $30$.
-    \item $40$.
-    \item $60$.
-    \item $90$.
-    \item $120$.
-\end{enumerate}
+\textbf{Exercise 2.} Suppose that for some interactive protocol $(\mathcal{P}, \mathcal{V})$ during one round, the probability that the verifier $\mathcal{V}$ accepts a false statement is $1/8$. How many rounds of interaction are needed to guarantee $120$ bits of security? Assume here that $n$ bits of security means that the probability of accepting a false statement is at most~$2^{-n}$.
+\begin{multicols}{3}[]
+    \begin{enumerate}[(A)]
+        \item 30.
+        \item 40.
+        \item 60.
+        \item 90.
+        \item 120.
+    \end{enumerate}
+\end{multicols}
 
 \textbf{Exercise 3.} Recall that for relation $\mathcal{R} = \{(w,x) \in \mathbb{Z}_N^{\times} \times \mathbb{Z}_N^{\times}: x = w^2\}$ we defined the following interactive protocol $(\mathcal{P}, \mathcal{V})$ to prove that $x \in \mathcal{L}_{\mathcal{R}}$:
 \begin{itemize}

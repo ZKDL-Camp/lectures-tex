@@ -32,8 +32,8 @@
 \RequirePackage[
     paperwidth=105mm,
     paperheight=135mm,
-    top=15mm,
-    bottom=10mm,
+    top=11mm,
+    bottom=6mm,
     left=15mm,
     right=15mm,
     nohead,
@@ -45,6 +45,8 @@
 \RequirePackage{bm}
 \RequirePackage[bottom,multiple]{footmisc} % ensures footnotes are at the bottom of the page, and separates footnotes by a comma if they are adjacent
 \RequirePackage[makeroom]{cancel}
+\RequirePackage{microtype} % Improves the spacing between words and letters
+\linespread{0.95}  % Tightens the lines by about 5%
 
 % --- Configuring Figure settings ---
 \usepackage[labelfont=bf]{caption} 
