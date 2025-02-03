@@ -3,7 +3,7 @@
 \begin{document}
 
 \subsection{Building Pairing-based SNARK}
-\subsubsection{Attempt \#1: Encrypted Verification}
+\subsubsection*{Attempt \#1: Encrypted Verification}
 
 Now, assume we have the cyclic group $\mathbb{G}$ of prime order $q$ with a generator $g$. Typically, this is the group of points on an elliptic curve. Assume for simplicity that $e: \mathbb{G} \times \mathbb{G} \to \mathbb{G}_T$ is a symmetric pairing function, where $(\mathbb{G}_T, \times)$ is a target group.
 
@@ -50,7 +50,7 @@ So, sounds like we are done. Let us summarize what we have done so far:
 
     \tcbsubtitle{$\mathsf{Setup}(1^{\lambda})$}
     The \emph{trusted party} conducts the following steps:
-    \begin{itemize}[label=\ding{51}]
+    \begin{itemize}[label=\ding{51}, left=0mm]
         \item Picks a random value $\tau \xleftarrow{R} \mathbb{F}$.
         \item Calculates the public parameters $\{g^{\tau^i}\}_{i \in [d]}$.
         \item \textbf{Deletes} $\tau$ (toxic waste).
@@ -58,7 +58,7 @@ So, sounds like we are done. Let us summarize what we have done so far:
     \end{itemize}
     \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbf{x}, \mathbf{w})$}
     The prover $\mathcal{P}$ conducts the following steps:
-    \begin{itemize}[label=\ding{51}]
+    \begin{itemize}[label=\ding{51}, left=0mm]
         \item Runs the circuit with the statement $\mathbf{x}$ and witness $\mathbf{w}$, obtains the intermediate constraint values, and calculates the polynomials $L(x)$, $R(x)$, $O(x)$ through Lagrange Interpolation.
         \item Calculates $H(x) \gets (L(x)R(x) - O(x))\big/ Z(x)$.
         \item Calculates the KZG commitments as follows: 
@@ -79,13 +79,13 @@ So, sounds like we are done. Let us summarize what we have done so far:
 
 This sounds like an end to the story. However, there is a problem with this approach: there is no guarantee that commitments $\pi_L$, $\pi_R$, $\pi_O$, $\pi_H$ were indeed obtained through exponentiating the base $g$ by the corresponding values $L(\tau)$, $R(\tau)$, $O(\tau)$, and $H(\tau)$. In other words, how can the verifier know that prover indeed knows, say, polynomial $L(x)$ such that $\pi_L = g^{L(\tau)}$?
 
-\subsubsection{Attempt \#2: Including Proof of Exponent}
+\subsubsection*{Attempt \#2: Including Proof of Exponent}
 
 In this section, we introduce the \textbf{Proof of Exponent assumption} (PoE) which makes KZG knowledge sound. Let us define it below.
 
 \begin{definition}[Proof of Exponent for KZG Commitment]
     A \textbf{Proof of Exponent} (PoE) is a protocol that allows the prover $\mathcal{P}$ to convince the verifier $\mathcal{V}$ that he obtained a value $\mathsf{com}(f)$ through exponentiating a base $g$ by $f(\tau)$. The protocol works as follows:
-    \begin{enumerate}
+    \begin{enumerate}[left=0mm]
         \item \textbf{Setup:} Proper parameters $\mathsf{pp}$ now contain not only $\{g^{\tau^i}\}_{i \in [d]}$, but also $\{g^{\alpha\tau^i}\}_{i \in [d]}$ for randomly selected $\tau,\alpha \xleftarrow{R} \mathbb{F}$ and further \textbf{deleted} values.
         \item \textbf{Commit:} $\mathcal{P}$ commits to two values: $\mathsf{com}(f) = g^{f(\tau)}$ and $\mathsf{com}'(f) = g^{\alpha f(\tau)}$. The latter can be computed using $\mathsf{pp}$ as follows:
         \begin{equation*}
@@ -115,7 +115,7 @@ For that reason, we modify the SNARK protocol to include not only commitments to
 
     \tcbsubtitle{$\mathsf{Setup}(1^{\lambda})$}
     The \emph{trusted party} conducts the following steps:
-    \begin{itemize}[label=\ding{51}]
+    \begin{itemize}[label=\ding{51}, left=0mm]
         \item Picks a random value $\tau, \textcolor{green!50!black}{\alpha} \xleftarrow{R} \mathbb{F}$.
         \item Calculates the public parameters $\{g^{\tau^i}\}_{i \in [d]}$, \textcolor{green!50!black}{$\{g^{\alpha\tau^i}\}_{i \in [d]}$}.
         \item \textbf{Deletes} $\tau, \textcolor{green!50!black}{\alpha}$ (toxic waste).
@@ -123,10 +123,10 @@ For that reason, we modify the SNARK protocol to include not only commitments to
     \end{itemize}
     \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbf{x}, \mathbf{w})$}
     The prover $\mathcal{P}$ conducts the following steps:
-    \begin{itemize}[label=\ding{51}]
+    \begin{itemize}[label=\ding{51}, left=0mm]
         \item Runs the circuit with the statement $\mathbf{x}$ and witness $\mathbf{w}$, obtains the intermediate constraint values, and calculates the polynomials $L(x), R(x), O(x)$ through Lagrange Interpolation.
-        \item Calculates $H(x) \gets (L(x)R(x) - O(x))\big/ Z(x)$.
-        \item Calculates the sound KZG commitments as follows: 
+        \item Calculates $H(x) \gets (L(x)R(x) - O(x))\big/ Z(x)$. 
+        \item Calculates the sound KZG commitments as follows: \\
         \begin{align*}
             \pi_L \gets g^{L(\tau)}, & \quad\textcolor{green!50!black}{\pi_L' \gets g^{\alpha L(\tau)}} \\
             \pi_R \gets g^{R(\tau)}, & \quad\textcolor{green!50!black}{\pi_R' \gets g^{\alpha R(\tau)}} \\
@@ -134,7 +134,7 @@ For that reason, we modify the SNARK protocol to include not only commitments to
             \pi_H \gets g^{H(\tau)}, & \quad\textcolor{green!50!black}{\pi_H' \gets g^{\alpha H(\tau)}}.
         \end{align*}
         using powers $\{g^{\tau^i}\}_{i \in [d]}$ and $\{g^{\alpha\tau^i}\}_{i \in [d]}$ from the proper parameters $\mathsf{pp}$.
-        \item Publishes the following proof $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H')$ as a proof.
+        \item Publishes the following proof $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H')$.
     \end{itemize}
     \tcbsubtitle{$\mathsf{Verify}(\mathsf{vp}, \mathbf{x}, \boldsymbol{\pi})$}
     Upon receiving proof $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H')$, the verifier $\mathcal{V}$ checks:
@@ -147,16 +147,16 @@ For that reason, we modify the SNARK protocol to include not only commitments to
 
 The provided protocol is secure under the PoE assumption. However, it is still not fully sound. Currently, there is no guarantee that when evaluating $\pi_L$, $\pi_R$, $\pi_O$ we used the same extended witness $\mathbf{w}$. In other words, the prover can still cheat by using different extended witnesses for each polynomial (faking the proof system is still hard in this situation, but we want to make sure to eliminate all possible weaknesses). Let us see how to fix this!
 
-\subsubsection{Attempt \#3: Making SNARK Sound}
+\subsubsection*{Attempt \#3: Making SNARK Sound}
 
 Besides fixing the issue with consistent use of witness $\mathbf{w}$, we additionally include one more optimization we have not included so far.
 
 \textcolor{blue!75!gray}{\textbf{Optimization. Left/Right/Output Polynomial Preprocessing.}} Recall that:
-\begin{equation*}
-    \begin{aligned}
-        &L(x) = \sum_{i=0}^n w_iL_i(x), \quad R(x) = \sum_{i=0}^n w_i R_i(x), \\ &\quad O(x) = \sum_{i=0}^n w_iO_i(x).        
-    \end{aligned}
-\end{equation*}
+\begin{gather*}
+    % \begin{aligned}
+        L(x) = \sum_{i=0}^n w_iL_i(x), \quad R(x) = \sum_{i=0}^n w_i R_i(x), \\ O(x) = \sum_{i=0}^n w_iO_i(x).        
+    % \end{aligned}
+\end{gather*}
 while $M(x) = L(x)R(x) - O(x)$ is only known to the prover $\mathcal{P}$ since it contains the extended witness ($\mathbf{w}$) coefficients. However, the set of polynomials
 \begin{equation*}
     \{L_i(x)\}_{i \in [n]}, \{R_i(x)\}_{i \in [n]}, \{O_i(x)\}_{i \in [n]}
@@ -227,11 +227,11 @@ Oof, that was a long fix! Let us come back to the new version of the SNARK proto
     colback=blue!20!white,
     colupper=blue!75!gray} ]
 
-    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $Z(x)$.
+    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial~$Z(x)$.
 
     \tcbsubtitle{$\mathsf{Setup}(1^{\lambda})$}
     The \emph{trusted party} conducts the following steps:
-    \begin{itemize}[label=\ding{51}, left=0.7em]
+    \begin{itemize}[label=\ding{51}, left=0mm]
         \item Picks random values $\tau, \alpha, \textcolor{green!50!black}{\beta_L, \beta_R, \beta_O, \gamma} \xleftarrow{R} \mathbb{F}$.
         \item \textbf{Outputs} prover parameters $\mathsf{pp}$ and verification parameters $\mathsf{vp}$:
         \begin{equation*}
@@ -245,9 +245,10 @@ Oof, that was a long fix! Let us come back to the new version of the SNARK proto
         \end{equation*}
         \item \textbf{Deletes} aforementioned random scalars (toxic waste).
     \end{itemize}
+    \newpage
     \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbf{x}, \mathbf{w})$}
     The prover $\mathcal{P}$ conducts the following steps:
-    \begin{itemize}[label=\ding{51}]
+    \begin{itemize}[label=\ding{51}, left=0mm]
         \item Runs the circuit to get $\mathbf{w}$ and $L(x),R(x),O(x)$.
         \item Calculates $H(x) \gets (L(x)R(x) - O(x))\big/ Z(x)$.
         \item Calculates the sound KZG commitments as follows: 
@@ -274,7 +275,7 @@ Oof, that was a long fix! Let us come back to the new version of the SNARK proto
     \end{align*}
 \end{tcolorbox}
 
-\subsubsection{Attempt \#4: Splitting the Extended Witness}
+\subsubsection*{Attempt \#4: Splitting the Extended Witness}
 
 Now, recall that the actual circuit $\Circ$ is defined for some statement $\mathbf{x}$ and witness $\mathbf{w}$. According to the Circuit Satisfability Problem, 
 the prover $\mathcal{P}$ wants to convince the verifier $\mathcal{V}$ that he knows the witness $\mathbf{w}$ 
@@ -325,7 +326,7 @@ Now, let us formulate the updated SNARK protocol with the extended witness split
 
     \tcbsubtitle{$\mathsf{Setup}(1^{\lambda})$}
     The \emph{trusted party} conducts the following steps:
-    \begin{itemize}[label=\ding{51}]
+    \begin{itemize}[label=\ding{51}, left=0mm]
         \item Picks random values $\tau, \alpha, \beta_L, \beta_R, \beta_O, \gamma \xleftarrow{R} \mathbb{F}$.
         \item \textbf{Outputs} prover parameters $\mathsf{pp}$ and verification parameters $\mathsf{vp}$:
         \begin{equation*}
@@ -341,7 +342,7 @@ Now, let us formulate the updated SNARK protocol with the extended witness split
     \end{itemize}
     \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbf{x}, \mathbf{w})$}
     The prover $\mathcal{P}$ conducts the following steps:
-    \begin{itemize}[label=\ding{51}]
+    \begin{itemize}[label=\ding{51}, left=0mm]
         \item Runs the circuit to get $\mathbf{w}$ and $L(x),R(x),O(x)$.
         \item Calculates $H(x) \gets (L(x)R(x) - O(x))\big/ Z(x)$.
         \item \textcolor{green!50!black}{Splits $L(x) = L_{\text{mid}}(x) + L_{\text{io}}(x)$ --- intermediate and input/output parts. That being said, $L_{\text{mid}}(x) = \sum_{i \in \mathcal{I}_{\text{mid}}}L_i(x)$. Repeat for $R(x)$ and $O(x)$.}
@@ -370,7 +371,7 @@ Now, let us formulate the updated SNARK protocol with the extended witness split
     \end{align*}
 \end{tcolorbox}
 
-\subsubsection{Attempt \#5: Making SNARK Zero-Knowledge}
+\subsubsection*{Attempt \#5: Making SNARK Zero-Knowledge}
 
 Finally, we came to the point where we need to make the protocol zero-knowledge. As it turns out, it is not that hard to do (compared to what we have done so far)!
 
@@ -505,6 +506,8 @@ Let us now look at the final version of our basic SNARK protocol.
         \item Publishes the following proof $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\pi_{\beta})$.
     \end{itemize}
 
+    \newpage
+
     \tcbsubtitle{$\mathsf{Verify}(\mathsf{vp}, \mathbf{x}, \boldsymbol{\pi})$}
     Upon receiving proof $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_H',\pi_{\beta})$, the verifier $\mathcal{V}$:
     \begin{itemize}[label=\ding{51}]
@@ -525,7 +528,7 @@ While our built protocol is zk-SNARK, it is still not optimized for practical us
 
 \begin{proposition}[Complexity of the Basic Protocol]
     Suppose circuit consists of $n$ gates. Then, the complexity of the basic protocol is as follows:
-    \begin{itemize}
+    \begin{itemize}[left=0mm]
         \item \textbf{Proof Size:} $O(1)$ --- we have a constant number of group elements.
         \item \textbf{Setup Time:} $O(n)$ --- we need to calculate powers of $\tau$ and evaluations at $\tau$.
         \item \textbf{Prover Time:} $O(n \log n)$ --- using FFT and wise choice of $\Omega$.
@@ -533,7 +536,7 @@ While our built protocol is zk-SNARK, it is still not optimized for practical us
     \end{itemize}
 
     However, $O(1)$ is not very descriptive for proof and verifier complexities, so let us provide a more detailed analysis. 
-    \begin{itemize}
+    \begin{itemize}[left=0mm]
         \item \textbf{Proof Size:} 9 $\mathbb{G}$ group elements.
         \item \textbf{Verifier Time:} 15 pairings and $O(|\mathcal{I}_{\text{io}}|)$ group multiplications.
     \end{itemize}
@@ -574,17 +577,17 @@ And finally, since we also have a $\gamma \xleftarrow{R} \mathbb{F}$ for the ext
     \pi_L \gets g_L^{L_{\text{mid}}(\tau)}, & \quad \pi_L' \gets g_L^{\alpha_LL_{\text{mid}}(\tau)}, \\
     \pi_R \gets g_R^{R_{\text{mid}}(\tau)}, & \quad \pi_R' \gets g_R^{\alpha_RR_{\text{mid}}(\tau)}, \\
     \pi_O \gets g_O^{O_{\text{mid}}(\tau)}, & \quad \pi_O' \gets g_O^{\alpha_OO_{\text{mid}}(\tau)}, \\
-    \pi_H \gets g^{H(\tau)}, & \quad \pi_{\beta} \gets g_L^{\beta L_{\text{mid}}(\tau)}g_R^{\beta R_{\text{mid}}(\tau)}g_O^{\beta O_{\text{mid}}(\tau)},
+    \pi_H \gets g^{H(\tau)},                & \quad \pi_{\beta} \gets g_L^{\beta L_{\text{mid}}(\tau)}g_R^{\beta R_{\text{mid}}(\tau)}g_O^{\beta O_{\text{mid}}(\tau)},
 \end{align*}
 
 and then uses these commitments in the proof $\boldsymbol{\pi} = (\pi_L,\pi_L',\pi_R,\pi_R',\pi_O,\pi_O',\pi_H,\pi_{\beta})$.
 
 \textcolor{purple}{\textbf{Verification.}} First, the verifier checks the PoE properties:
-\begin{equation*}
-    \begin{aligned}
-        &e(\pi_L, g_L^{\alpha_L}) = e(\pi_L', g_L), \\ & e(\pi_R, g_R^{\alpha_R}) = e(\pi_R', g_R), \\ & e(\pi_O, g_O^{\alpha_O}) = e(\pi_O', g_O).
-    \end{aligned}
-\end{equation*}
+\begin{gather*}
+    % \begin{aligned}
+        e(\pi_L, g_L^{\alpha_L}) = e(\pi_L', g_L), e(\pi_R, g_R^{\alpha_R}) = e(\pi_R', g_R), \\ e(\pi_O, g_O^{\alpha_O}) = e(\pi_O', g_O).
+    % \end{aligned}
+\end{gather*}
 
 Next, we check the extended witness consistency:
 \begin{equation*}
@@ -592,20 +595,33 @@ Next, we check the extended witness consistency:
 \end{equation*}
 
 The verifier restores the full proof $\pi_L^*,\pi_R^*,\pi_O^*$ by multiplying the public part of the proof with the corresponding private part. This is done as follows:
-\begin{equation*}
-    \begin{aligned}
-        & \pi_L^* \gets \pi_L\prod_{i \in \mathcal{I}_{\text{io}}} (g_L^{L_i(\tau)})^{w_i}, \\ 
-        & \pi_R^* \gets \pi_R\prod_{i \in \mathcal{I}_{\text{io}}} (g_R^{R_i(\tau)})^{w_i}, \\
-        & \pi_O^* \gets \pi_O\prod_{i \in \mathcal{I}_{\text{io}}} (g_O^{O_i(\tau)})^{w_i}.        
-    \end{aligned}
-\end{equation*}
+
+\vspace{-4mm}
+
+\begin{gather*}
+    % \begin{aligned}
+        \pi_L^* \gets \pi_L\prod_{i \in \mathcal{I}_{\text{io}}} (g_L^{L_i(\tau)})^{w_i}, \quad 
+        \pi_R^* \gets \pi_R\prod_{i \in \mathcal{I}_{\text{io}}} (g_R^{R_i(\tau)})^{w_i}, \\
+        \pi_O^* \gets \pi_O\prod_{i \in \mathcal{I}_{\text{io}}} (g_O^{O_i(\tau)})^{w_i}.        
+    % \end{aligned}
+\end{gather*}
+
+\vspace{-2mm}
 
 And finally, we check the polynomial equality test:
+
+\vspace{-2mm}
+
 \begin{equation*}
     e(\pi_L^*, \pi_R^*) = e(g_O^{Z(\tau)}, \pi_H)\cdot e(\pi_O^*, g)
 \end{equation*}
 
+\vspace{-1mm}
+
 \textcolor{blue!75!gray}{\textbf{Zero-Knowledge Extension.}} The zero-knowledge extension of the Pinocchio Protocol is done exactly in the same way as we did for the basic SNARK protocol. Namely, we introduce random scalars $\delta_L, \delta_R, \delta_O \xleftarrow{R} \mathbb{F}$ and calculate the following commitments:
+
+\vspace{-7mm}
+
 \begin{center}    
     \begin{equation*}
         \begin{aligned}    
@@ -631,7 +647,7 @@ Let us see what has changed in the Pinocchio Protocol.
     \end{itemize}
 \end{proposition}
 
-Let us see the complete specification of the Pinocchio Protocol.
+Let us see the complete specification of the protocol.
 
 \begin{tcolorbox}[breakable, title=Pinocchio Protocol,
     colback=blue!5!white,
@@ -648,16 +664,21 @@ Let us see the complete specification of the Pinocchio Protocol.
 
     \tcbsubtitle{$\mathsf{Setup}(1^{\lambda})$}
     The \emph{trusted party} conducts the following steps:
-    \begin{itemize}[label=\ding{51}]
+    \begin{itemize}[label=\ding{51}, left=0mm]
         \item Picks random values $\tau, \alpha_L, \alpha_R, \alpha_O, \beta, \gamma, \rho_L, \rho_R \xleftarrow{R} \mathbb{F}$.
         \item Calculates $\rho_O \gets \rho_L\rho_R$ and defines generators $g_L \gets g^{\rho_L}, g_R \gets g^{\rho_R}, g_O \gets g^{\rho_O}$.
         \item \textbf{Outputs} prover parameters $\mathsf{pp}$ and verification parameters $\mathsf{vp}$:
+        \vspace{-1mm}
         \begin{equation*}
             \begin{aligned}                
                 \mathsf{pp} &\gets \big\{\{g^{\tau^i}\}_{i \in [d]}, \{g_L^{L_i(\tau)}, g_L^{\alpha_LL_i(\tau)}, g_R^{R_i(\tau)}, \\
                             & g_R^{\alpha_RR_i(\tau)}, g_O^{O_i(\tau)}, g_O^{\alpha_O O_i(\tau)}, g_L^{\beta L_i(\tau)}, g_R^{\beta R_i(\tau)}, \\ 
                             & g_O^{\beta O_i(\tau)}\}_{i \in \mathcal{I}_{\text{mid}}}, g_L^{\alpha_L Z(\tau)}, g_L^{Z(\tau)}, g_R^{Z(\tau)}, g_O^{Z(\tau)}, \\ 
                             & g_R^{\alpha_R Z(\tau)}, g_O^{\alpha_O Z(\tau)}, g_L^{\beta Z(\tau)}, g_R^{\beta Z(\tau)}, g_O^{\beta Z(\tau)}\big\} \\
+            \end{aligned}
+        \end{equation*}
+        \begin{equation*}
+            \begin{aligned}    
                 \mathsf{vp} &\gets \big\{ g_O^{Z(\tau)}, g^{\alpha_L}, g^{\alpha_R}, g^{\alpha_O}, g^{\beta\gamma}, g^{\gamma}, \\
                             & \{g_L^{L_i(\tau)}, g_R^{R_i(\tau)}, g_O^{O_i(\tau)}\}_{i \in \mathcal{I}_{\text{io}}} \big\}
             \end{aligned}
@@ -666,7 +687,7 @@ Let us see the complete specification of the Pinocchio Protocol.
     \end{itemize}
     \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbf{x}, \mathbf{w})$}
     The prover $\mathcal{P}$ conducts the following steps:
-    \begin{itemize}[label=\ding{51}]
+    \begin{itemize}[label=\ding{51}, left=0mm]
         \item Runs the circuit to get $\mathbf{w}$ and $L(x),R(x),O(x)$.
         \item Calculates $H(x) \gets (L(x)R(x) - O(x))\big/ Z(x)$.
         \item Splits $L(x) = L_{\text{mid}}(x) + L_{\text{io}}(x)$ --- intermediate and input/output parts. Repeat for $R(x)$ and $O(x)$.
@@ -681,10 +702,10 @@ Let us see the complete specification of the Pinocchio Protocol.
             \end{aligned}
         \end{equation*}
     \end{itemize}
-
+    \newpage
     \tcbsubtitle{$\mathsf{Verify}(\mathsf{vp}, \mathbf{x}, \boldsymbol{\pi})$}
     Upon receiving proof $\boldsymbol{\pi}$, the verifier $\mathcal{V}$:
-    \begin{itemize}[label=\ding{51}, left=0.6em]
+    \begin{itemize}[label=\ding{51}, left=0mm]
         \item Finds $\pi_L^* \gets \pi_L\prod_{i \in \mathcal{I}_{\text{io}}} (g_L^{L_i(\tau)})^{w_i},\pi_R^* \gets \pi_R\prod_{i \in \mathcal{I}_{\text{io}}} (g_R^{R_i(\tau)})^{w_i},\pi_O^*~\gets~\pi_O\prod_{i \in \mathcal{I}_{\text{io}}} (g_O^{O_i(\tau)})^{w_i}$
         \item Checks whether all of the following conditions hold:
         
