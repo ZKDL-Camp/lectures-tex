@@ -13,13 +13,20 @@ extending $\mathbb{F}_p$ to, in a sense, the analogous of complex numbers.
 From school and, possibly, university, you might remember how complex numbers $\mathbb{C}$ are constructed. You take two real numbers, say, $x,y \in \mathbb{R}$, introduce a new
 symbol $i$ satisfying $i^2 = -1$, and define the complex number as $z = x + iy$. In certain cases, one might encounter a bit more rigorous and abstract definition of complex numbers as
 the set of pairs $(x,y) \in \mathbb{R}^2$ where addition in naturally defined as $(x_1,y_1)+(x_2,y_2)=(x_1+x_2,y_1+y_2)$, and the multiplication is:
+
+\vspace{-4mm}
+
 \begin{equation*}
     (x_1,y_1) \cdot (x_2,y_2) = (x_1x_2-y_1y_2,x_1y_2+x_2y_1)\footnote{Notice that $(x_1+iy_1)(x_2+iy_2) = x_1x_2+iy_2x_1+iy_1x_2+i^2y_1y_2 = (x_1x_2-y_1y_2) + (x_1y_2+x_2y_1)i$.}.
 \end{equation*}
 
+\vspace{-0.5mm}
+
 In spite of what interpretation you have seen, the complex number is just a tuple of two real numbers that satisfy a bit different rules of multiplication (since addition is typically defined in the same way). What is even more important to us, is that $\mathbb{C}$ is our first example of the so-called \textbf{field extension} of $\mathbb{R}$.
 
-Formally, definition of the field extension is very straightforward:
+% Formally, definition of the field extension is very straightforward:
+The definition of a field extension is straightforward.
+\vspace{-1.5mm}
 \begin{definition}
     Let $\mathbb{F}$ be a field and $\mathbb{K}$ be another field. We say that $\mathbb{K}$ is an \textbf{extension} of $\mathbb{F}$ if $\mathbb{F} \subset \mathbb{K}$ and we denote it as $\mathbb{K}/\mathbb{F}$.
 \end{definition}
@@ -342,7 +349,7 @@ The aforementioned definition is illustrated in the Figure below\footnote{Illust
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\textwidth]{images/lecture_3/group_law.png}
+    \includegraphics[width=0.84\textwidth]{images/lecture_3/group_law.png}
     \label{fig:group_law}
 \end{figure}
 
@@ -360,6 +367,8 @@ The aforementioned definition is illustrated in the Figure below\footnote{Illust
         \label{fig:ec_2}
     \end{figure}
 \end{example}
+
+\vspace{-4mm}
 
 \begin{theorem}
     $(E(\mathbb{F}_{p^m}),\oplus)$ forms an abelian group.
@@ -398,43 +407,69 @@ Now, if the curve is ``good'', then the discrete logarithm problem is hard. In f
     \item Suppose that there is some small integer $\tau>0$ such that $r \mid (p^{\tau}-1)$. The discrete log in that case reduces to the discrete log in the finite field $\mathbb{F}_{p^{\tau}}$, which is typically not hard for small enough $\tau$.
 \end{enumerate}
 
-\subsection{Exercises}
+\vspace{-1mm}
+
+\subsection*{Exercises}
+
+\vspace{-1mm}
+
 \subsubsection*{Warmup (Oleksandr in search of perfect field extension)}
+
+\vspace{-1mm}
 
 \textbf{Exercise 1.} Oleksandr decided to build $\mathbb{F}_{49}$ as \\ $\mathbb{F}_7[i]/(i^2+1)$. Compute $(3+i)(4+i)$. 
 
-\begin{enumerate}[a)]
-    \item $6+i$.
-    \item $6$.
-    \item $4+i$.
-    \item $4$.
-    \item $2+4i$.
-\end{enumerate}
+\vspace{-3mm}
+
+\begin{multicols}{3}    
+    \begin{enumerate}[a)]
+        \item $6+i$.
+        \item $6$.
+        \item $4+i$.
+        \item $4$.
+        \item $2+4i$.
+    \end{enumerate}
+\end{multicols}
+\vspace{-3mm}
+
+\newpage
 
 \textbf{Exercise 2.} Oleksandr came up with yet another extension $\mathbb{F}_{p^2} = \mathbb{F}_p[i]/(i^2+2)$. He asked interns to calculate $2/i$. Based on five answers given below, help Oleksandr to find the correct one.
-\begin{enumerate}[a)]
-    \item $1$.
-    \item $p-2$.
-    \item $(p-3)i$.
-    \item $(p-1)i$.
-    \item $p-1$.
-\end{enumerate}
+
+\vspace{-3mm}
+
+\begin{multicols}{3}    
+    \begin{enumerate}[a)]
+        \item $1$.
+        \item $p-2$.
+        \item $(p-3)i$.
+        \item $(p-1)i$.
+        \item $p-1$.
+    \end{enumerate}
+\end{multicols}
+
+\vspace{-3mm}
 
 \textbf{Exercise 3*.} After endless tries, Oleksandr has finally found the perfect field extension: $\mathbb{F}_{p^2} := \mathbb{F}_p[v] / (v^2+v+1)$. However, Oleksandr became very frustrated since not for any $p$ this would be a valid field extension. For which of the following values $p$ such construction would \textbf{not} be a valid field extension? Use the fact that equation $\omega^3=1$ over $\mathbb{F}_p$ has non-trivial solutions (meaning, two others except for $\omega=1$) if $p \equiv 1 \pmod{3}$. You can assume that listed numbers are primes.
-\begin{enumerate}[a)]
-    \item $8431$.
-    \item $9173$.
-    \item $9419$.
-    \item $6947$.
-\end{enumerate}
+
+\vspace{-3mm}
+
+\begin{multicols}{4}    
+    \begin{enumerate}[a)]
+        \item $8431$.
+        \item $9173$.
+        \item $9419$.
+        \item $6947$.
+    \end{enumerate}
+\end{multicols}
+
+\vspace{-3mm}
 
 \begin{tcolorbox}[breakable, colback=blue!5!white,fonttitle=\bfseries,colframe=blue!80!white,title=Exercises 4-9. Tower of Extensions]
     \textit{You are given the passage explaining the topic of tower of extensions. The text has gaps that you need to fill in with the correct statement among the provided choices.}
-    
+
     This question demonstrates the concept of the so-called \textbf{tower of extensions}. Suppose we want to build an extension field $\mathbb{F}_{p^4}$. Of course, we can find some irreducible polynomial $p(X)$ of degree $4$ over $\mathbb{F}_p$ and build $\mathbb{F}_{p^4}$ as $\mathbb{F}_p[X]/(p(X))$. However, this method is very inconvenient since implementing the full $4$-degree polynomial arithmetic is inconvenient. Moreover, if we were to implement arithmetic over, say, $\mathbb{F}_{p^{24}}$, that would make the matters worse. For this reason, we will build $\mathbb{F}_{p^4}$ as $\mathbb{F}_{p^2}[j]/(q(j))$ where $q(j)$ is an irreducible polynomial of degree $2$ over $\mathbb{F}_{p^2}$, which itself is represented as $\mathbb{F}_p[i]/(r(i))$ for some suitable irreducible quadratic polynomial $r(i)$. This way, we can first implement $\mathbb{F}_{p^2}$, then $\mathbb{F}_{p^4}$, relying on the implementation of $\mathbb{F}_{p^2}$ and so on.
-
     For illustration purposes, let us pick $p:=5$. As noted above, we want to build $\mathbb{F}_{5^2}$ first. A valid way to represent $\mathbb{F}_{5^2}$ would be to set $\mathbb{F}_{5^2} := \boxed{\textcolor{blue}{\textbf{4}}}$. Given this representation, the zero of a linear polynomial $f(x) = ix - (i+3)$, defined over $\mathbb{F}_{5^2}$, is $\boxed{\textcolor{blue}{\textbf{5}}}$.
-
     Now, assume that we represent $\mathbb{F}_{5^4}$ as $\mathbb{F}_{5^2}[j]/(j^2-\xi)$ for $\xi = i+1$. Given such representation, the value of $j^4$ is $\boxed{\textcolor{blue}{\textbf{6}}}$. Finally, given $c_0+c_1j \in \mathbb{F}_{5^4}$ we call $c_0 \in \mathbb{F}_{5^2}$ a \textbf{real part}, while $c_1 \in \mathbb{F}_{5^2}$ an \textbf{imaginary part}. For example, the imaginary part of number $j^3+2i^2\xi$ is $\boxed{\textcolor{blue}{\textbf{7}}}$, while the real part of $(a_0+a_1j)b_1j$ is $\boxed{\textcolor{blue}{\textbf{8}}}$. Similarly to complex numbers, it motivates us to define the number's \textbf{conjugate}: for $z = c_0+c_1j$, define the conjugate as $\overline{z} := c_0-c_1j$. The expression $z\overline{z}$ is then $\boxed{\textcolor{blue}{\textbf{9}}}$.
 \end{tcolorbox}
 
@@ -465,7 +500,11 @@ Now, if the curve is ``good'', then the discrete logarithm problem is hard. In f
             \item $1+2i$
             \item $2+4i$
         \end{enumerate}
-        \\
+    \end{tabular}
+\end{center}
+
+\begin{center}
+    \begin{tabular}{p{2.9cm}p{1.6cm}p{3cm}}
         \textbf{Exercise 7.}
         \begin{enumerate}[a)]
             \item equal to zero.
@@ -494,34 +533,48 @@ Now, if the curve is ``good'', then the discrete logarithm problem is hard. In f
     \end{tabular}
 \end{center}
 
+\vspace{-6mm}
+
 \subsubsection*{Elliptic Curves}
 \textbf{Exercise 10.} Suppose that elliptic curve is defined as $E/\mathbb{F}_{7}: y^2=x^3+b$. Suppose $(2,3)$ lies on the curve. What is the value of $b$?
 
 \textbf{Exercise 11.} Sum of which of the following pairs of points on the elliptic curve $E/\mathbb{F}_{11}$ is equal to the point at infinity $\mathcal{O}$ for any valid curve equation?
-\begin{enumerate}[a)]
-    \item $P=(2,3),Q=(2,8)$.
-    \item $P=(9,2),Q=(2,8)$.
-    \item $P=(9,9),Q=(5,7)$.
-    \item $P=\mathcal{O},Q=(2,3)$.
-    \item $P=[10]G,Q=G$ where $G$ is a generator.
-\end{enumerate}
+\vspace{-3mm}
+\begin{multicols}{2}
+    \begin{enumerate}[a)]
+        \item $P=(2,3),Q=(2,8)$.
+        \item $P=(9,2),Q=(2,8)$.
+        \item $P=(9,9),Q=(5,7)$.
+        \item $P=\mathcal{O},Q=(2,3)$.
+        \item $P=[10]G$, where $G$ is a generator.
+    \end{enumerate}
+\end{multicols}
+\vspace{-3mm}
 
 \textbf{Exercise 12.} Consider an elliptic curve $E$ over $\mathbb{F}_{167^2}$. Denote by $r$ the order of the group of points on $E$ (that is, $r=|E|$). Which of the following \textbf{can} be the value of $r$?
-\begin{enumerate}[a)]
-    \item $167^2 - 5$
-    \item $167^2-1000$
-    \item $167^2+5 \cdot 167$
-    \item $170^2$
-    \item $160^2$
-\end{enumerate}
+\vspace{-3mm}
+\begin{multicols}{3}
+    \begin{enumerate}[a)]
+        \item $167^2 - 5$
+        \item $167^2-1000$
+        \item $167^2+5 \cdot 167$
+        \item $170^2$
+        \item $160^2$
+    \end{enumerate}
+\end{multicols}
+\vspace{-3mm}
 
 \textbf{Exercise 13.} Suppose that for some elliptic curve $E$ the order is $|E| = qr$ where both $q$ and $r$ are prime numbers. Among listed, what is the most optimal complexity of algorithm to solve the discrete logarithm problem on $E$?
-\begin{enumerate}[a)]
-    \item $O(qr)$
-    \item $O(\sqrt{qr})$
-    \item $O(\sqrt{\max\{q,r\}})$
-    \item $O(\sqrt{\min\{q,r\}})$
-    \item $O(\max\{q,r\})$
-\end{enumerate}
+\vspace{-3mm}
+\begin{multicols}{2}
+    \begin{enumerate}[a)]
+        \item $O(qr)$
+        \item $O(\sqrt{qr})$
+        \item $O(\sqrt{\max\{q,r\}})$
+        \item $O(\sqrt{\min\{q,r\}})$
+        \item $O(\max\{q,r\})$
+    \end{enumerate}
+\end{multicols}
+\vspace{-3mm}
 
 \end{document}
