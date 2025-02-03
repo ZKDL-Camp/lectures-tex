@@ -70,7 +70,9 @@ can be calculated by a simple equation over the element power.
 
 \textbf{Proof.} The sum of $x$ and $-x$ must equal to zero modulo $p$, so:
 \begin{equation*}
-x + (-x) = w^{(p-1)i/r} + w^{(p-1)j/r} = w^{(p-1)i/r}(1 + w^{(p-1)(j-i)/r}) = w^{(p-1)i/r}(1 + w^{(p-1)/2})
+    \begin{aligned}
+        x + (-x) &= w^{(p-1)i/r} + w^{(p-1)j/r} = w^{(p-1)i/r}(1 + w^{(p-1)(j-i)/r}) \\ &= w^{(p-1)i/r}(1 + w^{(p-1)/2}).
+    \end{aligned}
 \end{equation*}
 
 Now note that $w^{(p-1)/2} = -1$ which completes the proof. $\blacksquare$
