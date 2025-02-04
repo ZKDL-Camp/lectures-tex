@@ -105,7 +105,6 @@ Fix some set $A$. To denote that we are uniformly randomly picking some element 
 
 To denote the infinite sequence $\{x_1,x_2,x_3,\dots\}$ we write $\{x_n\}_{n \in \mathbb{N}}$. 
 To denote the finite sequence $\{x_1,\dots,x_n\}$ we write $\{x_k\}_{k=1}^n$. 
-
 Vector is ordered list of elements $\mathbf{x} = (x_1, \dots ,x_n) \in A^n$. The scalar product\footnote{It is totally normal if you do not know what that is, we will explain more in the Bulletproof lecture} is denoted usually 
 as $\langle \mathbf{x}, \mathbf{y} \rangle := \sum_{k=1}^n x_ky_k$.
 
@@ -319,6 +318,8 @@ we have a group $\mathbb{G}$ and $g \in \mathbb{G}$. Then, $g^n$ means multiplyi
 Finally, we will define the concept of isomorphisms and endomorphisms. These are important concepts in the world of cryptography, since they allow us to compare different groups. Namely, 
 suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is there any way to state that these two groups are the same? The answer is yes, and this is done via isomorphisms.
 
+\vspace{-1mm}
+
 \begin{definition}
     A function $\varphi: \mathbb{G} \to \mathbb{H}$ is called an \textbf{homomorphism} if it is a function that preserves the group operation, that is, 
     \begin{equation*}
@@ -326,13 +327,19 @@ suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is t
     \end{equation*}
 \end{definition}
 
+\vspace{-4mm}
+
 \begin{definition}
     An \textbf{isomorphism} is a bijective homomorphism.
 \end{definition}
 
+\vspace{-4mm}
+
 \begin{definition}
     If there exists an isomorphism between two groups $\mathbb{G}$ and $\mathbb{H}$, we say that these groups are isomorphic and write $\mathbb{G} \cong \mathbb{H}$.
 \end{definition}
+
+\vspace{-4mm}
 
 \begin{example}
     Consider the group of integers $(\mathbb{Z},+)$ and the group of integers modulo $12$ $(\mathbb{Z}_{12},+)$. The function $\varphi: \mathbb{Z} \to \mathbb{Z}_{12}$ defined as $\varphi(x) = x \;\text{mod}\; 12$ is a homomorphism. Indeed:
@@ -640,6 +647,9 @@ in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the po
         \end{cases},
     \end{equation*}
     where $\delta_{ij}$ is the Kronecker delta. Moreover, $\{\ell_i\}_{i=1}^n$ form a basis of $\mathbb{F}^{(\leq n)}[x]$: for any polynomial $p(x) \in \mathbb{F}^{(\leq n)}[x]$ there exist unique coefficients $\alpha_0,\dots,\alpha_n \in \mathbb{F}$ such that
+    
+    \vspace{-3.5mm}
+    
     \begin{equation*}
         p(x) = \sum_{i=0}^{n} \alpha_i \ell_i(x).
     \end{equation*}
@@ -647,6 +657,8 @@ in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the po
 
 \begin{example}
     Suppose we have points $(0,1)$ and $(1,2)$. Then, the Lagrange interpolation polynomial is
+    
+    \vspace{-3.5mm}
     \begin{equation*}
         L(x) = 1 \cdot \frac{x-1}{0-1} + 2 \cdot \frac{x-0}{1-0} = (-1) \cdot (x-1) + 2 \cdot x = x + 1
     \end{equation*}
@@ -695,7 +707,7 @@ The intuition behind the Shamir's protocol is illustrated in Figure~\ref{fig:sha
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/lecture_1/shamir_demo.pdf}
+    \includegraphics[width=0.55\textwidth]{images/lecture_1/shamir_demo.pdf}
     \caption{Suppose we have $t=3$. Having only 2 points means knowing two \textcolor{blue}{blue} points without knowing the \textcolor{red}{red} one. There are infinitely many quadratic polynomials passing through these two points (\textcolor{gray}{gray dashed} lines). However, knowing the third \textcolor{red}{red} point allows us to uniquely determine the polynomial and thus get its value at $0$. Note that this is illustrated over $\mathbb{R}$, but for $\mathbb{F}_q$ the logic is similar.}
     \label{fig:shamir}
 \end{figure}
@@ -725,6 +737,8 @@ pub trait Group: Sized {
 }
 \end{lstlisting}
 
+\vspace{-3.5mm}
+
 \textbf{Checking group validity.} Now observer the following: we get closure for free, since the compiler will check whether the return type of the operation is the same as the type of the group. 
 However, there is no guarantee that associativity holds, and our identity element is at all valid. For that reason, we need to somehow additionally check the
 validity of implementation.
@@ -736,7 +750,11 @@ We propose to do the following: we will randomly sample three elements from the 
     \item $a \oplus (\ominus a) \xlongequal{?} (\ominus a) \oplus a \xlongequal{?} e$.
 \end{enumerate}
 
+\vspace{0.5mm}
+
 Additionally, if we want to verify whether the group is abelian, we can check whether $a \oplus b \xlongequal{?} b \oplus a$. 
+
+\vspace{0.5mm}
 
 For that reason, for the check, we require the group to be samplable (i.e. we can randomly sample elements from the group):
 \begin{lstlisting}[language=Rust]
@@ -913,6 +931,7 @@ impl Samplable for Rotation3<f32> {
     }
 }
 \end{lstlisting}
+\newpage
 
 Here, there are two tricky moments:
 \begin{enumerate}
@@ -929,8 +948,6 @@ Here, there are two tricky moments:
     \item $(\forall k \in \mathbb{Z}) \; (\exists n \in \mathbb{N}): \{n < k\}$.
     \item $(\forall x \in \mathbb{Z} \setminus \{-1\}) \; (\exists! y \in \mathbb{Q}): \{(x+1)y = 2\}$.
 }
-
-\newpage
 
 \exerciseTitle{Exercise 2.}{Denote $X := \{(x,y) \in \mathbb{Q}^2: xy = 1\}$. Oleksandr claims the following:}
 \exerciseAnswerList {
@@ -966,8 +983,6 @@ as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \
     \item No, since the associativity property does not hold, but we might define an identity element nonetheless.
 }
 
-\newpage
-
 \exerciseTitle{Exercise 5.}{Find the inverse of $4$ in $\mathbb{F}_{11}$.}
 \exerciseMulticols{4} {
     \item 8
@@ -982,30 +997,6 @@ as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \
     \item $n$ might be less than $9$.
     \item $n = 20$.
     \item $n$ is less than $\deg \{qr\}$.
-}
-
-\exerciseTitle{Exercise 7.}{Define the polynomial over $\mathbb{F}_5$: $f(x) := 4x^2 + 7$. Which of the following is the root of $f(x)$?}
-\exerciseMulticols{2} {
-    \item $2$
-    \item $3$
-    \item $4$
-    \item No roots.
-}
-
-\exerciseTitle{Exercise 8.}{Quadratic polynomial $p(x) = ax^2+bx+c \in \mathbb{R}[x]$ has zeros at $1$ and $2$ and $p(0) = 2$. Find the value of $a+b+c$.}
-\exerciseMulticols{2} {
-    \item $0$
-    \item $-1$
-    \item $1$
-    \item Not enough info.
-}
-
-\exerciseTitle{Exercise 9.}{Which of the following is a \textbf{valid} endomorphism $f: X \to X$?}
-\exerciseAnswerList {
-    \item $X = [0,1]$, $f: x \mapsto x^2$.
-    \item $X = [0,1]$, $f: x \mapsto x + 1$.
-    \item $X = \mathbb{R}_{>0}$, $f: x \mapsto (x-1)^3$.
-    \item $X = \mathbb{Q}_{>0}$, $f: x \mapsto \sqrt{x}$.
 }
 
 \end{document}

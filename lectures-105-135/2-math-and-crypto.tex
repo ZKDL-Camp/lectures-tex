@@ -30,7 +30,7 @@ Now let us play the following game between adversary $\mathcal{A}$ and challenge
 
 \begin{figure}[h!]
     \centering
-    \scalebox{0.7}{
+    \scalebox{0.72}{
     \begin{tikzpicture}
         \node[inner sep=0pt, align=center] (challenger) {\includegraphics[width=0.75cm]{lectures/images/lecture_2/challenger.png}\\Challenger $\mathcal{C}h$};
         \node[inner sep=0pt, align=center, right=5cm of challenger] (adversary) {\includegraphics[width=0.75cm]{lectures/images/lecture_2/demon.png}\\Adversary $\mathcal{A}$};
@@ -171,6 +171,8 @@ Now, we loosen the requirements a bit. The \textbf{Decisional Diffie-Hellman} (D
         \item $\mathcal{C}h$ computes $\alpha, \beta,\gamma \xleftarrow{R} \mathbb{Z}_r, u \gets g^{\alpha}, v \gets g^{\beta}, w_0 \gets g^{\alpha\beta}, w_1 \gets g^{\gamma}$. Then, $\mathcal{C}h$ flips a coin $b \xleftarrow{R} \{0,1\}$ and sends $u,v,w_b$ to $\mathcal{A}$.
         \item The adversary $\mathcal{A}$ outputs the predicted bit $\hat{b} \in \{0,1\}$.
     \end{enumerate}
+
+    \vspace{0.5mm}
 
     We define $\mathcal{A}$'s \textbf{advantage in solving the Decisional Diffie-Hellman problem in $\mathbb{G}$}, denoted as $\text{DDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as
     \begin{equation*}
@@ -354,7 +356,7 @@ While the greatest common divisor (gcd) focuses on finding the largest shared fa
 \end{lemma}
 
 \begin{theorem}
-    For any $a, b \in \mathbb{N}$, we have $\gcd(a, b) \cdot \lcm(a, b) = ab$.
+    For any $a, b \in \mathbb{N}$, we have $\gcd(a, b)~\cdot~\lcm(a, b) = ab$.
 \end{theorem}
 
 One interpretation of the above theorem is that no additional algorithm is required for
@@ -610,6 +612,8 @@ $\blacktriangleright$
 The theorem state equation then need to proof equation existence and uniqueness. Since the existence property is 
 easy to prove, let us make the small exception and show it. For other proves (in particular, for the uniqueness case, see literature)
 
+\newpage
+
 \textcolor{green!60!black}{\textbf{Existence}}. Suppose the theorem statement is false and there exist $n$ that do not have such a representation.
 Let $n_0$ be the smallest of them.
 If $n_0$ is prime, it can be represented as $p_1=n_0$, $\alpha_1=1$, which satisfies the representation. Therefore, $n_0$ must be composite, which means $\exists a, b \in \mathbb{N}, 1 < a, b < n_0$ such that $n = ab$.
@@ -698,7 +702,7 @@ This means that we can cancel out the same left and right parts respectively, bu
 \end{lemma}
 
 \begin{lemma}
-    If $d \mid n$ and $a \equiv b \, (\text{mod } n)$, then $a \equiv b \, (\text{mod } d)$.
+    If $d \mid n$ and $a \equiv b \, (\text{mod } n)$, then $a~\equiv~b \, (\text{mod } d)$.
 \end{lemma}
 
 This property is very convenient when it comes to large calculations, if you know its decomposition.
