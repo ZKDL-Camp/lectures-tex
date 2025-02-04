@@ -731,6 +731,8 @@ Let us now concretely describe the Groth16 construction.
 
 \textcolor{gray!75!black}{\textbf{Asymmetric Pairing.}} One change which was made in Groth16 is using the asymmetric pairing function $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ over groups $\mathbb{G}_1$ and $\mathbb{G}_2$ (for more details, see \Cref{section:ecpairing}). Suppose respective group generators are $g_1 \in \mathbb{G}_1$ and $g_2 \in \mathbb{G}_2$. The primary reason for this is that calculating the pairing in asymmetric setting is more efficient than in symmetric setting. Other than that, Groth16 can be easily formulated using symmetric pairings.
 
+\vspace{1mm}
+
 \textcolor{blue!75!gray}{\textbf{Setup Procedure.}} In Groth16, we need only five random scalars: $\alpha,\beta,\gamma,\delta,\tau \xleftarrow{R} \mathbb{F}$. Now, the prover key $\mathsf{pk}$ looks as follows:
 \begin{equation*}
     \scalebox{0.85}{$
