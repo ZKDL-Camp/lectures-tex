@@ -208,7 +208,7 @@
 }
 
 \newcommand{\exerciseAnswerList}[1]{
-  \begin{enumerate}[a)]
+  \begin{enumerate}[a),left=0mm]
     #1
   \end{enumerate}
 }
