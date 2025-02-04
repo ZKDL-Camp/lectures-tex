@@ -296,9 +296,11 @@ So, let us formally define what an elliptic curve is. Further assume that, when 
 \begin{example}
     Consider the curve $E/\mathbb{Q}: y^2=x^3-x+9$. This is an elliptic curve. Consider $P=(0,3), Q=(-1,-3) \in \mathbb{A}^2(\mathbb{Q})$: both are valid affine points on the curve. See \Cref{fig:ec_1}.
 
+    \vspace{-2mm}
+
     \begin{figure}[H]
         \centering
-        \includegraphics[width=0.45\textwidth]{images/lecture_3/ec_illustration_1.pdf}
+        \includegraphics[width=0.5\textwidth]{images/lecture_3/ec_illustration_1.pdf}
         \caption{Elliptic curve $E/\mathbb{Q}: y^2=x^3-x+9$ with points $P=(0,3),Q=(-1,-3)$ depicted on it.}
         \label{fig:ec_1}
     \end{figure}
@@ -334,13 +336,23 @@ Now, the reason we introduced the point at infinity $\mathcal{O}$ is because it 
     Consider the curve $E(\mathbb{F}_{p^m})$. We define $\mathcal{O}$ as the identity element of the group. That is, for all points $P$, we set $P \oplus \mathcal{O} = \mathcal{O} \oplus P = P$. For any other non-identity elements $P=(x_P,y_P),Q=(x_Q,y_Q) \in E(\mathbb{F}_{p^m})$, define the $P\oplus Q = (x_R,y_R)$ as follows:
     \begin{enumerate}
         \item If $x_P\neq x_Q$, use the \textbf{chord method}. Define $\lambda := \frac{y_P-y_Q}{x_P-x_Q}$ --- the slope between $P$ and $Q$. Set the resultant coordinates as:
+        \vspace{-4.5mm}
+
         \begin{equation*}
             x_R := \lambda^2 - x_P - x_Q, \quad y_R := \lambda(x_P-x_R)-y_P.
         \end{equation*}
+        
+        \vspace{-2mm}
+        
         \item If $x_P=x_Q \wedge y_P=y_Q$ (that is, $P=Q$), use the \textbf{tangent method}. Define the slope of the tangent at $P$ as $\lambda := \frac{3x_P^2+a}{2y_P}$ and set
+        \vspace{-4.5mm}
+        
         \begin{equation*}
             x_R := \lambda^2 - 2x_P, \quad y_R := \lambda(x_P-x_R)-y_P.
         \end{equation*}
+
+        \vspace{-2mm}
+
         \item Otherwise, define $P \oplus Q := \mathcal{O}$.
     \end{enumerate}
 \end{definition}
@@ -349,7 +361,7 @@ The aforementioned definition is illustrated in the Figure below\footnote{Illust
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.84\textwidth]{images/lecture_3/group_law.png}
+    \includegraphics[width=0.95\textwidth]{images/lecture_3/group_law.png}
     \label{fig:group_law}
 \end{figure}
 
@@ -362,7 +374,7 @@ The aforementioned definition is illustrated in the Figure below\footnote{Illust
 
     \begin{figure}[H]
         \centering
-        \includegraphics[width=0.4\textwidth]{images/lecture_3/ec_illustration_2.pdf}
+        \includegraphics[width=0.55\textwidth]{images/lecture_3/ec_illustration_2.pdf}
         \caption{Illustration of the group law on the elliptic curve $E/\mathbb{R}: y^2=x^3-2x$. In \textcolor{red}{red} we marked points lying on the line $\ell: y=x$. In \textcolor{red}{dashed red}, we marked the line $\ell$, while in \textcolor{green}{dashed green} --- the tangent line $\ell'$ at $(-1,-1)$, which is used to calculate $[2](-1,1)$.}
         \label{fig:ec_2}
     \end{figure}
@@ -385,8 +397,6 @@ Now, let us talk a bit about the group order. The group order is the number of e
 \begin{remark}
     In fact, $r=|E(\mathbb{F}_{p^m})|$ can be computed in $O(\log(p^m))$, so the number of points can be computed efficiently even for fairly large primes $p$.
 \end{remark}
-
-Finally, let us define the scalar multiplication operation. 
 
 \begin{definition}
     Let $P \in E(\mathbb{F}_{p^m})$ and $\alpha \in \mathbb{Z}_r$. Define the scalar multiplication $[\alpha]P$ as:
