@@ -270,7 +270,7 @@ Now, one of the motivations to work with the projective form was to unify affine
 
 Well, notice the following observation: all points $(0:\lambda:0)$ always lie on the curve $E_{\mathbb{P}}(\overline{\mathbb{F}}_p)$. Moreover, the map from the projective form to the affine form is ill-defined for such points, since we would need to divide by zero. So, we can naturally make the points $(0:\lambda:0)$ to be the set of points at infinity. This way, we can define the point at infinity as $\mathcal{O} = (0:1:0)$.
 
-Finally, let us summarize what we have observed so~far.
+% Finally, let us summarize what we have observed so~far.
 
 \vspace{-2mm}
 
@@ -290,7 +290,7 @@ Finally, let us summarize what we have observed so~far.
     \vspace{-5mm}
     
     \begin{center}
-        \includegraphics[trim={275 100 225 100}, width=0.35\linewidth, clip]{images/lecture_4/projective_ec.pdf}
+        \includegraphics[trim={275 100 225 100}, width=0.38\linewidth, clip]{images/lecture_4/projective_ec.pdf}
 
         \vspace{-1mm}
         
@@ -320,8 +320,11 @@ In this case, to come back to the affine form, we need to use the map $\phi: (X:
 
 \begin{example}
     Consider the BN254 curve $y^2 = x^3 + 3$ over reals $\mathbb{R}$, again. Its \textit{Jacobian projective form} is given by the equation $Y^2 = X^3 + 3Z^6$, which gives a surface, depicted below.
+    
+    \vspace{-3mm}
+
     \begin{center}
-        \includegraphics[trim={275 140 225 100}, width=0.35\linewidth, clip]{images/lecture_4/projective_ec_jacobian.pdf}
+        \includegraphics[trim={275 140 225 100}, width=0.43\linewidth, clip]{images/lecture_4/projective_ec_jacobian.pdf}
         
         \small{\textbf{Illustration:} BN254 Curve Elliptic Curve in Jacobian Projective Form over $\mathbb{R}$. In \textcolor{black!80}{\textbf{gray}} is the surface, while \textcolor{red}{\textbf{red}} points are the points on the affine curve (lying on the plane $\pi: z=1$).}
     \end{center}
@@ -537,6 +540,8 @@ which is 254-bit long. For that reason, it is natural to define the term \textit
 
     Note that in this case, we do not need to work with $\mathbb{F}_{p^{12}}$ arithmetic, but rather checking the equality in the target group $\mathbb{G}_T$. 
 
+    \vspace{0.5mm}
+
     \textbf{Interesting fact:} this condition is specified in the \texttt{ecpairing} precompile standard used in Ethereum.
 \end{remark}
 
@@ -557,8 +562,8 @@ Suppose we have pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ (
 Let us check the correctness:
 \begin{equation*}
     \begin{aligned}
-        e(\sigma,G_2) = e(\textcolor{blue}{[\mathsf{sk}]}\mathsf{H}(m),G_2) = \\
-        = e(\mathsf{H}(m), \textcolor{blue}{[\mathsf{sk}]}G_2) = e(\mathsf{H}(m), \mathsf{pk})        
+        e(\sigma,G_2) &= e(\textcolor{blue}{[\mathsf{sk}]}\mathsf{H}(m),G_2) \\
+                      &= e(\mathsf{H}(m), \textcolor{blue}{[\mathsf{sk}]}G_2) = e(\mathsf{H}(m), \mathsf{pk})        
     \end{aligned}
 \end{equation*}
 
