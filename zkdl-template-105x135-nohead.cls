@@ -196,6 +196,13 @@
 
 \newcommand{\Circ}{\textit{\texttt{C}}}
 
+% --- Exercise keywords ---
+\newcommand{\exerciseTitle}[2]{
+  \vspace{1mm}
+
+  \textbf{#1} #2
+}
+
 % --- Theorem keywords ---
 \newtheoremstyle{mystyle}{}{}{}{}{\sffamily\bfseries}{.}{ }{}
 \newtheoremstyle{cstyle}{}{}{}{}{\sffamily\bfseries}{.}{ }{\thmnote{#3}}

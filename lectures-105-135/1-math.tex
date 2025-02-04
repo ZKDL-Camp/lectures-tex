@@ -480,7 +480,6 @@ Finite fields is the core object in cryptography. Instead of real numbers or pur
     \end{enumerate}
 \end{example}
 
-
 \subsection{Polynomials}\label{section:polynomials}
 
 \subsubsection{Basic Definition}
@@ -921,7 +920,7 @@ Here, there are two tricky moments:
 
 \subsection*{Exercises}
 
-\textbf{Exercise 1.} Which of the following statements is \textbf{false}?
+\exerciseTitle{Exercise 1.}{Which of the following statements is \textbf{false}?}
 \begin{enumerate}
     \item $(\forall a, b \in \mathbb{Q}, a \neq b) \; (\exists q \in \mathbb{R}): \{a < q < b\}$.
     \item $(\forall \varepsilon > 0) \, (\exists n_{\varepsilon} \in \mathbb{N}) \, (\forall n \geq n_{\varepsilon}): \{1/n < \varepsilon\}$.
@@ -931,27 +930,27 @@ Here, there are two tricky moments:
 
 \newpage
 
-\textbf{Exercise 2.} Denote $X := \{(x,y) \in \mathbb{Q}^2: xy = 1\}$. Oleksandr claims the following:
+\exerciseTitle{Exercise 2.}{Denote $X := \{(x,y) \in \mathbb{Q}^2: xy = 1\}$. Oleksandr claims the following:}
 \begin{enumerate}
     \item $X \cap \mathbb{N}^2 = \{(1,1)\}$. 
     \item $|X \cap \mathbb{Z}^2| = 2|X \cap \mathbb{N}^2|$.
     \item $X$ is a group under the operation $(x_1,y_1) \oplus (x_2,y_2) = (x_1x_2, y_1y_2)$.
 \end{enumerate}
 
-Which statements are \textbf{true}?
-\vspace{-4mm}
+\exerciseTitle{}{Which statements are \textbf{true}?}
+\vspace{-3mm}
 \begin{multicols}{2}    
     \begin{enumerate}[a)]
         \item Only 1.
         \item Only 1 and 2.
         \item Only 1 and 3.
         \item Only 2 and 3.
-        \item All statements are correct.
+        \item All true.
     \end{enumerate}
 \end{multicols}
-\vspace{-4mm}
+\vspace{-3mm}
 
-\textbf{Exercise 3.} Does a tuple $(\mathbb{Z},\oplus)$ with operation $a \oplus b = a + b - 1$ define a group?
+\exerciseTitle{Exercise 3.}{Does a tuple $(\mathbb{Z},\oplus)$ with operation $a \oplus b = a + b - 1$ define a group?}
 \begin{enumerate}[a)]
     \item Yes, and this group is abelian.
     \item Yes, but this group is not abelian.
@@ -960,7 +959,7 @@ Which statements are \textbf{true}?
     \item No, since there is no inverse element in this group.
 \end{enumerate}
 
-\textbf{Exercise 4.} Consider the Cartesian plane $\mathbb{R}^2$, where two coordinates are real numbers. For two points $A,B$ define the operation $\oplus$
+\exerciseTitle{Exercise 4.}{Consider the Cartesian plane $\mathbb{R}^2$, where two coordinates are real numbers. For two points $A,B$ define the operation $\oplus$}
 as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \oplus)$ define a group? 
 \begin{enumerate}[a)]
     \item Yes, and this group is abelian.
@@ -971,7 +970,7 @@ as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \
 
 \newpage
 
-\textbf{Exercise 5.} Find the inverse of $4$ in $\mathbb{F}_{11}$.
+\exerciseTitle{Exercise 5.}{Find the inverse of $4$ in $\mathbb{F}_{11}$.}
 \vspace{-3mm}
 \begin{multicols}{4}    
     \begin{enumerate}[a)]
@@ -983,7 +982,7 @@ as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \
 \end{multicols}
 \vspace{-3mm}
 
-\textbf{Exercise 6.} Suppose for three polynomials $p,q,r \in \mathbb{F}[x]$ we have $\deg p = 3, \deg q = 4, \deg r = 5$. Which of the following is true for $n := \deg \{(p-q)r\}$?
+\exerciseTitle{Exercise 6.}{Suppose for three polynomials $p,q,r \in \mathbb{F}[x]$ we have $\deg p = 3, \deg q = 4, \deg r = 5$. Which of the following is true for $n := \deg \{(p-q)r\}$?}
 \begin{enumerate}[a)]
     \item $n = 9$.
     \item $n$ might be less than $9$.
@@ -991,7 +990,8 @@ as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \
     \item $n$ is less than $\deg \{qr\}$. 
 \end{enumerate}
 
-\textbf{Exercise 7.} Define the polynomial over $\mathbb{F}_5$: $f(x) := 4x^2 + 7$. Which of the following is the root of $f(x)$?
+\exerciseTitle{Exercise 7.}{Define the polynomial over $\mathbb{F}_5$: $f(x) := 4x^2 + 7$. Which of the following is the root of $f(x)$?}
+\vspace{-3mm}
 \begin{multicols}{2}
     \begin{enumerate}[a)]
         \item $2$
@@ -1000,8 +1000,10 @@ as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \
         \item No roots.
     \end{enumerate}
 \end{multicols}
+\vspace{-3mm}
 
-\textbf{Exercise 8.} Quadratic polynomial $p(x) = ax^2+bx+c \in \mathbb{R}[x]$ has zeros at $1$ and $2$ and $p(0) = 2$. Find the value of $a+b+c$.
+\exerciseTitle{Exercise 8.}{Quadratic polynomial $p(x) = ax^2+bx+c \in \mathbb{R}[x]$ has zeros at $1$ and $2$ and $p(0) = 2$. Find the value of $a+b+c$.}
+\vspace{-3mm}
 \begin{multicols}{2}
     \begin{enumerate}[a)]
         \item $0$
@@ -1010,38 +1012,14 @@ as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \
         \item Not enough info.
     \end{enumerate}
 \end{multicols}
+\vspace{-3mm}
 
-\textbf{Exercise 9.} Which of the following is a \textbf{valid} endomorphism $f: X \to X$? 
+\exerciseTitle{Exercise 9.}{Which of the following is a \textbf{valid} endomorphism $f: X \to X$?}
 \begin{enumerate}[a)]
     \item $X = [0,1]$, $f: x \mapsto x^2$.
     \item $X = [0,1]$, $f: x \mapsto x + 1$.
     \item $X = \mathbb{R}_{>0}$, $f: x \mapsto (x-1)^3$.
     \item $X = \mathbb{Q}_{>0}$, $f: x \mapsto \sqrt{x}$.
-\end{enumerate}
-
-\newpage
-\textbf{Exercise 10*.} Denote by $\text{GL}(2,\mathbb{R})$ a set of $2\times 2$ invertable matrices with real entries. Define two functions $\varphi: \text{GL}(2,\mathbb{R}) \to \mathbb{R}$:
-\begin{equation*}
-    \varphi_1 \left(\begin{bmatrix}
-        a & b \\ c & d
-    \end{bmatrix}\right) = ad - bc, \; \varphi_2 \left(\begin{bmatrix}
-        a & b \\ c & d
-    \end{bmatrix}\right) = a + d
-\end{equation*}
-
-Den claims the following:
-\begin{enumerate}
-    \item $\varphi_1$ is a group homomorphism between multiplicative groups $(\text{GL}(2,\mathbb{R}), \times)$ and $(\mathbb{R}, \times)$.
-    \item $\varphi_2$ is a group homomorphism between additive groups $(\text{GL}(2, \mathbb{R}), +)$ and $(\mathbb{R}, +)$.
-\end{enumerate}
-
-Which of the following is \textbf{true}?
-
-\begin{enumerate}[a)]
-    \item Only statement 1 is correct.
-    \item Only statement 2 is correct.
-    \item Both statements 1 and 2 are correct.
-    \item None of the statements is correct.
 \end{enumerate}
 
 \end{document}
