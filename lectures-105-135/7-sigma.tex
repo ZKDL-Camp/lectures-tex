@@ -41,7 +41,8 @@ First, let us start with the interactive version of the protocol.
 
 \begin{figure}[H]
     \centering
-    \scalebox{0.65}{
+    \captionsetup{skip=0.5mm}
+    \scalebox{0.68}{
     \begin{tikzpicture}
         \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
         \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
@@ -440,15 +441,15 @@ Now, we describe the algorithm.
 
     Here are five attempts to construct the protocol:
 
-    \textcolor{purple!80!black}{\textbf{Attempt 1.}} Prover sends witness $\alpha$ to the verifier. Verifier checks whether $h = g^{\alpha}$.
+    \textcolor{black}{\textbf{Attempt 1.}} Prover sends witness $\alpha$ to the verifier. Verifier checks whether $h = g^{\alpha}$.
 
-    \textcolor{purple!80!black}{\textbf{Attempt 2.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$ and sends $a \gets \alpha + r$ to the verifier. Verifier checks that $h = g^a$.
+    \textcolor{black}{\textbf{Attempt 2.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$ and sends $a \gets \alpha + r$ to the verifier. Verifier checks that $h = g^a$.
 
-    \textcolor{purple!80!black}{\textbf{Attempt 3.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$, calculates $a \gets \alpha + r$ and sends both $(a,r)$ to the verifier. Verifier checks whether~$g^r h = g^a$.
+    \textcolor{black}{\textbf{Attempt 3.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$, calculates $a \gets \alpha + r$ and sends both $(a,r)$ to the verifier. Verifier checks whether~$g^r h = g^a$.
 
-    \textcolor{purple!80!black}{\textbf{Attempt 4.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$, calculates $a \gets g^r, z \gets \alpha+r$ and sends $(a,z)$ to the verifier. Verifier checks whether~$a \cdot h = g^z$.
+    \textcolor{black}{\textbf{Attempt 4.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$, calculates $a \gets g^r, z \gets \alpha+r$ and sends $(a,z)$ to the verifier. Verifier checks whether~$a \cdot h = g^z$.
 
-    \textcolor{purple!80!black}{\textbf{Attempt 5.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$, calculates $a \gets g^r$, and sends $a$ to the verifier. Verifier chooses $e \xleftarrow{R} \mathbb{Z}_q$ and sends to the prover. Prover calculates $z \gets \alpha e + r$ and sends to the prover. Verifier checks whether $a \cdot h^e = g^z$.
+    \textcolor{black}{\textbf{Attempt 5.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$, calculates $a \gets g^r$, and sends $a$ to the verifier. Verifier chooses $e \xleftarrow{R} \mathbb{Z}_q$ and sends to the prover. Prover calculates $z \gets \alpha e + r$ and sends to the prover. Verifier checks whether $a \cdot h^e = g^z$.
 
     Below, mark whether the properties of \textit{completeness}, \textit{soundness}, and \textit{zero-knowledge} hold for each attempt.
 
