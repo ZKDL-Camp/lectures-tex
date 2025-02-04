@@ -523,16 +523,4 @@ Suppose we use the protocol $(\mathcal{P}, \mathcal{V}^*)$ where the ``broken'' 
     \item The prover $\mathcal{P}$ can convince the verifier $\mathcal{V}$ that the statement is true without knowing the witness.
  \end{enumerate}
 
-\textbf{Hint:} View of the participant in the protocol consists of all data he has access to during the protocol execution. 
-% For example, verifier $\mathcal{V}$'s view consists of the messages he sends and receives, as well as the random coins he generates.
-
-\textbf{Exercise 7.} Which of the following is \textbf{not} true about the Fiat-Shamir heuristic?
-\begin{enumerate}[(a)]
-    \item If the public-coin protocol is sound, the Fiat-Shamir transformation preserves the soundness.
-    \item The Fiat-Shamir heuristic does not break the completeness of the public-coin protocol it is applied to.
-    \item Practically, it allows to convert any interactive protocol into a non-interactive one.
-    \item To make Fiat-Shamir transformation pratical, the function modelling the random oracle should be hard to invert.
-    \item It is reasonable to use SHA256 to model the random oracle in the Fiat-Shamir transformation.
-\end{enumerate}
-
 \end{document}
