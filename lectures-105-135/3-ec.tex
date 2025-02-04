@@ -411,59 +411,40 @@ Now, if the curve is ``good'', then the discrete logarithm problem is hard. In f
 
 \subsection*{Exercises}
 
-\vspace{-1mm}
+% \vspace{-1mm}
 
-\subsubsection*{Warmup (Oleksandr in search of perfect field extension)}
+% \subsubsection*{Warmup (Oleksandr in search of perfect field extension)}
 
-\vspace{-1mm}
+% \vspace{-1mm}
 
-\textbf{Exercise 1.} Oleksandr decided to build $\mathbb{F}_{49}$ as \\ $\mathbb{F}_7[i]/(i^2+1)$. Compute $(3+i)(4+i)$. 
-
-\vspace{-3mm}
-
-\begin{multicols}{3}    
-    \begin{enumerate}[a)]
-        \item $6+i$.
-        \item $6$.
-        \item $4+i$.
-        \item $4$.
-        \item $2+4i$.
-    \end{enumerate}
-\end{multicols}
-\vspace{-3mm}
+\exerciseTitle{Exercise 1.}{Oleksandr decided to build $\mathbb{F}_{49}$ as \\ $\mathbb{F}_7[i]/(i^2+1)$. Compute $(3+i)(4+i)$. }
+\vspace{0.5mm}
+\exerciseMulticols{3} {
+    \item $6+i$.
+    \item $6$.
+    \item $4+i$.
+    \item $4$.
+    \item $2+4i$.    
+}
 
 \newpage
 
-\textbf{Exercise 2.} Oleksandr came up with yet another extension $\mathbb{F}_{p^2} = \mathbb{F}_p[i]/(i^2+2)$. He asked interns to calculate $2/i$. Based on five answers given below, help Oleksandr to find the correct one.
+\exerciseTitle{Exercise 2.}{Oleksandr came up with yet another extension $\mathbb{F}_{p^2} = \mathbb{F}_p[i]/(i^2+2)$. He asked interns to calculate $2/i$. Based on five answers given below, help Oleksandr to find the correct one.}
+\exerciseMulticols{3} {
+    \item $1$.
+    \item $p-2$.
+    \item $(p-3)i$.
+    \item $(p-1)i$.
+    \item $p-1$.
+}
 
-\vspace{-3mm}
-
-\begin{multicols}{3}    
-    \begin{enumerate}[a)]
-        \item $1$.
-        \item $p-2$.
-        \item $(p-3)i$.
-        \item $(p-1)i$.
-        \item $p-1$.
-    \end{enumerate}
-\end{multicols}
-
-\vspace{-3mm}
-
-\textbf{Exercise 3*.} After endless tries, Oleksandr has finally found the perfect field extension: $\mathbb{F}_{p^2} := \mathbb{F}_p[v] / (v^2+v+1)$. However, Oleksandr became very frustrated since not for any $p$ this would be a valid field extension. For which of the following values $p$ such construction would \textbf{not} be a valid field extension? Use the fact that equation $\omega^3=1$ over $\mathbb{F}_p$ has non-trivial solutions (meaning, two others except for $\omega=1$) if $p \equiv 1 \pmod{3}$. You can assume that listed numbers are primes.
-
-\vspace{-3mm}
-
-\begin{multicols}{4}    
-    \begin{enumerate}[a)]
-        \item $8431$.
-        \item $9173$.
-        \item $9419$.
-        \item $6947$.
-    \end{enumerate}
-\end{multicols}
-
-\vspace{-3mm}
+\exerciseTitle{Exercise 3*.}{After endless tries, Oleksandr has finally found the perfect field extension: $\mathbb{F}_{p^2} := \mathbb{F}_p[v] / (v^2+v+1)$. However, Oleksandr became very frustrated since not for any $p$ this would be a valid field extension. For which of the following values $p$ such construction would \textbf{not} be a valid field extension? Use the fact that equation $\omega^3=1$ over $\mathbb{F}_p$ has non-trivial solutions (meaning, two others except for $\omega=1$) if $p \equiv 1 \pmod{3}$. You can assume that listed numbers are primes.}
+\exerciseMulticols{4} {
+    \item $8431$.
+    \item $9173$.
+    \item $9419$.
+    \item $6947$.
+}
 
 \begin{tcolorbox}[breakable, colback=blue!5!white,fonttitle=\bfseries,colframe=blue!80!white,title=Exercises 4-9. Tower of Extensions]
     \textit{You are given the passage explaining the topic of tower of extensions. The text has gaps that you need to fill in with the correct statement among the provided choices.}
@@ -473,108 +454,102 @@ Now, if the curve is ``good'', then the discrete logarithm problem is hard. In f
     Now, assume that we represent $\mathbb{F}_{5^4}$ as $\mathbb{F}_{5^2}[j]/(j^2-\xi)$ for $\xi = i+1$. Given such representation, the value of $j^4$ is $\boxed{\textcolor{blue}{\textbf{6}}}$. Finally, given $c_0+c_1j \in \mathbb{F}_{5^4}$ we call $c_0 \in \mathbb{F}_{5^2}$ a \textbf{real part}, while $c_1 \in \mathbb{F}_{5^2}$ an \textbf{imaginary part}. For example, the imaginary part of number $j^3+2i^2\xi$ is $\boxed{\textcolor{blue}{\textbf{7}}}$, while the real part of $(a_0+a_1j)b_1j$ is $\boxed{\textcolor{blue}{\textbf{8}}}$. Similarly to complex numbers, it motivates us to define the number's \textbf{conjugate}: for $z = c_0+c_1j$, define the conjugate as $\overline{z} := c_0-c_1j$. The expression $z\overline{z}$ is then $\boxed{\textcolor{blue}{\textbf{9}}}$.
 \end{tcolorbox}
 
+\vspace{-5mm}
+
 \begin{center}
-    \begin{tabular}{p{2.9cm}p{1.6cm}p{3cm}}
+    \begin{tabular}{p{2.6cm}p{1.9cm}p{3cm}}
         % Exercise 3
-        \textbf{Exercise 4.}
-        \begin{enumerate}[a)]
+        \exerciseTitle{Exercise 4.}{}
+        \exerciseAnswerList {
             \item $\mathbb{F}_5[i]/(i^2+1)$
             \item $\mathbb{F}_5[i]/(i^2+2)$
             \item $\mathbb{F}_5[i]/(i^2+4)$
             \item $\mathbb{F}_5[i]/(i^2+2i+1)$
             \item $\mathbb{F}_5[i]/(i^2+4i+4)$
-        \end{enumerate} &   
-        \textbf{Exercise 5.}
-        \begin{enumerate}[a)]
+        } &   
+        
+        \exerciseTitle{Exercise~5.}{}
+        \exerciseAnswerList {
             \item $1+i$
             \item $1+2i$
             \item $1+4i$
             \item $2+3i$
             \item $3+i$
-        \end{enumerate} &
-        \textbf{Exercise 6.}
-        \begin{enumerate}[a)]
+        } &
+
+        \exerciseTitle{Exercise 6.}{}
+        \exerciseAnswerList {
             \item $4+2i$
             \item $4i$
             \item $1$
             \item $1+2i$
             \item $2+4i$
-        \end{enumerate}
+        }
     \end{tabular}
 \end{center}
 
 \begin{center}
-    \begin{tabular}{p{2.9cm}p{1.6cm}p{3cm}}
-        \textbf{Exercise 7.}
-        \begin{enumerate}[a)]
+    \begin{tabular}{p{2.6cm}p{1.9cm}p{3cm}}
+        \exerciseTitle{Exercise 7.}{}
+        \exerciseAnswerList {
             \item equal to zero.
             \item equal to one.
             \item equal to the real part.
             \item $2(1+i)$
             \item $-4$
-        \end{enumerate} & 
+        } & 
         % Set A but not B
-        \textbf{Exercise 8.}
-        \begin{enumerate}[a)]
+
+        \exerciseTitle{Exercise~8.}{}
+        \exerciseAnswerList {
             \item $a_1b_1$
             \item $a_1b_1\xi$
             \item $a_0b_1$
             \item $a_0b_1\xi$
             \item $a_0a_1$
-        \end{enumerate} & 
-        \textbf{Exercise 9.}
-        \begin{enumerate}[a)]
+        } & 
+        
+        \exerciseTitle{Exercise 9.}{}
+        \exerciseAnswerList {
             \item $c_0^2+c_1^2$
             \item $c_0^2-c_1^2\xi$
             \item $c_0^2+c_1^2\xi^2$
             \item $(c_0^2+c_1^2\xi)j$
             \item $(c_0^2-c_1^2)j$
-        \end{enumerate} 
+        }
     \end{tabular}
 \end{center}
 
-\vspace{-6mm}
+\vspace{-5.5mm}
 
-\subsubsection*{Elliptic Curves}
-\textbf{Exercise 10.} Suppose that elliptic curve is defined as $E/\mathbb{F}_{7}: y^2=x^3+b$. Suppose $(2,3)$ lies on the curve. What is the value of $b$?
+\exerciseTitle{Exercise 10.}{Suppose that elliptic curve is defined as $E/\mathbb{F}_{7}: y^2=x^3+b$. Suppose $(2,3)$ lies on the curve. What is the value of $b$?}
 
-\textbf{Exercise 11.} Sum of which of the following pairs of points on the elliptic curve $E/\mathbb{F}_{11}$ is equal to the point at infinity $\mathcal{O}$ for any valid curve equation?
-\vspace{-3mm}
-\begin{multicols}{2}
-    \begin{enumerate}[a)]
-        \item $P=(2,3),Q=(2,8)$.
-        \item $P=(9,2),Q=(2,8)$.
-        \item $P=(9,9),Q=(5,7)$.
-        \item $P=\mathcal{O},Q=(2,3)$.
-        \item $P=[10]G$, where $G$ is a generator.
-    \end{enumerate}
-\end{multicols}
-\vspace{-3mm}
+\exerciseTitle{Exercise 11.}{Sum of which of the following pairs of points on the elliptic curve $E/\mathbb{F}_{11}$ is equal to the point at infinity $\mathcal{O}$ for any valid curve equation?}
+\exerciseMulticols{2} {
+    \item $P=(2,3),Q=(2,8)$.
+    \item $P=(9,2),Q=(2,8)$.
+    \item $P=(9,9),Q=(5,7)$.
+    \item $P=\mathcal{O},Q=(2,3)$.
+    \item $P=[10]G$, where $G$ is a generator.
+}
 
-\textbf{Exercise 12.} Consider an elliptic curve $E$ over $\mathbb{F}_{167^2}$. Denote by $r$ the order of the group of points on $E$ (that is, $r=|E|$). Which of the following \textbf{can} be the value of $r$?
-\vspace{-3mm}
-\begin{multicols}{3}
-    \begin{enumerate}[a)]
-        \item $167^2 - 5$
-        \item $167^2-1000$
-        \item $167^2+5 \cdot 167$
-        \item $170^2$
-        \item $160^2$
-    \end{enumerate}
-\end{multicols}
-\vspace{-3mm}
+\exerciseTitle{Exercise 12.}{Consider an elliptic curve $E$ over $\mathbb{F}_{167^2}$. Denote by $r$ the order of the group of points on $E$ (that is, $r=|E|$). Which of the following \textbf{can} be the value of $r$?}
+\exerciseMulticols{3} {
+    \item $167^2 - 5$
+    \item $167^2-1000$
+    \item $167^2+5 \cdot 167$
+    \item $170^2$
+    \item $160^2$
+}
 
-\textbf{Exercise 13.} Suppose that for some elliptic curve $E$ the order is $|E| = qr$ where both $q$ and $r$ are prime numbers. Among listed, what is the most optimal complexity of algorithm to solve the discrete logarithm problem on $E$?
-\vspace{-3mm}
-\begin{multicols}{2}
-    \begin{enumerate}[a)]
-        \item $O(qr)$
-        \item $O(\sqrt{qr})$
-        \item $O(\sqrt{\max\{q,r\}})$
-        \item $O(\sqrt{\min\{q,r\}})$
-        \item $O(\max\{q,r\})$
-    \end{enumerate}
-\end{multicols}
-\vspace{-3mm}
+\exerciseTitle{Exercise 13.}{Suppose that for some elliptic curve $E$ the order is $|E| = qr$ where both $q$ and $r$ are prime numbers. Among listed, what is the most optimal complexity of algorithm to solve the discrete logarithm problem on $E$?}
+\vspace{-0.1mm}
+\exerciseMulticols{2} {
+    \item $O(qr)$
+    \item $O(\sqrt{qr})$
+    \item $O(\sqrt{\max\{q,r\}})$
+    \item $O(\sqrt{\min\{q,r\}})$
+    \item $O(\max\{q,r\})$
+}
 
 \end{document}
