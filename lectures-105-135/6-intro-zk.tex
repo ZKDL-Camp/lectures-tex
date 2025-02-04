@@ -4,9 +4,9 @@
 
 \subsection{Motivation}
 
-Finally, we came to the most interesting part of the course: zero-knowledge proofs. Before we start with SNARKs, 
+Finally, we came to the most interesting part of \\ the course: zero-knowledge proofs. Before we start with SNARKs, 
 STARKs, Bulletproofs, and other zero-knowledge proof systems, let us first define what the zero-knowledge is. But even before 
-that, we need to introduce some formalities. For example, what are ``proof'', ``witness'', and ``statement'' --- terms that are so widely used in zero-knowledge proofs.
+that, we need to introduce some formalities. For example, what are ``proof'', ``witness'', and ``statement''~---~terms that are so widely used in zero-knowledge proofs.
 
 Let us describe the typical setup. We have two parties: \textbf{prover} $\mathcal{P}$ and a \textbf{verifier} $\mathcal{V}$. The prover wants to convince the verifier that some statement is true. Typically, the statement is not obvious (well, that is the reason for building proofs after all!) and therefore there might be some ``helper'' data, called \textbf{witness}, that helps the prover to prove the statement. The reasonable question is whether the prover can simply send witness to verifier and call it a day. Of course since you are here, reading this lecture, it is obvious that the answer is no. More specifically, by introducing zk-SNARKs, STARKs, and other proving systems, we will try to mitigate the following issues:
 \begin{itemize}[left=0mm]
@@ -153,15 +153,23 @@ That being said, formally the interaction between prover $\mathcal{P}$ and verif
 
 Now, let us show that the provided protocol is indeed \textbf{complete} and \textbf{sound}.
 
+\vspace{1mm}
+
 \textbf{Completeness.} Suppose the verifier chose $b=0$ and thus the prover has sent $z=r$. The check would be $r^2 \equiv a\times x^{0} \pmod{N}$ which is equivalent to $r^2 \equiv a \pmod{N}$. This obviously holds. 
 
 If, in turn, the verifier chose $b=1$ and the prover sent $rw$, the check would be $(rw)^2 \equiv ax^{1-0} \pmod{N}$ which is equivalent to $r^2w^2 \equiv ax \pmod{N}$. Since $a = r^2 \pmod{N}$ and $x = w^2 \pmod{N}$, this check also obviously holds.
 
+\vspace{01mm}
+
 \textbf{Soundness.} Here, we need to prove that for any dishonest prover who does not know $w$, the verifier will reject the claim with overwhelming probability. One can show the following, which we are not going to prove (yet, this is quite easy to show):
+
+\vspace{-1mm}
 
 \begin{proposition}
     If $x \not\in \mathcal{L}_{\mathcal{R}}$, then for any prover $\mathcal{P}$, the verifier $\mathcal{V}$ will reject the claim with probability at least $1/2$.
 \end{proposition}
+
+\vspace{-1mm}
 
 By making $\lambda$ rounds, the probability of rejection is $\left(\frac{1}{2}\right)^{\lambda} = \mathsf{negl}(\lambda)$ and therefore the verifier can be convinced that $x \in \mathcal{L}_{\mathcal{R}}$ with overwhelming probability of $1-2^{-\lambda}$.
 
@@ -214,7 +222,7 @@ Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended w
 
 \begin{figure}[H]
     \centering
-    \scalebox{0.9}{
+    \scalebox{0.75}{
     \begin{tikzpicture}
         \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
         \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
@@ -368,7 +376,7 @@ In cryptography, one frequently encounters the term \textit{cryptographic oracle
 
 One of the most popular cryptographic oracles is the \textbf{random oracle} $\mathcal{O}_{\text{R}}$. Let us define how the random oracle works.
 
-Suppose someone is inputting $x$ to the random oracle $\mathcal{O}_{\text{R}}$. The oracle $\mathcal{O}_{\text{R}}$ does the following:
+Suppose someone is inputting $x$ to the random oracle~$\mathcal{O}_{\text{R}}$. The oracle $\mathcal{O}_{\text{R}}$ does the following:
 \begin{enumerate}
     \item If $x$ has been queried before, the oracle returns the same value as it returned before.
     \item If $x$ has not been queried before, the oracle returns a randomly uniformly sampled value from the output space.
@@ -449,6 +457,8 @@ Note that the whole process can be done by a prover with no interaction with the
 
 The reason why such transformation works is that the random oracle $\mathcal{O}_{\text{R}}$ is a \textit{random} function. Therefore, the challenges $r_1,r_2,\dots$ are \textit{random} values, and the prover cannot predict them (for example, by fabricating messages to have some specific output). That being said, the following theorem holds (which, of course, we are not going to prove since the proof is complicated).
 
+\vspace{1.5mm}
+
 \begin{theorem}
     Suppose that $(\mathcal{P},\mathcal{V})$ is a public-coin interactive argument of knowledge for some language $\mathcal{L}_{\mathcal{R}}$ with a negligible soundness error. Then, the Fiat-Shamir transformation of $(\mathcal{P}^{\mathcal{O}_{\text{R}}},\mathcal{V}^{\mathcal{O}_{\text{R}}})$ is a non-interactive argument for $\mathcal{L}_{\mathcal{R}}$ with negligible soundness error in the random oracle model $\mathcal{O}_{\text{R}}$.
 \end{theorem}
@@ -510,8 +520,6 @@ Suppose we use the protocol $(\mathcal{P}, \mathcal{V}^*)$ where the ``broken'' 
     \item While cryptographic proof states that witness exists for the given statement, the proof of knowledge makes sure to make this witness unknown to the verifier.
     \item Proof of knowledge does not require verifier to know the statement, while cryptographic proof does.
 }
-
-\newpage
 
 \exerciseTitle{Exercise 5.}{What is the purpose of introducing the extractor?}
 \exerciseAnswerList {
