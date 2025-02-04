@@ -276,7 +276,8 @@ The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
 
 \subsection*{Exercises}
 
-\textbf{Exercise 1.} Alice and Bob were watching a horse race. 
+\exerciseTitle{Exercise 1.}{
+    Alice and Bob were watching a horse race. 
     Confident in his ability to predict the outcome, Alice decided to commit to his prediction. 
     However, in his haste, he forgot to use a blinding factor. 
     Now, Alice is concerned that Bob might discover his prediction before the race ends, 
@@ -287,32 +288,21 @@ The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
     Set of race horse numbers is $(3, 5, 8, 15)$.
     Help Bob to find out the horse number Alice have made a commitment to, 
     if commitment equals $C = 39$.
+}
+\exerciseMulticols{4} {
+    \item $3$.
+    \item $5$.
+    \item $8$.
+    \item $15$.
+}
 
-\vspace{-3mm}
-\begin{multicols}{4}
-    \begin{enumerate}[(a)]
-        \item $3$.
-        \item $5$.
-        \item $8$.
-        \item $15$.
-    \end{enumerate}
-\end{multicols}
-\vspace{-3mm}
-
-\textbf{Exercise 2.} Bob made a setup (points $G$ and $U$) for a Pedersen commitment scheme and commited values $(m, r) = (3, 7)$ to Alice
-by sending him $\mathcal{C} = [3]G + [7]U$. Alice did not verify the setup. Turns out that Bob knows that $U$ = $[6]G$. 
-Bob is planning to send a different message from the one he originally committed to
-to $m_2 = 15$. Which values $(m_2, r_2)$ should he send to Alice at the opening stage?
-\vspace{-3mm}
-\begin{multicols}{4}
-    \begin{enumerate}[(a)]
-        \item $(15, 5)$
-        \item $(15, 7)$
-        \item $(15, 4)$
-        \item $(3, 5)$
-    \end{enumerate}
-\end{multicols}
-\vspace{-3mm}
+\exerciseTitle{Exercise 2.}{Bob made a setup (points $G$ and $U$) for a Pedersen commitment scheme and commited values $(m, r) = (3, 7)$ to Alice by sending him $\mathcal{C} = [3]G + [7]U$. Alice did not verify the setup. Turns out that Bob knows that $U$ = $[6]G$. Bob is planning to send a different message from the one he originally committed to to $m_2 = 15$. Which values $(m_2, r_2)$ should he send to Alice at the opening stage?}
+\exerciseMulticols{4} {
+    \item $(15, 5)$
+    \item $(15, 7)$
+    \item $(15, 4)$
+    \item $(3, 5)$
+}
 
 % \textbf{Exercise 3.} We define a dummy hash function $H(a, b) = (a \cdot 3 + b \cdot 7) \pmod{41}$. You have a Merkle tree built with depth $4$ 
 % using hash function $H$ with root equal $37$. Which inclusion proof is valid for element $3$?
@@ -329,16 +319,12 @@ to $m_2 = 15$. Which values $(m_2, r_2)$ should he send to Alice at the opening 
 %     \item branch: $[4, 17, 13]$, position: $[left, right, left]$
 % \end{enumerate}
 
-\textbf{Exercise 3.} Given a polynomial $p(x) = x^3 - 10x^2 + 31x - 30$, Alice wants to prove that $p(2)=0$. 
-To do that, according to the KZG commitment scheme, he constructs the quotient polynomial $q(x)$ and wants 
-to show that $q(\tau) \cdot (\tau - 2) = p(\tau)$. Assuming Oleksandr has conducted these steps correctly, 
-what value of $q(x)$ has Alice calculated?
-
-\begin{enumerate}[(a)]
+\exerciseTitle{Exercise 3.}{Given a polynomial $p(x) = x^3 - 10x^2 + 31x - 30$, Alice wants to prove that $p(2)=0$. To do that, according to the KZG commitment scheme, he constructs the quotient polynomial $q(x)$ and wants to show that $q(\tau) \cdot (\tau - 2) = p(\tau)$. Assuming Alice has conducted these steps correctly, what value of $q(x)$ has Alice calculated?}
+\exerciseAnswerList {
     \item $q(x) = 2x^2 + 4x - 6$
     \item $q(x) = x^3 - 10x^2 + 30x - 28$
     \item $q(x) = x^2 - 8x + 15$
     \item $q(x) = x^2 + 5x + 18$
-\end{enumerate}
+}
 
 \end{document}
