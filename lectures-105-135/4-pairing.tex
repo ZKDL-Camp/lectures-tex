@@ -270,7 +270,7 @@ Now, one of the motivations to work with the projective form was to unify affine
 
 Well, notice the following observation: all points $(0:\lambda:0)$ always lie on the curve $E_{\mathbb{P}}(\overline{\mathbb{F}}_p)$. Moreover, the map from the projective form to the affine form is ill-defined for such points, since we would need to divide by zero. So, we can naturally make the points $(0:\lambda:0)$ to be the set of points at infinity. This way, we can define the point at infinity as $\mathcal{O} = (0:1:0)$.
 
-Finally, let us summarize what we have observed so~far.
+% Finally, let us summarize what we have observed so~far.
 
 \vspace{-2mm}
 
@@ -290,7 +290,7 @@ Finally, let us summarize what we have observed so~far.
     \vspace{-5mm}
     
     \begin{center}
-        \includegraphics[trim={275 100 225 100}, width=0.35\linewidth, clip]{images/lecture_4/projective_ec.pdf}
+        \includegraphics[trim={275 100 225 100}, width=0.38\linewidth, clip]{images/lecture_4/projective_ec.pdf}
 
         \vspace{-1mm}
         
@@ -320,8 +320,11 @@ In this case, to come back to the affine form, we need to use the map $\phi: (X:
 
 \begin{example}
     Consider the BN254 curve $y^2 = x^3 + 3$ over reals $\mathbb{R}$, again. Its \textit{Jacobian projective form} is given by the equation $Y^2 = X^3 + 3Z^6$, which gives a surface, depicted below.
+    
+    \vspace{-3mm}
+
     \begin{center}
-        \includegraphics[trim={275 140 225 100}, width=0.35\linewidth, clip]{images/lecture_4/projective_ec_jacobian.pdf}
+        \includegraphics[trim={275 140 225 100}, width=0.43\linewidth, clip]{images/lecture_4/projective_ec_jacobian.pdf}
         
         \small{\textbf{Illustration:} BN254 Curve Elliptic Curve in Jacobian Projective Form over $\mathbb{R}$. In \textcolor{black!80}{\textbf{gray}} is the surface, while \textcolor{red}{\textbf{red}} points are the points on the affine curve (lying on the plane $\pi: z=1$).}
     \end{center}
@@ -537,6 +540,8 @@ which is 254-bit long. For that reason, it is natural to define the term \textit
 
     Note that in this case, we do not need to work with $\mathbb{F}_{p^{12}}$ arithmetic, but rather checking the equality in the target group $\mathbb{G}_T$. 
 
+    \vspace{0.5mm}
+
     \textbf{Interesting fact:} this condition is specified in the \texttt{ecpairing} precompile standard used in Ethereum.
 \end{remark}
 
@@ -557,8 +562,8 @@ Suppose we have pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ (
 Let us check the correctness:
 \begin{equation*}
     \begin{aligned}
-        e(\sigma,G_2) = e(\textcolor{blue}{[\mathsf{sk}]}\mathsf{H}(m),G_2) = \\
-        = e(\mathsf{H}(m), \textcolor{blue}{[\mathsf{sk}]}G_2) = e(\mathsf{H}(m), \mathsf{pk})        
+        e(\sigma,G_2) &= e(\textcolor{blue}{[\mathsf{sk}]}\mathsf{H}(m),G_2) \\
+                      &= e(\mathsf{H}(m), \textcolor{blue}{[\mathsf{sk}]}G_2) = e(\mathsf{H}(m), \mathsf{pk})        
     \end{aligned}
 \end{equation*}
 
@@ -618,83 +623,70 @@ This scheme is also quite famous for its aggregation properties, which we are no
 
 \subsection*{Exercises}
 
-\textbf{Exercise 1.} What is \textbf{not} a valid equivalence relation $\sim$ over a set $\mathcal{X}$?
-\begin{enumerate}[(A)]
+\exerciseTitle{Exercise 1.}{What is \textbf{not} a valid equivalence relation $\sim$ over a set $\mathcal{X}$?}
+\exerciseAnswerList {
     \item $a \sim b$ iff $a+b < 0$, $\mathcal{X} = \mathbb{Q}$.
     \item $a\sim b$ iff $a=b$, $\mathcal{X} = \mathbb{R}$.
     \item $a\sim b$ iff $a \equiv b \pmod{5}$, $\mathcal{X} = \mathbb{Z}$.
     \item $a\sim b$ iff the length of $a$ = the length of $b$, $\mathcal{X} = \mathbb{R}^2$.
     \item $(a_1,a_2,a_3)\sim (b_1,b_2,b_3)$ iff $a_3=b_3$, $\mathcal{X} = \mathbb{R}^3$.
-\end{enumerate}
+}
 
-\textbf{Exercise 2.} Suppose that over $\mathbb{R}$ we define the following equivalence relation: $a \sim b$ iff $a-b \in \mathbb{Z}$ ($a,b \in \mathbb{R}$). What is the equivalence class of $1.4$ (that is, $[1.4]_{\sim}$)?
-\begin{enumerate}[(A)]
+\exerciseTitle{Exercise 2.}{Suppose that over $\mathbb{R}$ we define the following equivalence relation: $a \sim b$ iff $a-b \in \mathbb{Z}$ ($a,b \in \mathbb{R}$). What is the equivalence class of $1.4$ (that is, $[1.4]_{\sim}$)?}
+\exerciseAnswerList {
     \item A set of all real numbers.
     \item A set of all integers.
     \item A set of reals $x \in \mathbb{R}$ with the fractional part of $x$ equal to $0.4$.
-    \item A set of reals $x \in \mathbb{R}$ with the integer part of $x$ equal to $1$.
+    \item A set of reals $x \in \mathbb{R}$ with the integer part of $x$ equal to~$1$.
     \item A set of reals $x \in \mathbb{R}$ with the fractional part of $x$ equal to $0.6$.
-\end{enumerate}
+}
 
-\textbf{Exercise 3.} Which of the following pairs of points in homogeneous projective space $\mathbb{P}^2(\mathbb{R})$ are \textbf{not} equivalent?
-\begin{enumerate}[(A)]
+\exerciseTitle{Exercise 3.}{Which of the following pairs of points in homogeneous projective space $\mathbb{P}^2(\mathbb{R})$ are \textbf{not} equivalent?}
+\exerciseAnswerList {
     \item $(1:2:3)$ and $(2:4:6)$.
     \item $(2:3:1)$ and $(6:9:3)$.
     \item $(5:5:5)$ and $(2:2:2)$.
     \item $(4:3:2)$ and $(16:8:4)$.
-\end{enumerate}
+}
 
-\textbf{Exercise 4.} The main reason for using projective coordinates in elliptic curve cryptography is:
-\begin{enumerate}[(A)]
+\exerciseTitle{Exercise 4.}{The main reason for using projective coordinates in elliptic curve cryptography is:}
+\exerciseAnswerList {
     \item To reduce the number of point additions in algorithms involving elliptic curves.
     \item To make the curve more secure against attacks.
     \item To make the curve more efficient in terms of memory usage.
     \item To reduce the number of field multiplications when performing scalar multiplication.
     \item To avoid making too many field inversions in complicated algorithms involving elliptic curves.
-\end{enumerate}
+}
 
-\textbf{Exercise 5.} Suppose $k=19$ is a scalar and we are calculating $[k]P$ using the double-and-add algorithm. How many elliptic curve point addition operations will be performed?
-\begin{multicols}{5}
-    \begin{enumerate}[(A)]
-        \item $0$.
-        \item $1$.
-        \item $2$.
-        \item $3$.
-        \item $4$.
-    \end{enumerate}
-\end{multicols}
+\exerciseTitle{Exercise 5.}{Suppose $k=19$ is a scalar and we are calculating $[k]P$ using the double-and-add algorithm. How many elliptic curve point addition operations will be performed?}
+\exerciseMulticols{5} {
+    \item $0$.
+    \item $1$.
+    \item $2$.
+    \item $3$.
+    \item $4$.
+}
 
-\textbf{Exercise 6.} What is the minimal number of inversions needed to calculate the value of expression (over $\mathbb{F}_p$)
+\exerciseTitle{Exercise 6.}{What is the minimal number of inversions needed to calculate the value of expression (over $\mathbb{F}_p$)}
 \begin{equation*}
     \frac{a-b}{(a+b)^4} + \frac{c}{a+b} + \frac{d}{a^2+c^2},
 \end{equation*}
 for the given scalars $a,b,c,d \in \mathbb{F}_p$?
-\begin{multicols}{5}
-    \begin{enumerate}[(A)]
-        \item $1$.
-        \item $2$.
-        \item $3$.
-        \item $4$.
-        \item $5$.
-    \end{enumerate}
-\end{multicols}
+\exerciseMulticols{5} {
+    \item $1$.
+    \item $2$.
+    \item $3$.
+    \item $4$.
+    \item $5$.
+}
 
-\textbf{Exercise 7.} Given pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ with $G_1$ --- generator of $\mathbb{G}_1$ and $G_2 \in \mathbb{G}_2$ --- generator of $\mathbb{G}_2$, which of the following is \textbf{not} equal to $e([3]G_1, [5]G_2)$?
-\begin{enumerate}[(A)]
+\exerciseTitle{Exercise 7.}{Given pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ with $G_1$ --- generator of $\mathbb{G}_1$ and $G_2 \in \mathbb{G}_2$ --- generator of $\mathbb{G}_2$, which of the following is \textbf{not} equal to $e([3]G_1, [5]G_2)$?}
+\exerciseAnswerList {
     \item $e([5]G_1, [3]G_2)$.
     \item $e([4]G_1, [4]G_2)$.
     \item $e([15]G_1, G_2)$.
     \item $e([3]G_1,G_2)e(G_1,[12]G_2)$.
     \item $e(G_1, G_2)^{15}$.
-\end{enumerate} 
-
-\textbf{Exercise 8*.} \textit{Unit Circle Proof.} Suppose Alice wants to convince Bob that she knows a point on the unit circle $x^2+y^2=1$. Suppose we are given a symmetric pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ for $\mathbb{G}_1=\mathbb{G}_2=\langle G \rangle$ and Alice computes $P \gets [x]G, Q \gets [y]G$. She then proceeds to sending $(P,Q)$ to Bob. Which of the following checks should Bob perform to verify that Alice indeed knows a point on the unit circle?
-\begin{enumerate}[(A)]
-    \item Check if $e(P,Q)e(Q,P)=1$.
-    \item Check if $e([2]P,[2]Q) = e(G,G)$.
-    \item Check if $e([2]P,Q)e(Q,[2]P) = 1$.
-    \item Check if $e(P,P)+e(Q,Q) = 1$.
-    \item Check if $e(P,P)e(Q,Q)=e(G,G)$.
-\end{enumerate}
+}
 
 \end{document}

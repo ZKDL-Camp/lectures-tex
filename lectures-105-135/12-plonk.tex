@@ -145,11 +145,17 @@ You can verify that our claim holds for aforementioned trace matrix:
   &9 \times \textcolor{blue}{1} + 0 \times \textcolor{blue}{0} + 9 \times 0 \times \textcolor{blue}{0} + 8 \times \textcolor{blue}{(-1)} + \textcolor{blue}{(-1)} = 0 
 \end{align*}
 
-Recall that columns of trace matrix $T$ are $ \\ \mathbf{A} = \begin{bmatrix} 2 \\ 6 \\ 9 \end{bmatrix}, \;\mathbf{B} = \begin{bmatrix} 3 \\ 3 \\ \text{\xmark} \end{bmatrix}, \;\mathbf{C} = \begin{bmatrix} 6 \\ 9 \\ 8 \end{bmatrix}$.
+Recall that columns of trace matrix $T$ are
+
+\vspace{-4mm}
+
+\begin{gather*}
+    \mathbf{A} = \begin{bmatrix} 2 \\ 6 \\ 9 \end{bmatrix}, \;\mathbf{B} = \begin{bmatrix} 3 \\ 3 \\ \text{\xmark} \end{bmatrix}, \;\mathbf{C} = \begin{bmatrix} 6 \\ 9 \\ 8 \end{bmatrix}.    
+\end{gather*}
 
 \end{example}
 
-Now, we do have a way of encoding gates separately, yet in order to guarantee how result of one gate is carried in as input of the other (\textit{wirings}), we need another matrix --- $V$.
+Now, we do have a way of encoding gates separately, yet in order to guarantee how result of one gate is carried in as input of the other (\textit{wirings}), we need another matrix~---~$V$.
 
 \begin{definition}
 The \textbf{wiring matrix} $V \in \mathbb{Z}_{\geq 0}^{N \times 3}$ consists of indices of all inputs and intermediate values, so that if $T$ is a valid trace,
@@ -264,6 +270,9 @@ $-1$ & 0 & 0 & 0 & 8 \\
 \hline
 \end{tabular}
 \\
+
+\vspace{2mm}
+
 \quad $V=$
 \begin{tabular}{|c|c|c|}
 \hline
@@ -295,6 +304,9 @@ $-1$ & 0 & 0 & 0 & 8 \\
 \end{center}
 
 As can be seen, besides the original program gate, inscribed in the third row, we have three additional gates:
+
+\newpage
+
 \begin{itemize}
     \item The first two gates ``allocate'' two nodes with indices $0$ and $1$ to the values $3$ and $8$ respectively. This is done through the \emph{constant equality gates}.
     \item The last gate checks whether the result of the third gate is equal to the index $1$, corresponding to the allocated value $8$. This is done through the \emph{nodes equality gate}.
@@ -306,6 +318,8 @@ $Q$ and $V$ of concrete evaluations. In other words, our circuit is now
 ``hardcoded'' to the specific values of public inputs. In order to resolve this,
 we would define a separate one-column matrix named $\boldsymbol{\Pi} \in \mathbb{F}^N$, in which
 we would encode the public inputs.
+
+\vspace{-1mm}
 
 \begin{example}
 With only $Q$ modified, we now have:
@@ -326,6 +340,9 @@ With only $Q$ modified, we now have:
 \hline
 \end{tabular} \hspace{1cm}
 \\
+
+\vspace{1mm}
+
 $Q=$ 
 \begin{tabular}{|c|c|c|c|c|}
 \hline
@@ -342,6 +359,8 @@ $-1$ & 0 & 0 & 0 & 0 \\
 \end{tabular}
 \end{center}
 \end{example}
+
+\vspace{-5mm}
 
 \begin{proposition}[Wrap-up]\label{prop:plonk-conditions}
 The matrix $T$ with columns $\mathbf{A}$, $\mathbf{B}$ and $\mathbf{C} \in \mathbb{F}^N$ encodes correct execution of the program, if the following two conditions hold:
@@ -537,6 +556,8 @@ Similarly to our previous discussion, there should be a polynomial $Z \in
 \mathbb{F}[X]$ such that $\forall d \in \mathcal{D}$, we have $Z(\eta^{0}) = 1$ and
 $Z(d)f(d) = g(d)Z(\eta d)$. This would imply the set equality $A=B$ with
 overwhelming probability according to Schwartz-Zippel lemma.
+
+\vspace{0.5mm}
 
 \textbf{Shorter Form.} Now, using the $3N$-th root of unity is a bit of overkill,
 so let us try compressing it down to $\Omega = \{\omega^j\}_{0 \leq j < N}$

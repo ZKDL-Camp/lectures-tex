@@ -4,9 +4,9 @@
 
 \subsection{Motivation}
 
-Finally, we came to the most interesting part of the course: zero-knowledge proofs. Before we start with SNARKs, 
+Finally, we came to the most interesting part of \\ the course: zero-knowledge proofs. Before we start with SNARKs, 
 STARKs, Bulletproofs, and other zero-knowledge proof systems, let us first define what the zero-knowledge is. But even before 
-that, we need to introduce some formalities. For example, what are ``proof'', ``witness'', and ``statement'' --- terms that are so widely used in zero-knowledge proofs.
+that, we need to introduce some formalities. For example, what are ``proof'', ``witness'', and ``statement''~---~terms that are so widely used in zero-knowledge proofs.
 
 Let us describe the typical setup. We have two parties: \textbf{prover} $\mathcal{P}$ and a \textbf{verifier} $\mathcal{V}$. The prover wants to convince the verifier that some statement is true. Typically, the statement is not obvious (well, that is the reason for building proofs after all!) and therefore there might be some ``helper'' data, called \textbf{witness}, that helps the prover to prove the statement. The reasonable question is whether the prover can simply send witness to verifier and call it a day. Of course since you are here, reading this lecture, it is obvious that the answer is no. More specifically, by introducing zk-SNARKs, STARKs, and other proving systems, we will try to mitigate the following issues:
 \begin{itemize}[left=0mm]
@@ -153,15 +153,23 @@ That being said, formally the interaction between prover $\mathcal{P}$ and verif
 
 Now, let us show that the provided protocol is indeed \textbf{complete} and \textbf{sound}.
 
+\vspace{1mm}
+
 \textbf{Completeness.} Suppose the verifier chose $b=0$ and thus the prover has sent $z=r$. The check would be $r^2 \equiv a\times x^{0} \pmod{N}$ which is equivalent to $r^2 \equiv a \pmod{N}$. This obviously holds. 
 
 If, in turn, the verifier chose $b=1$ and the prover sent $rw$, the check would be $(rw)^2 \equiv ax^{1-0} \pmod{N}$ which is equivalent to $r^2w^2 \equiv ax \pmod{N}$. Since $a = r^2 \pmod{N}$ and $x = w^2 \pmod{N}$, this check also obviously holds.
 
+\vspace{01mm}
+
 \textbf{Soundness.} Here, we need to prove that for any dishonest prover who does not know $w$, the verifier will reject the claim with overwhelming probability. One can show the following, which we are not going to prove (yet, this is quite easy to show):
+
+\vspace{-1mm}
 
 \begin{proposition}
     If $x \not\in \mathcal{L}_{\mathcal{R}}$, then for any prover $\mathcal{P}$, the verifier $\mathcal{V}$ will reject the claim with probability at least $1/2$.
 \end{proposition}
+
+\vspace{-1mm}
 
 By making $\lambda$ rounds, the probability of rejection is $\left(\frac{1}{2}\right)^{\lambda} = \mathsf{negl}(\lambda)$ and therefore the verifier can be convinced that $x \in \mathcal{L}_{\mathcal{R}}$ with overwhelming probability of $1-2^{-\lambda}$.
 
@@ -214,7 +222,7 @@ Suppose that the interaction between $\mathcal{V}$ and $\mathcal{P}$ has ended w
 
 \begin{figure}[H]
     \centering
-    \scalebox{0.9}{
+    \scalebox{0.75}{
     \begin{tikzpicture}
         \node[inner sep=0pt, align=center] (prover) {\includegraphics[width=1.25cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$};
         \node[inner sep=0pt, align=center, right=5cm of prover] (verifier) {\includegraphics[width=1.25cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$};
@@ -368,7 +376,7 @@ In cryptography, one frequently encounters the term \textit{cryptographic oracle
 
 One of the most popular cryptographic oracles is the \textbf{random oracle} $\mathcal{O}_{\text{R}}$. Let us define how the random oracle works.
 
-Suppose someone is inputting $x$ to the random oracle $\mathcal{O}_{\text{R}}$. The oracle $\mathcal{O}_{\text{R}}$ does the following:
+Suppose someone is inputting $x$ to the random oracle~$\mathcal{O}_{\text{R}}$. The oracle $\mathcal{O}_{\text{R}}$ does the following:
 \begin{enumerate}
     \item If $x$ has been queried before, the oracle returns the same value as it returned before.
     \item If $x$ has not been queried before, the oracle returns a randomly uniformly sampled value from the output space.
@@ -449,90 +457,86 @@ Note that the whole process can be done by a prover with no interaction with the
 
 The reason why such transformation works is that the random oracle $\mathcal{O}_{\text{R}}$ is a \textit{random} function. Therefore, the challenges $r_1,r_2,\dots$ are \textit{random} values, and the prover cannot predict them (for example, by fabricating messages to have some specific output). That being said, the following theorem holds (which, of course, we are not going to prove since the proof is complicated).
 
+\vspace{1.5mm}
+
 \begin{theorem}
     Suppose that $(\mathcal{P},\mathcal{V})$ is a public-coin interactive argument of knowledge for some language $\mathcal{L}_{\mathcal{R}}$ with a negligible soundness error. Then, the Fiat-Shamir transformation of $(\mathcal{P}^{\mathcal{O}_{\text{R}}},\mathcal{V}^{\mathcal{O}_{\text{R}}})$ is a non-interactive argument for $\mathcal{L}_{\mathcal{R}}$ with negligible soundness error in the random oracle model $\mathcal{O}_{\text{R}}$.
 \end{theorem}
 
 \subsection*{Exercises}
 
-\textbf{Exercise 1.} When dealing with RSA protocol, one frequently encounters the following relation where $e$ is a prime number and $n \in \mathbb{N}$:
+\vspace{-1mm}
+
+\exerciseTitle{Exercise 1.}{When dealing with RSA protocol, one frequently encounters the following relation where $e$ is a prime number and $n \in \mathbb{N}$:}
+\vspace{-1.5mm}
 \begin{equation*}
     \mathcal{R} = \left\{ (w, x) \in \mathbb{Z}_n^{\times} \times \mathbb{Z}_n^{\times}: w^e = x \right\}
 \end{equation*}
+\vspace{-4.5mm}
 
 Which of the following is the language $\mathcal{L}_{\mathcal{R}}$ that corresponds to the relation $\mathcal{R}$?
-\begin{enumerate}[(A)]
-    \item Integers from $\mathbb{Z}_n^{\times}$ which have a modular root of $e$-th degree.
+\exerciseAnswerList {
+    % \item Integers from $\mathbb{Z}_n^{\times}$ which have a modular root of $e$-th degree.
+    \item Integers from $\mathbb{Z}_n^{\times}$ with a modular root of $e$-th degree.
     \item Integers from $\mathbb{Z}_n^{\times}$ which are divisible by $e$.
     \item Integers $x \in \mathbb{Z}_n^{\times}$ with properly defined expression~$x^e$.
     \item Integers from $\mathbb{Z}_n^{\times}$ which are prime.
     \item Integers from $\mathbb{Z}_n^{\times}$ for which $e$ is a primitive root.
-\end{enumerate}
+}
 
-\textbf{Exercise 2.} Suppose that for some interactive protocol $(\mathcal{P}, \mathcal{V})$ during one round, the probability that the verifier $\mathcal{V}$ accepts a false statement is $1/8$. How many rounds of interaction are needed to guarantee $120$ bits of security? Assume here that $n$ bits of security means that the probability of accepting a false statement is at most~$2^{-n}$.
-\begin{multicols}{3}[]
-    \begin{enumerate}[(A)]
-        \item 30.
-        \item 40.
-        \item 60.
-        \item 90.
-        \item 120.
-    \end{enumerate}
-\end{multicols}
+\exerciseTitle{Exercise 2.}{Suppose that for some interactive protocol $(\mathcal{P}, \mathcal{V})$ during one round, the probability that the verifier $\mathcal{V}$ accepts a false statement is $1/8$. How many rounds of interaction are needed to guarantee $120$ bits of security? Assume here that $n$ bits of security means that the probability of accepting a false statement is at most~$2^{-n}$.}
+% \vspace{-3mm}
+\exerciseMulticols{5} {
+    \item 30.
+    \item 40.
+    \item 60.
+    \item 90.
+    \item 120.
+}
 
-\textbf{Exercise 3.} Recall that for relation $\mathcal{R} = \{(w,x) \in \mathbb{Z}_N^{\times} \times \mathbb{Z}_N^{\times}: x = w^2\}$ we defined the following interactive protocol $(\mathcal{P}, \mathcal{V})$ to prove that $x \in \mathcal{L}_{\mathcal{R}}$:
-\begin{itemize}
+% \newpage
+
+\exerciseTitle{Exercise 3.}{Recall that for relation $\mathcal{R} = \{(w,x) \in \mathbb{Z}_N^{\times} \times \mathbb{Z}_N^{\times}: x = w^2\}$ we defined the following interactive protocol $(\mathcal{P}, \mathcal{V})$ to prove that $x \in \mathcal{L}_{\mathcal{R}}$:}
+\exerciseAnswerList {
     \item $\mathcal{P}$ samples $r \xleftarrow{R} \mathbb{Z}_N^{\times}$ and sends $a = r^2$ to $\mathcal{V}$.
     \item $\mathcal{V}$ sends a random bit $b \in \{0,1\}$ to $\mathcal{P}$.
     \item $\mathcal{P}$ sends $z = r \cdot w^b$ to $\mathcal{V}$.
     \item $\mathcal{V}$ accepts if $z^2 = a \cdot x^b$, otherwise it rejects.
-\end{itemize}
+}
 
 Suppose we use the protocol $(\mathcal{P}, \mathcal{V}^*)$ where the ``broken'' verifier $\mathcal{V}^*$ always outputs $b=1$. Which of the following statements is true?
-\begin{enumerate}[(A)]
+\exerciseAnswerList {
     \item Both the soundness and completeness of the protocol are preserved.
     \item The soundness of the protocol is preserved, but the completeness is broken.
     \item The completeness of the protocol is preserved, but the soundness is broken.
     \item Both the soundness and completeness of the protocol are broken.
-\end{enumerate}
+}
 
-\textbf{Exercise 4.} What is the difference between the cryptographic proof and the proof of knowledge?
-\begin{enumerate}[(A)]
+\exerciseTitle{Exercise 4.}{What is the difference between the cryptographic proof and the proof of knowledge?}
+\exerciseAnswerList {
     \item Cryptographic proof is a proof of knowledge that is secure against malicious verifiers.
     \item Cryptographic proof is a proof of knowledge that is secure against malicious provers.
     \item Cryptographic proof merely states the correctness of a statement, while the proof of knowledge also guarantees that the prover knows the witness.
     \item While cryptographic proof states that witness exists for the given statement, the proof of knowledge makes sure to make this witness unknown to the verifier.
     \item Proof of knowledge does not require verifier to know the statement, while cryptographic proof does.
-\end{enumerate}
+}
 
-\textbf{Exercise 5.} What is the purpose of introducing the extractor?
-\begin{enumerate}[(A)]
+\exerciseTitle{Exercise 5.}{What is the purpose of introducing the extractor?}
+\exerciseAnswerList {
     \item To introduce the algorithm that simulates the malicious verifier trying to extract the witness from the prover.
     \item To define what it means that the prover knows the witness.
     \item To give the verifier the ability to extract the witness from the prover during the interactive protocol.
     \item To define the security of the interactive protocol that uses a more powerful verifier that can extract additional information from the prover.
     \item To give prover more power to extract randomness generated by the verifier.
-\end{enumerate}
+}
 
-\textbf{Exercise 6.} What it means that the interactive protocol $(\mathcal{P}, \mathcal{V})$ is a zero-knowledge?
-\begin{enumerate}[(A)]
+\exerciseTitle{Exercise 6.}{What it means that the interactive protocol $(\mathcal{P}, \mathcal{V})$ is a zero-knowledge?}
+\exerciseAnswerList {
     \item The verifier $\mathcal{V}$ cannot know whether the given statement is true or false.
     \item The verifier $\mathcal{V}$ cannot know whether the prover $\mathcal{P}$ knows the witness.
     \item View of the prover $\mathcal{P}$ in the protocol is indistinguishable from the view of the verifier $\mathcal{V}$.
     \item Any view of any verifier $\mathcal{V}$ can be simulated using some polynomial-time algorithm, outputting computationally indistinguishable distribution from the given view.
     \item The prover $\mathcal{P}$ can convince the verifier $\mathcal{V}$ that the statement is true without knowing the witness.
- \end{enumerate}
-
-\textbf{Hint:} View of the participant in the protocol consists of all data he has access to during the protocol execution. 
-% For example, verifier $\mathcal{V}$'s view consists of the messages he sends and receives, as well as the random coins he generates.
-
-\textbf{Exercise 7.} Which of the following is \textbf{not} true about the Fiat-Shamir heuristic?
-\begin{enumerate}[(A)]
-    \item If the public-coin protocol is sound, the Fiat-Shamir transformation preserves the soundness.
-    \item The Fiat-Shamir heuristic does not break the completeness of the public-coin protocol it is applied to.
-    \item Practically, it allows to convert any interactive protocol into a non-interactive one.
-    \item To make Fiat-Shamir transformation pratical, the function modelling the random oracle should be hard to invert.
-    \item It is reasonable to use SHA256 to model the random oracle in the Fiat-Shamir transformation.
-\end{enumerate}
+}
 
 \end{document}

@@ -38,7 +38,7 @@ The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \i
 
 \begin{figure}[H]
     \begin{center}
-\scalebox{0.4}{
+\scalebox{0.5}{
 \begin{tabular}{cc}
     % Set A and B
     \begin{tikzpicture}
@@ -81,9 +81,11 @@ The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \i
 \label{fig:venn_diagrams}
 \end{figure}
 
+\vspace{-2mm}
+
 \subsubsection{Logic}
 
-Statement beginning with $\forall$ means ``for all...''. For instance, $(\forall a \in A \subset \mathbb{R}): \{a < 1\}$ is read as: ``For any $a$ in set $A$ (which is a subset of real numbers), it is true that $a<1$''. Or, more shortly, ``Any (real) $a$ from $A$ is less than $1$''.
+Statement beginning with $\forall$ means ``for all...''. For instance, $(\forall a \in A \subset \mathbb{R}): \{a < 1\}$ is read as: ``For any $a$ in set $A$ (which is a subset of real numbers), it is true that $a<1$''. More shortly, ``Any (real) $a$ from $A$ is less than~$1$''.
 
 Statement beginning from $\exists$ means ``there exists such...''. Let us consider the following example: $(\exists \varepsilon > 0) (\forall a \in A): \{a > \varepsilon\}$ is read as ``there exists such a positive $\varepsilon$ such that for any element $a$ from $A$, $a$ is greater than $\varepsilon$'', or, more concisely, ``there exists a positive constant $\varepsilon$ such that any element from $A$ is greater than $\varepsilon$''.
 
@@ -103,7 +105,6 @@ Fix some set $A$. To denote that we are uniformly randomly picking some element 
 
 To denote the infinite sequence $\{x_1,x_2,x_3,\dots\}$ we write $\{x_n\}_{n \in \mathbb{N}}$. 
 To denote the finite sequence $\{x_1,\dots,x_n\}$ we write $\{x_k\}_{k=1}^n$. 
-
 Vector is ordered list of elements $\mathbf{x} = (x_1, \dots ,x_n) \in A^n$. The scalar product\footnote{It is totally normal if you do not know what that is, we will explain more in the Bulletproof lecture} is denoted usually 
 as $\langle \mathbf{x}, \mathbf{y} \rangle := \sum_{k=1}^n x_ky_k$.
 
@@ -317,6 +318,8 @@ we have a group $\mathbb{G}$ and $g \in \mathbb{G}$. Then, $g^n$ means multiplyi
 Finally, we will define the concept of isomorphisms and endomorphisms. These are important concepts in the world of cryptography, since they allow us to compare different groups. Namely, 
 suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is there any way to state that these two groups are the same? The answer is yes, and this is done via isomorphisms.
 
+\vspace{-1mm}
+
 \begin{definition}
     A function $\varphi: \mathbb{G} \to \mathbb{H}$ is called an \textbf{homomorphism} if it is a function that preserves the group operation, that is, 
     \begin{equation*}
@@ -324,13 +327,19 @@ suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is t
     \end{equation*}
 \end{definition}
 
+\vspace{-4mm}
+
 \begin{definition}
     An \textbf{isomorphism} is a bijective homomorphism.
 \end{definition}
 
+\vspace{-4mm}
+
 \begin{definition}
     If there exists an isomorphism between two groups $\mathbb{G}$ and $\mathbb{H}$, we say that these groups are isomorphic and write $\mathbb{G} \cong \mathbb{H}$.
 \end{definition}
+
+\vspace{-4mm}
 
 \begin{example}
     Consider the group of integers $(\mathbb{Z},+)$ and the group of integers modulo $12$ $(\mathbb{Z}_{12},+)$. The function $\varphi: \mathbb{Z} \to \mathbb{Z}_{12}$ defined as $\varphi(x) = x \;\text{mod}\; 12$ is a homomorphism. Indeed:
@@ -479,7 +488,6 @@ Finite fields is the core object in cryptography. Instead of real numbers or pur
         \item $14^{-1} = 11$ since $14 \cdot 11 = 154 \equiv 1 \pmod{17}$.
     \end{enumerate}
 \end{example}
-
 
 \subsection{Polynomials}\label{section:polynomials}
 
@@ -639,6 +647,9 @@ in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the po
         \end{cases},
     \end{equation*}
     where $\delta_{ij}$ is the Kronecker delta. Moreover, $\{\ell_i\}_{i=1}^n$ form a basis of $\mathbb{F}^{(\leq n)}[x]$: for any polynomial $p(x) \in \mathbb{F}^{(\leq n)}[x]$ there exist unique coefficients $\alpha_0,\dots,\alpha_n \in \mathbb{F}$ such that
+    
+    \vspace{-3.5mm}
+    
     \begin{equation*}
         p(x) = \sum_{i=0}^{n} \alpha_i \ell_i(x).
     \end{equation*}
@@ -646,6 +657,8 @@ in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the po
 
 \begin{example}
     Suppose we have points $(0,1)$ and $(1,2)$. Then, the Lagrange interpolation polynomial is
+    
+    \vspace{-3.5mm}
     \begin{equation*}
         L(x) = 1 \cdot \frac{x-1}{0-1} + 2 \cdot \frac{x-0}{1-0} = (-1) \cdot (x-1) + 2 \cdot x = x + 1
     \end{equation*}
@@ -657,7 +670,7 @@ Shamir's Secret Sharing, also known as $(t,n)$-threshold scheme, is one of the p
 
 But first, let us define what secret sharing is. Suppose we have a secret data $\alpha$, which is represented as an element from some finite set $F$. We divide this secret into $n$ pieces $\alpha_1,\dots,\alpha_n \in F$ in such a way:
 \begin{enumerate}
-    \item Knowledge of any $t$ shares can reconstruct the secret $\alpha$.
+    \item Knowledge of any $t$ shares can reconstruct the secret~$\alpha$.
     \item Knowledge of any number of shares below $t$ cannot be used to reconstruct the secret $\alpha$.
 \end{enumerate}
 
@@ -694,7 +707,7 @@ The intuition behind the Shamir's protocol is illustrated in Figure~\ref{fig:sha
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/lecture_1/shamir_demo.pdf}
+    \includegraphics[width=0.55\textwidth]{images/lecture_1/shamir_demo.pdf}
     \caption{Suppose we have $t=3$. Having only 2 points means knowing two \textcolor{blue}{blue} points without knowing the \textcolor{red}{red} one. There are infinitely many quadratic polynomials passing through these two points (\textcolor{gray}{gray dashed} lines). However, knowing the third \textcolor{red}{red} point allows us to uniquely determine the polynomial and thus get its value at $0$. Note that this is illustrated over $\mathbb{R}$, but for $\mathbb{F}_q$ the logic is similar.}
     \label{fig:shamir}
 \end{figure}
@@ -724,6 +737,8 @@ pub trait Group: Sized {
 }
 \end{lstlisting}
 
+\vspace{-3.5mm}
+
 \textbf{Checking group validity.} Now observer the following: we get closure for free, since the compiler will check whether the return type of the operation is the same as the type of the group. 
 However, there is no guarantee that associativity holds, and our identity element is at all valid. For that reason, we need to somehow additionally check the
 validity of implementation.
@@ -735,7 +750,11 @@ We propose to do the following: we will randomly sample three elements from the 
     \item $a \oplus (\ominus a) \xlongequal{?} (\ominus a) \oplus a \xlongequal{?} e$.
 \end{enumerate}
 
+\vspace{0.5mm}
+
 Additionally, if we want to verify whether the group is abelian, we can check whether $a \oplus b \xlongequal{?} b \oplus a$. 
+
+\vspace{0.5mm}
 
 For that reason, for the check, we require the group to be samplable (i.e. we can randomly sample elements from the group):
 \begin{lstlisting}[language=Rust]
@@ -912,6 +931,7 @@ impl Samplable for Rotation3<f32> {
     }
 }
 \end{lstlisting}
+\newpage
 
 Here, there are two tricky moments:
 \begin{enumerate}
@@ -921,127 +941,62 @@ Here, there are two tricky moments:
 
 \subsection*{Exercises}
 
-\textbf{Exercise 1.} Which of the following statements is \textbf{false}?
-\begin{enumerate}
+\exerciseTitle{Exercise 1.}{Which of the following statements is \textbf{false}?}
+\exerciseAnswerList {
     \item $(\forall a, b \in \mathbb{Q}, a \neq b) \; (\exists q \in \mathbb{R}): \{a < q < b\}$.
     \item $(\forall \varepsilon > 0) \, (\exists n_{\varepsilon} \in \mathbb{N}) \, (\forall n \geq n_{\varepsilon}): \{1/n < \varepsilon\}$.
     \item $(\forall k \in \mathbb{Z}) \; (\exists n \in \mathbb{N}): \{n < k\}$.
     \item $(\forall x \in \mathbb{Z} \setminus \{-1\}) \; (\exists! y \in \mathbb{Q}): \{(x+1)y = 2\}$.
-\end{enumerate}
+}
 
-\newpage
-
-\textbf{Exercise 2.} Denote $X := \{(x,y) \in \mathbb{Q}^2: xy = 1\}$. Oleksandr claims the following:
-\begin{enumerate}
+\exerciseTitle{Exercise 2.}{Denote $X := \{(x,y) \in \mathbb{Q}^2: xy = 1\}$. Oleksandr claims the following:}
+\exerciseAnswerList {
     \item $X \cap \mathbb{N}^2 = \{(1,1)\}$. 
     \item $|X \cap \mathbb{Z}^2| = 2|X \cap \mathbb{N}^2|$.
     \item $X$ is a group under the operation $(x_1,y_1) \oplus (x_2,y_2) = (x_1x_2, y_1y_2)$.
-\end{enumerate}
-
-Which statements are \textbf{true}?
-\vspace{-4mm}
-\begin{multicols}{2}    
-    \begin{enumerate}[a)]
+}
+\vspace{-0.5mm}
+\exerciseTitle{}{Which statements are \textbf{true}?}
+\exerciseMulticols{2} {
         \item Only 1.
         \item Only 1 and 2.
         \item Only 1 and 3.
         \item Only 2 and 3.
-        \item All statements are correct.
-    \end{enumerate}
-\end{multicols}
-\vspace{-4mm}
+        \item All true.
+}
 
-\textbf{Exercise 3.} Does a tuple $(\mathbb{Z},\oplus)$ with operation $a \oplus b = a + b - 1$ define a group?
-\begin{enumerate}[a)]
+\exerciseTitle{Exercise 3.}{Does a tuple $(\mathbb{Z},\oplus)$ with operation $a \oplus b = a + b - 1$ define a group?}
+\exerciseAnswerList {
     \item Yes, and this group is abelian.
     \item Yes, but this group is not abelian.
     \item No, since the associativity property does not hold.
     \item No, since there is no identity element in this group.
     \item No, since there is no inverse element in this group.
-\end{enumerate}
+}
 
-\textbf{Exercise 4.} Consider the Cartesian plane $\mathbb{R}^2$, where two coordinates are real numbers. For two points $A,B$ define the operation $\oplus$
+\exerciseTitle{Exercise 4.}{Consider the Cartesian plane $\mathbb{R}^2$, where two coordinates are real numbers. For two points $A,B$ define the operation $\oplus$}
 as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \oplus)$ define a group? 
-\begin{enumerate}[a)]
+\exerciseAnswerList {
     \item Yes, and this group is abelian.
     \item Yes, but this group is not abelian.
     \item No, since the associativity property does not hold and there is no identity element in this group.
     \item No, since the associativity property does not hold, but we might define an identity element nonetheless.
-\end{enumerate}
+}
 
-\newpage
+\exerciseTitle{Exercise 5.}{Find the inverse of $4$ in $\mathbb{F}_{11}$.}
+\exerciseMulticols{4} {
+    \item 8
+    \item 5
+    \item 3
+    \item 7
+}
 
-\textbf{Exercise 5.} Find the inverse of $4$ in $\mathbb{F}_{11}$.
-\vspace{-3mm}
-\begin{multicols}{4}    
-    \begin{enumerate}[a)]
-        \item 8
-        \item 5
-        \item 3
-        \item 7
-    \end{enumerate}
-\end{multicols}
-\vspace{-3mm}
-
-\textbf{Exercise 6.} Suppose for three polynomials $p,q,r \in \mathbb{F}[x]$ we have $\deg p = 3, \deg q = 4, \deg r = 5$. Which of the following is true for $n := \deg \{(p-q)r\}$?
-\begin{enumerate}[a)]
+\exerciseTitle{Exercise 6.}{Suppose for three polynomials $p,q,r \in \mathbb{F}[x]$ we have $\deg p = 3, \deg q = 4, \deg r = 5$. Which of the following is true for $n := \deg \{(p-q)r\}$?}
+\exerciseAnswerList {
     \item $n = 9$.
     \item $n$ might be less than $9$.
     \item $n = 20$.
-    \item $n$ is less than $\deg \{qr\}$. 
-\end{enumerate}
-
-\textbf{Exercise 7.} Define the polynomial over $\mathbb{F}_5$: $f(x) := 4x^2 + 7$. Which of the following is the root of $f(x)$?
-\begin{multicols}{2}
-    \begin{enumerate}[a)]
-        \item $2$
-        \item $3$
-        \item $4$
-        \item No roots.
-    \end{enumerate}
-\end{multicols}
-
-\textbf{Exercise 8.} Quadratic polynomial $p(x) = ax^2+bx+c \in \mathbb{R}[x]$ has zeros at $1$ and $2$ and $p(0) = 2$. Find the value of $a+b+c$.
-\begin{multicols}{2}
-    \begin{enumerate}[a)]
-        \item $0$
-        \item $-1$
-        \item $1$
-        \item Not enough info.
-    \end{enumerate}
-\end{multicols}
-
-\textbf{Exercise 9.} Which of the following is a \textbf{valid} endomorphism $f: X \to X$? 
-\begin{enumerate}[a)]
-    \item $X = [0,1]$, $f: x \mapsto x^2$.
-    \item $X = [0,1]$, $f: x \mapsto x + 1$.
-    \item $X = \mathbb{R}_{>0}$, $f: x \mapsto (x-1)^3$.
-    \item $X = \mathbb{Q}_{>0}$, $f: x \mapsto \sqrt{x}$.
-\end{enumerate}
-
-\newpage
-\textbf{Exercise 10*.} Denote by $\text{GL}(2,\mathbb{R})$ a set of $2\times 2$ invertable matrices with real entries. Define two functions $\varphi: \text{GL}(2,\mathbb{R}) \to \mathbb{R}$:
-\begin{equation*}
-    \varphi_1 \left(\begin{bmatrix}
-        a & b \\ c & d
-    \end{bmatrix}\right) = ad - bc, \; \varphi_2 \left(\begin{bmatrix}
-        a & b \\ c & d
-    \end{bmatrix}\right) = a + d
-\end{equation*}
-
-Den claims the following:
-\begin{enumerate}
-    \item $\varphi_1$ is a group homomorphism between multiplicative groups $(\text{GL}(2,\mathbb{R}), \times)$ and $(\mathbb{R}, \times)$.
-    \item $\varphi_2$ is a group homomorphism between additive groups $(\text{GL}(2, \mathbb{R}), +)$ and $(\mathbb{R}, +)$.
-\end{enumerate}
-
-Which of the following is \textbf{true}?
-
-\begin{enumerate}[a)]
-    \item Only statement 1 is correct.
-    \item Only statement 2 is correct.
-    \item Both statements 1 and 2 are correct.
-    \item None of the statements is correct.
-\end{enumerate}
+    \item $n$ is less than $\deg \{qr\}$.
+}
 
 \end{document}

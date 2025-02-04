@@ -196,6 +196,35 @@
 
 \newcommand{\Circ}{\textit{\texttt{C}}}
 
+% --- Set default params --- 
+% Set default left margin for all enumerate lists
+% \setlist[enumerate, 1]{left=0mm}  % Level 1 enumerate lists
+
+% --- Exercise keywords ---
+\newcommand{\exerciseTitle}[2]{
+  \vspace{1mm}
+
+  \textbf{#1} #2
+}
+
+\newcommand{\exerciseAnswerList}[1]{
+  \begin{enumerate}[a),left=0mm]
+    #1
+  \end{enumerate}
+}
+
+\newcommand{\exerciseMulticols}[2]{
+  \vspace{-3.5mm}
+  
+  \begin{multicols}{#1}
+    \begin{enumerate}[a),left=0mm]
+      #2
+    \end{enumerate}
+  \end{multicols}
+  
+  \vspace{-3.5mm}
+}
+
 % --- Theorem keywords ---
 \newtheoremstyle{mystyle}{}{}{}{}{\sffamily\bfseries}{.}{ }{}
 \newtheoremstyle{cstyle}{}{}{}{}{\sffamily\bfseries}{.}{ }{\thmnote{#3}}
