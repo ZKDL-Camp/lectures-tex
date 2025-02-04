@@ -203,6 +203,24 @@
   \textbf{#1} #2
 }
 
+\newcommand{\exerciseAnswerList}[1]{
+  \begin{enumerate}[a)]
+    #1
+  \end{enumerate}
+}
+
+\newcommand{\exerciseMulticols}[2]{
+  \vspace{-3.5mm}
+  
+  \begin{multicols}{#1}
+    \begin{enumerate}[a)]
+      #2
+    \end{enumerate}
+  \end{multicols}
+  
+  \vspace{-3.5mm}
+}
+
 % --- Theorem keywords ---
 \newtheoremstyle{mystyle}{}{}{}{}{\sffamily\bfseries}{.}{ }{}
 \newtheoremstyle{cstyle}{}{}{}{}{\sffamily\bfseries}{.}{ }{\thmnote{#3}}

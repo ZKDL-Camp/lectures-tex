@@ -656,7 +656,7 @@ Shamir's Secret Sharing, also known as $(t,n)$-threshold scheme, is one of the p
 
 But first, let us define what secret sharing is. Suppose we have a secret data $\alpha$, which is represented as an element from some finite set $F$. We divide this secret into $n$ pieces $\alpha_1,\dots,\alpha_n \in F$ in such a way:
 \begin{enumerate}
-    \item Knowledge of any $t$ shares can reconstruct the secret $\alpha$.
+    \item Knowledge of any $t$ shares can reconstruct the secret~$\alpha$.
     \item Knowledge of any number of shares below $t$ cannot be used to reconstruct the secret $\alpha$.
 \end{enumerate}
 
@@ -921,105 +921,89 @@ Here, there are two tricky moments:
 \subsection*{Exercises}
 
 \exerciseTitle{Exercise 1.}{Which of the following statements is \textbf{false}?}
-\begin{enumerate}
+\exerciseAnswerList {
     \item $(\forall a, b \in \mathbb{Q}, a \neq b) \; (\exists q \in \mathbb{R}): \{a < q < b\}$.
     \item $(\forall \varepsilon > 0) \, (\exists n_{\varepsilon} \in \mathbb{N}) \, (\forall n \geq n_{\varepsilon}): \{1/n < \varepsilon\}$.
     \item $(\forall k \in \mathbb{Z}) \; (\exists n \in \mathbb{N}): \{n < k\}$.
     \item $(\forall x \in \mathbb{Z} \setminus \{-1\}) \; (\exists! y \in \mathbb{Q}): \{(x+1)y = 2\}$.
-\end{enumerate}
+}
 
 \newpage
 
 \exerciseTitle{Exercise 2.}{Denote $X := \{(x,y) \in \mathbb{Q}^2: xy = 1\}$. Oleksandr claims the following:}
-\begin{enumerate}
+\exerciseAnswerList {
     \item $X \cap \mathbb{N}^2 = \{(1,1)\}$. 
     \item $|X \cap \mathbb{Z}^2| = 2|X \cap \mathbb{N}^2|$.
     \item $X$ is a group under the operation $(x_1,y_1) \oplus (x_2,y_2) = (x_1x_2, y_1y_2)$.
-\end{enumerate}
-
+}
+\vspace{-0.5mm}
 \exerciseTitle{}{Which statements are \textbf{true}?}
-\vspace{-3mm}
-\begin{multicols}{2}    
-    \begin{enumerate}[a)]
+\exerciseMulticols{2} {
         \item Only 1.
         \item Only 1 and 2.
         \item Only 1 and 3.
         \item Only 2 and 3.
         \item All true.
-    \end{enumerate}
-\end{multicols}
-\vspace{-3mm}
+}
 
 \exerciseTitle{Exercise 3.}{Does a tuple $(\mathbb{Z},\oplus)$ with operation $a \oplus b = a + b - 1$ define a group?}
-\begin{enumerate}[a)]
+\exerciseAnswerList {
     \item Yes, and this group is abelian.
     \item Yes, but this group is not abelian.
     \item No, since the associativity property does not hold.
     \item No, since there is no identity element in this group.
     \item No, since there is no inverse element in this group.
-\end{enumerate}
+}
 
 \exerciseTitle{Exercise 4.}{Consider the Cartesian plane $\mathbb{R}^2$, where two coordinates are real numbers. For two points $A,B$ define the operation $\oplus$}
 as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \oplus)$ define a group? 
-\begin{enumerate}[a)]
+\exerciseAnswerList {
     \item Yes, and this group is abelian.
     \item Yes, but this group is not abelian.
     \item No, since the associativity property does not hold and there is no identity element in this group.
     \item No, since the associativity property does not hold, but we might define an identity element nonetheless.
-\end{enumerate}
+}
 
 \newpage
 
 \exerciseTitle{Exercise 5.}{Find the inverse of $4$ in $\mathbb{F}_{11}$.}
-\vspace{-3mm}
-\begin{multicols}{4}    
-    \begin{enumerate}[a)]
-        \item 8
-        \item 5
-        \item 3
-        \item 7
-    \end{enumerate}
-\end{multicols}
-\vspace{-3mm}
+\exerciseMulticols{4} {
+    \item 8
+    \item 5
+    \item 3
+    \item 7
+}
 
 \exerciseTitle{Exercise 6.}{Suppose for three polynomials $p,q,r \in \mathbb{F}[x]$ we have $\deg p = 3, \deg q = 4, \deg r = 5$. Which of the following is true for $n := \deg \{(p-q)r\}$?}
-\begin{enumerate}[a)]
+\exerciseAnswerList {
     \item $n = 9$.
     \item $n$ might be less than $9$.
     \item $n = 20$.
-    \item $n$ is less than $\deg \{qr\}$. 
-\end{enumerate}
+    \item $n$ is less than $\deg \{qr\}$.
+}
 
 \exerciseTitle{Exercise 7.}{Define the polynomial over $\mathbb{F}_5$: $f(x) := 4x^2 + 7$. Which of the following is the root of $f(x)$?}
-\vspace{-3mm}
-\begin{multicols}{2}
-    \begin{enumerate}[a)]
-        \item $2$
-        \item $3$
-        \item $4$
-        \item No roots.
-    \end{enumerate}
-\end{multicols}
-\vspace{-3mm}
+\exerciseMulticols{2} {
+    \item $2$
+    \item $3$
+    \item $4$
+    \item No roots.
+}
 
 \exerciseTitle{Exercise 8.}{Quadratic polynomial $p(x) = ax^2+bx+c \in \mathbb{R}[x]$ has zeros at $1$ and $2$ and $p(0) = 2$. Find the value of $a+b+c$.}
-\vspace{-3mm}
-\begin{multicols}{2}
-    \begin{enumerate}[a)]
-        \item $0$
-        \item $-1$
-        \item $1$
-        \item Not enough info.
-    \end{enumerate}
-\end{multicols}
-\vspace{-3mm}
+\exerciseMulticols{2} {
+    \item $0$
+    \item $-1$
+    \item $1$
+    \item Not enough info.
+}
 
 \exerciseTitle{Exercise 9.}{Which of the following is a \textbf{valid} endomorphism $f: X \to X$?}
-\begin{enumerate}[a)]
+\exerciseAnswerList {
     \item $X = [0,1]$, $f: x \mapsto x^2$.
     \item $X = [0,1]$, $f: x \mapsto x + 1$.
     \item $X = \mathbb{R}_{>0}$, $f: x \mapsto (x-1)^3$.
     \item $X = \mathbb{Q}_{>0}$, $f: x \mapsto \sqrt{x}$.
-\end{enumerate}
+}
 
 \end{document}
