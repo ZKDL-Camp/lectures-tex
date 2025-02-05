@@ -301,3 +301,10 @@ TSWLatexianTemp*
 
 # Idea meta
 .idea/*
+
+# temp .pdf files
+/lectures/*.pdf
+/lectures-105-135/*.pdf
+
+lecture-notes-148x210.pdf
+lecture-notes-105x135-nohead.pdf
