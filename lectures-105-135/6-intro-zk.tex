@@ -4,9 +4,12 @@
 
 \subsection{Motivation}
 
-Finally, we came to the most interesting part of \\ the course: zero-knowledge proofs. Before we start with SNARKs, 
-STARKs, Bulletproofs, and other zero-knowledge proof systems, let us first define what the zero-knowledge is. But even before 
-that, we need to introduce some formalities. For example, what are ``proof'', ``witness'', and ``statement''~---~terms that are so widely used in zero-knowledge proofs.
+We have finally reached the most interesting part of the course: zero-knowledge proofs. 
+Before diving into SNARKs, STARKs, Bulletproofs, and other systems,
+let us first define what the zero-knowledge is. 
+But even before that, we need to introduce some formalities. For example,
+what are ``proof'', ``witness'', and ``statement''~---~terms that are so widely used 
+in zero-knowledge proofs.
 
 Let us describe the typical setup. We have two parties: \textbf{prover} $\mathcal{P}$ and a \textbf{verifier} $\mathcal{V}$. The prover wants to convince the verifier that some statement is true. Typically, the statement is not obvious (well, that is the reason for building proofs after all!) and therefore there might be some ``helper'' data, called \textbf{witness}, that helps the prover to prove the statement. The reasonable question is whether the prover can simply send witness to verifier and call it a day. Of course since you are here, reading this lecture, it is obvious that the answer is no. More specifically, by introducing zk-SNARKs, STARKs, and other proving systems, we will try to mitigate the following issues:
 \begin{itemize}[left=0mm]
