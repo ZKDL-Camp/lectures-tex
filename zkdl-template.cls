@@ -114,10 +114,10 @@
     escapeinside={<@}{@>}
 }
 % --- Linter settings ---
-\RequirePackage{listings, listings-rust}
-\RequirePackage{listings, listings-circom}
-\RequirePackage{listings, listings-json}
-\RequirePackage{listings, listings-ts}
+\RequirePackage{listings, listlings/listings-rust}
+\RequirePackage{listings, listlings/listings-circom}
+\RequirePackage{listings, listlings/listings-json}
+\RequirePackage{listings, listlings/listings-ts}
 
 \newcommand{\remind}[1]{\textcolor{red}{\textbf{#1}}} % To remind me of unfinished work to fix later
 \newcommand{\hide}[1]{} % To hide large blocks of code without using % symbols
