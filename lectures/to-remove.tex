@@ -1,0 +1,206 @@
+\documentclass[../lecture-notes.tex]{subfiles}
+
+\begin{document}
+
+\subsection{Exercises 1}
+
+\textbf{Exercise 1.} Which of the following statements is \textbf{false}?
+\begin{enumerate}
+    \item $(\forall a, b \in \mathbb{Q}, a \neq b) \; (\exists q \in \mathbb{R}): \{a < q < b\}$.
+    \item $(\forall \varepsilon > 0) \, (\exists n_{\varepsilon} \in \mathbb{N}) \, (\forall n \geq n_{\varepsilon}): \{1/n < \varepsilon\}$.
+    \item $(\forall k \in \mathbb{Z}) \; (\exists n \in \mathbb{N}): \{n < k\}$.
+    \item $(\forall x \in \mathbb{Z} \setminus \{-1\}) \; (\exists! y \in \mathbb{Q}): \{(x+1)y = 2\}$.
+\end{enumerate}
+
+\textbf{Exercise 2.} Denote $X := \{(x,y) \in \mathbb{Q}^2: xy = 1\}$. Oleksandr claims the following:
+\begin{enumerate}
+    \item $X \cap \mathbb{N}^2 = \{(1,1)\}$. 
+    \item $|X \cap \mathbb{Z}^2| = 2|X \cap \mathbb{N}^2|$.
+    \item $X$ is a group under the operation $(x_1,y_1) \oplus (x_2,y_2) = (x_1x_2, y_1y_2)$.
+\end{enumerate}
+
+Which statements are \textbf{true}?
+\begin{multicols}{3}
+    \begin{enumerate}[a)]
+        \item Only 1.
+        \item Only 1 and 2.
+        \item Only 1 and 3.
+        \item Only 2 and 3.
+        \item All statements are correct.
+    \end{enumerate}
+\end{multicols}
+
+\textbf{Exercise 3.} Does a tuple $(\mathbb{Z},\oplus)$ with operation $a \oplus b = a + b - 1$ define a group?
+\begin{enumerate}[a)]
+    \item Yes, and this group is abelian.
+    \item Yes, but this group is not abelian.
+    \item No, since the associativity property does not hold.
+    \item No, since there is no identity element in this group.
+    \item No, since there is no inverse element in this group.
+\end{enumerate}
+
+\textbf{Exercise 4.} Consider the Cartesian plane $\mathbb{R}^2$, where two coordinates are real numbers. For two points $A,B$ define the operation $\oplus$
+as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \oplus)$ define a group? 
+\begin{enumerate}[a)]
+    \item Yes, and this group is abelian.
+    \item Yes, but this group is not abelian.
+    \item No, since the associativity property does not hold and there is no identity element in this group.
+    \item No, since the associativity property does not hold, but we might define an identity element nonetheless.
+\end{enumerate}
+
+\textbf{Exercise 5.} Find the inverse of $4$ in $\mathbb{F}_{11}$.
+\begin{multicols}{4}
+    \begin{enumerate}[a)]
+        \item 8
+        \item 5
+        \item 3
+        \item 7
+    \end{enumerate}
+\end{multicols}
+
+\newpage
+\textbf{Exercise 6.} Suppose for three polynomials $p,q,r \in \mathbb{F}[x]$ we have $\deg p = 3, \deg q = 4, \deg r = 5$. Which of the following is true for $n := \deg \{(p-q)r\}$?
+\begin{multicols}{2}
+    \begin{enumerate}[a)]
+        \item $n = 9$.
+        \item $n$ might be less than $9$.
+        \item $n = 20$.
+        \item $n$ is less than $\deg \{qr\}$. 
+    \end{enumerate}
+\end{multicols}
+
+\textbf{Exercise 7.} Define the polynomial over $\mathbb{F}_5$: $f(x) := 4x^2 + 7$. Which of the following is the root of $f(x)$?
+\begin{multicols}{4}
+    \begin{enumerate}[a)]
+        \item $2$
+        \item $3$
+        \item $4$
+        \item No roots.
+    \end{enumerate}
+\end{multicols}
+
+\textbf{Exercise 8.} Quadratic polynomial $p(x) = ax^2+bx+c \in \mathbb{R}[x]$ has zeros at $1$ and $2$ and $p(0) = 2$. Find the value of $a+b+c$.
+\begin{multicols}{2}
+    \begin{enumerate}[a)]
+        \item $0$
+        \item $-1$
+        \item $1$
+        \item Not enough information.
+    \end{enumerate}
+\end{multicols}
+
+\textbf{Exercise 9.} Which of the following is a \textbf{valid} endomorphism $f: X \to X$? 
+\begin{multicols}{2}
+    \begin{enumerate}[a)]
+        \item $X = [0,1]$, $f: x \mapsto x^2$.
+        \item $X = [0,1]$, $f: x \mapsto x + 1$.
+        \item $X = \mathbb{R}_{>0}$, $f: x \mapsto (x-1)^3$.
+        \item $X = \mathbb{Q}_{>0}$, $f: x \mapsto \sqrt{x}$.
+    \end{enumerate}
+\end{multicols}
+
+\textbf{Exercise 10*.} Denote by $\text{GL}(2,\mathbb{R})$ a set of $2\times 2$ invertable matrices with real entries. Define two functions $\varphi: \text{GL}(2,\mathbb{R}) \to \mathbb{R}$:
+\begin{equation*}
+    \varphi_1 \left(\begin{bmatrix}
+        a & b \\ c & d
+    \end{bmatrix}\right) = ad - bc, \; \varphi_2 \left(\begin{bmatrix}
+        a & b \\ c & d
+    \end{bmatrix}\right) = a + d
+\end{equation*}
+
+Den claims the following:
+\begin{enumerate}
+    \item $\varphi_1$ is a group homomorphism between multiplicative groups $(\text{GL}(2,\mathbb{R}), \times)$ and $(\mathbb{R}, \times)$.
+    \item $\varphi_2$ is a group homomorphism between additive groups $(\text{GL}(2, \mathbb{R}), +)$ and $(\mathbb{R}, +)$.
+\end{enumerate}
+
+Which of the following is \textbf{true}?
+
+\begin{enumerate}[a)]
+    \item Only statement 1 is correct.
+    \item Only statement 2 is correct.
+    \item Both statements 1 and 2 are correct.
+    \item None of the statements is correct.
+\end{enumerate}
+
+\subsection{Exercises 2}
+
+\textbf{Exercise 1.} Suppose that for the given cipher with a security parameter $\lambda$, the adversary $\mathcal{A}$ can deduce the least significant bit of the plaintext from the ciphertext. Recall that the advantage 
+of a bit-guessing game is defined as $\text{SS}\mathsf{Adv}[\mathcal{A}] = \left|\Pr[b=\hat{b}] - \frac{1}{2}\right|$, where $b$ is the randomly chosen bit of a challenger, while 
+$\hat{b}$ is the adversary's guess. What is the maximal advantage of $\mathcal{A}$ in this case?
+
+\textbf{Hint:} The adversary can choose which messages to send to challenger to further distinguish the plaintexts.
+\begin{multicols}{3}
+    \begin{enumerate}[a)]
+        \item $1$
+        \item $\frac{1}{2}$
+        \item $\frac{1}{4}$
+        \item $0$
+        \item Negligible value ($\text{negl}(\lambda)$).
+    \end{enumerate}
+\end{multicols}
+
+\textbf{Exercise 2.} Consider the cipher $\mathcal{E} = (E,D)$ with encryption function $E: \mathcal{K} \times \mathcal{M} \to \mathcal{C}$ over the message space $\mathcal{M}$, ciphertext space $\mathcal{C}$, and key space $\mathcal{K}$. We want to define the security
+that, based on the cipher, the adversary $\mathcal{A}$ cannot restore the message (\textit{security against message recovery}). For that reason, we define the following game:
+\begin{enumerate}
+    \item Challenger chooses random $m \xleftarrow{R} \mathcal{M}, k \xleftarrow{R} \mathcal{K}$.
+    \item Challenger computes the ciphertext $c \gets E(k,m)$ and sends to $\mathcal{A}$.
+    \item Adversary outputs $\hat{m}$, and wins if $\hat{m} = m$.
+\end{enumerate}
+
+We say that the cipher $\mathcal{E}$ is secure against message recovery if the \textbf{message recovery advantage}, denoted as $\text{MR}\textsf{adv}[\mathcal{A}, \mathcal{E}]$ is negligible. Which of the following statements is a valid interpretation of the message recovery advantage?
+\begin{enumerate}[a)]
+    \item $\text{MR}\textsf{adv}[\mathcal{A},\mathcal{E}] := \left|\text{Pr}[m=\hat{m}] - \frac{1}{2}\right|$
+    \item $\text{MR}\textsf{adv}[\mathcal{A},\mathcal{E}] := \left|\text{Pr}[m=\hat{m}] - 1\right|$.
+    \item $\text{MR}\textsf{adv}[\mathcal{A},\mathcal{E}] := \text{Pr}[m=\hat{m}]$
+    \item $\text{MR}\textsf{adv}[\mathcal{A},\mathcal{E}] := \left|\text{Pr}[m=\hat{m}] - \frac{1}{|\mathcal{M}|}\right|$
+\end{enumerate}
+
+\textbf{Exercise 3.} Suppose that $f$ and $g$ are negligible functions. Which of the following functions is not neccessarily negligible?
+\begin{enumerate}[a)]
+    \item $f + g$
+    \item $f \times g$
+    \item $f - g$
+    \item $f/g$
+    \item $h(\lambda) := \begin{cases}
+        1/f(\lambda) & \text{if } 0 < \lambda < 100000 \\
+        g(\lambda) & \text{if } \lambda \geq 100000
+    \end{cases}$
+\end{enumerate}
+
+\newpage
+\textbf{Exercise 4.} Suppose that $f \in \mathbb{F}_p[x]$ is a $d$-degree polynomial with $d$ \textbf{distinct} roots in $\mathbb{F}_p$. What is the probability that, when evaluating $f$ at $n$ random points, the polynomial will be zero at all of them?
+\begin{multicols}{2}
+    \begin{enumerate}[a)]
+        \item Exactly $(d/p)^n$.
+        \item Strictly less that $(d/p)^n$.
+        \item Exactly $nd/p$.
+        \item Exactly $d/np$.
+    \end{enumerate}
+\end{multicols}
+
+\textbf{Exercise 5-6.} To demonstrate the idea of Reed-Solomon codes, consider the toy construction. Suppose that our message is a tuple of two elements $a,b \in \mathbb{F}_{13}$. Consider function $f: \mathbb{F}_{13} \to \mathbb{F}_{13}$, defined as $f(x) = ax+b$, and define the encoding of the message $(a,b)$ as $(a,b) \mapsto (f(0),f(1),f(2),f(3))$. 
+
+\textbf{Question 5.} Suppose that you received the encoded message $(3,5,6,9)$. Which number from the encoded message is corrupted?
+\begin{multicols}{2}
+    \begin{enumerate}[a)]
+        \item First element ($3$).
+        \item Second element ($5$).
+        \item Third element ($6$).
+        \item Fourth element ($9$).
+        \item The message is not corrupted.
+    \end{enumerate}
+\end{multicols}
+
+\textbf{Question 6.} Consider the previous question. Suppose that the original message was $(a,b)$. Find the value of $a \times b$ (in $\mathbb{F}_{13}$).
+\begin{multicols}{5}
+    \begin{enumerate}[a)]
+        \item $4$
+        \item $6$
+        \item $12$
+        \item $2$
+        \item $1$
+    \end{enumerate}
+\end{multicols}
+
+\end{document}

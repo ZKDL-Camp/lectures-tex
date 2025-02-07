@@ -25,7 +25,8 @@
 \begin{document}
     \maketitle
 
-%  Inverse title page
+% --- Inverse Title ---
+
     \pagecolor{white}
 
     \vspace*{\fill}
@@ -39,6 +40,7 @@
 
     \thispagestyle{empty}
     \newpage
+
 % --- Table of Contents ---
 
     \pagestyle{fancy}
@@ -46,85 +48,83 @@
 
     \tableofcontents
 
-\pagebreak
+    \pagebreak
 
-% --- Content ---
+% --- Intro ---
 
-\section*{Preface}
+    \section*{Preface}
+    \subfile{preface/preface.tex}
 
-\subfile{preface/preface.tex}
+% --- Math ---
 
-\section{Group Theory and Polynomials}\label{section:math-crypto-1}
+    \section{Notation Convention}\label{section:notation}
+    \subfile{lectures/0-notation}
 
-\subfile{lectures/1-math}
+    \section{Introduction to Number Theory}\label{section:number-theory}
+    \subfile{lectures/1-1-number-theory}
 
-\section{Basics of Security Analysis}\label{section:math-crypto-2}
+    \section{Introduction to Abstract Algebra}\label{section:abstract-algebra}
+    \subfile{lectures/1-2-abstract-algebra.tex}
 
-\subfile{lectures/2-math-and-crypto}
+    \section{Polynomials}\label{section:polynomial-rings}
+    \subfile{lectures/1-3-polynomials.tex}
 
-\section{Basics of Linear Algebra}\label{section:linear-algebra}
+    \section{Linear Algebra Basics}\label{section:linear-algebra}
+    \subfile{lectures/1-4-linear-algebra-basics.tex}
 
-\subfile{lectures/3-linear-algebra-basics.tex}
+    \section{Fields Extension}\label{section:finite-fields}
+    \subfile{lectures/1-5-field-extension.tex}
 
-\section{Field Extensions ands Elliptic Curves}\label{section:field_extensions}
+    \section{Elliptic Curves and Pairing}\label{section:elliptic-curves}
+    \subfile{lectures/1-6-ec.tex}
 
-\subfile{lectures/3-ec}
+    \section{Commitment Schemes}\label{section:commitment-schemes}
+    \subfile{lectures/1-7-commitments.tex}
 
-\section{Projective Coordinates and Pairing}
+    \section{Basics of Security Analysis}\label{section:security-analysis}
+    \subfile{lectures/1-8-security-basics.tex}
 
-\subfile{lectures/4-pairing}
+% --- Zero-Knowledge ---
 
-\section{Commitment Schemes}\label{section:commitments}
+    \section{Introduction to Zero-Knowledge Proofs}\label{section:intro-zk}
+    \subfile{lectures/2-1-intro-zk}
 
-\subfile{lectures/5-commitments}
+    \section{Sigma Protocols}\label{section:sigma}
+    \subfile{lectures/2-2-sigma}
 
-\section{Introduction to Zero-Knowledge Proofs}\label{section:intro-zk}
+    \section[Arithmetic Circuits. R1CS]{Introduction to SNARKs. Arithmetic Circuits. R1CS} \label{section:r1cs}
+    \subfile{lectures/2-3-circuits}\label{section:circuits}
 
-\subfile{lectures/6-intro-zk}
+    \section[Quadratic Arithmetic Program]{Quadratic Arithmetic Program. Probabilistically Checkable Proofs}\label{section:qap-pcp}
+    \subfile{lectures/2-4-qap-pcp}
 
-\section{Sigma Protocols}\label{section:sigma}
+    \section[Pairing-based SNARKs]{Pairing-based SNARKs. Pinocchio and Groth16}\label{section:groth}
+    \subfile{lectures/2-5-groth}
 
-\subfile{lectures/7-sigma}
+    \section{Circom}\label{section:circom}\label{section:circom}
+    \subfile{lectures/2-6-circom}
 
-\section[Arithmetic Circuits. R1CS]{Introduction to SNARKs. Arithmetic Circuits. R1CS} \label{section:r1cs}
+    \section{PlonK}\label{section:plonk}\label{section:plonk}
+    \subfile{lectures/2-7-plonk}
 
-\subfile{lectures/8-circuits}\label{section:circuits}
+    \section{Basics of STARKs}\label{section:stark}
+    \subfile{lectures/2-8-stark}
 
-\section[Quadratic Arithmetic Program]{Quadratic Arithmetic Program. Probabilistically Checkable Proofs}
-
-\subfile{lectures/9-qap-pcp}
-
-\section[Pairing-based SNARKs]{Pairing-based SNARKs. Pinocchio and Groth16}
-
-\subfile{lectures/10-groth}
-
-\section{Circom}\label{section:circom}
-
-\subfile{lectures/11-circom}
-
-\section{PlonK}\label{section:plonk}
-
-\subfile{lectures/12-plonk}
-
-\section{Basics of STARKs}
-
-\subfile{lectures/13-stark}
-
-% --- Contact  ---
+% --- Contact Page ---
 
     \newpage
     \pagestyle{empty}
-    
+
     \ifodd\value{page}
         \newpage
     \fi
-    
+
     \vspace*{\fill}
-    
+
     \begin{center}
         contact@distributedlab.com
     \end{center}
-    
+
     \vspace*{\fill}
 
 \end{document}

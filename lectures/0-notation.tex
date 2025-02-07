@@ -1,0 +1,107 @@
+\documentclass[../lecture-notes-148x210.tex]{subfiles}
+
+\begin{document}
+
+Before going into the details, let us introduce some notation.
+
+\subsection{Set Theory}
+First, let us enumerate some fundamental sets:
+\begin{itemize}
+    \item $\mathbb{N}$ -- a set of natural numbers. Examples: $10, 13, 193, \dots$.
+    \item $\mathbb{Z}$ -- a set of integers. Examples: $-2, -6, 0, 62, 103, \dots$.
+    \item $\mathbb{Q}$ -- a set of rational numbers. Examples: $\{\frac{n}{m}: n \in \mathbb{Z}, m \in \mathbb{N}\}$.
+    \item $\mathbb{R}$ -- a set of real numbers. Examples: $2.2, 1.4, -6.7, \dots$.
+    \item $\mathbb{R}_{>0}$ -- a set of positive real numbers. Examples: $2.6, 10.4, 100.2$.
+    \item $\mathbb{C}$ -- a set of complex numbers\footnote{Complex number is an expression in a form $x+iy$ for $i^2=-1$}. Examples: $1+2i, 5i, -7-5.7i, \dots$.
+\end{itemize}
+
+Typically we write $a \in A$ to say ``element $a$ is in set $A$''. To represent the number of elements in a set $A$, we write $|A|$. If the set is finite, $|A| \in \mathbb{N}$, otherwise 
+$|A| = \infty$. $A \subset B$ denotes ``$A$ is a subset of $B$'' (meaning that all elements of $A$ are also in $B$, e.g., $\mathbb{Q} \subset \mathbb{R}$).
+
+$A \cap B$ means the intersection of $A$ and $B$ (a set of elements belonging to both $A$ and $B$), while $A \cup B$ -- the union of $A$ and $B$ (the set of elements belonging to either $A$ or $B$). $A \setminus B$ denotes the set difference (the set of elements belonging to $A$, but not $B$). $\overline{A}$ denotes the complement of $A$ (the set of elements not belonging to $A$). All operations are illustrated in Figure~\ref{fig:venn_diagrams} (this picture is typically called the \textit{Venn Diagram}).
+
+To define the set, we typically write $\{f(a): \phi(a)\}$, where $f(a)$ is some function and $\phi(a)$ is a predicate (function, inputting $a$ and returning true/false if a certain condition on $a$ is met). For example, $\{x^3: x \in \mathbb{R}, x^2 = 4\}$ is ``a set of values $x^3$ which are the real solutions to equation $x^2 = 4$''. It is quite easy to see that this set is simply $\{2^3, (-2)^3\} = \{8,-8\}$. 
+
+The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \in B$ (or, written shortly, $A \times B = \{(a,b): a \in A, b \in B\}$), called a Cartesian product. We additionally introduce notation $A^n := \underbrace{A \times A \times \dots \times A}_{n \; \text{times}}$ -- Cartesian product $n$ times. For example, $\mathbb{Q}^3$ is a set of triplets $(a,b,c)$ where $a,b,c \in \mathbb{Q}$, while $\mathbb{Q}^2 \times \mathbb{R}$ is a set of triplets $(a,b,c)$ where $a,b \in \mathbb{Q}$ and $c \in \mathbb{R}$.
+
+% --- Writing diagrams ---
+\def\firstcircle{(0,0) circle (1.5cm)}
+\def\secondcircle{(0:2cm) circle (1.5cm)}
+
+\colorlet{circle edge}{blue!50}
+\colorlet{circle area}{blue!20}
+
+\tikzset{filled/.style={fill=circle area, draw=circle edge, ultra thick},
+    outline/.style={draw=circle edge, ultra thick}}
+
+\begin{figure}
+    \begin{center}
+
+    \scalebox{0.5}{
+    \begin{tabular}{cc}
+    % Set A and B
+    \begin{tikzpicture}
+        \begin{scope}
+            \clip \firstcircle;
+            \fill[filled] \secondcircle;
+        \end{scope}
+        \draw[outline] \firstcircle node {$A$};
+        \draw[outline] \secondcircle node {$B$};
+        \node[anchor=south] at (current bounding box.north) {$A \cap B$};
+    \end{tikzpicture} &   
+    %Set A or B but not (A and B) also known a A xor B
+    \begin{tikzpicture}
+        \draw[filled, even odd rule] \firstcircle node {$A$}
+                                    \secondcircle node{$B$};
+        \node[anchor=south] at (current bounding box.north) {$\overline{A \cap B}$};
+    \end{tikzpicture}
+    \\
+    % Set A or B
+    \begin{tikzpicture}
+        \draw[filled] \firstcircle node {$A$}
+                    \secondcircle node {$B$};
+        \node[anchor=south] at (current bounding box.north) {$A \cup B$};
+    \end{tikzpicture} &  
+    % Set A but not B
+    \begin{tikzpicture}
+        \begin{scope}
+            \clip \firstcircle;
+            \draw[filled, even odd rule] \firstcircle node {$A$}
+                                        \secondcircle;
+        \end{scope}
+        \draw[outline] \firstcircle
+                    \secondcircle node {$B$};
+        \node[anchor=south] at (current bounding box.north) {$A \setminus B$};
+    \end{tikzpicture}
+\end{tabular}
+}
+\end{center}
+    \caption{Set operations illustrated with Venn diagrams.}
+\label{fig:venn_diagrams}
+\end{figure}
+
+\subsection{Logic}
+
+Statement beginning with $\forall$ means ``for all...''. For instance, $(\forall a \in A \subset \mathbb{R}): \{a < 1\}$ is read as: ``For any $a$ in set $A$ (which is a subset of real numbers), it is true that $a<1$''. Or, more shortly, ``Any (real) $a$ from $A$ is less than $1$''.
+
+Statement beginning from $\exists$ means ``there exists such...''. Let us consider the following example: $(\exists \varepsilon > 0) (\forall a \in A): \{a > \varepsilon\}$ is read as ``there exists such a positive $\varepsilon$ such that for any element $a$ from $A$, $a$ is greater than $\varepsilon$'', or, more concisely, ``there exists a positive constant $\varepsilon$ such that any element from $A$ is greater than $\varepsilon$''.
+
+Statement beginning from $\exists !$ means ``there exists a unique...''. For example, $(\exists! x \in \mathbb{R}_{>0}): \{x^2 = 4\}$ is read as ``there exists a unique positive real $x$ such that $x^2 = 4$''.
+
+Symbol $\wedge$ means ``and''. For example, $\{x \in \mathbb{R}: x^2 = 4 \wedge x > 0\}$ is read as ``a set of real $x$ such that $x^2=4$ and $x$ is positive''. Of course, $\{x \in \mathbb{R}: x^2 = 4 \wedge x > 0\} = \{2\}$.
+
+Symbol $\vee$ means ``or''. For example, $\{x \in \mathbb{R}: x^2 = 4 \vee x^2 = 9\}$ is read as ``a set of real $x$ such that either $x^2=4$ or $x^2=9$''. Here, this set is equal to $\{-2,2,-3,3\}$.
+
+\subsection{Randomness and Probability}
+
+To denote the probability of an event $A$ happening, we write $\Pr[A]$. For example, if event $A$ represents that a coin lands heads, then $\Pr[A] = 0.5$.
+
+Fix some set $A$. To denote that we are uniformly randomly picking some element from $A$, we write $a \xleftarrow{R} A$. For example, $a \xleftarrow{R} \{1,2,3,4,5,6\}$ means that we are picking a number from $1$ to $6$ uniformly at random.
+
+\subsection{Sequences and Vectors}
+
+To denote the infinite sequence $\{x_1,x_2,x_3,\dots\}$ we write $\{x_n\}_{n \in \mathbb{N}}$. To denote the finite sequence $\{x_1,x_2,\dots,x_n\}$ we write $\{x_k\}_{k=1}^n$. 
+
+Vector is a collection of elements $\mathbf{x} = (x_1,\dots,x_n) \in A^n$. Finally, the scalar product\footnote{It is totally normal if you do not know what that is, we will explain more in the Bulletproof lecture} is denoted as $\langle \mathbf{x}, \mathbf{y} \rangle := \sum_{k=1}^n x_ky_k$.
+
+\end{document}

@@ -1,4 +1,4 @@
-\documentclass[../lecture-notes.tex]{subfiles}
+\documentclass[../lecture-notes-148x210.tex]{subfiles}
 
 \begin{document}
 
@@ -528,7 +528,7 @@ While our built protocol is zk-SNARK, it is still not optimized for practical us
 
 Now, this is not bad at all! In fact, this is already practical for many applications. However, we can do better by a more clever choice of constants and terms. This is exactly what is done by Bryan Parno and Craig Gentry in their research ``Pinocchio: Nearly Practical Verifiable Computation''.
 
-\subsubsection{Pinocchio Protocol}
+\subsection{Pinocchio Protocol}
 
 We first begin from the non-zero-knowledge version of the Pinocchio Protocol and then extend it to the zero-knowledge version.
 
@@ -667,7 +667,7 @@ Let us see the complete specification of the Pinocchio Protocol.
     \end{align*}
 \end{tcolorbox}
 
-\subsubsection{Groth16 Protocol}
+\subsection{Groth16 Protocol}
 
 Finally, Groth16 allows to reduce the number of pairings \textbf{down to 3}! This is done through a technique called \textbf{Generic Group Model} (GGM for short). Simply put, GGM allows the adversary to only make oracle requests to compute the group operations. For example, having a set $\{g^{\alpha R_i(\tau)}\}_{i \in [d]}$, adversary can compute only linear combinations of these values. In the particular case of Groth16, instead of considering $L_i(x)$, $R_i(x)$, and $O_i(x)$ separately, we construct their linear combinations as $Q_i(x) := \beta L_i(x) + \alpha R_i(x) + O_i(x)$, where $\alpha$ and $\beta$ are toxic parameters.
 

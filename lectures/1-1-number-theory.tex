@@ -1,388 +1,14 @@
-\documentclass[../lecture-notes.tex]{subfiles}
+\documentclass[../lecture-notes-148x210.tex]{subfiles}
 
 \begin{document}
-
-\subsection{Basics of Security Analysis}
-
-In many cases, technical papers include the analysis on the key question: ``How secure is this cryptographic algorithm?'' or rather ``Why this cryptographic algorithm is secure?''. In this section, we will shortly describe the notation and typical construction for justifying the security of cryptographic algorithms.
-
-Typically, the cryptographic security is defined in a form of a game between the adversary (who we call $\mathcal{A}$) and the challenger (who we call $\mathcal{C}h$). The adversary is trying to break the security of the cryptographic algorithm using arbitrary (but still efficient) protocol, while the challenger is following a simple, fixed protocol. The game is played in a form of a challenge, where the adversary is given some information and is asked to perform some task. The security of the cryptographic algorithm is defined based on the probability of the adversary to win the game.
-
-\subsubsection{Cipher Semantic Security}
-Let us get into specifics. Suppose that we want to specify that the encryption scheme is secure. Recall that cipher $\mathcal{E} = (E,D)$ over the space $(\mathcal{K}, \mathcal{M}, \mathcal{C})$ (here, $\mathcal{K}$ is the space containing all possible keys, $\mathcal{M}$ --- all possible messages and $\mathcal{C}$ --- all possible ciphers) consists of two efficiently computable methods:
-\begin{itemize}
-    \item $E: \mathcal{K} \times \mathcal{M} \to \mathcal{C}$ --- encryption method, that based on the provided message $m \in \mathcal{M}$ and key $k \in \mathcal{K}$ outputs the cipher $c = E(k,m) \in \mathcal{C}$.
-    \item $D: \mathcal{K} \times \mathcal{C} \to \mathcal{M}$ --- decryption method, that based on the provided cipher $c \in \mathcal{C}$ and key $k \in \mathcal{K}$ outputs the message $m = D(k,c) \in \mathcal{M}$.
-\end{itemize}
-
-Of course, we require the \textbf{correctness}:
-\begin{equation*}
-    (\forall k \in \mathcal{K}) \, (\forall m \in \mathcal{M}): \{D(k,E(k,m)) = m\}
-\end{equation*}
-
-Now let us play the following game between adversary $\mathcal{A}$ and challenger $\mathcal{C}h$:
-\begin{enumerate}
-    \item $\mathcal{A}$ picks any two messages $m_0,m_1 \in \mathcal{M}$ on his choice.
-    \item $\mathcal{C}h$ picks a random key $k \xleftarrow{R} \mathcal{K}$ and random bit $b \xleftarrow{R} \{0,1\}$ and sends the cipher $c = E(k,m_b)$ to $\mathcal{A}$.
-    \item $\mathcal{A}$ is trying to guess the bit $b$ by using the cipher $c$.
-    \item $\mathcal{A}$ outputs the guess $\hat{b}$.
-\end{enumerate}
-
-\begin{figure}[H]
-    \centering
-    \scalebox{1}{
-    \begin{tikzpicture}
-        \node[inner sep=0pt, align=center] (challenger) {\includegraphics[width=0.75cm]{lectures/images/lecture_2/challenger.png}\\Challenger $\mathcal{C}h$};
-        \node[inner sep=0pt, align=center, right=5cm of challenger] (adversary) {\includegraphics[width=0.75cm]{lectures/images/lecture_2/demon.png}\\Adversary $\mathcal{A}$};
-
-        \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]challenger.south) -- ([yshift=-9cm]challenger.south);
-        \draw [dashed,line width=0.3mm] ([yshift=-0.5cm]adversary.south) -- ([yshift=-9cm]adversary.south);
-
-        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-1.5cm]adversary.south) coordinate (l2)--(l2-|challenger) node[midway, above=2mm, fill=white]{Send $m_0, m_1 \in \mathcal{M}, |m_0| = |m_1|$};
-
-        \node[align=center,fill=white!5,thick,below=2.5cm of challenger](challenger-actions){
-        \noindent\rule{3.5cm}{0.8pt}\\
-        $b \xleftarrow{R} \{0,1\}$ \\
-        $k \xleftarrow{R} \mathcal{K}$ \\
-        $c \gets E(k,m_b)$ \\
-        \noindent\rule{3.5cm}{0.8pt}};
-
-        \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-6cm]challenger.south) coordinate (l2)--(l2-|adversary) node[midway, above=2mm, fill=white]{Send cipher $c$};
-
-        \node[align=center,fill=white!5,thick,below=7cm of adversary](adversary-guess){
-        \noindent\rule{3.5cm}{0.8pt}\\
-        Guess bit $\hat{b} \in \{0,1\}$\\
-        \noindent\rule{3.5cm}{0.8pt}};
-    \end{tikzpicture}
-    }
-    \caption{The game between the adversary $\mathcal{A}$ and the challenger $\mathcal{C}h$ for defining the semantic security.}
-\end{figure}
-
-Now, what should happen if our encryption scheme is secure? The adversary should not be able to guess the bit $b$ with a probability significantly higher than $1/2$ (a random guess). Formally, define the 
-\textbf{advantage} of the adversary $\mathcal{A}$ as:
-\begin{equation*}
-    \text{SSAdv}[\mathcal{E}, \mathcal{A}] := \left| \Pr[\hat{b} = b] - \frac{1}{2} \right|
-\end{equation*}
-
-We say that the encryption scheme is \textbf{semantically secure}\footnote{This version of definition is called a \textbf{bit-guessing} version.} if for any efficient adversary $\mathcal{A}$ the advantage $\text{SSAdv}[\mathcal{A}]$ is negligible. In other words, the adversary cannot guess the bit $b$ with a probability significantly higher than $1/2$.
-
-Now, what negligible means? Let us give the formal definition!
-
-\begin{definition}
-    A function $f: \mathbb{N} \to \mathbb{R}$ is called \textbf{negligible} if for all $c \in \mathbb{R}_{>0}$ there exists $n_c \in \mathbb{N}$ such that for any $n \geq n_c$ we have $|f(n)| < 1/n^c$.
-\end{definition}
-
-The alternative definition, which is problably easier to interpret, is the following.
-
-\begin{theorem}
-    A function $f: \mathbb{N} \to \mathbb{R}$ is \textbf{negligible} if and only if for any $c \in \mathbb{R}_{>0}$, we have
-    \begin{equation*}
-        \lim_{n \to \infty} f(n)n^c = 0
-    \end{equation*}
-\end{theorem}
-
-\begin{example}
-    The function $f(n) = 2^{-n}$ is negligible since for any $c \in \mathbb{R}_{>0}$ we have
-    \begin{equation*}
-        \lim_{n \to \infty} 2^{-n}n^c = 0
-    \end{equation*}
-
-    The function $g(n) = \frac{1}{n!}$ is also negligible for similar reasons.
-\end{example}
-
-\begin{example}
-    The function $h(n) = \frac{1}{n}$ is not negligible since for $c = 1$ we have
-    \begin{equation*}
-        \lim_{n \to \infty} \frac{1}{n} \times n = 1 \neq 0
-    \end{equation*}
-\end{example}
-
-Well, that is weird. For some reason we are considering a function the depends on some natural number $n$, but what is this number?
-
-Typically, when defining the security of the cryptographic algorithm, we are considering the security parameter $\lambda$ (e.g., the length of the key). The function is negligible if the probability of the adversary to break the security of the cryptographic algorithm is decreasing with the increasing of the security parameter $\lambda$. Moreover, we require that the probability of the adversary to break the security of the cryptographic algorithm is decreasing faster than any polynomial function of the security parameter $\lambda$.
-
-So all in all, we can define the semantic security as follows.
-
-\begin{definition}
-    The encryption scheme $\mathcal{E}$ with a security paramter $\lambda \in \mathbb{N}$ is \textbf{semantically secure} if for any efficient adversary $\mathcal{A}$ we have:
-    \begin{equation*}
-        \left|\text{Pr}\begin{bmatrix}[c|c]
-            & m_0, m_1 \gets \mathcal{A}, \; k \xleftarrow{R} \mathcal{K}, \; b \xleftarrow{R} \{0,1\} \\
-            b = \hat{b} & c \gets E(k,m_b) \\
-            &\hat{b} \gets \mathcal{A}(c)
-        \end{bmatrix} - \frac{1}{2}\right| < \text{negl}(\lambda)
-    \end{equation*}
-\end{definition}
-
-Do not be afraid of such complex notation, it is quite simple. Notation $\text{Pr}[A \mid B]$ means ``the probability of $A$, given that $B$ occurred''. So our inner probability is read as ``the probability that the guessed bit $\hat{b}$ equals $b$ given the setup on the right''. Then, on the right we define the setup: first we generate two messages $m_0,m_1 \in \mathcal{M}$, then we choose a random bit $b$ and a key $k$, cipher the message $m_b$, send it to the adversary and the adversary, based on provided cipher, gives $\hat{b}$ as an output. We then claim that the probability of the adversary to guess the bit $b$ is close to $1/2$.
-
-Let us see some more examples of how to define the security of certain crypographic objects.
-
-\subsubsection{Message recovery attacks}
-
-Essentially, message recovery attacks are types of attacks that, from given ciphertext, recover the message with significantly better probability than random guessing, which is obviously $1/|\mathcal{M}|$.
-Of course, any reasonable notion of security should rule out such an attack, and indeed, semantic security does.
-
-Although this might seem intuitively obvious, we provide a formal proof to clarify the reasoning. 
-One of the reasons for doing this is to thoroughly demonstrate the concept of a \emph{security reduction}, which is the primary method used to assess the security of systems.
-
-Let us play the following attack game message recovery between adversary $\mathcal{A}$ and challenger $\mathcal{C}h$.
-For a given cipher $\mathcal{E} = (E, D)$, defined over $\mathcal{K}, \mathcal{M}, \mathcal{C}$, and for a given adversary $\mathcal{A}$, the attack game proceeds as follows: 
-
-\begin{itemize}
-    \item The challenger computes $m \xleftarrow{R} \mathcal{M}$, $k \xleftarrow{R} \mathcal{K}$, $c \xleftarrow{R} E(k, m)$ and sends c to the adversary.
-    \item the adversary output a message $\hat{m} \in \mathcal{M}$.
-\end{itemize}
-
-We say that $\mathcal{A}$ wins the game in this case, and we define $\mathcal{A}$'s message recovery advantage with respect to $\mathcal{E}$ as:
-
-\begin{equation*}
-    \text{MRadv}[\mathcal{E}, \mathcal{A}] := \Bigg|\text{Pr}[\hat{m} = m] - \frac{1}{|\mathcal{M}|}\Bigg|.
-\end{equation*}
-
-\begin{definition} [Security against message recovery]
-    A cipher $\mathcal{E}$ is secure against message recovery if for all efficient adversaries $\mathcal{A}$, the value MRadv[$\mathcal{E}, \mathcal{A}$] is negligible.
-\end{definition}
-
-\begin{theorem}
-    Let $\mathcal{E} = (E, D)$ be a cipher defined over $(\mathcal{K}, \mathcal{M}, \mathcal{C})$. If $\mathcal{E}$ is semantically secure then $\mathcal{E}$ is secure against message recovery.
-\end{theorem}
-
-$\blacktriangleright$ 
-Let us prove by assuming the opposite statement. 
-In other words, if $\mathcal{E}$ is not secure against message recovery, then $\mathcal{E}$ is not semantically secure.
-
-Assume that $\mathcal{E}$ is not secure against message recovery. 
-We have an efficient adversary $\mathcal{A}$ who has a significant advantage in the 
-message recovery game and an efficient adversary $\mathcal{B}$ who is trying to 
-compromise $\mathcal{E}$.
-The proof idea is to use an efficient adversary $\mathcal{A}$ as a "black box" (or oracle machine). % that wins message recovery game.
-We construct $\mathcal{B}$ as follows:
-\begin{enumerate}
-    \item Adversary $\mathcal{B}$ generates $m_0, m_1 \in \mathcal{M}$ and sends them to the semantic security challenger.
-    \item The semantic security challenger returns ciphertext $c$ to adversary $\mathcal{B}$. Since $\mathcal{B}$ can use 
-    the message recovery oracle, it sends $c$ to $\mathcal{A}$. 
-    \item $\mathcal{A}$ returns $\hat{m}$. If $\hat{m} = m_0$, then $b = 0$ otherwise, $b = 1$.
-    \item Sends $b$ to the semantic security challenger. 
-\end{enumerate}
-
-Intuitively, this implies that $\text{SSadv}[\mathcal{E}, \mathcal{B}]$ is exactly equal 
-to $\text{MRadv}[\mathcal{E}, \mathcal{A}]$. $\blacktriangleleft$
-
-This means that if an adversary is capable of successfully winning the 
-message recovery game, then they can also effectively win the semantic security game.
-In essence, security against message recovery is a stronger property than
-semantic security. 
-
-Our motivation for demonstrating proof is to illustrate in detail the notion of a security
-reduction, which is the main technique used to reason about the security of systems.
-
-Security reduction is typically applied to certain computational problems. To be more precise, 
-we will now explain how security reduction operates in general.
-\begin{definition} [Security Reduction]
-    \hfill
-    \begin{enumerate}
-        \item Let $\mathcal{A}$ be an efficient adversary who is trying to
-        compromise the cryptosystem $\mathcal{E}$.
-        \item We construct an efficient algorithm $\mathcal{A}'$, which we call the
-        \textbf{reduction}, that will solve the computationally hard problem
-        $\mathcal{X}$ while using an oracle access to $\mathcal{A}$. For any
-        input $x$ of the problem $\mathcal{X}$, the algorithm $\mathcal{A}'$
-        generates the input of the cryptosystem $\mathcal{E}$ for $\mathcal{A}$.
-        Once it wins the corresponding experiment, $\mathcal{A}'$ solves
-        $\mathcal{X}$ for input $x$ with a certain non-negligible probability
-        $\mu(n)$. Typically, such probability turns out to be bounded below by
-        $1/n^c, c \in \mathbb{N}$.
-        \item Thus, the algorithm $\mathcal{A}'$ solves $\mathcal{X}$ with the
-        non-negligible probability $\varepsilon(n)\mu(n)$ (or typically
-        $\varepsilon(n)/n^c$). This quantity is non-negligible 
-        if $\varepsilon(n)$ is assumed to be non-negligible.
-        \item Since the problem $\mathcal{X}$ is computationally hard, we get a
-        contradiction. It follows that no attacker $\mathcal{A}$ can effectively
-        crack $\mathcal{E}$, i.e., this cryptosystem is computationally strong.
-    \end{enumerate}
-\end{definition}
-
-% TODO: Make use of this in the future
-% \subsubsection{Case study: RSA}
-
-% In this section we will demonstrate one of the oldest widely used secure data transmission public-key cryptosystem, RSA.
-% Our main goal is to describe the cryptosystem, proof of correctness, and talk about security considerations. 
-
-% The RSA encryption and decryption process can be described as follows:
-% \begin{definition}[RSA Cryptosystem]
-%     \hfill
-%     \begin{enumerate}
-%         \item \textit{Setup}: Generates two prime numbers $p, q \xleftarrow{R} Prime$ and computes $n \gets pq$.
-%         An integer $e$ is selected such that $\gcd(e, \varphi(n)) = 1$, where $\varphi()$ is Euler's totient function.
-%         Then compute such $d \equiv e^{-1} \pmod{\varphi(n)}$.
-%         Returns ($e, n$) as a public key and ($d, n$) as a private key.
-%         \item \textit{Encryption:} Given a plaintext message $M$, $0 \leq M \leq n-1$, ciphertext $C$, $0 \leq C \leq n-1$ is computed as follows:
-%             $$
-%             C = M^e \pmod{n}
-%             $$
-%             where $e$ is the public exponent and $n$ is the modulus (part of the public key).
-        
-%         \item \textit{Decryption:} Given a ciphertext $C$, $0 \leq C \leq n-1$, the corresponding plaintext message $M$, $0 \leq M \leq n-1$ is computed as follows:
-%             $$
-%             M = C^d \pmod{n}
-%             $$
-%             where $d$ is the private exponent and $n$ is the modulus (part of the private key).
-%     \end{enumerate}
-% \end{definition}
-
-% \begin{remark}
-%     (\textbf{Caution}): the description above is a so-called “textbook RSA" and you should 
-%     never use this implementation in practice.
-% \end{remark}
-
-% % \begin{remark}
-%     % In real world usually $e = 2^{16} + 1$.
-% % \end{remark}
-
-% \begin{theorem} [Correctness of RSA]
-%     For all integers $M$, $0 \leq M \leq n-1$, it holds $M^{ed} \equiv M \pmod{n}$.
-% \end{theorem}
-% \textbf{Proof.}
-% $\blacktriangleright$ 
-% It suffices to show that the two following congruences hold.
-% $$
-%     M^{ed} \equiv M \pmod{p} \text{ and } M^{ed} \equiv M \pmod{q}
-% $$
-% As we know, $p$ and $q$ are coprimes, and the above congruences imply 
-% $M^{ed} \equiv M \pmod{n}$ by the Chinese Remainder Theorem \ref{th:chinese_remainder_theorem}.
-
-% First we need to prove that $M^{ed} \equiv M \pmod{p}$.
-% We know that $M^{p-1} \equiv 1 \pmod{p}$ by \Cref{th:fermat_little_theorem}, 
-% and $ed = 1 \pmod{\varphi(n)}$, then $ed = k(p - 1)(q - 1) + 1$ for some integer $k$.
-% Hence, 
-% $$
-%     M^{ed} \equiv M^{k(p - 1)(q - 1) + 1} \equiv M(M^{p - 1})^{k(q - 1)} \equiv M \cdot 1^{k(q - 1)} \equiv M \pmod{p}.
-% $$
-% By symmetry, replacing $p$ by $q$ in the previous arguments, we also have $M^{ed} \equiv M \pmod{q}$.
-% $\blacktriangleleft$ 
-
-% \textbf{Security consideration.} 
-% Intuitively, it may seem that RSA security relies on the difficulty of the factorization 
-% and discrete logarithm problems. However, while there is a proven reduction for the 
-% discrete logarithm assumption, no such proof exists for the factorization problem. 
-
-% There are also practical considerations like key length, generating strong pseudo-random prime 
-% numbers, padding, and other implementation details. Additionally, there are security 
-% measures aimed at preventing side-channel attacks, among other things.
-% If you ever need to implement RSA, you should look for RSA NIST or other standard 
-% specifications—or, even better, use an already implemented library.
-
-% In summary, the security of cryptosystems depends on a blend of both theoretical 
-% principles and practical considerations.
-
-\subsubsection{Discrete Logarithm Assumption}
-
-Now, let us define the fundamental assumption used in cryptography formally: the \textbf{Discrete Logarithm Assumption} (DL).
-
-\begin{definition}
-    Assume that $\mathbb{G}$ is a cyclic group of prime order $r$ generated by $g \in \mathbb{G}$. Define the following game:
-    \begin{enumerate}
-        \item Both challenger $\mathcal{C}h$ and adversary $\mathcal{A}$ take a description $\mathbb{G}$ as an input: order $r$ and generator $g \in \mathbb{G}$.
-        \item $\mathcal{C}h$ computes $\alpha \xleftarrow{R} \mathbb{Z}_r, u \gets g^{\alpha}$ and sends $u \in \mathbb{G}$ to $\mathcal{A}$.
-        \item The adversary $\mathcal{A}$ outputs $\hat{\alpha} \in \mathbb{Z}_r$.
-    \end{enumerate}
-
-    We define $\mathcal{A}$'s \textbf{advantage in solving the discrete logarithm problem in $\mathbb{G}$}, denoted as $\text{DL}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as the probability that $\hat{\alpha} = \alpha$.
-\end{definition}
-
-\begin{definition}
-    The \textbf{Discrete Logarithm Assumption} holds in the group $\mathbb{G}$ if for any efficient adversary $\mathcal{A}$ the advantage $\text{DL}\mathsf{adv}[\mathcal{A},\mathbb{G}]$ is negligible.
-\end{definition}
-
-Informally, this assumption means that given $u$, it is very hard to find $\alpha$ such that $u = g^{\alpha}$. But now we can write down this formally!
-
-\subsubsection{Computational Diffie-Hellman}
-
-Another fundamental problem in cryptography is the \textbf{Computational Diffie-Hellman} (CDH) problem. It states that given $g^{\alpha},g^{\beta}$ it is hard to find $g^{\alpha\beta}$. This property is frequently used in the construction of cryptographic protocols such as the Diffie-Hellman key exchange.
-
-Let us define this problem formally.
-
-\begin{definition}
-    Let $\mathbb{G}$ be a cyclic group of prime order $r$ generated by $g \in \mathbb{G}$. Define the following game:
-    \begin{enumerate}
-        \item Both challenger $\mathcal{C}h$ and adversary $\mathcal{A}$ take a description $\mathbb{G}$ as an input: order $r$ and generator $g \in \mathbb{G}$.
-        \item $\mathcal{C}h$ computes $\alpha, \beta \xleftarrow{R} \mathbb{Z}_r, u \gets g^{\alpha}, v \gets g^{\beta}, w \gets g^{\alpha\beta}$ and sends $u,v \in \mathbb{G}$ to $\mathcal{A}$.
-        \item The adversary $\mathcal{A}$ outputs $\hat{w} \in \mathbb{G}$.
-    \end{enumerate}
-
-    We define $\mathcal{A}$'s \textbf{advantage in solving the computational Diffie-Hellman problem in $\mathbb{G}$}, denoted as $\text{CDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as the probability that $\hat{w} = w$.
-\end{definition}
-
-\begin{definition}
-    The \textbf{Computational Diffie-Hellman Assumption} holds in the group $\mathbb{G}$ if for any efficient adversary $\mathcal{A}$ the advantage $\text{CDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$ is negligible.
-\end{definition}
-
-\subsubsection{Decisional Diffie-Hellman}
-
-Now, we loosen the requirements a bit. The \textbf{Decisional Diffie-Hellman} (DDH) problem states that given $g^{\alpha},g^{\beta},g^{\alpha\beta}$ it is ``hard'' to distinguish $g^{\alpha\beta}$ from a random element in $\mathbb{G}$. Formally, we define this problem as follows.
-
-\begin{definition}
-    Let $\mathbb{G}$ be a cyclic group of prime order $r$ generated by $g \in \mathbb{G}$. Define the following game:
-    \begin{enumerate}
-        \item Both challenger $\mathcal{C}h$ and adversary $\mathcal{A}$ take a description $\mathbb{G}$ as an input: order $r$ and generator $g \in \mathbb{G}$.
-        \item $\mathcal{C}h$ computes $\alpha, \beta,\gamma \xleftarrow{R} \mathbb{Z}_r, u \gets g^{\alpha}, v \gets g^{\beta}, w_0 \gets g^{\alpha\beta}, w_1 \gets g^{\gamma}$. Then, $\mathcal{C}h$ flips a coin $b \xleftarrow{R} \{0,1\}$ and sends $u,v,w_b$ to $\mathcal{A}$.
-        \item The adversary $\mathcal{A}$ outputs the predicted bit $\hat{b} \in \{0,1\}$.
-    \end{enumerate}
-
-    We define $\mathcal{A}$'s \textbf{advantage in solving the Decisional Diffie-Hellman problem in $\mathbb{G}$}, denoted as $\text{DDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as
-    \begin{equation*}
-        \text{DDH}\mathsf{adv}[\mathcal{A},\mathbb{G}] := \left| \Pr[b = \hat{b}] - \frac{1}{2} \right|
-    \end{equation*}
-\end{definition}
-
-Now, let us break this assumption for some quite generic group! Consider the following example.
-
-\begin{theorem}
-    Suppose that $\mathbb{G}$ is a cyclic group of an even order. Then, the Decision
-    Diffie-Hellman Assumption does not hold in $\mathbb{G}$. In fact, there is an efficient adversary $\mathcal{A}$ that can distinguish $g^{\alpha\beta}$ from a random element in $\mathbb{G}$ with an advantage $1/4$.
-\end{theorem}
-
-\textbf{Proof.} If $|\mathbb{G}|=2n$ for $n \in \mathbb{N}$, it means that we can split the group into two subgroups of order $n$, say, $\mathbb{G}_1$ and $\mathbb{G}_2$. The first subgroup consists of elements in a form $g^{2k}$, while the second subgroup consists of elements in a form $g^{2k+1}$.
-
-Now, if we could efficiently determine, based on group element $g \in \mathbb{G}$, whether $g \in \mathbb{G}_1$ or $g \in \mathbb{G}_2$, we essentially could solve the problem. Fortunately, there is such a method! Consider the following lemma.
-
-\begin{lemma}
-    Suppose $u=g^{\alpha}$. Then, $\alpha$ is even if and only if $u^n = 1$.
-\end{lemma}
-
-\textbf{Proof.} If $\alpha$ is even, then $\alpha = 2\alpha'$ and thus
-\begin{equation*}
-    u^n = (g^{2\alpha'})^n = g^{2n\alpha'} = (g^{2n})^{\alpha'} = 1^{\alpha'} = 1
-\end{equation*}
-
-Conversely, if $u^n = 1$ then $u^{\alpha n}=1$, meaning that $2n \mid \alpha n$, implying that $\alpha$ is even. Lemma is proven.
-
-Now, we can construct our adversary $\mathcal{A}$ as follows. Suppose $\mathcal{A}$ is given $(u,v,w)$. Then,
-\begin{enumerate}
-    \item Based on $u$, get the parity of $\alpha$, say $p_{\alpha} \in \{\text{even}, \text{odd}\}$.
-    \item Based on $v$, get the parity of $\beta$, say $p_{\beta} \in \{\text{even}, \text{odd}\}$.
-    \item Based on $w$, get the parity of $\gamma$, say $p_{\gamma} \in \{\text{even}, \text{odd}\}$.
-    \item Calculate $p_{\gamma}'\in \{\text{even}, \text{odd}\}$ --- parity of $\alpha\beta$.
-    \item Return $\hat{b}=0$ if $p_{\gamma}' = p_{\gamma}$, and $\hat{b}=1$, otherwise.
-\end{enumerate}
-
-Suppose $\gamma$ is indeed $\alpha \times \beta$. Then, condition $p_{\gamma}'=p_{\gamma}$ will always hold. If $\gamma$ is a random element, then the probability that $p_{\gamma}'=p_{\gamma}$ is $1/2$. Therefore, the probability that $\mathcal{A}$ will guess the bit $b$ correctly is $3/4$, and the advantage is $1/4$ therefore. $\blacksquare$
-
-\vspace{10pt}
-
-Why is this necessary? Typically, it is impossible to prove the predicate ``for every efficient adversary $\mathcal{A}$ this probability is negligible'' and therefore we need to make assumptions, such as the Discrete Logarithm Assumption or the Computational Diffie-Hellman Assumption. In turn, proving the statement ``if $X$ is secure then $Y$ is also secure'' is manageable and does not require solving any fundamental problems. So, for example,
-knowing that the probability of the adversary to break the Diffie-Hellman assumption is negligible, we can prove that the Diffie-Hellman key exchange is secure. 
-
-\subsection{Basic Number Theory}
-
+    
 As mentioned earlier, the cryptography must work with integer-based formats. 
 One of the earliest and most fundamental branches of mathematics is number theory, which 
 deals with the properties of the integer set $\mathbb{Z}$. Although, as we will see later, 
 we will primarily need the notion of \emph{prime/finite field} further, the basic concepts 
 of number theory will still be used extensively nonetheless.
 
-\subsubsection{Introduction to number theory}
+\subsection{Introduction to number theory}
 
 We start with the most basic definition of number theory --- \emph{divisibility}.
 
@@ -545,7 +171,7 @@ algorithms for $\gcd$ and $\lcm$ when dealing with many arguments. There are
 more specialized algorithms for each when considering a specific number of
 arguments, but unfortunately, such topics are beyond the scope of this book.
 
-\subsubsection{Extended Euclidean algorithm}
+\subsection{Extended Euclidean algorithm}
 
 In this section, we will introduce the Extended Euclidean Algorithm and an
 important lemma related to the GCD. You might have reasonable question: why do
@@ -659,7 +285,7 @@ find the GCD.
     sure to check yourself.
 \end{example}
 
-\subsubsection{Prime numbers}
+\subsection{Prime numbers}
 
 Prime numbers are fundamental in mathematics due to their role of the building
 blocks of all natural numbers. Every integer greater than 1 can be uniquely
@@ -730,7 +356,7 @@ Beside, next theorem importan says that we can know the form of a prime numbers.
 
 In other words, every infinite arithmetic progression whose first term and difference are positive integers contains an infinite number of primes.
 
-\subsubsection{Fundamental Theorem of Arithmetic}
+\subsection{Fundamental Theorem of Arithmetic}
 The Fundamental Theorem of Arithmetic states that every integer greater than 1 can be uniquely factored into primes, which is crucial for understanding the structure of numbers. 
 It plays a key role in areas like number theory, cryptography, and simplifying calculations involving divisibility. 
 But before formal description of the theorem, for better understanding it is good to know the following Lemma \ref{euclidean_lemma}.
@@ -786,7 +412,7 @@ Therefore, $n_0 = ab=p_{1}^{\alpha_{1}} \dots p_{t}^{\alpha_{t}} q_{1}^{\beta_{1
 The implications and applications of the Fundamental Theorem of Arithmetic are very large and important, and a number of “obvious” ones are listed above.
 However, you should also be aware that the problem of factorization, i.e., knowing the decomposition of a number into prime factors, is in a NP class (complexity) and is the basis of some cryptosystems, although it is gradually being abandoned, including due to the potential of quantum computers.
 
-\subsubsection{Modular arithmetic}
+\subsection{Modular arithmetic}
 
 Now we are ready for practical applications of number theory, starting with modulo congruence.
 In this section, we will review the idea of congruence, learn how to use it, and explore
@@ -964,7 +590,7 @@ plays a crucial role in cryptography, forming the basis almost for every cryptog
     \end{itemize}
 \end{example}
 
-\subsubsection{Chinese Remainder Theorem}
+\subsection{Chinese Remainder Theorem}
 The Chinese Remainder Theorem is a fundamental result in number theory
 that provides an efficient method for solving congruence systems. It allows to
 decompose a complex problem with large integers into several simpler 
@@ -996,7 +622,7 @@ $a_i$ such that $a_iN_i \equiv 1 \pmod{n_i}$. Thus, the solution is given by
 This expression provides the unique solution modulo \( N \), where \( N = n_1 n_2 \cdots n_t \). 
 Beside, using this idea, we can write an efficient algorithm to compute \( x \) iteratively.
 
-\subsubsection{Euler's Theorem}
+\subsection{Euler's Theorem}
 % Now we introduce a fundamental result in Number Theory.
 
 \begin{theorem} [Euler's]
@@ -1055,7 +681,7 @@ we state the theorem in a more general form below.
 
 Note that Euler's theorem is a generalization of Fermat's Little Theorem.
 
-\subsubsection{Schwartz-Zippel Lemma}
+\subsection{Schwartz-Zippel Lemma}
 
 \begin{lemma}\label{lemma:sz}
 Let $\mathbb{F}$ be a field. Let $f(x_1, x_2, ..., x_n)$ be a polynomial of total degree $d$. Suppose that $f$ is not the zero polynomial. Let $S$ be
@@ -1077,84 +703,5 @@ Let $H(x) := P(x) - Q(x)$. Than for each $P(x) = Q(x) \rightarrow H(x) = 0$. App
 the probability of $H(x) = 0$ for $x \xleftarrow{R} \mathbb{F} $ is $\le \frac{d}{|S|}$.
 
 \newpage
-\subsection{Exercises}
-
-\textbf{Exercise 1.} Suppose that for the given cipher with a security parameter $\lambda$, the adversary $\mathcal{A}$ can deduce the least significant bit of the plaintext from the ciphertext. Recall that the advantage 
-of a bit-guessing game is defined as $\text{SS}\mathsf{Adv}[\mathcal{A}] = \left|\Pr[b=\hat{b}] - \frac{1}{2}\right|$, where $b$ is the randomly chosen bit of a challenger, while 
-$\hat{b}$ is the adversary's guess. What is the maximal advantage of $\mathcal{A}$ in this case?
-
-\textbf{Hint:} The adversary can choose which messages to send to challenger to further distinguish the plaintexts.
-\begin{multicols}{3}
-    \begin{enumerate}[a)]
-        \item $1$
-        \item $\frac{1}{2}$
-        \item $\frac{1}{4}$
-        \item $0$
-        \item Negligible value ($\text{negl}(\lambda)$).
-    \end{enumerate}
-\end{multicols}
-
-\textbf{Exercise 2.} Consider the cipher $\mathcal{E} = (E,D)$ with encryption function $E: \mathcal{K} \times \mathcal{M} \to \mathcal{C}$ over the message space $\mathcal{M}$, ciphertext space $\mathcal{C}$, and key space $\mathcal{K}$. We want to define the security
-that, based on the cipher, the adversary $\mathcal{A}$ cannot restore the message (\textit{security against message recovery}). For that reason, we define the following game:
-\begin{enumerate}
-    \item Challenger chooses random $m \xleftarrow{R} \mathcal{M}, k \xleftarrow{R} \mathcal{K}$.
-    \item Challenger computes the ciphertext $c \gets E(k,m)$ and sends to $\mathcal{A}$.
-    \item Adversary outputs $\hat{m}$, and wins if $\hat{m} = m$.
-\end{enumerate}
-
-We say that the cipher $\mathcal{E}$ is secure against message recovery if the \textbf{message recovery advantage}, denoted as $\text{MR}\textsf{adv}[\mathcal{A}, \mathcal{E}]$ is negligible. Which of the following statements is a valid interpretation of the message recovery advantage?
-\begin{enumerate}[a)]
-    \item $\text{MR}\textsf{adv}[\mathcal{A},\mathcal{E}] := \left|\text{Pr}[m=\hat{m}] - \frac{1}{2}\right|$
-    \item $\text{MR}\textsf{adv}[\mathcal{A},\mathcal{E}] := \left|\text{Pr}[m=\hat{m}] - 1\right|$.
-    \item $\text{MR}\textsf{adv}[\mathcal{A},\mathcal{E}] := \text{Pr}[m=\hat{m}]$
-    \item $\text{MR}\textsf{adv}[\mathcal{A},\mathcal{E}] := \left|\text{Pr}[m=\hat{m}] - \frac{1}{|\mathcal{M}|}\right|$
-\end{enumerate}
-
-\textbf{Exercise 3.} Suppose that $f$ and $g$ are negligible functions. Which of the following functions is not neccessarily negligible?
-\begin{enumerate}[a)]
-    \item $f + g$
-    \item $f \times g$
-    \item $f - g$
-    \item $f/g$
-    \item $h(\lambda) := \begin{cases}
-        1/f(\lambda) & \text{if } 0 < \lambda < 100000 \\
-        g(\lambda) & \text{if } \lambda \geq 100000
-    \end{cases}$
-\end{enumerate}
-
-\newpage
-\textbf{Exercise 4.} Suppose that $f \in \mathbb{F}_p[x]$ is a $d$-degree polynomial with $d$ \textbf{distinct} roots in $\mathbb{F}_p$. What is the probability that, when evaluating $f$ at $n$ random points, the polynomial will be zero at all of them?
-\begin{multicols}{2}
-    \begin{enumerate}[a)]
-        \item Exactly $(d/p)^n$.
-        \item Strictly less that $(d/p)^n$.
-        \item Exactly $nd/p$.
-        \item Exactly $d/np$.
-    \end{enumerate}
-\end{multicols}
-
-\textbf{Exercise 5-6.} To demonstrate the idea of Reed-Solomon codes, consider the toy construction. Suppose that our message is a tuple of two elements $a,b \in \mathbb{F}_{13}$. Consider function $f: \mathbb{F}_{13} \to \mathbb{F}_{13}$, defined as $f(x) = ax+b$, and define the encoding of the message $(a,b)$ as $(a,b) \mapsto (f(0),f(1),f(2),f(3))$. 
-
-\textbf{Question 5.} Suppose that you received the encoded message $(3,5,6,9)$. Which number from the encoded message is corrupted?
-\begin{multicols}{2}
-    \begin{enumerate}[a)]
-        \item First element ($3$).
-        \item Second element ($5$).
-        \item Third element ($6$).
-        \item Fourth element ($9$).
-        \item The message is not corrupted.
-    \end{enumerate}
-\end{multicols}
-
-\textbf{Question 6.} Consider the previous question. Suppose that the original message was $(a,b)$. Find the value of $a \times b$ (in $\mathbb{F}_{13}$).
-\begin{multicols}{5}
-    \begin{enumerate}[a)]
-        \item $4$
-        \item $6$
-        \item $12$
-        \item $2$
-        \item $1$
-    \end{enumerate}
-\end{multicols}
 
 \end{document}

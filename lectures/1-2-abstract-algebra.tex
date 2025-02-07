@@ -1,114 +1,8 @@
-\documentclass[../lecture-notes.tex]{subfiles}
+\documentclass[../lecture-notes-148x210.tex]{subfiles}
 
 \begin{document}
 
-\subsection{Notation}
-
-Before going into the details, let us introduce some notation.
-
-\subsubsection{Set Theory}
-First, let us enumerate some fundamental sets:
-\begin{itemize}
-    \item $\mathbb{N}$ -- a set of natural numbers. Examples: $10, 13, 193, \dots$.
-    \item $\mathbb{Z}$ -- a set of integers. Examples: $-2, -6, 0, 62, 103, \dots$.
-    \item $\mathbb{Q}$ -- a set of rational numbers. Examples: $\{\frac{n}{m}: n \in \mathbb{Z}, m \in \mathbb{N}\}$.
-    \item $\mathbb{R}$ -- a set of real numbers. Examples: $2.2, 1.4, -6.7, \dots$.
-    \item $\mathbb{R}_{>0}$ -- a set of positive real numbers. Examples: $2.6, 10.4, 100.2$.
-    \item $\mathbb{C}$ -- a set of complex numbers\footnote{Complex number is an expression in a form $x+iy$ for $i^2=-1$}. Examples: $1+2i, 5i, -7-5.7i, \dots$.
-\end{itemize}
-
-Typically we write $a \in A$ to say ``element $a$ is in set $A$''. To represent the number of elements in a set $A$, we write $|A|$. If the set is finite, $|A| \in \mathbb{N}$, otherwise 
-$|A| = \infty$. $A \subset B$ denotes ``$A$ is a subset of $B$'' (meaning that all elements of $A$ are also in $B$, e.g., $\mathbb{Q} \subset \mathbb{R}$).
-
-$A \cap B$ means the intersection of $A$ and $B$ (a set of elements belonging to both $A$ and $B$), while $A \cup B$ -- the union of $A$ and $B$ (the set of elements belonging to either $A$ or $B$). $A \setminus B$ denotes the set difference (the set of elements belonging to $A$, but not $B$). $\overline{A}$ denotes the complement of $A$ (the set of elements not belonging to $A$). All operations are illustrated in Figure~\ref{fig:venn_diagrams} (this picture is typically called the \textit{Venn Diagram}).
-
-To define the set, we typically write $\{f(a): \phi(a)\}$, where $f(a)$ is some function and $\phi(a)$ is a predicate (function, inputting $a$ and returning true/false if a certain condition on $a$ is met). For example, $\{x^3: x \in \mathbb{R}, x^2 = 4\}$ is ``a set of values $x^3$ which are the real solutions to equation $x^2 = 4$''. It is quite easy to see that this set is simply $\{2^3, (-2)^3\} = \{8,-8\}$. 
-
-The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \in B$ (or, written shortly, $A \times B = \{(a,b): a \in A, b \in B\}$), called a Cartesian product. We additionally introduce notation $A^n := \underbrace{A \times A \times \dots \times A}_{n \; \text{times}}$ -- Cartesian product $n$ times. For example, $\mathbb{Q}^3$ is a set of triplets $(a,b,c)$ where $a,b,c \in \mathbb{Q}$, while $\mathbb{Q}^2 \times \mathbb{R}$ is a set of triplets $(a,b,c)$ where $a,b \in \mathbb{Q}$ and $c \in \mathbb{R}$.
-
-% --- Writing diagrams ---
-\def\firstcircle{(0,0) circle (1.5cm)}
-\def\secondcircle{(0:2cm) circle (1.5cm)}
-
-\colorlet{circle edge}{blue!50}
-\colorlet{circle area}{blue!20}
-
-\tikzset{filled/.style={fill=circle area, draw=circle edge, ultra thick},
-    outline/.style={draw=circle edge, ultra thick}}
-
-\begin{figure}
-    \begin{center}
-
-    \scalebox{0.5}{
-    \begin{tabular}{cc}
-    % Set A and B
-    \begin{tikzpicture}
-        \begin{scope}
-            \clip \firstcircle;
-            \fill[filled] \secondcircle;
-        \end{scope}
-        \draw[outline] \firstcircle node {$A$};
-        \draw[outline] \secondcircle node {$B$};
-        \node[anchor=south] at (current bounding box.north) {$A \cap B$};
-    \end{tikzpicture} &   
-    %Set A or B but not (A and B) also known a A xor B
-    \begin{tikzpicture}
-        \draw[filled, even odd rule] \firstcircle node {$A$}
-                                    \secondcircle node{$B$};
-        \node[anchor=south] at (current bounding box.north) {$\overline{A \cap B}$};
-    \end{tikzpicture}
-    \\
-    % Set A or B
-    \begin{tikzpicture}
-        \draw[filled] \firstcircle node {$A$}
-                    \secondcircle node {$B$};
-        \node[anchor=south] at (current bounding box.north) {$A \cup B$};
-    \end{tikzpicture} &  
-    % Set A but not B
-    \begin{tikzpicture}
-        \begin{scope}
-            \clip \firstcircle;
-            \draw[filled, even odd rule] \firstcircle node {$A$}
-                                        \secondcircle;
-        \end{scope}
-        \draw[outline] \firstcircle
-                    \secondcircle node {$B$};
-        \node[anchor=south] at (current bounding box.north) {$A \setminus B$};
-    \end{tikzpicture}
-\end{tabular}
-}
-\end{center}
-    \caption{Set operations illustrated with Venn diagrams.}
-\label{fig:venn_diagrams}
-\end{figure}
-
-\subsubsection{Logic}
-
-Statement beginning with $\forall$ means ``for all...''. For instance, $(\forall a \in A \subset \mathbb{R}): \{a < 1\}$ is read as: ``For any $a$ in set $A$ (which is a subset of real numbers), it is true that $a<1$''. Or, more shortly, ``Any (real) $a$ from $A$ is less than $1$''.
-
-Statement beginning from $\exists$ means ``there exists such...''. Let us consider the following example: $(\exists \varepsilon > 0) (\forall a \in A): \{a > \varepsilon\}$ is read as ``there exists such a positive $\varepsilon$ such that for any element $a$ from $A$, $a$ is greater than $\varepsilon$'', or, more concisely, ``there exists a positive constant $\varepsilon$ such that any element from $A$ is greater than $\varepsilon$''.
-
-Statement beginning from $\exists !$ means ``there exists a unique...''. For example, $(\exists! x \in \mathbb{R}_{>0}): \{x^2 = 4\}$ is read as ``there exists a unique positive real $x$ such that $x^2 = 4$''.
-
-Symbol $\wedge$ means ``and''. For example, $\{x \in \mathbb{R}: x^2 = 4 \wedge x > 0\}$ is read as ``a set of real $x$ such that $x^2=4$ and $x$ is positive''. Of course, $\{x \in \mathbb{R}: x^2 = 4 \wedge x > 0\} = \{2\}$.
-
-Symbol $\vee$ means ``or''. For example, $\{x \in \mathbb{R}: x^2 = 4 \vee x^2 = 9\}$ is read as ``a set of real $x$ such that either $x^2=4$ or $x^2=9$''. Here, this set is equal to $\{-2,2,-3,3\}$.
-
-\subsubsection{Randomness and Probability}
-
-To denote the probability of an event $A$ happening, we write $\Pr[A]$. For example, if event $A$ represents that a coin lands heads, then $\Pr[A] = 0.5$.
-
-Fix some set $A$. To denote that we are uniformly randomly picking some element from $A$, we write $a \xleftarrow{R} A$. For example, $a \xleftarrow{R} \{1,2,3,4,5,6\}$ means that we are picking a number from $1$ to $6$ uniformly at random.
-
-\subsubsection{Sequences and Vectors}
-
-To denote the infinite sequence $\{x_1,x_2,x_3,\dots\}$ we write $\{x_n\}_{n \in \mathbb{N}}$. To denote the finite sequence $\{x_1,x_2,\dots,x_n\}$ we write $\{x_k\}_{k=1}^n$. 
-
-Vector is a collection of elements $\mathbf{x} = (x_1,\dots,x_n) \in A^n$. Finally, the scalar product\footnote{It is totally normal if you do not know what that is, we will explain more in the Bulletproof lecture} is denoted as $\langle \mathbf{x}, \mathbf{y} \rangle := \sum_{k=1}^n x_ky_k$.
-
-\subsection{Introduction to Abstract Algebra}
-
-\subsubsection{Groups}
+\subsection{Groups}
 
 Throughout the lectures, probably the most important topic is the \textit{group theory}. 
 
@@ -248,7 +142,7 @@ Thus, $a = b$.
     Prove the third and fourth statements.
 \end{exercise}
 
-\subsubsection{Subgroups}
+\subsection{Subgroups}
 
 When we are finally comfortable with the concept of a group, we can move on to the concept of a \textit{subgroup}. 
 
@@ -281,7 +175,7 @@ These are good examples, but let us consider a more interesting one, which we ca
     Prove the lemma.
 \end{exercise}
 
-\subsubsection{Cyclic Groups}
+\subsection{Cyclic Groups}
 
 Probably, cyclic groups are the most interesting groups in the world of cryptography. But before defining them, we need to know how to add/subtract elements multiple times (that is, multiplying by an integer). Suppose 
 we have a group $\mathbb{G}$ and $g \in \mathbb{G}$. Then, $g^n$ means multiplying (adding) $g$ to itself $n$ times. If $n$ is negative, then we add $g^{-1}$ to itself $|n|$ times. For $n=0$ we define $g^0 = e$. Now, let us define what the cyclic group is.
@@ -307,7 +201,7 @@ we have a group $\mathbb{G}$ and $g \in \mathbb{G}$. Then, $g^n$ means multiplyi
     The group of integers $(\mathbb{Z},+)$ is an infinite cyclic group. Indeed, it is generated by $1$.
 \end{example}
 
-\subsubsection{Isomorphisms and Endomorphisms}
+\subsection{Isomorphisms and Endomorphisms}
 
 Finally, we will define the concept of isomorphisms and endomorphisms. These are important concepts in the world of cryptography, since they allow us to compare different groups. Namely, 
 suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is there any way to state that these two groups are the same? The answer is yes, and this is done via isomorphisms.
@@ -378,7 +272,6 @@ Last two definitions are especially frequently used in Elliptic Curves theory.
 
 \subsection{Fields}
 
-\subsubsection{Formal Definition}
 Although typically one introduces rings before fields, we believe that for the basic understanding, it is better to start with fields. 
 
 Notice that when dealing with groups, we had a single operation $\oplus$, which, depending on the context, is either interpreted as addition or multiplication. 
@@ -419,7 +312,7 @@ What this definition basically states is that we can perform the following opera
 
 Interestingly though, it is very difficult to come up with some more complicated, non-trivial examples. For that reason, we will simply move to the most central field used in cryptography -- finite fields.
 
-\subsubsection{Finite Fields}
+\subsection{Finite Fields}
 Recall: we do not like reals, we want to operate with integers! But notice that $(\mathbb{Z},+,\times)$ does not form a field since division is not closed. For that reason, fixate some integer $p$ and consider the set $\mathbb{Z}_p := \{0,1,2,\dots,p-2,p-1\}$. Now, we will define operations as follows:
 
 \textbf{Addition.} To add $a,b \in \mathbb{Z}_p$, add them as usual to get $c \gets a+b$. However, this way, operation is not closed, since $c$ might be easily greater than $p-1$ (e.g., for $a=b=p-2$). To fix this, take $c' \in \mathbb{Z}_p$ such that $c \equiv c' \pmod{p}$ (or, written more concisely, $c' = (a+b) \;\text{mod} \; p$). 
@@ -467,229 +360,7 @@ Finite fields is the core object in cryptography. Instead of real numbers or pur
     \end{enumerate}
 \end{example}
 
-
-\subsection{Polynomials}\label{section:polynomials}
-
-\subsubsection{Basic Definition}
-
-Polynomials are intensively used in almost all areas of cryptography. In our particular case, polynomials will encode the information about
-statements we will need to prove. That being said, let us define what polynomial is.
-
-\begin{definition}
-    A \textbf{polynomial} $f(x)$ is a function of the form
-    \begin{equation*}
-        p(x) = c_0 + c_1 x + c_2 x^2 + \cdots + c_n x^n = \sum_{k=0}^{n} c_k x^k,
-    \end{equation*}
-    where $c_0, c_1, \dots, c_n$ are coefficients of the polynomial.
-\end{definition}
-
-Notice that for now we did not specify what are $c_i$'s. We are interested in the case where $c_i \in \mathbb{F}$, where $\mathbb{F}$ is a field. 
-
-\begin{definition}
-    A set of polynomials depending on $x$ with coefficients in a field $\mathbb{F}$ is denoted as $\mathbb{F}[x]$, that is
-    \begin{equation*}
-        \mathbb{F}[x] = \left\{p(x) = \sum_{k=0}^{n} c_k x^k: c_k \in \mathbb{F}, \; k = 0,\dots,n\right\}.
-    \end{equation*}
-\end{definition}
-
-\begin{definition}
-    Evaluation of a polynomial $p(x) \in \mathbb{F}[x]$ at point $x_0 \in \mathbb{F}$ is simply finding the value of $p(x_0) \in \mathbb{F}$.
-\end{definition}
-
-\begin{example}
-    Consider the finite field $\mathbb{F}_3$. Then, some examples of polynomials from $\mathbb{F}_3[x]$ are listed below:
-    \begin{enumerate}
-        \item $p(x) = 1 + x + 2x^2$.
-        \item $q(x) = 1 + x^2 + x^3$.
-        \item $r(x) = 2x^3$.
-    \end{enumerate}
-
-   If we were to evaluate these polynomials at $1 \in \mathbb{F}_3$, we would get:
-    \begin{enumerate}
-        \item $p(1) = 1 + 1 + 2 \cdot 1 \; \text{mod} \; 3 = 1$.
-        \item $q(1) = 1 + 1 + 1 \; \text{mod} \; 3 = 0$.
-        \item $r(1) = 2 \cdot 1 = 2$.
-    \end{enumerate}
-\end{example}
-
-\begin{definition}
-    The \textbf{degree} of a polynomial $p(x) = c_0+c_1x+c_2x^2+\dots$ is the largest $k \in \mathbb{Z}_{\geq 0}$ such that $c_k \neq 0$. We denote the degree of a polynomial as $\deg p$. We also denote by $\mathbb{F}^{(\leq m)}[x]$ a set of polynomials of degree at most $m$.
-\end{definition}
-
-\begin{example}
-    The degree of the polynomial $p(x) = 1 + 2x + 3x^2$ is $2$, so $p(x) \in \mathbb{F}_3^{(\leq 2)}[x]$.
-\end{example}
-
-\begin{theorem}
-    For any two polynomials $p,q \in \mathbb{F}[x]$ and $n = \deg p, m = \deg q$, the following two statements are true:
-    \begin{enumerate}
-        \item $\deg (pq) = n + m$.
-        \item $\deg (p + q) = \max\{n,m\}$ if $n \neq m$ and $\deg (p+q) \leq m$ for $m=n$.
-    \end{enumerate}
-\end{theorem}
-
-\subsubsection{Roots and divisibility}
-
-\begin{definition}
-    Let $p(x) \in \mathbb{F}[x]$ be a polynomial of degree $\deg p \geq 1$. A field element $x_0 \in \mathbb{F}$ is called a root of $p(x)$ if $p(x_0) = 0$.
-\end{definition}
-
-\begin{example}
-    Consider the polynomial $p(x) = 1 + x + x^2 \in \mathbb{F}_3[x]$. Then, $x_0=1$ is a root of $p(x)$ since $p(x_0) = 1 + 1 + 1 \; \text{mod} \; 3 = 0$.
-\end{example}
-
-One of the fundamental theorems of polynomials is following.
-
-\begin{theorem}
-    Let $p(x) \in \mathbb{F}[x], \deg p \geq 1$. Then, $x_0 \in \mathbb{F}$ is a root of $p(x)$ if and only if there exists a polynomial $q(x)$ (with $\deg q = n-1$) such that
-    \begin{equation*}
-        p(x) = (x-x_0)q(x)
-    \end{equation*}
-\end{theorem}
-
-\begin{example}
-    Note that $x_0=1$ is a root of $p(x) = x^2+2$. Indeed, we can write $p(x) = (x-1)(x-2)$, so here $q(x) = x-2$.
-\end{example}
-
-Also, this might not be obvious, but we can also divide polynomials in the same way as we divide integers. The result of division is not always a polynomial, so we also get a remainder.
-
-\begin{theorem}
-    Given $f,g \in \mathbb{F}[x]$ with $g \neq 0$, there are unique polynomials $p,q \in \mathbb{F}[x]$ such that 
-    \begin{equation*}
-        f = q \cdot g + r, \; 0 \leq \deg r < \deg g
-    \end{equation*}
-\end{theorem}
-
-\begin{example}
-    Consider $f(x) = x^3+2$ and $g(x) = x+1$ over $\mathbb{R}$. Then, we can write $f(x) = (x^2-x+1)g(x) + 1$, so the remainder of the division is $1$. Typically, we denote this as:
-    \begin{equation*}
-        f \, \text{div} \, g = x^2-x+1, \quad f \, \text{mod} \, g = 1.
-    \end{equation*}
-
-    The notation is pretty similar to one used in integer division.
-\end{example}
-
-Similarly, one can define $\text{gcd}$, $\text{lcm}$, and other number field theory operations for polynomials. However, we will not go into details here, besides mentioning the divisibility.
-
-\begin{definition}
-    A polynomial $f(x) \in \mathbb{F}[x]$ is called \textbf{divisible} by $g(x) \in \mathbb{F}[x]$ (or, $g$ \textbf{divides} $f$, written as $g \mid f$) if there exists a polynomial $h(x) \in \mathbb{F}[x]$ such that $f=gh$.
-\end{definition}
-
-\begin{theorem}
-    If $x_0 \in \mathbb{F}$ is a root of $p(x) \in \mathbb{F}[x]$, then $(x-x_0) \mid p(x)$.
-\end{theorem}
-
-\begin{definition}
-    A polynomial $f(x) \in \mathbb{F}[x]$ is said to be \textbf{irreducible} in $\mathbb{F}$ if there are no polynomials $g,h \in \mathbb{F}[x]$ both of degree more than $1$ such that $f = gh$.
-\end{definition}
-
-\begin{example}
-    A polynomial $f(x) = x^2+16$ is irreducible in $\mathbb{R}$. In turn, $f(x) = x^2-2$ is not irreducible since $f(x) = (x-\sqrt{2})(x+\sqrt{2})$. 
-\end{example}
-
-\begin{example}
-    There are no polynomials over complex numbers $\mathbb{C}$ with degree more than $2$ that are irreducible. This follows from the \textit{fundamental theorem of algebra}.
-\end{example}
-
-\subsubsection{Interpolation}
-
-Now, let us ask the question: what defines the polynomial? Well, given expression $p(x) = \sum_{k=0}^n c_kx^k$ one can easily say: ``hey, I need to know the coefficients $\{c_k\}_{k=0}^n$''.
-
-Indeed, each polynomial of degree $n$ is uniquely determined by the vector of its coefficients $(c_0,c_1,\dots,c_n) \in \mathbb{F}^n$. However, that is not the only way to define a polynomial.
-
-Suppose I tell you that $p(x) = ax + b$ -- just a simple linear function over $\mathbb{R}$. Suppose I tell you that $p(x)$ intercepts $(0,0)$ and $(1,2)$. Then, you can easily say that $p(x) = 2x$. 
-
-The more general question is: suppose $\deg p = n$, how many points do I need to define the polynomial $p(x)$ uniquely? The answer is $n+1$ distinct points. This is the idea behind the interpolation:
-the polynomial is uniquely defined by $n+1$ distinct points on the plane. An example is depicted 
-in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the polynomial practically.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{images/lecture_1/interpolation.pdf}
-    \caption{$5$ points on the plane uniquely define the polynomial of degree $4$.}
-    \label{fig:interpolation}
-\end{figure}
-
-\begin{theorem}
-    Given a set of points $\{(x_0,y_0),(x_1,y_1),\dots,(x_n,y_n)\} \subset
-    \mathbb{F} \times \mathbb{F}$, there is a unique polynomial $L(x)$ of degree
-    $n$ such that $L(x_i) = y_i$ for all $i=0,\dots,n$. This polynomial is
-    called the \textbf{Lagrange interpolation polynomial} and can be found
-    through the following formula:
-    \begin{equation*}
-        L(x) = \sum_{i=0}^{n} y_i \ell_i(x), \quad \ell_i(x) = \prod_{j=0, j \neq i}^{n} \frac{x-x_j}{x_i-x_j}.
-    \end{equation*}  
-\end{theorem}
-
-\begin{lemma}
-    The polynomials $\{\ell_i\}_{i=1}^n$, in fact, have quite an interesting property:
-    \begin{equation*}
-        \ell_i(x_j) = \delta_{ij} = \begin{cases}
-            1, & i = j \\ 0, & i \neq j
-        \end{cases},
-    \end{equation*}
-    where $\delta_{ij}$ is the Kronecker delta. Moreover, $\{\ell_i\}_{i=1}^n$ form a basis of $\mathbb{F}^{(\leq n)}[x]$: for any polynomial $p(x) \in \mathbb{F}^{(\leq n)}[x]$ there exist unique coefficients $\alpha_0,\dots,\alpha_n \in \mathbb{F}$ such that
-    \begin{equation*}
-        p(x) = \sum_{i=0}^{n} \alpha_i \ell_i(x).
-    \end{equation*}
-\end{lemma}
-
-\begin{example}
-    Suppose we have points $(0,1)$ and $(1,2)$. Then, the Lagrange interpolation polynomial is
-    \begin{equation*}
-        L(x) = 1 \cdot \frac{x-1}{0-1} + 2 \cdot \frac{x-0}{1-0} = (-1) \cdot (x-1) + 2 \cdot x = x + 1
-    \end{equation*}
-\end{example}
-
-\subsubsection{Some Fun: Shamir's Secret Sharing}
-
-Shamir's Secret Sharing, also known as $(t,n)$-threshold scheme, is one of the protocols exploiting Lagrange Interpolation. 
-
-But first, let us define what secret sharing is. Suppose we have a secret data $\alpha$, which is represented as an element from some finite set $F$. We divide this secret into $n$ pieces $\alpha_1,\dots,\alpha_n \in F$ in such a way:
-\begin{enumerate}
-    \item Knowledge of any $t$ shares can reconstruct the secret $\alpha$.
-    \item Knowledge of any number of shares below $t$ cannot be used to reconstruct the secret $\alpha$.
-\end{enumerate}
-
-Now, let us define the sharing scheme.
-
-\begin{definition}
-    \textbf{Secret Sharing} scheme is a pair of efficient algorithms $(\mathsf{Gen}, \mathsf{Comb})$ which work as follows:
-    \begin{itemize}
-        \item $\mathsf{Gen}(\alpha, t, n)$: probabilistic sharing algorithm that yields $n$ shards $(\alpha_1,\dots,\alpha_t)$ for which $t$ shards are needed to reconstruct the secret $\alpha$.
-        \item $\mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}})$: deterministic reconstruction algorithm that reconstructs the secret $\alpha$ from the shards $\mathcal{I} \subset \{1,\dots,n\}$ of size $t$.
-    \end{itemize}
-
-    Here, we require the \textbf{correctness}: for every $\alpha \in F$, for every possible output $(\alpha_1,\dots,\alpha_n) \gets \mathsf{Gen}(\alpha, t, n)$, and any $t$-size subset $\mathcal{I}$ of $\{1,\dots,n\}$ we have
-    \begin{equation*}
-        \mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}}) = \alpha.
-    \end{equation*}
-\end{definition}
-
-Now, Shamir's protocol is one of the most famous secret sharing schemes. It works as follows: our finite set is $\mathbb{F}_q$ for some large prime $q$. Then, algorithms in the protocol are defined as follows:
-\begin{itemize}
-    \item $\mathsf{Gen}(\alpha, k, n)$: choose random $k_1,\dots,k_{t-1} \xleftarrow[]{R} \mathbb{F}_q$ and define the polynomial
-    \begin{equation*}
-        \omega(x) := \alpha + k_1x + k_2x^2 + \cdots + k_{t-1}x^{t-1} \in \mathbb{F}_q^{\leq (t-1)}[x],     
-    \end{equation*}
-    and then compute $\alpha_i \gets \omega(i) \in \mathbb{F}_q, \; i = 1,\dots,n$. Return $(\alpha_1,\dots,\alpha_n)$.
-    \item $\mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}})$: reconstruct the polynomial $\omega(x)$ using Lagrange interpolation and return $\omega(0) = \alpha$.
-\end{itemize}
-
-The combination function is possible since, having $t$ points $\{i,\alpha_i\}_{i \in \mathcal{I}}$ with $\omega(i) = \alpha_i$, we can fully reconstruct the polynomial $\omega(x)$ and then evaluate it at $0$ to get $\alpha$.
-
-Instead, suppose we have only $t-1$ (or less) pairs $\{i,\alpha_i\}_{i \in \mathcal{I}}$. Then, there are many polynomials $\omega(x)$ that pass through these points (in fact, if we were in the field of real numbers, this number would be infinite), and thus the secret $\alpha$ is not uniquely determined.
-
-The intuition behind the Shamir's protocol is illustrated in Figure~\ref{fig:shamir}.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{images/lecture_1/shamir_demo.pdf}
-    \caption{Suppose we have $t=3$. Having only 2 points means knowing two \textcolor{blue}{blue} points without knowing the \textcolor{red}{red} one. There are infinitely many quadratic polynomials passing through these two points (\textcolor{gray}{gray dashed} lines). However, knowing the third \textcolor{red}{red} point allows us to uniquely determine the polynomial and thus get its value at $0$. Note that this is illustrated over $\mathbb{R}$, but for $\mathbb{F}_q$ the logic is similar.}
-    \label{fig:shamir}
-\end{figure}
-
-\subsubsection{Some Fun: Group Implementation in Rust}
+\subsection{Some Fun: Group Implementation in Rust}
 
 In programming, we can think of a group as an interface, having a single binary operation defined, that obeys the rules of closure, associativity, identity element, and inverse element.
 
@@ -910,126 +581,6 @@ Here, there are two tricky moments:
     \item To generate a random rotation matrix, we generate three random angles and create a rotation matrix from these angles.
 \end{enumerate}
 
-\newpage
 \subsection{Exercises}
-
-\textbf{Exercise 1.} Which of the following statements is \textbf{false}?
-\begin{enumerate}
-    \item $(\forall a, b \in \mathbb{Q}, a \neq b) \; (\exists q \in \mathbb{R}): \{a < q < b\}$.
-    \item $(\forall \varepsilon > 0) \, (\exists n_{\varepsilon} \in \mathbb{N}) \, (\forall n \geq n_{\varepsilon}): \{1/n < \varepsilon\}$.
-    \item $(\forall k \in \mathbb{Z}) \; (\exists n \in \mathbb{N}): \{n < k\}$.
-    \item $(\forall x \in \mathbb{Z} \setminus \{-1\}) \; (\exists! y \in \mathbb{Q}): \{(x+1)y = 2\}$.
-\end{enumerate}
-
-\textbf{Exercise 2.} Denote $X := \{(x,y) \in \mathbb{Q}^2: xy = 1\}$. Oleksandr claims the following:
-\begin{enumerate}
-    \item $X \cap \mathbb{N}^2 = \{(1,1)\}$. 
-    \item $|X \cap \mathbb{Z}^2| = 2|X \cap \mathbb{N}^2|$.
-    \item $X$ is a group under the operation $(x_1,y_1) \oplus (x_2,y_2) = (x_1x_2, y_1y_2)$.
-\end{enumerate}
-
-Which statements are \textbf{true}?
-\begin{multicols}{3}
-    \begin{enumerate}[a)]
-        \item Only 1.
-        \item Only 1 and 2.
-        \item Only 1 and 3.
-        \item Only 2 and 3.
-        \item All statements are correct.
-    \end{enumerate}
-\end{multicols}
-
-\textbf{Exercise 3.} Does a tuple $(\mathbb{Z},\oplus)$ with operation $a \oplus b = a + b - 1$ define a group?
-\begin{enumerate}[a)]
-    \item Yes, and this group is abelian.
-    \item Yes, but this group is not abelian.
-    \item No, since the associativity property does not hold.
-    \item No, since there is no identity element in this group.
-    \item No, since there is no inverse element in this group.
-\end{enumerate}
-
-\textbf{Exercise 4.} Consider the Cartesian plane $\mathbb{R}^2$, where two coordinates are real numbers. For two points $A,B$ define the operation $\oplus$
-as follows: $A \oplus B$ is the midpoint on segment $AB$. Does $(\mathbb{R}^2, \oplus)$ define a group? 
-\begin{enumerate}[a)]
-    \item Yes, and this group is abelian.
-    \item Yes, but this group is not abelian.
-    \item No, since the associativity property does not hold and there is no identity element in this group.
-    \item No, since the associativity property does not hold, but we might define an identity element nonetheless.
-\end{enumerate}
-
-\textbf{Exercise 5.} Find the inverse of $4$ in $\mathbb{F}_{11}$.
-\begin{multicols}{4}
-    \begin{enumerate}[a)]
-        \item 8
-        \item 5
-        \item 3
-        \item 7
-    \end{enumerate}
-\end{multicols}
-
-\newpage
-\textbf{Exercise 6.} Suppose for three polynomials $p,q,r \in \mathbb{F}[x]$ we have $\deg p = 3, \deg q = 4, \deg r = 5$. Which of the following is true for $n := \deg \{(p-q)r\}$?
-\begin{multicols}{2}
-    \begin{enumerate}[a)]
-        \item $n = 9$.
-        \item $n$ might be less than $9$.
-        \item $n = 20$.
-        \item $n$ is less than $\deg \{qr\}$. 
-    \end{enumerate}
-\end{multicols}
-
-\textbf{Exercise 7.} Define the polynomial over $\mathbb{F}_5$: $f(x) := 4x^2 + 7$. Which of the following is the root of $f(x)$?
-\begin{multicols}{4}
-    \begin{enumerate}[a)]
-        \item $2$
-        \item $3$
-        \item $4$
-        \item No roots.
-    \end{enumerate}
-\end{multicols}
-
-\textbf{Exercise 8.} Quadratic polynomial $p(x) = ax^2+bx+c \in \mathbb{R}[x]$ has zeros at $1$ and $2$ and $p(0) = 2$. Find the value of $a+b+c$.
-\begin{multicols}{2}
-    \begin{enumerate}[a)]
-        \item $0$
-        \item $-1$
-        \item $1$
-        \item Not enough information.
-    \end{enumerate}
-\end{multicols}
-
-\textbf{Exercise 9.} Which of the following is a \textbf{valid} endomorphism $f: X \to X$? 
-\begin{multicols}{2}
-    \begin{enumerate}[a)]
-        \item $X = [0,1]$, $f: x \mapsto x^2$.
-        \item $X = [0,1]$, $f: x \mapsto x + 1$.
-        \item $X = \mathbb{R}_{>0}$, $f: x \mapsto (x-1)^3$.
-        \item $X = \mathbb{Q}_{>0}$, $f: x \mapsto \sqrt{x}$.
-    \end{enumerate}
-\end{multicols}
-
-\textbf{Exercise 10*.} Denote by $\text{GL}(2,\mathbb{R})$ a set of $2\times 2$ invertable matrices with real entries. Define two functions $\varphi: \text{GL}(2,\mathbb{R}) \to \mathbb{R}$:
-\begin{equation*}
-    \varphi_1 \left(\begin{bmatrix}
-        a & b \\ c & d
-    \end{bmatrix}\right) = ad - bc, \; \varphi_2 \left(\begin{bmatrix}
-        a & b \\ c & d
-    \end{bmatrix}\right) = a + d
-\end{equation*}
-
-Den claims the following:
-\begin{enumerate}
-    \item $\varphi_1$ is a group homomorphism between multiplicative groups $(\text{GL}(2,\mathbb{R}), \times)$ and $(\mathbb{R}, \times)$.
-    \item $\varphi_2$ is a group homomorphism between additive groups $(\text{GL}(2, \mathbb{R}), +)$ and $(\mathbb{R}, +)$.
-\end{enumerate}
-
-Which of the following is \textbf{true}?
-
-\begin{enumerate}[a)]
-    \item Only statement 1 is correct.
-    \item Only statement 2 is correct.
-    \item Both statements 1 and 2 are correct.
-    \item None of the statements is correct.
-\end{enumerate}
 
 \end{document}
