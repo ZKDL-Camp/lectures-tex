@@ -174,6 +174,25 @@ in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the po
     \end{equation*}
 \end{example}
 
+\subsection{Schwartz-Zippel Lemma}
+
+\begin{lemma}\label{lemma:sz}
+Let $\mathbb{F}$ be a field. Let $f(x_1, x_2, ..., x_n)$ be a polynomial of total degree $d$. Suppose that $f$ is not the zero polynomial. Let $S$ be
+a finite subset of $\mathbb{F}$. Let $r_1, r_2, ... r_n$ be chosen at random uniformly and independently from $S$. Then the probability that 
+$f(r_1, r_2, ..., r_n) = 0$ is $\le \frac{d}{|S|}$.
+\end{lemma}
+
+\begin{example}
+Let $F = \F_3$, $f(x) = x^2 - 5x + 6$, $S = F$, $r \xleftarrow{R} \mathbb{F}_3$.
+
+Schwartz-Zippel lemma says that the probability that $f(r) = 0$ is $\le \frac{2}{3}$.
+\end{example}
+
+Given two polynomials $P, Q$ with  degree $d$ in a field $\F_p$, for $r \xleftarrow{R} \mathbb{F}_3$: $\Pr[P(r) == Q(r)] \le \frac{d}{p}$.
+For large fields, where  $\frac{d}{p}$ is negligible, this property allows to succinctly check the equality of polynomials.
+Let $H(x) := P(x) - Q(x)$. Than for each $P(x) = Q(x) \rightarrow H(x) = 0$. Applying Schwartz-Zippel lemma, 
+the probability of $H(x) = 0$ for $x \xleftarrow{R} \mathbb{F} $ is $\le \frac{d}{|S|}$.
+
 \subsection{Some Fun: Shamir's Secret Sharing}
 
 Shamir's Secret Sharing, also known as $(t,n)$-threshold scheme, is one of the protocols exploiting Lagrange Interpolation. 

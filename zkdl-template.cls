@@ -29,8 +29,8 @@
 \RequirePackage[dvipsnames,table]{xcolor}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[
-    paperwidth=148mm,
-    paperheight=210mm,
+    paperwidth=145mm,
+    paperheight=215mm,
     top=5mm,
     bottom=12mm, 
     left=15mm, 
@@ -39,7 +39,7 @@
     headheight=5mm,
     headsep=2mm,
     includefoot,
-    footskip=8mm
+    footskip=4mm
 ]{geometry}
 \RequirePackage[most]{tcolorbox}
 \RequirePackage{multicol}
@@ -214,8 +214,8 @@
 \theoremstyle{mystyle}{\newtheorem{corollary}[definition]{Corollary}}
 \theoremstyle{mystyle}{\newtheorem*{remark}{Remark}}
 \theoremstyle{mystyle}{\newtheorem*{remarks}{Remarks}}
-\theoremstyle{mystyle}{\newtheorem*{example}{Example}}
-\theoremstyle{mystyle}{\newtheorem*{examples}{Examples}}
+\theoremstyle{mystyle}{\newtheorem{example}{Example}[section]}
+\theoremstyle{mystyle}{\newtheorem{examples}{Examples}[section]}
 \theoremstyle{definition}{\newtheorem*{exercise}{Exercise}}
 \theoremstyle{cstyle}{\newtheorem*{cthm}{}}
 
@@ -258,6 +258,10 @@
 % For cleverref to display the algorithms properly
 \crefname{algocf}{alg.}{algs.}
 \Crefname{algocf}{Algorithm}{Algorithms}
+
+% For cleverref to display examples properly
+\crefname{example}{ex.}{exs.}
+\Crefname{example}{Example}{Examples}
 
 % align and align* environments with inline size
 \newenvironment{talign}{\let\displaystyle\textstyle\align}{\endalign}
