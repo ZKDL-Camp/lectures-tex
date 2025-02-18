@@ -288,7 +288,10 @@
 \titlespacing*{\subsection}{0pt}{5pt}{5pt}
 \titlespacing*{\subsubsection}{0pt}{5pt}{5pt}
 
-\newcommand{\sectionbreak}{\clearpage} % Start every section on a new page
+\let\oldsection\section
+\renewcommand{\section}{\clearpage\oldsection}
+
+% \newcommand{\sectionbreak}{\clearpage} % Start every section on a new page
 % \newcommand{\subsectionbreak}{\clearpage} % Start every subsection on a new page
 
 \newcommand{\Disp}{\displaystyle}
