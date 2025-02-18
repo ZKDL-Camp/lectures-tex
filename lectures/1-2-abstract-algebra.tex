@@ -2,39 +2,47 @@
 
 \begin{document}
 
+In the previous section, we introduced the fundamentals of Number Theory. 
+Now, we will move on to abstract algebra, which forms the core of modern 
+cryptography. But you might wonder: why is abstract algebra important? 
+
+Consider the set $\mathbb{Z}_n$. We already know that two integers $a$ and 
+$b$ are congruent modulo $n$ if $n$ divides their difference $n \mid (a - b)$. 
+Naturally, we can define the modular addition operation over $\mathbb{Z}_n$. 
+At this point, we can observe the following properties, which you may not fully 
+understand yet, but you're already familiar with. 
+
+\begin{lemma}
+    Suppose $a, b, c \in \mathbb{Z}_n$, then we have the following modular addition properties,
+
+    \begin{enumerate}
+        \item $\textit{Addition associative: } a + (b + c) \equiv (a + b) + c \pmod{n}$
+        \item $\textit{Addition identity: } a + 0 \equiv a \pmod{n}$
+        \item $\textit{Additive inverse: } a + (-a) \equiv 1 \pmod{n}$
+        \item $\textit{Addition commutative: } a + b \equiv b + a \pmod{n}$
+    \end{enumerate}
+
+    Similarly, works for multiplication operation. 
+\end{lemma}
+
+In abstract algebra, we explore algebraic structures defined by abstract operations. These 
+structures possess specific properties that help us understand the behavior of their elements.
+By examining these properties, we can derive general principles and insights applicable to 
+any mathematical systems.
+
 \subsection{Groups}
 
-Throughout the lectures, probably the most important topic is the \textit{group theory}. 
-
-As you can recall from the high school math, typically real-world processes are described using real numbers, denoted by $\mathbb{R}$. For example, to describe the position or the velocity of an object, you would rather use real numbers. 
-
-When it comes to working with computers though, real numbers become very inconvenient to work with. For instance, different programming languages might output different values for quite a straightforward operation \textsf{2.01 + 2.00}. This becomes a huge problem when dealing with cryptography, which must check \textit{precisely} whether two quantities are equal. 
-For example, if the person's card number is $N$ and the developed system operates with a different, but very similar card with number $N + k$ for $k \ll N$, then this system can be safely thrown out of the window. See Figure \ref{fig:why_integers}.
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\textwidth]{images/lecture_1/why_integers.pdf}
-    \caption{Alice pays to Bob to a card number $N$, but our awesome system pays to $N+k$ instead. Bob would not be happy...}
-    \label{fig:why_integers}
-\end{figure}
-
-This motivates us to work with integers (denoted by $\mathbb{Z}$), instead. This solves the problem with card numbers, but for cryptography this object is still not really suitable since it is hard to build a secure and reliable protocol exploiting pure integers (without using a more complex structure). 
-
-This motivates us to use a different primitive for dealing with cryptographic systems. Similarly to programmers working with interfaces (or traits, if you are the \textit{Rust} developer), mathematicians also use the so-called \textit{groups} to represent objects obeying a certain set of rules. The beauty is that we do not concretize \textit{how} operations in this set are performed, but rather state the fact that we can somehow combine elements with the pre-defined properties. We can then discover properties of such objects and whenever we apply the concrete ``implementation'' (spoiler, group of points on elliptic curve), these properties would still hold.
-
-\begin{remark}
-    Further discussion with abstract objects should be regarded as ``interfaces'' which do not concretize the ``implementation'' of an object. It merely shows the nature of an object without going into the details.
-\end{remark}
-
-Now, let us get dirty and define what the \textbf{group} is.
+Formally, there are definitions for structures with less strict conditions than group,
+that are good to know, but in order not to overload the reader, 
+we will skip these definitions and start immediately with the most interesting one.
 
 \begin{definition}
-    \textbf{Group}, denoted by $(\mathbb{G}, \oplus)$, is a set with a binary operation $\oplus$, obeying the following rules:
+    A \textbf{group}, denoted by $(\mathbb{G}, \oplus)$, is a set with a binary operation $\oplus$, obeying the following rules:
     \begin{enumerate}
         \item \textbf{Closure:} Binary operations always outputs an element from $\mathbb{G}$, that is $\forall a,b \in \mathbb{G}: a \oplus b \in \mathbb{G}$.
         \item \textbf{Associativity:} $\forall a,b,c \in \mathbb{G}: (a \oplus b)\oplus c = a \oplus (b \oplus c)$.
         \item \textbf{Identity element:} There exists a so-called identity element $e \in \mathbb{G}$ such that $\forall a \in \mathbb{G}: e \oplus a = a \oplus e = a$.
-        \item \textbf{Inverse element:} $\forall a \in \mathbb{G} \; \exists b \in \mathbb{G}: a\oplus b = b \oplus a = e$. We commonly denote the inverse element as $(\ominus a)$.
+        \item \textbf{Inverse element:} $\forall a \in \mathbb{G} \; \exists b \in \mathbb{G}: a\oplus b = b \oplus a = e$. We commonly denote the inverse element as $(\ominus a)$ or $a^{-1}$.
     \end{enumerate}
 \end{definition}
 
@@ -126,7 +134,7 @@ Since this guide is not a textbook on abstract algebra, we will not prove all th
 
 \textbf{First Statement Proof.} Suppose $e_1,e_2 \in \mathbb{G}$ are both identity elements. Consider $e_1e_2$. From the definition of the identity element, we know that $e_1e_2 = e_1$ and $e_1e_2 = e_2$. Therefore, $e_1 = e_2$.
 
-\textbf{Second Statement Proof.} Take $g \in \mathbb{G}$ and suppose $a,b \in \mathbb{G}$ are both inverses of $g$. By defininition,
+\textbf{Second Statement Proof.} Take $g \in \mathbb{G}$ and suppose $a,b \in \mathbb{G}$ are both inverses of $g$. By definition,
 \begin{equation*}
     ag = ga = e, \quad bg = gb = e.
 \end{equation*}
@@ -146,60 +154,307 @@ Thus, $a = b$.
 
 When we are finally comfortable with the concept of a group, we can move on to the concept of a \textit{subgroup}. 
 
-Suppose we have a group $(\mathbb{G},\oplus)$. Suppose one takes the subset $\mathbb{H} \subset \mathbb{G}$. Of course, since all elements in $\mathbb{H}$ are still elements in $\mathbb{G}$, we can conduct operations between them via $\oplus$. 
-The natural question to ask is whether $\mathbb{H}$ is a group itself. Yes, but at the same time $\mathbb{H}$ is called a \textbf{subgroup} of $\mathbb{G}$.
+Suppose we have a group $(\mathbb{G},\oplus)$. Suppose one takes the subset 
+$\mathbb{H} \subset \mathbb{G}$. Of course, since all elements in $\mathbb{H}$ are still 
+elements in $\mathbb{G}$, we can conduct operations between them via $\oplus$. 
+The natural question to ask is whether $\mathbb{H}$ is a group itself. Yes, but at the same 
+time $\mathbb{H}$ is called a \textbf{subgroup} of $\mathbb{G}$.
 
 \begin{definition}
-    A subset $\mathbb{H} \subset \mathbb{G}$ is called a \textbf{subgroup} of $\mathbb{G}$ if $\mathbb{H}$ is a group with respect to the same operation $\oplus$. We denote this as $\mathbb{H} \leq \mathbb{G}$.
+    \textbf{Subgroup} $\mathbb{H}$ of group $\mathbb{G}$ is such subset $\mathbb{H}$, that 
+    also forms a group under the same operation.
+    % A subset $\mathbb{H} \subset \mathbb{G}$ is called a \textbf{subgroup} of $\mathbb{G}$ 
+    % if $\mathbb{H}$ is a group with respect to the same operation $\oplus$. 
+    We denote this as $\mathbb{H} \leq \mathbb{G}$.
 \end{definition}
 
 \begin{example}
-    Of course, not every subset of $\mathbb{G}$ is a subgroup. Take $(\mathbb{Z}, +)$. If we cut, say, $3$ out of $\mathbb{Z}$ (so we get $\mathbb{H} = \mathbb{Z} \setminus \{3\}$), then $\mathbb{H}$ is not a subgroup of $\mathbb{Z}$ since an element $-3$ does not have an inverse in $\mathbb{H}$. Moreover, it is not closed: take $1,2 \in \mathbb{H}$. In this case, $1+2 = 3 \notin \mathbb{H}$.
+    Of course, not every subset of $\mathbb{G}$ is a subgroup. Take $(\mathbb{Z}, +)$. If we cut, say, $3$ out of 
+    $\mathbb{Z}$ (so we get $\mathbb{H} = \mathbb{Z} \setminus \{3\}$), then $\mathbb{H}$ is not a subgroup of 
+    $\mathbb{Z}$ since an element $-3$ does not have an inverse in $\mathbb{H}$. Moreover, it is not closed: 
+    take $1,2 \in \mathbb{H}$. In this case, $1+2 = 3 \notin \mathbb{H}$.
 \end{example}
 
 \begin{example}
-    Now, let us define some valid subgroup of $\mathbb{Z}$. Take $\mathbb{H} = \{3k: k \in \mathbb{Z}\}$ -- a set of integers divisible by $3$ (commonly denoted as $3\mathbb{Z}$). This is a subgroup of $\mathbb{Z}$, since it is closed under addition, has an identity element $0$, and has an inverse for each element $3k$ (namely, $-3k$). That being said, $3\mathbb{Z} \leq \mathbb{Z}$.
+    Now, let us define some valid subgroup of $\mathbb{Z}$. Take $\mathbb{H} = \{3k: k \in \mathbb{Z}\}$
+    --- a set of integers divisible by $3$ (commonly denoted as $3\mathbb{Z}$). This is a subgroup of 
+    $\mathbb{Z}$, since it is closed under addition, has an identity element $0$, and has an inverse 
+    for each element $3k$ (namely, $-3k$). That being said, $3\mathbb{Z} \leq \mathbb{Z}$.
 \end{example}
 
-These are good examples, but let us consider a more interesting one, which we call a lemma. It is frequently used further when dealing with cosets and normal subgroups, but currently regard this just as an exercise.
-\begin{lemma}
-    Let $\mathbb{G}$ be a group and $g \in \mathbb{G}$. The centralizer of $g$ is defined to be
-    \begin{equation*}
-        C_g = \{h \in \mathbb{G}: h g = g h\}
-    \end{equation*}
+Quick reminder, the order of a group refers to the number of its elements. This is closely related 
+to the definition of an element in the group, especially in cyclic groups, about which we will talk 
+a bit later. 
 
-    Then, $C_g$ is a subgroup of $\mathbb{G}$.
-\end{lemma}
+But before diving deeper, we need to know how to add/subtract elements multiple times 
+(that is, multiplying by an integer). Suppose we have a group $\mathbb{G}$ and $g \in \mathbb{G}$. 
+Then, $g^n$ means multiplying (adding) $g$ to itself $n$ times. If $n$ is negative, then we add 
+$g^{-1}$ to itself $|n|$ times. For $n=0$ we define $g^0 = e$. Now, let us define what the cyclic group is.
 
-\begin{exercise}
-    Prove the lemma.
-\end{exercise}
+\begin{definition}
+    Let $\mathbb{G}$ be group and $a \in \mathbb{G}$. If exists such $n \in \mathbb{N}$, that 
+    $a^{n} = e$, then $\texttt{ord } a = \min\{n \in \mathbb{N} : a^{n} = e \}$ is called
+    order of element $a$. 
+\end{definition}
+
+You might have a reasonable question: what if such $n \in \mathbb{N}$ does not exist? Well, 
+in such case we say element $a$ has infinite order and denoted it as $\texttt{ord } a = \infty$. 
+Otherwise, if $\texttt{ord } a < \infty$, we say element $a$ has finite order.
+
+\begin{example}
+    Suppose we have a group $(\mathbb{Z}_9, +)$. Let us find order of element $a = 3$, so from from definition we have
+    $3 + 3 + 3 \equiv 0 \pmod{9}$, thus $\texttt{ord } 3 = 3$ in $(\mathbb{Z}_9, +)$.
+\end{example}
+
+\begin{example}
+    Now let us take something differnt, let $(\mathbb{Z}_5, +)$ be group. Let us find order of element $a = 3$, with 
+    the same consideraion we find $3 + 3 + 3 + 3 + 3 \equiv 0 \pmod{5}$, thus $\texttt{ord } 3 = 5$.
+\end{example}
+
+But again, all these elements have finite orders. Let see other case with infinite element order.
+
+\begin{example}
+    Let $(\mathbb{Z}, +)$ be a group. We can see that every non-zero element have infinite order.
+\end{example}
 
 \subsection{Cyclic Groups}
 
-Probably, cyclic groups are the most interesting groups in the world of cryptography. But before defining them, we need to know how to add/subtract elements multiple times (that is, multiplying by an integer). Suppose 
-we have a group $\mathbb{G}$ and $g \in \mathbb{G}$. Then, $g^n$ means multiplying (adding) $g$ to itself $n$ times. If $n$ is negative, then we add $g^{-1}$ to itself $|n|$ times. For $n=0$ we define $g^0 = e$. Now, let us define what the cyclic group is.
+Cyclic groups are the most interesting groups in cryptography because of their simple yet 
+powerful structure. In a cyclic group, every element can be created by repeatedly applying the 
+group operation to one element, called the generator. This makes cyclic groups useful for many 
+cryptographic algorithms, allowing for secure and efficient operations. 
+
 \begin{definition}
-    Given a group $\mathbb{G}$ and $g \in \mathbb{G}$ the cyclic subgroup generated by $g$ is
-    \begin{equation*}
-        \langle g \rangle = \{g^n: n \in \mathbb{Z}\} = \{\dots,g^{-3}, g^{-2}, g^{-1}, e, g, g^2, g^3, \dots\}.
-    \end{equation*}
+    Let $\mathbb{G}$ be a group and $g \in \mathbb{G}$, then \textbf{cyclic subgroup} generated 
+    by $g$ is $\langle g \rangle = \{g^k: n \in \mathbb{Z}\} = 
+    \{\dots,g^{-3}, g^{-2}, g^{-1}, e, g, g^2, g^3, \dots\}$.
 \end{definition}
 
 \begin{example}
-    Consider the group of integers modulo $12$, denoted by $\mathbb{Z}_{12}$. Consider $2 \in \mathbb{Z}_{12}$, the group generated by $2$ is then
+    Let $\mathbb{Z}_{12}$ be the group of integers modulo $12$. 
+    Consider element $2 \in \mathbb{Z}_{12}$ then the group generated by $2$ is
     \begin{equation*}
-        \langle 2 \rangle = \{2,4,6,8,10, 0\}
+        \langle 2 \rangle = \{ 2, 4, 6, 8, 10, 0 \}
     \end{equation*}
 \end{example}
 
 \begin{definition}
-    We say that a group $\mathbb{G}$ is \textbf{cyclic} if there exists an element $g \in \mathbb{G}$ such that $\mathbb{G}$ is generated by $g$, that is, $\mathbb{G} = \langle g \rangle$.
+    We say that a group $\mathbb{G}$ is \textbf{cyclic} if there exists an element $g \in \mathbb{G}$ 
+    such that $\mathbb{G}$ is generated by $g$, that is, $\mathbb{G} = \langle g \rangle$. 
+    In this case, $a$ is a generator of $\mathbb{G}$.
 \end{definition}
 
 \begin{example}
-    The group of integers $(\mathbb{Z},+)$ is an infinite cyclic group. Indeed, it is generated by $1$.
+    The group of integers $(\mathbb{Z},+)$ is an infinite cyclic group. Indeed, it is 
+    generated by $1$.
 \end{example}
+
+Now it is time to discuss some interesting things about cyclic groups and subgroups.
+For example, if $\mathbb{G}$ is a group, which subgroups of $\mathbb{G}$ are cyclic?
+
+% todo: add proof
+\begin{theorem}
+    Every cyclic group is abelian.
+\end{theorem}
+
+Cryptographic protocols typically rely on the properties of cyclic groups, which means they 
+usually work with abelian groups by default. Common cryptographic groups, like those based 
+on elliptic curves or modular arithmetic, are cyclic and, therefore, abelian.
+
+% todo: as exercise
+% \begin{corollary}
+%     The all subgroups of $\mathbb{Z}$ are exactly $n\mathbb{Z}$ for $n \in \mathbb{N}$.
+% \end{corollary}
+
+\begin{lemma}
+    Let $\mathbb{G}$ be a cyclic group of order $n$ and suppose that $g$ is generator for $\mathbb{G}$.
+    Then $g^{k} = e$ if and only if $k$ divides $n$.
+\end{lemma}
+
+\begin{theorem}
+    Let $\mathbb{G}$ be a cyclic group of order $n$ and suppose that $a \in \mathbb{G}$ is a generator
+    of the group. If $b = a^{k}$, then the order of $b$ is $n/\gcd(k, n)$. 
+\end{theorem}
+
+Consider this theorem as a generalization of lemma. By the above theorem, 
+we can derive a criterion for the generators of~$\mathbb{Z}_n$.
+
+\begin{corollary} \label{cor:}
+    The generators of group $\mathbb{Z}_n$ are the integers $r$ such that $1 \leq r < n$ and $\gcd(r, n) = 1$. 
+\end{corollary}
+
+It is also easy to see that the order of any group generator is the same as the group it generates.
+
+\begin{example}
+    Let us examine how many elements can generate $(\mathbb{Z}_{12}, +)$. By theorem above 
+    each of $1, 5, 7, 11$ are generates $\mathbb{Z}_{12}$. For example, let us generates by 
+    element $5$.
+    \begin{multicols*}{3}
+        \begin{itemize}
+            \item $5^{1} = 0 + 5 = 5$
+            \item $5^{2} = 5 + 5 = 10$
+            \item $5^{3} = 10 + 5 = 3$
+            \item $5^{4} = 3  + 5 = 8$
+            
+            \item $5^{5} = 8 + 5 = 1$
+            \item $5^{6} = 6 + 5 = 6$
+            \item $5^{7} = 11 + 5 = 11$
+            \item $5^{8} = 4 + 5 = 4$
+            
+            \item $5^{9} = 4 + 5= 9$
+            \item $5^{10} = 2 + 5 = 2$
+            \item $5^{11} = 7 + 5 = 7$
+            \item $5^{12} = 7 + 5 = 0$
+        \end{itemize}        
+    \end{multicols*}
+
+    As we see, all elements of $\mathbb{G}$ are generatesd by element $5$. 
+    Besides, we found out the order of this element, $\texttt{ord } 5 = 12$.
+    But what about other elements? Let us take element $3$.
+
+    \begin{multicols*}{4}
+        \begin{itemize}
+            \item $3^{1} = 3$
+            \item $3^{2} = 6$
+            \item $3^{3} = 9$
+            \item $3^{4} = 0$
+        \end{itemize}
+    \end{multicols*} 
+
+    We found some subgroup generated by element $3$ and of course, it is not ($\mathbb{Z}_{12}, +$).
+\end{example}
+
+From the previous example, you may have a reasonable question about the types of subgroups 
+of cyclic groups. We have the following theorem for this.
+
+\begin{theorem}
+    Every subgroup of cyclic group is cyclic.
+\end{theorem}
+
+\subsection{Cosets and Lagrange's Theorem}
+ 
+Lagrange's Theorem is one of the most important results in finite group theorem, including 
+the consequences. Central to understanding Lagranges's Theorem is the notion of a
+coset. That is why we will start with them.
+
+The following topics may be a bit advanced for beginners, so don't worry if something 
+is difficult to understand.
+
+\begin{definition}
+    Let $\mathbb{G}$ be a group and $\mathbb{H}$ a subgroup of $\mathbb{G}$. \textbf{Left coset} 
+    with representative $g \in \mathbb{G}$ is $a \mathbb{H} = \{gh : h \in \mathbb{H}\}$.
+    $g \in \mathbb{G}$ is $a \mathbb{H} = \{gh : h \in \mathbb{H}\}$. Similarly, 
+    \textbf{right coset} representative $g \in \mathbb{G}$ is $\mathbb{H}g = \{hg : h \in \mathbb{H}\}$.
+\end{definition}
+
+\begin{example}
+    Suppose $\mathbb{H}$ be subgroup of $\mathbb{Z}_{8}$ with elements $\{0, 4\}$. 
+    Let us find all the cosets,
+    \begin{center} % todo: fix top margin
+        \vspace{-8mm}
+        \item $0 + \mathbb{H} = 4 + \mathbb{H} = \{0, 4\}$
+        \item $1 + \mathbb{H} = 5 + \mathbb{H} = \{1, 5\}$
+        \item $2 + \mathbb{H} = 6 + \mathbb{H} = \{0, 6\}$
+        \item $3 + \mathbb{H} = 7 + \mathbb{H} = \{3, 7\}$
+    \end{center}
+\end{example}
+
+Besides, you can notice that subgroup $\mathbb{H}$ is exactly $4\mathbb{Z}_{8}$. In a commutative group, left and 
+right cosets are always identical.
+
+\begin{lemma}
+    Suppose the group element $g \in \mathbb{G}$, then we have $\left| g\mathbb{H} \right| = \left| \mathbb{H} \right|$.
+\end{lemma}
+
+As you may recall, we formulated a similar lemma in the section on number theory,
+we offer you the opportunity to prove this lemma yourself as an \textbf{exercise}.
+
+\begin{definition}
+    Let $\mathbb{G}$ be a group and $\mathbb{H}$ be a subgroup of $\mathbb{G}$. 
+    The \textbf{index} of subgroup $\mathbb{H}$ in group $\mathbb{G}$ is the number of left cosets of 
+    $\mathbb{H}$ in $\mathbb{G}$. We will denoted the index as $\left[ \mathbb{G} : \mathbb{H} \right]$.
+\end{definition}
+
+\begin{example}
+    Let $\mathbb{G} = \mathbb{Z}_{8}$ and $\mathbb{H} = 4\mathbb{Z}_{8}$ = \{0, 4\}, 
+    then $\left[ \mathbb{G} : \mathbb{H} \right] = 4$. Moreover, 
+    $\left[ \mathbb{Z} : m \mathbb{Z} \right] = m$, where $m \in \mathbb{N}$.
+\end{example}
+
+% \begin{example}
+%     Let $\mathbb{G}$ be a group, then
+%     \begin{multicols}{2}
+%         \begin{enumerate}
+%             \item $\left[ \mathbb{G} : \mathbb{G} \right] = 1$.
+%             \item $\left[ \mathbb{G} : \{ e \} \right] = \left| G \right|$.
+%         \end{enumerate}
+%     \end{multicols} 
+% \end{example}
+
+Finally, we are ready for Lagrange's Theorem.
+
+\begin{theorem} [Lagrange]
+    If $\mathbb{H}$ is a subgroup of an any finite group $\mathbb{G}$, 
+    then $\left| \mathbb{G} \right| = \left[ \mathbb{G} : \mathbb{H} \right] \left| \mathbb{H} \right|$.
+\end{theorem}
+
+\textbf{Proof.} 
+$\blacktriangleright$ 
+The group $\mathbb{G}$ is partitioned into $\left[ \mathbb{G} : \mathbb{H} \right]$ distinct left cosets.
+Each left coset has $\left| \mathbb{H} \right|$ elements, therefore 
+$\left|\mathbb{G}\right| = \left[ \mathbb{G} : \mathbb{H} \right] \left| \mathbb{H} \right|$.
+$\blacktriangleleft$.
+
+\begin{corollary}
+    Suppose $\mathbb{H}$ is subgroup of a finite group $\mathbb{G}$, 
+    then $\left| \mathbb{H} \right| \mid \left| \mathbb{G} \right|$.
+\end{corollary}
+
+\textbf{Proof.} $\blacktriangleright$ By Lagrange's theorem, the order of the group $\mathbb{G}$ 
+decomposes as the product of the index $\left[ \mathbb{G} : \mathbb{H} \right]$ and the order of the 
+subgroup $\mathbb{H}$. Therefore, by the definition of divisibility (see \Cref{def:divisibility}), 
+it follows directly that $\left| \mathbb{H} \right|$ divides $\left| \mathbb{G} \right|$ $\blacktriangleleft$.
+
+\begin{corollary}
+    Let $\mathbb{G}$ be a finite group and $g \in \mathbb{G}$, 
+    then $\texttt{ord } g \mid \left| \mathbb{G} \right|$. In other words, the order of $g$ must 
+    divide the numbers of elements in $\mathbb{G}$. 
+\end{corollary}
+
+This statement tells us about the order structure of an element, and thus, greatly simplifies its search.
+
+\begin{corollary}
+    Let $\mathbb{G}$ be a group, $\left| \mathbb{G} \right| = n$ and $g \in \mathbb{G}$, then $g^{n} = e$.
+\end{corollary}
+
+\begin{example}
+    Let us take the following group $\mathbb{Z}_{17}^{\times}$ under multiplication modulo $17$. As we 
+    already know, the order of this group is $\varphi(17) = 16$. So, let us take, for example $13$, then 
+    we have $13^{16} \equiv 1 \pmod{17}$. 
+\end{example}
+
+As you may notice, this result is very similar to Euler's \Cref{th:euler_theorem} from the Basic of 
+Number Theory section. Essentially, it serves as a generalization of Euler's Theorem for any finite group.
+
+\begin{corollary}
+    Let $\mathbb{G}$ be a finite group, $g \in \mathbb{G}$, $\texttt{ord } g = k$ and $m \in \mathbb{N}$, 
+    then $g^{m} = e$ if and only if $k \mid m$.
+\end{corollary}
+
+\begin{example}
+    Continuing the previous example, we can see the following $13^{48} \equiv 13^{3*16} \equiv (13^{16})^{3} \equiv 1^{3} \equiv 1 \pmod{17}$
+\end{example}
+
+As an exercise, try to prove these consequences of the Lagrange's theorem.
+
+% \begin{lemma}
+%     Let $\mathbb{G}$ be a group and $g \in \mathbb{G}$. The centralizer of $g$ is defined to be
+%     \begin{equation*}
+%         C_g = \{h \in \mathbb{G}: h g = g h\}
+%     \end{equation*}
+
+%     Then, $C_g$ is a subgroup of $\mathbb{G}$.
+% \end{lemma}
 
 \subsection{Isomorphisms and Endomorphisms}
 
