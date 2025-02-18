@@ -23,6 +23,7 @@ still be used extensively nonetheless.
 We start with the most basic definition of number theory --- \emph{divisibility}.
 
 \begin{definition}
+    \label{def:divisibility}
     An integer $a$ is divisible by a non-zero integer $b$, denoted $b \mid a$ (or \emph{b is a divisor of a}), if and only if there exists an integer $k \in \mathbb{Z}$ such that $a = k \cdot b$.
 \end{definition}
 
@@ -430,11 +431,10 @@ primes --- Mersenne primes.
     prime number, usually notated as following $M_p = 2^p - 1$.
 \end{definition}
 
-% todo: add reference to the list of Mersenne primes https://www.mersenne.org/
 \begin{example}
     For example, $2^7 - 1 = 127$ is a Mersenne prime, since $127$ is a prime number.
     However, $2^{11} - 1 = 2047$ is not a Mersenne prime, since $2047 = 23 \cdot 89$. 
-    As for 2025, there are only 52 known Mersenne primes.
+    As of 2025, only 52 such numbers were found, the largest of which is $2^{136279841} - 1$.
 \end{example}
 
 The following lemma about the form of prime numbers 
@@ -861,7 +861,7 @@ Essentially, it helps in understanding the structure of the multiplicative group
 integers modulo $n$ and gives a foundation for other important results in number theory. 
 Besides it provides the simplification of large exponents in modular arithmetic. 
 
-\begin{theorem} [Euler's] \label{th:euler_theorem}
+\begin{theorem} [Euler] \label{th:euler_theorem}
     For all $n \in \mathbb{N}$, $a \in \mathbb{Z}_n^{\times}$ 
     holds $a^{\varphi(n)} \equiv 1 \pmod{n}$.
 \end{theorem}
@@ -894,8 +894,8 @@ three staments:
 Therefore, $f$ is bijective and thus $\mathbb{Z}_n^{\times} = a\mathbb{Z}_n^{\times}$.
 $\blacktriangleleft$
 
-So we know $a\mathbb{Z}_n^{\times} = \mathbb{Z}_n^{\times}$, how do we proceed? Notice that 
-from the set equality follows the equality of the products of all elements. Let us write this down:
+So we know, $a\mathbb{Z}_n^{\times} = \mathbb{Z}_n^{\times}$, how do we proceed? Notice, from the 
+set equality follows the equality of the products of all elements. Let us write this down:
 \begin{equation*}
     \prod_{i = 1}^{\varphi(n)} x_i \equiv \prod_{i = 1}^{\varphi(n)} a x_i \pmod{n} \implies \prod_{i = 1}^{\varphi(n)} x_i \equiv a^{\varphi(n)} \prod_{i = 1}^{\varphi(n)} x_i \pmod{n}
 \end{equation*}    
@@ -935,10 +935,10 @@ We can consider Euler's Theorem as a generalization of Fermat's Little Theorem.
                                 &\equiv 3 \pmod{13}.
         \end{aligned}
     \end{equation*}
-
-    In other words, we significantly reduce computational complexity by using Euler's theorem,
-    in practical applications.
 \end{example}
+
+In other words, we significantly reduce computational complexity by using Euler's theorem,
+in practical applications.
 
 \subsection{Exercises}
 
