@@ -219,6 +219,28 @@
 \theoremstyle{definition}{\newtheorem*{exercise}{Exercise}}
 \theoremstyle{cstyle}{\newtheorem*{cthm}{}}
 
+%  --- x env's ---
+\newenvironment{xequation}
+{
+  \vspace{-2mm}
+  \begin{equation*}
+}
+{
+  \vspace{-0.5mm}
+  \vspace{-0.5mm}
+  \end{equation*}
+}
+
+\newenvironment{xmulticols}[1]
+{
+  \vspace{-2.5mm}
+  \begin{multicols*}{#1}
+} 
+{
+  \end{multicols*}
+  \vspace{-2.5mm}
+} 
+
 % --Warning environment--
 \newtheoremstyle{warn}{}{}{}{}{\normalfont}{}{ }{}
 \theoremstyle{warn}
