@@ -394,11 +394,6 @@ proofs and structures.
 One might ask: what to do with the number $1$? We consider it to be neither prime 
 nor composite.
 
-% todo: as exercise 
-% \begin{lemma}
-%     For all $n \in \mathbb{N}$, we have $\gcd(n, n+1) = 1$
-% \end{lemma}
-
 \begin{theorem} [Euclidean theorem]
     If $P = \{p_1, p_2, p_3, \dots p_k\} \subset \mathbb{N}$ is a finite set,
     consisting of prime numbers, then there exists a prime number $p$ such that
@@ -941,5 +936,79 @@ In other words, we significantly reduce computational complexity by using Euler'
 in practical applications.
 
 \subsection{Exercises}
+
+\begin{xexercise}
+    {Exercise 1.}
+    {Find GCD for $(1236, 5682)$.}
+    {4}
+    {
+        \item 3 
+        \item 6
+        \item 1
+        \item Not exist
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 2.}
+    {Find inverse element $37^{-1} \pmod{113}$.}
+    {4}
+    {
+        \item -18
+        \item 55
+        \item 22
+        \item Not exist
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 3.}
+    {Find inverse element $74^{-1} \pmod{138}$.}
+    {4}
+    {
+        \item -15
+        \item 28
+        \item 6
+        \item Not exist
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 4.}
+    {Find Euler's totient function $\varphi(9000)$.}
+    {4}
+    {
+        \item 24
+        \item 9999
+        \item 1125
+        \item 2400
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 5.}
+    {
+        Find the solution of the following congruences system.
+        \begin{xequation}    
+            \begin{cases}
+                x \equiv 1 \pmod{3} \\
+                x \equiv 2 \pmod{5} \\
+                x \equiv 4 \pmod{7} \\
+                x \equiv 5 \pmod{11} \\
+                x \equiv 9 \pmod{13}
+            \end{cases}
+        \end{xequation}
+        \vspace{-3mm}
+    }
+    {2}
+    {
+        \item $8992 \pmod{15015}$
+        \item $360 \pmod{15015}$
+        \item $907 \pmod{15015}$
+        \item $1445 \pmod{15015}$
+    }
+\end{xexercise}
+
+% \exerciseTitle{Exercise 6.}{Prove that for arbitrary natural numbers n the following holds $\gcd(n, n + 1) = 1$.}
 
 \end{document}
