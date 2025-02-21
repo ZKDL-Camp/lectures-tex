@@ -1,9 +1,8 @@
-\documentclass[../lecture-notes.tex]{subfiles}
+\documentclass[../lecture-notes-148x210.tex]{subfiles}
 
 \begin{document}
 
-\subsection{Quadratic Arithmetic Program}
-\subsubsection{R1CS in Matrix Form}
+\subsection{R1CS in Matrix Form}
 
 While the Rank-1 Constraint System provides a powerful way to represent computations, it is not 
 succinct at all, since the number of constraints depends linearly on the complexity of the problem 
@@ -125,7 +124,7 @@ Therefore, $A\mathbf{w} \odot B\mathbf{w} = C\mathbf{w}$ is equivalent to the sy
     \end{equation*}
 \end{example}
 
-\subsubsection{Polynomial Interpolation}
+\subsection{Polynomial Interpolation}
 
 OK, now is the time to define how we are going to build polynomials! Notice that the columns of these matrices (say, column $(a_{1,i},a_{2,i},a_{3,i},a_{4,i})$ in matrix $A$ from example above) represent the mappings from constraint number $i$ to the corresponding
 coefficient of the $j$ element in the witness vector!
@@ -288,7 +287,7 @@ coefficients matrices:
     The degree of the coefficient polynomials does not exceed $m - 1$, which follows from the Lagrange interpolation properties.
 \end{remark}
 
-\subsubsection{Putting All Together!}
+\subsection{Putting All Together!}
 
 Now, using coefficients encoded with polynomials, a constraint number $X \in \{1, \dots\ m\}$, from
 a constraint system with a witness vector $\mathbf{w}$ can be built in the next way:

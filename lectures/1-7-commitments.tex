@@ -1,8 +1,6 @@
-\documentclass[../lecture-notes.tex]{subfiles}
+\documentclass[../lecture-notes-148x210.tex]{subfiles}
 
 \begin{document}
-
-\subsection{Commitments}
 
 \begin{definition}
     A cryptographic commitment scheme allows one party to commit to a chosen statement (such as a value, vector, or polynomial) without revealing the statement itself. The commitment can be revealed in full or in part at a later time, ensuring the integrity and secrecy of the original statement until the moment of disclosure.
@@ -75,7 +73,7 @@ At the same time, your friend cannot access the letter since they do not have th
     \end{enumerate}
 \end{definition}
 
-\subsubsection{Hash-based commitments}
+\subsection{Hash-based commitments}
 
 As the name implies, we are using a cryptographic hash function \(H\) in such scheme.
 
@@ -110,7 +108,7 @@ all possibile input values. Given large challenge space, the probability of the 
 $H(m, r) = c$ is negligible, which ensures \textit{hiding} property of the commitment scheme. 
 
 
-\subsubsection{Pedersen commitments}
+\subsection{Pedersen commitments}
 
 Pedersen commitments allow us to represent arbitrarily large vectors with a single elliptic curve point, while optionally hiding any information about the vector. Pedersen commitment uses a public group $\mathbb{G}$ of order $q$ and two random public generators $G$ and $U$: $U = [u]G$. Secret parameter $u$ should be unknown to anyone, otherwise the $\textit{Binding}$ property of the commitment scheme will be violated.
 EC point $U$ is chosen randomly using ``Nothing-up-my-sleeve`` to assure no one knows the discrete logarithm of a selected point.
@@ -170,7 +168,7 @@ This works for any number of commitments, so we can encode as many points as we 
 For example, if a set of balances is committed, the sum of any subset can be proven without revealing the exact value of each balance. 
 This is achieved by disclosing the sum of the balances and the corresponding sum of the blinding factors.
 
-\subsubsection{Vector commitments}
+\subsection{Vector commitments}
 
 Vector commitment schemes allows to commit to a vector of values rather than a value and a blinding term.
 
@@ -211,7 +209,7 @@ $(M_2, H(M_3 \parallel M_4), H(H(M_5 \parallel M_6) \parallel H(M_7 \parallel M_
 
 One of Merkle tree key advantages is that it allows for the selective disclosure of specific elements within the data set without revealing the rest. 
 
-\subsubsection{Polynomial commitment}
+\subsection{Polynomial commitment}
 
 Polynomial commitment can be used to prove that the commited polynomial satisfies certain properties $P(x_1, x_2, \ldots, x_n) = y$, without revealing what the polynomial is.
 The commitment is generally succint, which means that it is much smaller than the polynomial it represents.

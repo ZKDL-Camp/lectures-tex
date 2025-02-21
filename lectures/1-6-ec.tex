@@ -1,6 +1,145 @@
-\documentclass[../lecture-notes.tex]{subfiles}
+\documentclass[../lecture-notes-148x210.tex]{subfiles}
 
 \begin{document}
+
+\subsection{Classical Definition}
+
+Probably, there is no need to explain the importance of elliptic curves. Essentially, the main group being used for cryptographic 
+protocols is the group of points on an elliptic curve. If elliptic curve is ``good enough'', then the discrete logarithm problem assumption,
+Diffie-Hellman assumption and other core cryptographic assumptions hold. Moreover, this group does not require
+a large field size, which is a huge advantage for many cryptographic protocols.
+
+So, let us formally define what an elliptic curve is. Further assume that, when speaking of the finite field $\mathbb{F}_p$, the underlying prime number is greater than $3$.\footnote{Note that, for example, for $\mathbb{F}_{2^n}$ equation of elliptic curve is very different, but usually we do not deal with binary field elements.}. The definition is the following.
+
+\begin{definition}
+    Suppose that $\mathbb{K}$ is a field. An \textbf{elliptic curve} $E$ over $\mathbb{K}$ is defined as a set of points $(x,y) \in \mathbb{K}^2$:
+    \begin{equation*}
+        y^2 = x^3+ax+b,
+    \end{equation*}
+    called a \textbf{Short Weierstrass equation}, where $a,b \in \mathbb{K}$ and $4a^3+27b^2 \neq 0$. We denote $E/\mathbb{K}$ to denote the elliptic curve over field $\mathbb{K}$.
+\end{definition}
+
+\begin{remark}
+    One might wonder why $4a^3+27b^2 \neq 0$. This is due to the fact that the curve $y^2=x^3+ax+b$ might have certain degeneracies and special points, which are not desirable for us. So we require this condition to make $E/\mathbb{K}$ ``good''.
+\end{remark}
+
+\begin{definition}
+    We say that $P=(x_P,y_P) \in \mathbb{A}^2(\mathbb{K})$ is the \textbf{affine representation} of the point on the elliptic curve $E/\mathbb{K}$ if it satisfies the equation $y_P^2=x_P^3+ax_P+b$.
+\end{definition}
+
+\begin{example}
+    Consider the curve $E/\mathbb{Q}: y^2=x^3-x+9$. This is an elliptic curve. Consider $P=(0,3), Q=(-1,-3) \in \mathbb{A}^2(\mathbb{Q})$: both are valid affine points on the curve. See \Cref{fig:ec_1}.
+\end{example}
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/lecture_3/ec_illustration_1.pdf}
+    \caption{Elliptic curve $E/\mathbb{Q}: y^2=x^3-x+9$ with points $P=(0,3),Q=(-1,-3)$ depicted on it.}
+    \label{fig:ec_1}
+\end{figure}
+
+Typically, our elliptic curve is defined over a finite field $\mathbb{F}_p$, so we are interested in this paricular case. 
+
+\begin{remark}
+    Although, in many cases one might encounter the definition where an elliptic curve $E$ is defined over the algebraic closure of $\mathbb{F}_p$, that is $E/\overline{\mathbb{F}}_p$. This is typically important when considering elliptic curve pairings. However, for the sake of simplicity, we will consider elliptic curves over $\mathbb{F}_p$ and corresponding finite extensions $\mathbb{F}_{p^m}$ as of now.
+\end{remark}
+
+\begin{remark}
+    It is easy to see that if $(x,y) \in E/\mathbb{K}$, then $(x,-y) \in E/\mathbb{K}$. We will use this fact intensively further.
+\end{remark}
+
+Now, elliptic curves are useless without any operation defined on top of them. But as will be seen later, it is quite unclear how to define the identity element. For that reason, we introduce a bit different definition of a set of points on the curve.
+
+\begin{definition}
+    The set of points on the curve, denoted as $E_{a,b}(\mathbb{K})$, is defined as:
+    \begin{equation*}
+        E_{a,b}(\mathbb{K}) = \{(x,y) \in \mathbb{A}^2(\mathbb{K}): y^2=x^3+ax+b\} \cup \{\mathcal{O}\},
+    \end{equation*}
+    where $\mathcal{O}$ is the so-called \textbf{point at infinity}.
+\end{definition}
+
+\begin{remark}
+    The difference between $E(\mathbb{K})$ and $E/\mathbb{K}$ is that the former includes the point at infinity, while the latter does not. We also omit the index $a,b$, so instead of $E_{a,b}(\mathbb{K})$ we write simply $E(\mathbb{K})$.
+\end{remark}
+
+Now, the reason we introduced the point at infinity $\mathcal{O}$ is because it allows us to define the group binary operation $\oplus$ on the elliptic curve. The operation is sometimes called the \textbf{chord-tangent law}. Let us define it.
+
+\vspace{-0.5em}
+
+\begin{definition}
+    Consider the curve $E(\mathbb{F}_{p^m})$. We define $\mathcal{O}$ as the identity element of the group. That is, for all points $P$, we set $P \oplus \mathcal{O} = \mathcal{O} \oplus P = P$. For any other non-identity elements $P=(x_P,y_P),Q=(x_Q,y_Q) \in E(\mathbb{F}_{p^m})$, define the $P\oplus Q = (x_R,y_R)$ as follows:
+    \begin{enumerate}
+        \item If $x_P\neq x_Q$, use the \textbf{chord method}. Define $\lambda := \frac{y_P-y_Q}{x_P-x_Q}$ --- the slope between $P$ and $Q$. Set the resultant coordinates as:
+        \begin{equation*}
+            x_R := \lambda^2 - x_P - x_Q, \quad y_R := \lambda(x_P-x_R)-y_P.
+        \end{equation*}
+        \item If $x_P=x_Q \wedge y_P=y_Q$ (that is, $P=Q$), use the \textbf{tangent method}. Define the slope of the tangent at $P$ as $\lambda := \frac{3x_P^2+a}{2y_P}$ and set
+        \begin{equation*}
+            x_R := \lambda^2 - 2x_P, \quad y_R := \lambda(x_P-x_R)-y_P.
+        \end{equation*}
+        \item Otherwise, define $P \oplus Q := \mathcal{O}$.
+    \end{enumerate}
+\end{definition}
+
+The aforementioned definition is illustrated in the Figure below\footnote{Illustration taken from \textit{``Pairing for Beginners''}}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.95\textwidth]{images/lecture_3/group_law.png}
+    \label{fig:group_law}
+\end{figure}
+
+\begin{example}
+    Consider $E/\mathbb{R}: y^2=x^3-2x$. The points $(-1,-1),(0,0),(2,2)$ are all on $E$ and also on the line $\ell: y=x$. Therefore, $(-1,1) \oplus (0,0) = (2,-2)$ or, similarly, $(2,2) \oplus (-1,-1) = (0,0)$.
+
+    Now, let us compute $[2](-1,-1)$. Calculate the tangent slope as $\lambda := \frac{3\cdot(-1)^2 - 2}{2\cdot(-1)} = -\frac{1}{2}$. Thus, the tangent line has an equation $\ell': y = -\frac{1}{2}x+c$. Substituting $(-1,-1)$ into the equation, we get $c=-\frac{3}{2}$. Therefore, the equation of the tangent line is $y=-\frac{1}{2}x-\frac{3}{2}$. The intersection of the curve and the line is $\left(\frac{9}{4},-\frac{21}{8}\right)$, yielding $[2](-1,-1) = \left(\frac{9}{4},-\frac{21}{8}\right)$.
+
+    The whole illustration is depicted in \Cref{fig:ec_2}.
+
+    \begin{figure}[H]
+        \centering
+        \includegraphics[width=0.4\textwidth]{images/lecture_3/ec_illustration_2.pdf}
+        \caption{Illustration of the group law on the elliptic curve $E/\mathbb{R}: y^2=x^3-2x$. In \textcolor{red}{red} we marked points lying on the line $\ell: y=x$. In \textcolor{red}{dashed red}, we marked the line $\ell$, while in \textcolor{green}{dashed green} --- the tangent line $\ell'$ at $(-1,-1)$, which is used to calculate $[2](-1,1)$.}
+        \label{fig:ec_2}
+    \end{figure}
+\end{example}
+
+\begin{theorem}
+    $(E(\mathbb{F}_{p^m}),\oplus)$ forms an abelian group.
+\end{theorem}
+
+\textbf{Proof Sketch.} The identity element is $\mathcal{O}$. Every point $\mathcal{O} \neq P=(x_P,y_P) \in E(\mathbb{F}_{p^m})$ has an additive inverse: indeed, $\ominus P := (x_P,-y_P)$. Finally, a bit of algebra might show that the operation is associative. It is also clearly commutative: even geometrically it is evident, that the result of $P\oplus Q$ does not depend on the order of $P$ and $Q$ (``drawing a line between $P$ and $Q$'' and ``drawing a line between $Q$ and $P$'' are equivalent statements). $\blacksquare$
+
+Now, let us talk a bit about the group order. The group order is the number of elements in the group. For elliptic curves, the group order is typically denoted as $r$ or $n$, but we are going to use $r$. Also, the following theorem is quite important.
+
+\begin{theorem}
+    Define $r := |E(\mathbb{F}_{p^m})|$. Then, $r = p^m + 1 - t$ for some integer $|t| \leq 2\sqrt{p^m}$. A bit more intuitive explanation: the number of points on the curve is close to $p^m+1$. This theorem is commonly called the \textbf{Hasse's theorem on elliptic curves}, and the value $t$ is called the \textbf{trace of Frobenius}.
+\end{theorem}
+
+\begin{remark}
+    In fact, $r=|E(\mathbb{F}_{p^m})|$ can be computed in $O(\log(p^m))$, so the number of points can be computed efficiently even for fairly large primes $p$.
+\end{remark}
+
+Finally, let us define the scalar multiplication operation. 
+
+\begin{definition}
+    Let $P \in E(\mathbb{F}_{p^m})$ and $\alpha \in \mathbb{Z}_r$. Define the scalar multiplication $[\alpha]P$ as:
+    \begin{equation*}
+        [\alpha]P = \underbrace{P \oplus P \oplus \cdots \oplus P}_{\alpha \text{ times}}.
+    \end{equation*}
+\end{definition}
+
+\textbf{Question.} Why do we restrict $\alpha$ to $\mathbb{Z}_r$ and not to $\mathbb{Z}$?
+
+\subsection{Discrete Logarithm Problem on Elliptic Curves}
+Finally, as defined in the previous section, the \textbf{discrete logarithm} problem on the elliptic curve is the following: typically, $E(\mathbb{F}_p)$ is cyclic, meaning there exist some point $G \in E(\mathbb{F}_p)$, called the \textbf{generator}, such that $\langle G \rangle = E(\mathbb{F}_p)$. Given $P \in E(\mathbb{F}_p)$, the problem consists in finding such a scalar $\alpha \in \mathbb{Z}_r$ such that $[\alpha]G = P$. 
+
+Now, if the curve is ``good'', then the discrete logarithm problem is hard. In fact, the best-known algorithms have a complexity $O(\sqrt{r})$. However, there are certain cases when the discrete log problem is much easier.
+\begin{enumerate}
+    \item If $r$ is composite, and all its prime factors are less than some bound $r_{\max}$, then the discrete log problem can be solved in $O(\sqrt{r_{\max}})$. For this very reason, typically $r$ is prime.
+    \item If $|E(\mathbb{F}_p)|=p$, then the discrete logarithm can be solved in polynomial time. These curves are called \textbf{anomalous curves}.
+    \item Suppose that there is some small integer $\tau>0$ such that $r \mid (p^{\tau}-1)$. The discrete log in that case reduces to the discrete log in the finite field $\mathbb{F}_{p^{\tau}}$, which is typically not hard for small enough $\tau$.
+\end{enumerate}
 
 \subsection{Relations}\label{section:relations}
 
@@ -136,6 +275,7 @@ Now, as we have said before, a set of all equivalence classes form a partition o
 The primary reason we considered equivalence relations is that we will define the projective space as a set of equivalence classes. Besides this, when defining proofs of knowledge, argument of knowledge and zero-knowledge protocols, we will use the concept of relations and equivalence relations intensively.
 
 \subsection{Elliptic Curve in Projective Coordinates}
+
 \subsubsection{Projective Space}
 
 Recall that we defined the elliptic curve as 
@@ -378,8 +518,6 @@ However, a more interesting use-case which we are going to use in SNARKs is that
 
 So what is pairing?
 
-\subsubsection{Definition}
-
 \begin{definition}
     \textbf{Pairing} is a bilinear, non-degenerate, efficiently computable map $e: \textcolor{red}{\mathbb{G}_1} \times \textcolor{blue}{\mathbb{G}_2} \to \textcolor{ForestGreen}{\mathbb{G}_T}$, where $\textcolor{red}{\mathbb{G}_1},\textcolor{blue}{\mathbb{G}_2}$ are two groups (typically, elliptic curve groups) and $\textcolor{ForestGreen}{\mathbb{G}_T}$ is a target group (typically, a set of scalars). Let us decipher the definition:
     \begin{itemize}
@@ -527,6 +665,7 @@ This scheme is also quite famous for its aggregation properties, which we are no
 \end{example}
 
 \newpage
+
 \subsection{Exercises}
 
 \textbf{Exercise 1.} What is \textbf{not} a valid equivalence relation $\sim$ over a set $\mathcal{X}$?
@@ -611,5 +750,41 @@ for the given scalars $a,b,c,d \in \mathbb{F}_p$?
     \item Check if $e(P,P)+e(Q,Q) = 1$.
     \item Check if $e(P,P)e(Q,Q)=e(G,G)$.
 \end{enumerate}
+
+\textbf{Exercise 10.} Suppose that elliptic curve is defined as $E/\mathbb{F}_{7}: y^2=x^3+b$. Suppose $(2,3)$ lies on the curve. What is the value of $b$?
+
+\textbf{Exercise 11.} Sum of which of the following pairs of points on the elliptic curve $E/\mathbb{F}_{11}$ is equal to the point at infinity $\mathcal{O}$ for any valid curve equation?
+\begin{multicols}{2}    
+    \begin{enumerate}[a)]
+        \item $P=(2,3),Q=(2,8)$.
+        \item $P=(9,2),Q=(2,8)$.
+        \item $P=(9,9),Q=(5,7)$.
+        \item $P=\mathcal{O},Q=(2,3)$.
+        \item $P=[10]G,Q=G$ where $G$ is a generator.
+    \end{enumerate}
+\end{multicols}
+
+% \newpage
+\textbf{Exercise 12.} Consider an elliptic curve $E$ over $\mathbb{F}_{167^2}$. Denote by $r$ the order of the group of points on $E$ (that is, $r=|E|$). Which of the following \textbf{can} be the value of $r$?
+\begin{multicols}{3}    
+    \begin{enumerate}[a)]
+        \item $167^2 - 5$
+        \item $167^2-1000$
+        \item $167^2+5 \cdot 167$
+        \item $170^2$
+        \item $160^2$
+    \end{enumerate}
+\end{multicols}
+
+\textbf{Exercise 13.} Suppose that for some elliptic curve $E$ the order is $|E| = qr$ where both $q$ and $r$ are prime numbers. Among listed, what is the most optimal complexity of algorithm to solve the discrete logarithm problem on $E$?
+\begin{multicols}{3}    
+    \begin{enumerate}[a)]
+        \item $O(qr)$
+        \item $O(\sqrt{qr})$
+        \item $O(\sqrt{\max\{q,r\}})$
+        \item $O(\sqrt{\min\{q,r\}})$
+        \item $O(\max\{q,r\})$
+    \end{enumerate}
+\end{multicols}
 
 \end{document}
