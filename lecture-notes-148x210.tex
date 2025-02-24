@@ -1,7 +1,5 @@
 \documentclass{zkdl-template}
 
-\usepackage{opencolor}
-
 \makeatletter
 \def\maketitle{
     \begin{center}
@@ -55,7 +53,9 @@
     \section*{Preface}
     \subfile{preface/preface.tex}
 
-% --- Math ---
+% --- Mathematical Preliminaries ---
+
+    \part{Mathematical Background}
 
     \section{Notation Convention}\label{section:notation}
     \subfile{lectures/0-notation}
@@ -75,6 +75,10 @@
     \section{Fields Extension}\label{section:finite-fields}
     \subfile{lectures/1-5-field-extension.tex}
 
+% --- Cryptography Preliminaries ---
+
+    \part{Cryptography Preliminaries}
+
     \section{Elliptic Curves and Pairing}\label{section:elliptic-curves}
     \subfile{lectures/1-6-ec.tex}
 
@@ -85,6 +89,8 @@
     \subfile{lectures/1-8-security-basics.tex}
 
 % --- Zero-Knowledge ---
+
+    \part{Zero-Knowledge}
 
     \section{Introduction to Zero-Knowledge Proofs}\label{section:intro-zk}
     \subfile{lectures/2-1-intro-zk}

@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{zkdl-template}[2024/07/09 ZKDL Template]
+\ProvidesClass{zkdl-template}[2025/02/024 ZKDL Template]
 
 % --- Defining the basic article style ---
 \providecommand\mtfntsize{10pt}
@@ -14,6 +14,9 @@
 \RequirePackage{cmbright}
 \RequirePackage{blkarray}
 \RequirePackage{graphicx}
+\RequirePackage{opencolor}
+\RequirePackage{etoc}
+\RequirePackage{blindtext}
 \RequirePackage{framed}
 \RequirePackage{dsfont}
 \RequirePackage{extarrows}
@@ -346,6 +349,10 @@
 
 \let\oldsection\section
 \renewcommand{\section}{\clearpage\oldsection}
+
+% Redefine \part to start on a new page
+\let\oldpart\part
+\renewcommand{\part}[1]{\clearpage\oldpart{#1}}
 
 % \newcommand{\sectionbreak}{\clearpage} % Start every section on a new page
 % \newcommand{\subsectionbreak}{\clearpage} % Start every subsection on a new page
