@@ -354,9 +354,6 @@
 \let\oldpart\part
 \renewcommand{\part}[1]{\clearpage\oldpart{#1}}
 
-% \newcommand{\sectionbreak}{\clearpage} % Start every section on a new page
-% \newcommand{\subsectionbreak}{\clearpage} % Start every subsection on a new page
-
 \newcommand{\Disp}{\displaystyle}
 \newcommand{\qe}{\hfill\(\bigtriangledown\)}
 \DeclareMathAlphabet\mathbfcal{OMS}{cmsy}{b}{n}
