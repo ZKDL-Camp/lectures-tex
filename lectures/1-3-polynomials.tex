@@ -176,9 +176,13 @@ in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the po
 \subsection{Schwartz-Zippel Lemma}
 
 \begin{lemma}\label{lemma:sz}
-Let $\mathbb{F}$ be a field. Let $f(x_1, x_2, ..., x_n)$ be a polynomial of total degree $d$. Suppose that $f$ is not the zero polynomial. Let $S$ be
-a finite subset of $\mathbb{F}$. Let $r_1, r_2, ... r_n$ be chosen at random uniformly and independently from $S$. Then the probability that 
-$f(r_1, r_2, ..., r_n) = 0$ is $\le \frac{d}{|S|}$.
+Let $\mathbb{F}$ be a finite field and $\mathbb{S} \subseteq \mathbb{F}^n$ be a finite $n$-dimensional subspace.
+Let $f: \mathbb{S} \to \mathbb{F}$ be a polynomial in $n$ variables of total degree $d$. Then,
+\begin{equation*}
+    \underset{\mathbf{x} \xleftarrow{R} \mathbb{S}}{\text{Pr}}
+    [f(\mathbf{x}) = 0] \leq \frac{d}{\left|\mathbb{S}\right|}.
+\end{equation*}
+
 \end{lemma}
 
 \begin{example}
