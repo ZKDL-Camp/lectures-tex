@@ -2,26 +2,35 @@
 
 \begin{document}
 
+We will now define some of the notations and conventions used throughout this book, such as sets, function, etc.
 
-\subsection{Set Theory}
-First, let us enumerate some fundamental sets:
+\subsection*{Set Theory}
+
+A \textbf{set} is a well-defined collection of objects. The objects that belong to a set are called 
+its \textbf{elements}. We will denote sets by capital letters, if $a$ is an element of the set $A$, 
+we write $a \in A$.
+
+Let us enumerate some fundamental sets:
+
 \begin{itemize}
-    \item $\mathbb{N}$ -- a set of natural numbers. Examples: $10, 13, 193, \dots$.
-    \item $\mathbb{Z}$ -- a set of integers. Examples: $-2, -6, 0, 62, 103, \dots$.
-    \item $\mathbb{Q}$ -- a set of rational numbers. Examples: $\{\frac{n}{m}: n \in \mathbb{Z}, m \in \mathbb{N}\}$.
-    \item $\mathbb{R}$ -- a set of real numbers. Examples: $2.2, 1.4, -6.7, \dots$.
+    \item $\mathbb{N} = \{1, 2, 3, \dots\}$ -- a set of natural numbers.
+    \item $\mathbb{Z} = \{0, \pm 1, \pm 2, \pm 3, \dots\}$ -- a set of integers.
+    \item $\mathbb{Q} = \{\frac{n}{m}: n \in \mathbb{Z}, m \in \mathbb{N}\}$ -- a set of rational numbers.
+    \item $\mathbb{R} = \{x : x \text{ is a real number}\}$. Examples: $2.2, -3.9 0.12, 1.4, -6.7, \dots$
     \item $\mathbb{R}_{>0}$ -- a set of positive real numbers. Examples: $2.6, 10.4, 100.2$.
-    \item $\mathbb{C}$ -- a set of complex numbers\footnote{Complex number is an expression in a form $x+iy$ for $i^2=-1$}. Examples: $1+2i, 5i, -7-5.7i, \dots$.
+    \item $\mathbb{C}$ -- a set of complex numbers\footnote{Complex number is an expression in a form $x+iy$ for $i^2=-1$}. 
+    Examples: $1+2i, 5i, -7-5.7i, \dots$.
 \end{itemize}
 
-Typically we write $a \in A$ to say ``element $a$ is in set $A$''. To represent the number of elements in a set $A$, we write $|A|$. If the set is finite, $|A| \in \mathbb{N}$, otherwise 
-$|A| = \infty$. $A \subset B$ denotes ``$A$ is a subset of $B$'' (meaning that all elements of $A$ are also in $B$, e.g., $\mathbb{Q} \subset \mathbb{R}$).
+To represent the number of elements in a set $A$, we write $|A|$. If the set is finite, $|A| \in \mathbb{N}$, 
+otherwise $|A| = \infty$. $A \subset B$ denotes ``$A$ is a subset of $B$'' (meaning that all elements of $A$ 
+are also in $B$, e.g., $\mathbb{Q} \subset \mathbb{R}$).
 
-$A \cap B$ means the intersection of $A$ and $B$ (a set of elements belonging to both $A$ and $B$), while $A \cup B$ -- the union of $A$ and $B$ (the set of elements belonging to either $A$ or $B$). $A \setminus B$ denotes the set difference (the set of elements belonging to $A$, but not $B$). $\overline{A}$ denotes the complement of $A$ (the set of elements not belonging to $A$). All operations are illustrated in Figure~\ref{fig:venn_diagrams} (this picture is typically called the \textit{Venn Diagram}).
-
-To define the set, we typically write $\{f(a): \phi(a)\}$, where $f(a)$ is some function and $\phi(a)$ is a predicate (function, inputting $a$ and returning true/false if a certain condition on $a$ is met). For example, $\{x^3: x \in \mathbb{R}, x^2 = 4\}$ is ``a set of values $x^3$ which are the real solutions to equation $x^2 = 4$''. It is quite easy to see that this set is simply $\{2^3, (-2)^3\} = \{8,-8\}$. 
-
-The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \in B$ (or, written shortly, $A \times B = \{(a,b): a \in A, b \in B\}$), called a Cartesian product. We additionally introduce notation $A^n := \underbrace{A \times A \times \dots \times A}_{n \; \text{times}}$ -- Cartesian product $n$ times. For example, $\mathbb{Q}^3$ is a set of triplets $(a,b,c)$ where $a,b,c \in \mathbb{Q}$, while $\mathbb{Q}^2 \times \mathbb{R}$ is a set of triplets $(a,b,c)$ where $a,b \in \mathbb{Q}$ and $c \in \mathbb{R}$.
+$A \cap B$ means the intersection of $A$ and $B$ (a set of elements belonging to both $A$ and $B$), while 
+$A \cup B$ -- the union of $A$ and $B$ (the set of elements belonging to either $A$ or $B$). $A \setminus B$ 
+denotes the set difference (the set of elements belonging to $A$, but not $B$). $\overline{A}$ denotes the 
+complement of $A$ (the set of elements not belonging to $A$). All operations are illustrated in 
+\Cref{fig:venn_diagrams} (this picture is typically called the \textit{Venn Diagram}).
 
 % --- Writing diagrams ---
 \def\firstcircle{(0,0) circle (1.5cm)}
@@ -33,7 +42,7 @@ The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \i
 \tikzset{filled/.style={fill=circle area, draw=circle edge, ultra thick},
     outline/.style={draw=circle edge, ultra thick}}
 
-\begin{figure}
+\begin{figure}[H]
     \begin{center}
 
     \scalebox{0.5}{
@@ -79,22 +88,48 @@ The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \i
 \label{fig:venn_diagrams}
 \end{figure}
 
-\subsection{Logic}
+As you may have noticed, to define the set we typically write $\{f(a): \phi(a)\}$, where $f(a)$ is some 
+function and $\phi(a)$ is a predicate (function, inputting $a$ and returning true/false if a certain condition 
+on $a$ is met). For example, $\{x^3: x \in \mathbb{R}, x^2 = 4\}$ is ``a set of values $x^3$ which are the real 
+solutions to equation $x^2 = 4$''. It is quite easy to see that this set is simply $\{2^3, (-2)^3\} = \{8,-8\}$. 
 
-Statement beginning with $\forall$ means ``for all...''. For instance, $(\forall a \in A \subset \mathbb{R}): \{a < 1\}$ is read as: ``For any $a$ in set $A$ (which is a subset of real numbers), it is true that $a<1$''. Or, more shortly, ``Any (real) $a$ from $A$ is less than $1$''.
+\subsection*{Cartesian Products and Functions}
 
-Statement beginning from $\exists$ means ``there exists such...''. Let us consider the following example: $(\exists \varepsilon > 0) (\forall a \in A): \{a > \varepsilon\}$ is read as ``there exists such a positive $\varepsilon$ such that for any element $a$ from $A$, $a$ is greater than $\varepsilon$'', or, more concisely, ``there exists a positive constant $\varepsilon$ such that any element from $A$ is greater than $\varepsilon$''.
+The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \in B$ (or, written shortly, 
+$A \times B = \{(a,b): a \in A, b \in B\}$), called a Cartesian product. We additionally introduce notation 
+$A^n := A \times A \times \dots \times A$ -- Cartesian product $n$ times. For example, $\mathbb{Q}^3$ is a set of triplets 
+$(a,b,c)$ where $a,b,c \in \mathbb{Q}$, while $\mathbb{Q}^2 \times \mathbb{R}$ is a set of triplets $(a,b,c)$ where 
+$a,b \in \mathbb{Q}$ and $c \in \mathbb{R}$.
 
-Statement beginning from $\exists !$ means ``there exists a unique...''. For example, $(\exists! x \in \mathbb{R}_{>0}): \{x^2 = 4\}$ is read as ``there exists a unique positive real $x$ such that $x^2 = 4$''.
+Subsets of $ A \times B$ are called relations. We define a function $f \subset A \times B$ from a set $A$ to a set $B$, as 
+the special type of relation in which for each element $a \in A$ there is a unique element $b \in B$ such that $(a, b) \in f$.
+In other words, for every element in $A$ we assigns a unique element in $B$. Usually write $f : A \times B$ or $A \xrightarrow{f} B$,
+also we write $f(a) = b$ instead of writing down ordered pairs.
 
-Symbol $\wedge$ means ``and''. For example, $\{x \in \mathbb{R}: x^2 = 4 \wedge x > 0\}$ is read as ``a set of real $x$ such that $x^2=4$ and $x$ is positive''. Of course, $\{x \in \mathbb{R}: x^2 = 4 \wedge x > 0\} = \{2\}$.
+We say function $f : A \times B$ is \textbf{injective} if $a_1 \neq a_2$ implies $f(a_1) \neq f(a_2)$, equivalently 
+function is injective if $f(a_1) = f(a_2)$ implies~$a_1 = a_2$. Function $f$ is \textbf{surjective} if there exists an $a \in A$ for
+each $b \in B$ such $f(a) = b$. A function that is both is injective and surjective is called \textbf{bijective}.
 
-Symbol $\vee$ means ``or''. For example, $\{x \in \mathbb{R}: x^2 = 4 \vee x^2 = 9\}$ is read as ``a set of real $x$ such that either $x^2=4$ or $x^2=9$''. Here, this set is equal to $\{-2,2,-3,3\}$.
+% todo: add injective, surjective and bijective illustrations
 
-\subsection{Relations}
+\subsection*{Logic}
 
-\subsection{Proof Notion}
+Statement beginning with $\forall$ means ``for all...''. For instance, $(\forall a \in A \subset \mathbb{R}): \{a < 1\}$ is 
+read as: ``For any $a$ in set $A$ (which is a subset of real numbers), it is true that $a<1$''. Or, more shortly, ``Any (real) 
+$a$ from $A$ is less than $1$''.
 
-\subsection{Randomness and Probability}
+Statement beginning from $\exists$ means ``there exists such...''. Let us consider the following example: 
+$(\exists \varepsilon > 0) (\forall a \in A): \{a > \varepsilon\}$ is read as ``there exists such a positive $\varepsilon$ such 
+that for any element $a$ from $A$, $a$ is greater than $\varepsilon$'', or, more concisely, ``there exists a positive constant 
+$\varepsilon$ such that any element from $A$ is greater than $\varepsilon$''.
+
+Statement beginning from $\exists !$ means ``there exists a unique...''. For example, $(\exists! x \in \mathbb{R}_{>0}): \{x^2 = 4\}$ 
+is read as ``there exists a unique positive real $x$ such that $x^2 = 4$''.
+
+Symbol $\wedge$ means ``and''. For example, $\{x \in \mathbb{R}: x^2 = 4 \wedge x > 0\}$ is read as ``a set of real $x$ such that 
+$x^2=4$ and $x$ is positive''. Of course, $\{x \in \mathbb{R}: x^2 = 4 \wedge x > 0\} = \{2\}$.
+
+Symbol $\vee$ means ``or''. For example, $\{x \in \mathbb{R}: x^2 = 4 \vee x^2 = 9\}$ is read as ``a set of real $x$ such that 
+either $x^2=4$ or $x^2=9$'', this set is equal to~$\{\pm 2, \pm 3\}$.
 
 \end{document}
