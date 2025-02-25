@@ -4,7 +4,7 @@
 
 \subsection{Building Pairing-based SNARK}
 
-\subsubsection{Attempt \#1: Encrypted Verification}
+\subsubsection*{Attempt \#1: Encrypted Verification}
 
 Now, assume we have the cyclic group $\mathbb{G}$ of prime order $q$ with a generator $g$. Typically, this is the group of points on an elliptic curve. Assume for simplicity that $e: \mathbb{G} \times \mathbb{G} \to \mathbb{G}_T$ is a symmetric pairing function, where $(\mathbb{G}_T, \times)$ is a target group.
 
@@ -79,7 +79,7 @@ So, sounds like we are done. Let us summarize what we have done so far:
 
 This sounds like an end to the story. However, there is a problem with this approach: there is no guarantee that commitments $\pi_L$, $\pi_R$, $\pi_O$, $\pi_H$ were indeed obtained through exponentiating the base $g$ by the corresponding values $L(\tau)$, $R(\tau)$, $O(\tau)$, and $H(\tau)$. In other words, how can the verifier know that prover indeed knows, say, polynomial $L(x)$ such that $\pi_L = g^{L(\tau)}$?
 
-\subsubsection{Attempt \#2: Including Proof of Exponent}
+\subsubsection*{Attempt \#2: Including Proof of Exponent}
 
 In this section, we introduce the \textbf{Proof of Exponent assumption} (PoE) which makes KZG knowledge sound. Let us define it below.
 
@@ -148,7 +148,7 @@ For that reason, we modify the SNARK protocol to include not only commitments to
 
 The provided protocol is secure under the PoE assumption. However, it is still not fully sound. Currently, there is no guarantee that when evaluating $\pi_L$, $\pi_R$, $\pi_O$ we used the same extended witness $\mathbf{w}$. In other words, the prover can still cheat by using different extended witnesses for each polynomial (faking the proof system is still hard in this situation, but we want to make sure to eliminate all possible weaknesses). Let us see how to fix this!
 
-\subsubsection{Attempt \#3: Making SNARK Sound}
+\subsubsection*{Attempt \#3: Making SNARK Sound}
 
 Besides fixing the issue with consistent use of witness $\mathbf{w}$, we additionally include one more optimization we have not included so far.
 
@@ -272,7 +272,7 @@ Oof, that was a long fix! Let us come back to the new version of the SNARK proto
     \end{align*}
 \end{tcolorbox}
 
-\subsubsection{Attempt \#4: Splitting the Extended Witness}
+\subsubsection*{Attempt \#4: Splitting the Extended Witness}
 
 Now, recall that the actual circuit $\Circ$ is defined for some statement $\mathbf{x}$ and witness $\mathbf{w}$. According to the Circuit Satisfability Problem, 
 the prover $\mathcal{P}$ wants to convince the verifier $\mathcal{V}$ that he knows the witness $\mathbf{w}$ 
@@ -369,7 +369,7 @@ Now, let us formulate the updated SNARK protocol with the extended witness split
     \end{align*}
 \end{tcolorbox}
 
-\subsubsection{Attempt \#5: Making SNARK Zero-Knowledge}
+\subsubsection*{Attempt \#5: Making SNARK Zero-Knowledge}
 
 Finally, we came to the point where we need to make the protocol zero-knowledge. As it turns out, it is not that hard to do (compared to what we have done so far)!
 
