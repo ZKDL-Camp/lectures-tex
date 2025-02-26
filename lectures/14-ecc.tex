@@ -62,8 +62,8 @@ The Walsh-Hadamard code is a function $E: \{0, 1\}^n \rightarrow \{0, 1\}^{2^n}$
 the string $z \in \{0, 1\}^{2^n}$ where $z_y = \langle x, y \rangle$ for $\forall y \in \{0, 1\}^n$.
 \end{definition}
 
-\begin{example}
-\textbf{Encoding.} For example, for the input size $n = 2$ we have the following set of the possible codewords:
+\begin{example}[Encoding and Decoding]
+For example, for the input size $n = 2$ we have the following set of the possible codewords:
 \begin{equation*}
     \{(0, 0), (0, 1), (1, 0), (1, 1)\}
 \end{equation*}
@@ -87,6 +87,7 @@ calculate $S(u) = \sum_{i=0}^{2^n - 1} (-1)^{Y_i} \cdot C_u(i)$. This sum repres
 $u$ and the encoded word. If both words have the same sign at position  $i$, the sum increases; otherwise, it 
 decreases. The decoded word is the one with the highest sum.
 \end{example}
+To define the distance for the Walsh-Hadamard ECC we first need to prove an additional lemma:
 \begin{lemma}[Random subsum principle]
 For two binary strings $u \neq v \in \{0, 1\}^n$ the $\Pr[\langle u, x \rangle \neq \langle v, x \rangle] = \frac{1}{2}$
  for the random binary string $x \in \{0, 1\}^n$.
