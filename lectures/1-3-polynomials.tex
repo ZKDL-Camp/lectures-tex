@@ -211,22 +211,22 @@ Now, let us define the sharing scheme.
 \begin{definition}
     \textbf{Secret Sharing} scheme is a pair of efficient algorithms $(\mathsf{Gen}, \mathsf{Comb})$ which work as follows:
     \begin{itemize}
-        \item $\mathsf{Gen}(\alpha, t, n)$: probabilistic sharing algorithm that yields $n$ shards $(\alpha_1,\dots,\alpha_t)$ for which $t$ shards are needed to reconstruct the secret $\alpha$.
-        \item $\mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}})$: deterministic reconstruction algorithm that reconstructs the secret $\alpha$ from the shards $\mathcal{I} \subset \{1,\dots,n\}$ of size $t$.
+        \item $\mathsf{Gen}(\alpha, t, n)$: probabilistic sharing algorithm that yields $n$ shards $(\alpha_1,\dots,\alpha_t)$ for which $t$ shards are needed to reconstruct the secret~$\alpha$.
+        \item $\mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}})$: deterministic reconstruction algorithm that reconstructs the secret $\alpha$ from the shards $\mathcal{I} \subset \{1,\dots,n\}$ of size~$t$.
     \end{itemize}
 
     Here, we require the \textbf{correctness}: for every $\alpha \in F$, for every possible output $(\alpha_1,\dots,\alpha_n) \gets \mathsf{Gen}(\alpha, t, n)$, and any $t$-size subset $\mathcal{I}$ of $\{1,\dots,n\}$ we have
-    \begin{equation*}
+    \begin{xequation}
         \mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}}) = \alpha.
-    \end{equation*}
+    \end{xequation}
 \end{definition}
 
 Now, Shamir's protocol is one of the most famous secret sharing schemes. It works as follows: our finite set is $\mathbb{F}_q$ for some large prime $q$. Then, algorithms in the protocol are defined as follows:
 \begin{itemize}
     \item $\mathsf{Gen}(\alpha, k, n)$: choose random $k_1,\dots,k_{t-1} \xleftarrow[]{R} \mathbb{F}_q$ and define the polynomial
-    \begin{equation*}
+    \begin{xequation}
         \omega(x) := \alpha + k_1x + k_2x^2 + \cdots + k_{t-1}x^{t-1} \in \mathbb{F}_q^{\leq (t-1)}[x],     
-    \end{equation*}
+    \end{xequation}
     and then compute $\alpha_i \gets \omega(i) \in \mathbb{F}_q, \; i = 1,\dots,n$. Return $(\alpha_1,\dots,\alpha_n)$.
     \item $\mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}})$: reconstruct the polynomial $\omega(x)$ using Lagrange interpolation and return $\omega(0) = \alpha$.
 \end{itemize}
@@ -235,15 +235,83 @@ The combination function is possible since, having $t$ points $\{i,\alpha_i\}_{i
 
 Instead, suppose we have only $t-1$ (or less) pairs $\{i,\alpha_i\}_{i \in \mathcal{I}}$. Then, there are many polynomials $\omega(x)$ that pass through these points (in fact, if we were in the field of real numbers, this number would be infinite), and thus the secret $\alpha$ is not uniquely determined.
 
-The intuition behind the Shamir's protocol is illustrated in Figure~\ref{fig:shamir}.
+% The intuition behind the Shamir's protocol is illustrated in Figure~\ref{fig:shamir}.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.8\textwidth]{images/lecture_1/shamir_demo.pdf}
-    \caption{Suppose we have $t=3$. Having only 2 points means knowing two \textcolor{blue}{blue} points without knowing the \textcolor{red}{red} one. There are infinitely many quadratic polynomials passing through these two points (\textcolor{gray}{gray dashed} lines). However, knowing the third \textcolor{red}{red} point allows us to uniquely determine the polynomial and thus get its value at $0$. Note that this is illustrated over $\mathbb{R}$, but for $\mathbb{F}_q$ the logic is similar.}
+    \includegraphics[width=0.65\textwidth]{images/lecture_1/shamir_demo.pdf}
+    \caption{Suppose we have $t=3$. Having only 2 points means knowing two \textcolor{blue}{blue} points without 
+    knowing the \textcolor{red}{red} one. There are infinitely many quadratic polynomials passing through these 
+    two points (\textcolor{gray}{gray dashed} lines). However, knowing the third \textcolor{red}{red} point 
+    allows us to uniquely determine the polynomial and thus get its value at $0$. Note that this is illustrated 
+    over $\mathbb{R}$, but for $\mathbb{F}_q$ the logic is similar.}
     \label{fig:shamir}
 \end{figure}
 
 \subsection{Exercises}
+
+\begin{xexercise}
+    {Exercise 1.}
+    {
+        Suppose for three polynomials $p,q,r \in \mathbb{F}[x]$ we have $\deg p = 3, \deg q = 4, \deg r = 5$. 
+        Which of the following is true for $n := \deg \{(p-q)r\}$?
+        \vspace{-3.5mm}
+    }
+    {2}
+    {
+        \item $n = 9$.
+        \item $n$ might be less than $9$.
+        \item $n = 20$.
+        \item $n$ is less than $\deg \{qr\}$. 
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 2.}
+    {
+        Define the polynomial over $\mathbb{F}_5$: $f(x) := 4x^2 + 7$. Which of the following is the root of $f(x)$?
+    }
+    {2}
+    {
+        \item $2$
+        \item $3$
+        \item $4$
+        \item No roots.
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 3.}
+    {
+        Consider two polynomials: 
+        \begin{xequation}
+            P(x) = x^{2n} + x^n -2, Q(x) = x^2 + 1
+        \end{xequation}
+        For which values of $n$ does polynomial $Q(x)$ divides $P(x)$
+    }
+    {1}
+    {
+        \item For all even $n$.
+        \item For all odd $n$.
+        \item For all $n$ which are divisible by 4.
+        \item Just for $n = 4$.
+        \item It does not work for any natural number $n$.
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 4.}
+    {
+        Quadratic polynomial $p(x) = ax^2+bx+c \in \mathbb{R}[x]$ has zeros at $1$ and $2$ and $p(0) = 2$. 
+        Find the value of $a+b+c$.
+    }
+    {2}
+    {
+        \item $0$
+        \item $-1$
+        \item $1$
+        \item Not enough information.
+    }
+\end{xexercise}
 
 \end{document}
