@@ -939,7 +939,7 @@ in practical applications.
 
 \begin{xexercise}
     {Exercise 1.}
-    {Find inverse element $37^{-1} \pmod{113}$.}
+    {What the inverse element $37^{-1} \pmod{113}$.}
     {4}
     {
         \item -18
@@ -961,6 +961,94 @@ in practical applications.
     }
 \end{xexercise}
 
-% \exerciseTitle{Exercise 9.}{Prove that for arbitrary natural numbers n the following holds $\gcd(n, n + 1) = 1$.}
+% todo add answer
+\begin{xexercise}
+    {Exercise 3.}
+    {What sum of all integers $n$ satisfying $(n + 1) \mid (n^2 + 1)$?}
+    {4}
+    {
+        \item 1
+        \item 2
+        \item 3
+        \item 4
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 4.}
+    {
+        In the following quadratic equation, $p$ and $q$ are prime numbers smaller than $10$:
+        \begin{xequation}
+            (x-p)^2-p(x-q)+x^2-qx=0
+        \end{xequation}
+        The left hand side of this equation can be expressed as 
+
+        \begin{xequation}
+            2(x-x_1)(x-x_2)
+        \end{xequation}
+
+        Where $x_1$ and $x_2$ are the roots of the equation. If $x_1$ and $x_2$ are both prime numbers, 
+        what is their sum?
+    }
+    {4}
+    {
+        \item 8
+        \item 7
+        \item 10
+        \item 11
+    }
+\end{xexercise}
+
+\vspace*{4mm}
+
+\begin{tcolorbox}
+[
+    colback=blue!5!white,
+    fonttitle=\bfseries,
+    colframe=blue!80!white,
+]
+    Suppose that function $\tau(n)$ is the number of positive divisors of $n$. For example, $12$ has 6 
+    divisors: $1,2,3,4,6,12$ and therefore $\tau(12)=6$. In fact, using \Cref{th:fundamental_arithmetic}
+    notation, the following relation holds: 
+    \begin{xequation}
+        \tau(n) = (\alpha_1 + 1)(\alpha_2 + 1)\dots (\alpha_r + 1)
+    \end{xequation}
+
+    So, for example, since $12=2^2 \cdot 3^1$ we have $i_1=2,i_2=1$ and therefore $\tau(12)=(2+1)\cdot (1+1)=6$. 
+    Also define function $\sigma(n)$ which is a sum of positive divisors. 
+    For example, $\sigma(12)=1+2+3+4+6+12=28$.
+\end{tcolorbox}
+
+\vspace*{4mm}
+
+% todo add answer
+\begin{xexercise}
+    {Exercise 5.}
+    {Suppose that $p$ is an arbitrary prime. What is $\tau(p^{100})$. }
+    {4}
+    {
+        \item 100
+        \item 101
+        \item 102
+        \item 99
+    }    
+\end{xexercise}
+
+% todo add answer
+\begin{xexercise}
+    {Exercise 6.}
+    {Suppose for some integer $n$ we have $\tau(n)=7$. What is $\tau(n^2)$? \vspace*{-4mm}}
+    {4}
+    {
+        \item 2
+        \item 6
+        \item 12
+        \item 13
+    }    
+\end{xexercise}
+
+\exerciseTitle
+{Exercise 7*.}
+{Prove that for arbitrary natural numbers $n \in \mathbb{N}$ the following holds $\gcd(n, n + 1) = 1$.}
 
 \end{document}
