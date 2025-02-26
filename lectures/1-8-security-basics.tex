@@ -372,5 +372,68 @@ Suppose $\gamma$ is indeed $\alpha \times \beta$. Then, condition $p_{\gamma}'=p
 Why is this necessary? Typically, it is impossible to prove the predicate ``for every efficient adversary $\mathcal{A}$ this probability is negligible'' and therefore we need to make assumptions, such as the Discrete Logarithm Assumption or the Computational Diffie-Hellman Assumption. In turn, proving the statement ``if $X$ is secure then $Y$ is also secure'' is manageable and does not require solving any fundamental problems. So, for example,
 knowing that the probability of the adversary to break the Diffie-Hellman assumption is negligible, we can prove that the Diffie-Hellman key exchange is secure. 
 
+\subsection{Exercises}
+
+\begin{xexercise}
+    {Exercise 1.}
+    {
+        Suppose that for the given cipher with a security parameter $\lambda$, the adversary $\mathcal{A}$ can 
+        deduce the least significant bit of the plaintext from the ciphertext. Recall that the advantage of a 
+        bit-guessing game is defined as $\text{SS}\mathsf{Adv}[\mathcal{A}] = \left|\Pr[b=\hat{b}] - \frac{1}{2}\right|$, 
+        where $b$ is the randomly chosen bit of a challenger, while $\hat{b}$ is the adversary's guess. What is the 
+        maximal advantage of $\mathcal{A}$ in this case?
+
+        \textbf{Hint:} The adversary can choose which messages to send to challenger to further distinguish the plaintexts.
+    }
+    {3}
+    {
+        \item $1$
+        \item $\frac{1}{2}$
+        \item $\frac{1}{4}$
+        \item $0$
+        \item Negligible value ($\text{negl}(\lambda)$).
+    }
+\end{xexercise}
+
+
+\begin{xexercise}
+    {Exercise 2.}
+    {
+        Consider the cipher $\mathcal{E} = (E,D)$ with encryption function $E: \mathcal{K} \times \mathcal{M} \to \mathcal{C}$ 
+        over the message space $\mathcal{M}$, ciphertext space $\mathcal{C}$, and key space $\mathcal{K}$. We want to 
+        define the security that, based on the cipher, the adversary $\mathcal{A}$ cannot restore the message 
+        (\textit{security against message recovery}). For that reason, we define the following game:
+        \begin{enumerate}
+            \item Challenger chooses random $m \xleftarrow{R} \mathcal{M}, k \xleftarrow{R} \mathcal{K}$.
+            \item Challenger computes the ciphertext $c \gets E(k,m)$ and sends to $\mathcal{A}$.
+            \item Adversary outputs $\hat{m}$, and wins if $\hat{m} = m$.
+        \end{enumerate}
+
+        We say that the cipher $\mathcal{E}$ is secure against message recovery if the \textbf{message recovery advantage}, denoted as $\text{MR}\textsf{adv}[\mathcal{A}, \mathcal{E}]$ is negligible. Which of the following statements is a valid interpretation of the message recovery advantage?
+    }
+    {1}
+    {
+        \item $\text{MR}\textsf{adv}[\mathcal{A},\mathcal{E}] := \left|\text{Pr}[m=\hat{m}] - \frac{1}{2}\right|$
+        \item $\text{MR}\textsf{adv}[\mathcal{A},\mathcal{E}] := \left|\text{Pr}[m=\hat{m}] - 1\right|$.
+        \item $\text{MR}\textsf{adv}[\mathcal{A},\mathcal{E}] := \text{Pr}[m=\hat{m}]$
+        \item $\text{MR}\textsf{adv}[\mathcal{A},\mathcal{E}] := \left|\text{Pr}[m=\hat{m}] - \frac{1}{|\mathcal{M}|}\right|$    
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 3.}
+    {Suppose that $f$ and $g$ are negligible functions. Which of the following functions is not neccessarily negligible?}
+    {1}
+    {
+        \item $f + g$
+        \item $f \times g$
+        \item $f - g$
+        \item $f/g$
+        \item $h(\lambda) := \begin{cases}
+            1/f(\lambda) & \text{if } 0 < \lambda < 100000 \\
+            g(\lambda) & \text{if } \lambda \geq 100000
+        \end{cases}$
+    }
+\end{xexercise}
 
 \end{document}
