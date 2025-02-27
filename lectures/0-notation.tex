@@ -6,7 +6,7 @@ We will now define some of the notations and conventions used throughout this bo
 
 \subsection*{Set Theory}
 
-A \textbf{set} is a well-defined collection of objects. The objects that belong to a set are called 
+A \textbf{set} is a well-defined collection of objects \cite[section 1]{Judson_2012}. The objects that belong to a set are called 
 its \textbf{elements}. We will denote sets by capital letters, if $a$ is an element of the set $A$, 
 we write $a \in A$.
 
@@ -101,13 +101,13 @@ $A^n := A \times A \times \dots \times A$ -- Cartesian product $n$ times. For ex
 $(a,b,c)$ where $a,b,c \in \mathbb{Q}$, while $\mathbb{Q}^2 \times \mathbb{R}$ is a set of triplets $(a,b,c)$ where 
 $a,b \in \mathbb{Q}$ and $c \in \mathbb{R}$.
 
-Subsets of $ A \times B$ are called relations. We define a function $f \subset A \times B$ from a set $A$ to a set $B$, as 
+Subsets of $ A \times B$ are called relations \cite[section 1]{Judson_2012}. We define a function $f \subset A \times B$ from a set $A$ to a set $B$, as 
 the special type of relation in which for each element $a \in A$ there is a unique element $b \in B$ such that $(a, b) \in f$.
 In other words, for every element in $A$ we assigns a unique element in $B$. Usually write $f : A \times B$ or $A \xrightarrow{f} B$,
 also we write $f(a) = b$ instead of writing down ordered pairs.
 
 We say function $f : A \times B$ is \textbf{injective} if $a_1 \neq a_2$ implies $f(a_1) \neq f(a_2)$, equivalently 
-function is injective if $f(a_1) = f(a_2)$ implies~$a_1 = a_2$ \cite{hungerford2013}. Function $f$ is \textbf{surjective} if there exists an $a \in A$ for
+function is injective if $f(a_1) = f(a_2)$ implies~$a_1 = a_2$. Function $f$ is \textbf{surjective} if there exists an $a \in A$ for
 each $b \in B$ such $f(a) = b$. A function that is both is injective and surjective is called \textbf{bijective}.
 
 % todo: add injective, surjective and bijective illustrations

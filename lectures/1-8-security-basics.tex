@@ -7,7 +7,10 @@ In many cases, technical papers include the analysis on the key question: ``How 
 Typically, the cryptographic security is defined in a form of a game between the adversary (who we call $\mathcal{A}$) and the challenger (who we call $\mathcal{C}h$). The adversary is trying to break the security of the cryptographic algorithm using arbitrary (but still efficient) protocol, while the challenger is following a simple, fixed protocol. The game is played in a form of a challenge, where the adversary is given some information and is asked to perform some task. The security of the cryptographic algorithm is defined based on the probability of the adversary to win the game.
 
 \subsection{Cipher Semantic Security}
-Let us get into specifics. Suppose that we want to specify that the encryption scheme is secure. Recall that cipher $\mathcal{E} = (E,D)$ over the space $(\mathcal{K}, \mathcal{M}, \mathcal{C})$ (here, $\mathcal{K}$ is the space containing all possible keys, $\mathcal{M}$ --- all possible messages and $\mathcal{C}$ --- all possible ciphers) consists of two efficiently computable methods:
+Let us get into specifics. Suppose that we want to specify that the encryption scheme is secure. Recall that 
+cipher $\mathcal{E} = (E,D)$ over the space $(\mathcal{K}, \mathcal{M}, \mathcal{C})$ (here, $\mathcal{K}$ is 
+the space containing all possible keys, $\mathcal{M}$ --- all possible messages and $\mathcal{C}$ --- all 
+possible ciphers) consists of two efficiently computable methods:
 \begin{itemize}
     \item $E: \mathcal{K} \times \mathcal{M} \to \mathcal{C}$ --- encryption method, that based on the provided message $m \in \mathcal{M}$ and key $k \in \mathcal{K}$ outputs the cipher $c = E(k,m) \in \mathcal{C}$.
     \item $D: \mathcal{K} \times \mathcal{C} \to \mathcal{M}$ --- decryption method, that based on the provided cipher $c \in \mathcal{C}$ and key $k \in \mathcal{K}$ outputs the message $m = D(k,c) \in \mathcal{M}$.
@@ -62,7 +65,9 @@ Now, what should happen if our encryption scheme is secure? The adversary should
     \text{SSAdv}[\mathcal{E}, \mathcal{A}] := \left| \Pr[\hat{b} = b] - \frac{1}{2} \right|
 \end{equation*}
 
-We say that the encryption scheme is \textbf{semantically secure}\footnote{This version of definition is called a \textbf{bit-guessing} version.} if for any efficient adversary $\mathcal{A}$ the advantage $\text{SSAdv}[\mathcal{A}]$ is negligible. In other words, the adversary cannot guess the bit $b$ with a probability significantly higher than $1/2$.
+We say that the encryption scheme is \textbf{semantically secure}\footnote{This version of definition is called a 
+\textbf{bit-guessing} version.} if for any efficient adversary $\mathcal{A}$ the advantage $\text{SSAdv}[\mathcal{A}]$ 
+is negligible. In other words, the adversary cannot guess the bit $b$ with a probability significantly higher than~$1/2$.
 
 Now, what negligible means? Let us give the formal definition!
 
@@ -118,7 +123,7 @@ Let us see some more examples of how to define the security of certain crypograp
 
 \subsection{Message recovery attacks}
 
-Essentially, message recovery attacks are types of attacks that, from given ciphertext, recover the message with significantly better probability than random guessing, which is obviously $1/|\mathcal{M}|$.
+Essentially, message recovery attacks \cite[chapter 2]{Dan_Boneh_2023} are types of attacks that, from given ciphertext, recover the message with significantly better probability than random guessing, which is obviously $1/|\mathcal{M}|$.
 Of course, any reasonable notion of security should rule out such an attack, and indeed, semantic security does.
 
 Although this might seem intuitively obvious, we provide a formal proof to clarify the reasoning. 
@@ -165,7 +170,7 @@ We construct $\mathcal{B}$ as follows:
 \end{enumerate}
 
 Intuitively, this implies that $\text{SSadv}[\mathcal{E}, \mathcal{B}]$ is exactly equal 
-to $\text{MRadv}[\mathcal{E}, \mathcal{A}]$. $\blacktriangleleft$
+to $\text{MRadv}[\mathcal{E}, \mathcal{A}]$.~$\blacktriangleleft$
 
 This means that if an adversary is capable of successfully winning the 
 message recovery game, then they can also effectively win the semantic security game.
@@ -202,6 +207,7 @@ we will now explain how security reduction operates in general.
 \end{definition}
 
 % TODO: Make use of this in the future
+
 % \subsection{Case study: RSA}
 
 % In this section we will demonstrate one of the oldest widely used secure data transmission public-key cryptosystem, RSA.
@@ -276,28 +282,37 @@ we will now explain how security reduction operates in general.
 
 \subsection{Discrete Logarithm Assumption}
 
-Now, let us define the fundamental assumption used in cryptography formally: the \textbf{Discrete Logarithm Assumption} (DL).
+Now, let us define the fundamental assumption used in cryptography formally: the \textbf{Discrete Logarithm Assumption} (DL) \cite[chapter 16]{Dan_Boneh_2023}.
 
 \begin{definition}
-    Assume that $\mathbb{G}$ is a cyclic group of prime order $r$ generated by $g \in \mathbb{G}$. Define the following game:
+    Assume that $\mathbb{G}$ is a cyclic group of prime order $r$ generated by $g \in \mathbb{G}$. Define the 
+    following game:
     \begin{enumerate}
-        \item Both challenger $\mathcal{C}h$ and adversary $\mathcal{A}$ take a description $\mathbb{G}$ as an input: order $r$ and generator $g \in \mathbb{G}$.
-        \item $\mathcal{C}h$ computes $\alpha \xleftarrow{R} \mathbb{Z}_r, u \gets g^{\alpha}$ and sends $u \in \mathbb{G}$ to $\mathcal{A}$.
+        \item Both challenger $\mathcal{C}h$ and adversary $\mathcal{A}$ take a description $\mathbb{G}$ as an 
+        input: order $r$ and generator $g \in \mathbb{G}$.
+        \item $\mathcal{C}h$ computes $\alpha \xleftarrow{R} \mathbb{Z}_r, u \gets g^{\alpha}$ and sends 
+        $u \in \mathbb{G}$ to $\mathcal{A}$.
         \item The adversary $\mathcal{A}$ outputs $\hat{\alpha} \in \mathbb{Z}_r$.
     \end{enumerate}
 
-    We define $\mathcal{A}$'s \textbf{advantage in solving the discrete logarithm problem in $\mathbb{G}$}, denoted as $\text{DL}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as the probability that $\hat{\alpha} = \alpha$.
+    We define $\mathcal{A}$'s \textbf{advantage in solving the discrete logarithm problem in $\mathbb{G}$}, 
+    denoted as $\text{DL}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as the probability that $\hat{\alpha} = \alpha$.
 \end{definition}
 
 \begin{definition}
-    The \textbf{Discrete Logarithm Assumption} holds in the group $\mathbb{G}$ if for any efficient adversary $\mathcal{A}$ the advantage $\text{DL}\mathsf{adv}[\mathcal{A},\mathbb{G}]$ is negligible.
+    The \textbf{Discrete Logarithm Assumption} holds in the group $\mathbb{G}$ 
+    if for any efficient adversary $\mathcal{A}$ the advantage $\text{DL}\mathsf{adv}[\mathcal{A},\mathbb{G}]$ 
+    is negligible.
 \end{definition}
 
-Informally, this assumption means that given $u$, it is very hard to find $\alpha$ such that $u = g^{\alpha}$. But now we can write down this formally!
+Informally, this assumption means that given $u$, it is very hard to find $\alpha$ such that $u = g^{\alpha}$. 
+But now we can write down this formally!
 
 \subsection{Computational Diffie-Hellman}
 
-Another fundamental problem in cryptography is the \textbf{Computational Diffie-Hellman} (CDH) problem. It states that given $g^{\alpha},g^{\beta}$ it is hard to find $g^{\alpha\beta}$. This property is frequently used in the construction of cryptographic protocols such as the Diffie-Hellman key exchange.
+Another fundamental problem in cryptography is the \textbf{Computational Diffie-Hellman} (CDH) problem \cite[chapter 16]{Dan_Boneh_2023}. 
+It states that given $g^{\alpha},g^{\beta}$ it is hard to find $g^{\alpha\beta}$. This property is frequently used 
+in the construction of cryptographic protocols such as the Diffie-Hellman key exchange.
 
 Let us define this problem formally.
 
@@ -309,16 +324,20 @@ Let us define this problem formally.
         \item The adversary $\mathcal{A}$ outputs $\hat{w} \in \mathbb{G}$.
     \end{enumerate}
 
-    We define $\mathcal{A}$'s \textbf{advantage in solving the computational Diffie-Hellman problem in $\mathbb{G}$}, denoted as $\text{CDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as the probability that $\hat{w} = w$.
+    We define $\mathcal{A}$'s \textbf{advantage in solving the computational Diffie-Hellman problem in $\mathbb{G}$}, 
+    denoted as $\text{CDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as the probability that $\hat{w} = w$.
 \end{definition}
 
 \begin{definition}
-    The \textbf{Computational Diffie-Hellman Assumption} holds in the group $\mathbb{G}$ if for any efficient adversary $\mathcal{A}$ the advantage $\text{CDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$ is negligible.
+    The \textbf{Computational Diffie-Hellman Assumption} holds in the group $\mathbb{G}$ if for any efficient 
+    adversary $\mathcal{A}$ the advantage $\text{CDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$ is negligible.
 \end{definition}
 
 \subsection{Decisional Diffie-Hellman}
 
-Now, we loosen the requirements a bit. The \textbf{Decisional Diffie-Hellman} (DDH) problem states that given $g^{\alpha},g^{\beta},g^{\alpha\beta}$ it is ``hard'' to distinguish $g^{\alpha\beta}$ from a random element in $\mathbb{G}$. Formally, we define this problem as follows.
+Now, we loosen the requirements a bit. The \textbf{Decisional Diffie-Hellman} (DDH) problem \cite[chapter 16]{Dan_Boneh_2023} 
+states that given $g^{\alpha},g^{\beta},g^{\alpha\beta}$ it is ``hard'' to distinguish $g^{\alpha\beta}$ from a 
+random element in $\mathbb{G}$. Formally, we define this problem as follows.
 
 \begin{definition}
     Let $\mathbb{G}$ be a cyclic group of prime order $r$ generated by $g \in \mathbb{G}$. Define the following game:
@@ -338,12 +357,17 @@ Now, let us break this assumption for some quite generic group! Consider the fol
 
 \begin{theorem}
     Suppose that $\mathbb{G}$ is a cyclic group of an even order. Then, the Decision
-    Diffie-Hellman Assumption does not hold in $\mathbb{G}$. In fact, there is an efficient adversary $\mathcal{A}$ that can distinguish $g^{\alpha\beta}$ from a random element in $\mathbb{G}$ with an advantage $1/4$.
+    Diffie-Hellman Assumption does not hold in $\mathbb{G}$. In fact, there is an efficient adversary $\mathcal{A}$ 
+    that can distinguish $g^{\alpha\beta}$ from a random element in $\mathbb{G}$ with an advantage $1/4$.
 \end{theorem}
 
-\textbf{Proof.} If $|\mathbb{G}|=2n$ for $n \in \mathbb{N}$, it means that we can split the group into two subgroups of order $n$, say, $\mathbb{G}_1$ and $\mathbb{G}_2$. The first subgroup consists of elements in a form $g^{2k}$, while the second subgroup consists of elements in a form $g^{2k+1}$.
+\textbf{Proof.} If $|\mathbb{G}|=2n$ for $n \in \mathbb{N}$, it means that we can split the group into two subgroups 
+of order $n$, say, $\mathbb{G}_1$ and $\mathbb{G}_2$. The first subgroup consists of elements in a form $g^{2k}$, 
+while the second subgroup consists of elements in a form $g^{2k+1}$.
 
-Now, if we could efficiently determine, based on group element $g \in \mathbb{G}$, whether $g \in \mathbb{G}_1$ or $g \in \mathbb{G}_2$, we essentially could solve the problem. Fortunately, there is such a method! Consider the following lemma.
+Now, if we could efficiently determine, based on group element $g \in \mathbb{G}$, whether $g \in \mathbb{G}_1$ or 
+$g \in \mathbb{G}_2$, we essentially could solve the problem. Fortunately, there is such a method! Consider the 
+following lemma.
 
 \begin{lemma}
     Suppose $u=g^{\alpha}$. Then, $\alpha$ is even if and only if $u^n = 1$.
@@ -354,7 +378,8 @@ Now, if we could efficiently determine, based on group element $g \in \mathbb{G}
     u^n = (g^{2\alpha'})^n = g^{2n\alpha'} = (g^{2n})^{\alpha'} = 1^{\alpha'} = 1
 \end{equation*}
 
-Conversely, if $u^n = 1$ then $u^{\alpha n}=1$, meaning that $2n \mid \alpha n$, implying that $\alpha$ is even. Lemma is proven.
+Conversely, if $u^n = 1$ then $u^{\alpha n}=1$, meaning that $2n \mid \alpha n$, implying that $\alpha$ is even. 
+Lemma is proven.
 
 Now, we can construct our adversary $\mathcal{A}$ as follows. Suppose $\mathcal{A}$ is given $(u,v,w)$. Then,
 \begin{enumerate}
@@ -365,12 +390,19 @@ Now, we can construct our adversary $\mathcal{A}$ as follows. Suppose $\mathcal{
     \item Return $\hat{b}=0$ if $p_{\gamma}' = p_{\gamma}$, and $\hat{b}=1$, otherwise.
 \end{enumerate}
 
-Suppose $\gamma$ is indeed $\alpha \times \beta$. Then, condition $p_{\gamma}'=p_{\gamma}$ will always hold. If $\gamma$ is a random element, then the probability that $p_{\gamma}'=p_{\gamma}$ is $1/2$. Therefore, the probability that $\mathcal{A}$ will guess the bit $b$ correctly is $3/4$, and the advantage is $1/4$ therefore. $\blacksquare$
+Suppose $\gamma$ is indeed $\alpha \times \beta$. Then, condition $p_{\gamma}'=p_{\gamma}$ will always hold. 
+If $\gamma$ is a random element, then the probability that $p_{\gamma}'=p_{\gamma}$ is $1/2$. Therefore, the 
+probability that $\mathcal{A}$ will guess the bit $b$ correctly is $3/4$, and the advantage is $1/4$ therefore. 
+$\blacksquare$
 
 \vspace{10pt}
 
-Why is this necessary? Typically, it is impossible to prove the predicate ``for every efficient adversary $\mathcal{A}$ this probability is negligible'' and therefore we need to make assumptions, such as the Discrete Logarithm Assumption or the Computational Diffie-Hellman Assumption. In turn, proving the statement ``if $X$ is secure then $Y$ is also secure'' is manageable and does not require solving any fundamental problems. So, for example,
-knowing that the probability of the adversary to break the Diffie-Hellman assumption is negligible, we can prove that the Diffie-Hellman key exchange is secure. 
+Why is this necessary? Typically, it is impossible to prove the predicate ``for every efficient adversary 
+$\mathcal{A}$ this probability is negligible'' and therefore we need to make assumptions, such as the Discrete 
+Logarithm Assumption or the Computational Diffie-Hellman Assumption. In turn, proving the statement ``if $X$ is 
+secure then $Y$ is also secure'' is manageable and does not require solving any fundamental problems. So, for 
+example, knowing that the probability of the adversary to break the Diffie-Hellman assumption is negligible, we 
+can prove that the Diffie-Hellman key exchange is secure. 
 
 \subsection{Exercises}
 
