@@ -4,7 +4,7 @@
 
 \subsection{Basic Definition}
 
-Polynomials are intensively used in almost all areas of cryptography. In our particular case, polynomials will encode the information about
+Polynomials \cite[section 17]{Judson_2012} are intensively used in almost all areas of cryptography. In our particular case, polynomials will encode the information about
 statements we will need to prove. That being said, let us define what polynomial is.
 
 \begin{definition}
@@ -146,7 +146,7 @@ in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the po
     Given a set of points $\{(x_0,y_0),(x_1,y_1),\dots,(x_n,y_n)\} \subset
     \mathbb{F} \times \mathbb{F}$, there is a unique polynomial $L(x)$ of degree
     $n$ such that $L(x_i) = y_i$ for all $i=0,\dots,n$. This polynomial is
-    called the \textbf{Lagrange interpolation polynomial} and can be found
+    called the \textbf{Lagrange interpolation polynomial} \cite{Saniee_2007_LagrangeInterpolation} and can be found
     through the following formula:
     \begin{equation*}
         L(x) = \sum_{i=0}^{n} y_i \ell_i(x), \quad \ell_i(x) = \prod_{j=0, j \neq i}^{n} \frac{x-x_j}{x_i-x_j}.
@@ -175,7 +175,7 @@ in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the po
 
 \subsection{Schwartz-Zippel Lemma}
 
-\begin{lemma}\label{lemma:sz}
+\begin{lemma}[Schwartz-Zippel \cite{Oveis_Gharan_2017_Lecture7}] \label{lemma:sz}
 Let $\mathbb{F}$ be a finite field and $\mathbb{S} \subseteq \mathbb{F}^n$ be a finite $n$-dimensional subspace.
 Let $f: \mathbb{S} \to \mathbb{F}$ be a polynomial in $n$ variables of total degree $d$. Then,
 \begin{equation*}

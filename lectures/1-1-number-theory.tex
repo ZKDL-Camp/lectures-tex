@@ -53,7 +53,7 @@ Let us now explore some more basic properties of divisibility.
 
 The question is, what happens if a number $a$ is not divisible by the given integer $b$, 
 meaning there is no integer $k$ that satisfies the condition $a = b \cdot k$? 
-In such cases, the \emph{Division theorem} comes into play.
+In such cases, the \emph{Division theorem} \cite[section 2]{Judson_2012} comes into play.
 
 \begin{theorem}[Division theorem]\label{th:division}
     \begin{equation*}
@@ -88,7 +88,7 @@ numbers. This is where the concept of the \textbf{greatest common divisor} (or
 \textbf{GCD} for short) comes into play.
 
 \begin{definition}[GCD]
-    For any $a, b \in \mathbb{Z}$, the \textbf{greatest common divisor} $\gcd(a, b)$ is defined as an integer $d \in \mathbb{N}$ such that:
+    For any $a, b \in \mathbb{Z}$, the \textbf{greatest common divisor} \cite{Ben_Lynn_1980} $\gcd(a, b)$ is defined as an integer $d \in \mathbb{N}$ such that:
     \begin{enumerate}
         \item $d \mid a$ and $d \mid b$.
         \item $d$ is a maximal integer that satisfies the first condition.
@@ -253,7 +253,8 @@ algorithm will help in finding inverse modular elements, introduced in the
 subsequent sections.
 
 \begin{lemma} [Bezout identity] \label{lemma:bezout_identity}
-    For any two given integers $a, b \in \mathbb{N}$ with $d = \gcd(a, b)$ there exists such $u, v \in \mathbb{Z}$ that $d = au + bv$.
+    For any two given integers $a, b \in \mathbb{N}$ with $d = \gcd(a, b)$ there exists such 
+    $u, v \in \mathbb{Z}$ that $d = au + bv$.
 \end{lemma}
 
 \begin{example}
@@ -268,7 +269,8 @@ subsequent sections.
     \hfill
     \begin{enumerate}
         \item Integers $u$ and $v$ are of different signs (excluding the case when either $u=0$ or $v=0$).
-        \item \textit{Generalization for multiple integers:} Suppose $d = \gcd(a_1, a_2, \dots, a_n)$, then there exist such integers $u_1, u_2, \dots, u_n \in \mathbb{Z}$ that $d = u_1 a_1 + u_2 a_2 + \cdots + u_n a_n$.
+        \item \textit{Generalization for multiple integers:} Suppose $d = \gcd(a_1, a_2, \dots, a_n)$, then there 
+        exist such integers $u_1, u_2, \dots, u_n \in \mathbb{Z}$ that $d = u_1 a_1 + u_2 a_2 + \cdots + u_n a_n$.
     \end{enumerate}    
 \end{corollary}
 
@@ -783,7 +785,7 @@ With these properties, we can derive a general formula for Euler's totient funct
 \end{example}
 
 \subsection{Chinese Remainder Theorem}
-The Chinese Remainder Theorem is a fundamental result in number theory
+The Chinese Remainder Theorem \cite[chapter 10]{Cohen_Frey_2005} is a fundamental result in number theory
 that provides an efficient method for solving congruence systems. It allows you to
 decompose a complex problem with large integers into several simpler 
 problems with smaller modules. This decomposition reduces the required computational 

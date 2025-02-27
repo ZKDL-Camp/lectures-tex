@@ -5,7 +5,7 @@
 \subsection{Classical Definition}
 
 Probably, there is no need to explain the importance of elliptic curves. Essentially, the main group being used for cryptographic 
-protocols is the group of points on an elliptic curve. If elliptic curve is ``good enough'', then the discrete logarithm problem assumption,
+protocols is the group of points on an elliptic curve \cite[section 13]{Cohen_Frey_2005} \cite[section 9]{Galbraith_2012}. If elliptic curve is ``good enough'', then the discrete logarithm problem assumption,
 Diffie-Hellman assumption and other core cryptographic assumptions hold. Moreover, this group does not require
 a large field size, which is a huge advantage for many cryptographic protocols.
 
@@ -132,7 +132,7 @@ Finally, let us define the scalar multiplication operation.
 \textbf{Question.} Why do we restrict $\alpha$ to $\mathbb{Z}_r$ and not to $\mathbb{Z}$?
 
 \subsection{Discrete Logarithm Problem on Elliptic Curves}
-Finally, as defined in the previous section, the \textbf{discrete logarithm} problem on the elliptic curve is the following: typically, $E(\mathbb{F}_p)$ is cyclic, meaning there exist some point $G \in E(\mathbb{F}_p)$, called the \textbf{generator}, such that $\langle G \rangle = E(\mathbb{F}_p)$. Given $P \in E(\mathbb{F}_p)$, the problem consists in finding such a scalar $\alpha \in \mathbb{Z}_r$ such that $[\alpha]G = P$. 
+Finally, as defined in the previous section, the \textbf{discrete logarithm} problem on the elliptic curve \cite[section 15]{Dan_Boneh_2023} is the following: typically, $E(\mathbb{F}_p)$ is cyclic, meaning there exist some point $G \in E(\mathbb{F}_p)$, called the \textbf{generator}, such that $\langle G \rangle = E(\mathbb{F}_p)$. Given $P \in E(\mathbb{F}_p)$, the problem consists in finding such a scalar $\alpha \in \mathbb{Z}_r$ such that $[\alpha]G = P$. 
 
 Now, if the curve is ``good'', then the discrete logarithm problem is hard. In fact, the best-known algorithms have a complexity $O(\sqrt{r})$. However, there are certain cases when the discrete log problem is much easier.
 \begin{enumerate}
@@ -508,13 +508,21 @@ Moreover, here we can use projective coordinates to make the addition and doubli
 
 \subsection{Elliptic Curve Pairing}\label{section:ecpairing}
 
-Pairing is the core object used in threshold signatures, zk-SNARKs constructions, and other cryptographic applications. 
+Pairing \cite[section 15]{Dan_Boneh_2023} \cite[section 26]{Galbraith_2012} \cite[section 16]{Cohen_Frey_2005} is the 
+core object used in threshold signatures, zk-SNARKs constructions, and other cryptographic applications. 
 
-Consider the \textit{Decisional Diffie-Hellman problem} which we described in \Cref{section:math-crypto-2} (based on $g^{\alpha},g^{\beta}$ and $g^{\gamma}$, decide whether $\gamma = \alpha\beta$). Turns out that for curves where the so-called \textit{embedding degree}\footnote{We will mention what that is is later, but still this term is quite hard to define.} is small enough, this problem is easy to solve. This might sound 
-like a quite bad thing, but it turns out that although some information about the discrete logarithm is leaked, it is not enough to break the security of the system (basically, solve the \textit{Computational Diffie-Hellman problem}). 
-Pairings is the exact object that allows us to solve the Decisional Diffie-Hellman problem.
+Consider the \textit{Decisional Diffie-Hellman problem} which we described in \Cref{section:math-crypto-2} 
+(based on $g^{\alpha},g^{\beta}$ and $g^{\gamma}$, decide whether $\gamma = \alpha\beta$). Turns out that for curves 
+where the so-called \textit{embedding degree}\footnote{We will mention what that is is later, but still this term is 
+quite hard to define.} is small enough, this problem is easy to solve. This might sound like a quite bad thing, but 
+it turns out that although some information about the discrete logarithm is leaked, it is not enough to break the 
+security of the system (basically, solve the \textit{Computational Diffie-Hellman problem}). Pairings is the exact 
+object that allows us to solve the Decisional Diffie-Hellman problem.
 
-However, a more interesting use-case which we are going to use in SNARKs is that pairings allows us to check \textbf{quadratic conditions} on scalars using their corresponding elliptic curve representation. For example, just given $u=g^{\alpha},v=g^{\beta}$ we can check whether $\alpha\beta+5=0$ (which is impossible to check without having a pairing). 
+However, a more interesting use-case which we are going to use in SNARKs is that pairings allows us to check 
+\textbf{quadratic conditions} on scalars using their corresponding elliptic curve representation. For example, 
+just given $u=g^{\alpha},v=g^{\beta}$ we can check whether $\alpha\beta+5=0$ (which is impossible to check without 
+having a pairing). 
 
 So what is pairing?
 
