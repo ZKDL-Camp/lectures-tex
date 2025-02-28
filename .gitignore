@@ -305,6 +305,7 @@ TSWLatexianTemp*
 # temp .pdf files
 /lectures/*.pdf
 /lectures-105-135/*.pdf
+/preface/*.pdf
 
 exercises.pdf
 lecture-notes-148x210.pdf
