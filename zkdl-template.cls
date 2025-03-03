@@ -14,7 +14,6 @@
 \RequirePackage{cmbright}
 \RequirePackage{blkarray}
 \RequirePackage{graphicx}
-\RequirePackage{opencolor}
 \RequirePackage{etoc}
 \RequirePackage{blindtext}
 \RequirePackage{framed}
@@ -30,6 +29,9 @@
 \RequirePackage[inline,shortlabels]{enumitem}
 \setlist{topsep=2pt,itemsep=2pt,parsep=0pt,partopsep=0pt}
 \RequirePackage[dvipsnames,table]{xcolor}
+\RequirePackage{opencolor}
+\RequirePackage{tabularx}
+
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[
     paperwidth=145mm,

@@ -175,26 +175,47 @@ in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the po
 
 \subsection{Schwartz-Zippel Lemma}
 
-\begin{lemma}[Schwartz-Zippel \cite{Oveis_Gharan_2017_Lecture7}] \label{lemma:sz}
+Schwartz-Zippel Lemma is central for most modern zero-knowledge protocols. Its
+simple interpretation is the following: if we want to check whether two
+polynomials are equal, we can do it by checking whether they are equal at a
+random point. The probability of two different polynomials being equal at a
+random point is very low for sufficiently large finite fields $\mathbb{F}$.
+However, let us formulate the lemma more rigorously. Let us start with the
+single-variable case, which is easiest to understand.
+
+\begin{lemma}[Single Variable Schwartz-Zippel Lemma]\label{lemma:one-sz} Let
+    $\mathbb{F}$ be a finite field and let $f \in \mathbb{F}[x]$ be a
+    polynomial. Then,
+    \begin{equation*}
+        \underset{x \xleftarrow{R} \mathbb{F}}{\text{Pr}}
+        [f(x) = 0] \leq \frac{\deg f}{\left|\mathbb{F}\right|}.
+    \end{equation*}
+\end{lemma}
+
+\textbf{Proof Idea.} The proof is quite simple. The polynomial of degree up to
+$n:=\deg f$ can have up to $n$ roots. Therefore, when we pick the point $x$
+uniformly at random from the field $\mathbb{F}$, there is at most $n/|\mathbb{F}|$
+chance to pick the root of the polynomial.
+
+However, the lemma can be generalized to the multi-variable case, which is more
+difficult to prove. The generalization is as follows.
+
+\begin{lemma}[Multivariable Schwartz-Zippel \cite{Oveis_Gharan_2017_Lecture7}] \label{lemma:sz}
 Let $\mathbb{F}$ be a finite field and $\mathbb{S} \subseteq \mathbb{F}^n$ be a finite $n$-dimensional subspace.
-Let $f: \mathbb{S} \to \mathbb{F}$ be a polynomial in $n$ variables of total degree $d$. Then,
+Let $f: \mathbb{S} \to \mathbb{F}$ be a polynomial in $n$ variables. Then,
 \begin{equation*}
     \underset{\mathbf{x} \xleftarrow{R} \mathbb{S}}{\text{Pr}}
-    [f(\mathbf{x}) = 0] \leq \frac{d}{\left|\mathbb{S}\right|}.
+    [f(\mathbf{x}) = 0] \leq \frac{\deg f}{\left|\mathbb{S}\right|}.
 \end{equation*}
 
 \end{lemma}
 
 \begin{example}
-Let $F = \F_3$, $f(x) = x^2 - 5x + 6$, $S = F$, $r \xleftarrow{R} \mathbb{F}_3$.
-
-Schwartz-Zippel lemma says that the probability that $f(r) = 0$ is $\le \frac{2}{3}$.
+Suppose we are working over the Mersenne prime field of order $p=2^{31}-1$ with
+a polynomial $f(x_1,x_2) = x_1^{50} + 3x_1x_2 + x_2^5$. If we pick $(x_1,x_2)$
+at random from $\mathbb{F}_p^2$, the probability of $f(x_1,x_2) = 0$ is at most
+$50/(2^{31}-1)$, providing approximately 25 bits of security.
 \end{example}
-
-Given two polynomials $P, Q$ with  degree $d$ in a field $\F_p$, for $r \xleftarrow{R} \mathbb{F}_3$: $\Pr[P(r) == Q(r)] \le \frac{d}{p}$.
-For large fields, where  $\frac{d}{p}$ is negligible, this property allows to succinctly check the equality of polynomials.
-Let $H(x) := P(x) - Q(x)$. Than for each $P(x) = Q(x) \rightarrow H(x) = 0$. Applying Schwartz-Zippel lemma, 
-the probability of $H(x) = 0$ for $x \xleftarrow{R} \mathbb{F} $ is $\le \frac{d}{|S|}$.
 
 \subsection{Some Fun: Shamir's Secret Sharing}
 

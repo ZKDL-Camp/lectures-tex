@@ -2,21 +2,27 @@
 
 \begin{document}
 
-As you can recall from high school math, typically real-world processes are described
-using real numbers, denoted by $\mathbb{R}$. For example, to describe the position or 
-the velocity of an object, you would rather use real numbers. 
+As you can recall from high school math, typically real-world processes are
+described using real numbers, denoted by $\mathbb{R}$. For example, to describe
+the position or the velocity of an object, you would rather use real numbers
+instead of fields, groups, or p-adic numbers.
 
-However, when it comes to working with computers, real numbers become very inconvenient 
-to work with. For instance, different programming languages might output different values 
-for quite a straightforward operation, such as an addition \textsf{2.00001 + 2.00000}. This becomes a huge problem 
-when dealing with cryptography, which must check \textit{precisely} whether two quantities 
+However, when it comes to working with computers, real numbers become very
+inconvenient to work with. The primary reason is that the set $\mathbb{R}$ is
+uncountably infinite, so the computer can only store the approximation of a real
+number (as the precise interpretation of the real number would require the
+infinite number of bits). For instance, different programming languages might
+output different values for quite a straightforward operation, such as an
+addition \textsf{2.00001 + 2.00000}. This becomes a huge problem when dealing
+with cryptography, which must check \textit{precisely} whether two quantities
 are equal.
 
-This is why the cryptography must work with integer-based formats. One of the earliest and 
-most fundamental branches of mathematics is number theory, which deals with the properties 
-of the integer set $\mathbb{Z}$. Although, as we will see later, we will primarily need 
-the notion of \emph{prime/finite field} further, the basic concepts of number theory will 
-still be used extensively nonetheless.
+This is why the cryptography must work with integer-based formats. One of the
+earliest and most fundamental branches of mathematics is number theory, which
+deals with the properties of the integer set $\mathbb{Z}$. Although, as we will
+see later, we will primarily need notions of \emph{finite fields} and
+\emph{groups} further, the basic concepts of number theory will be used
+extensively nonetheless.
 
 \subsection{The Basics}
 
@@ -39,7 +45,7 @@ We start with the most basic definition of number theory --- \emph{divisibility}
 Let us now explore some more basic properties of divisibility. 
 
 \begin{lemma}[Divisibility properties]
-    For all $a, b, c \in \mathbb{Z}:$
+    For all $a, b, c \in \mathbb{Z}$:
     \hfill
     \begin{enumerate}
         \item $1 \mid a$ (any number is divisible by $1$)
@@ -51,28 +57,34 @@ Let us now explore some more basic properties of divisibility.
     \end{enumerate}
 \end{lemma}
 
-The question is, what happens if a number $a$ is not divisible by the given integer $b$, 
-meaning there is no integer $k$ that satisfies the condition $a = b \cdot k$? 
-In such cases, the \emph{Division theorem} \cite[section 2]{Judson_2012} comes into play.
+This way, if we have $a$ and $b$ with $b \mid a$, we can safely divide $a$ by
+$b$. However, in the majority of cases, it so happens that $a$ is not divisible
+by $b$, making it hard to define the division in such cases. For that reason,
+consider one of the central theorems of Number Theory: the \emph{Division
+theorem} \cite[section 2]{Judson_2012}.
 
 \begin{theorem}[Division theorem]\label{th:division}
+    For any integers $a,b \in \mathbb{Z}$ there exist unique integers $q, r \in \mathbb{Z}$ with $0 \leq r < |b|$ such that 
     \begin{equation*}
-        \forall a, b \in \mathbb{Z} \; \exists! q, r \in \mathbb{Z} \; \text{such that} \; a = b \cdot q + r \; \text{with} \; 0 \leq r < |b|
+        a = b \cdot q + r.
     \end{equation*}
 \end{theorem}
-
-To prove this theorem, all we need to prove is the existence and uniqueness of
-such a decomposition. To not make the book too long, we will not prove this
-theorem here, but you can find the proof in any number theory textbook.
 
 This theorem allows us to define two new operations. Suppose $a,b,q,r$ are given
 as in the \Cref{th:division}. Then,
 \begin{itemize}
     \item \textbf{Floor Operation} ($\lfloor a/b \rfloor$ or $a \; \text{div} \; b$) is defined
-    as $q$. This operation is a standard \texttt{div} opeartion commonly used in programming languages.
+    as $q$. This operation is a standard \text{div} opeartion commonly used in programming languages.
     \item \textbf{Mod Operation} ($a \; \text{mod} \; b$) is defined as $r$. This operation is a standard
-\texttt{mod} operation commonly used in programming languages. 
+\text{mod} operation commonly used in programming languages. 
 \end{itemize}
+
+\begin{remark}
+    There is one caveat with programming languages, though. Oftentimes, the
+    quotient $q$ and remainder $r$ obey the aforementioned condition $a=b\cdot q+r$,
+    but with the difference that $|r| < |b|$, allowing two possible values for $r$,
+    including negative. 
+\end{remark}
 
 \begin{example} \label{example:divisibility_2}
     Continuing \Cref{example:divisibility_1}, \hfill
@@ -81,6 +93,20 @@ as in the \Cref{th:division}. Then,
         as~$29 = 5 \cdot 5 + 4$.
         \item Similarly, it is evident that $34 \nmid 123$, but $123 = 3 \cdot 34 + 21$.
     \end{enumerate}
+
+    To compare the results, we can use the following Python code:
+    \begin{lstlisting}[language=Python, numbers=none]
+def divmod(a: int, b: int) -> Tuple[int, int]:
+    q = a // b
+    r = a % b
+    return q, r
+    
+a, b = 29, 5
+q, r = divmod(a, b)
+assert a == b * q + r, 'Theorem does not hold'
+
+print(q, r) # (5, 4)
+\end{lstlisting}
 \end{example}
 
 In division operations, it is common to check for any shared factors between two
@@ -101,7 +127,7 @@ numbers. This is where the concept of the \textbf{greatest common divisor} (or
 \end{definition}
 
 \begin{example}
-    Just as an example, let us find the $\gcd(a, b)$ for few pairs of integers.
+    Just as an example, let us find the $\gcd(a, b)$ for a few pairs of integers.
     
     \begin{multicols}{2}
         \begin{enumerate}
@@ -114,52 +140,77 @@ numbers. This is where the concept of the \textbf{greatest common divisor} (or
 \end{example}
 
 \begin{definition}
-    Integers $a, b \in \mathbb{Z}$ are \textbf{coprime} if and only if $\gcd(a, b) = 1$.
+    Integers $a, b \in \mathbb{Z}$ are called \textbf{coprime} if $\gcd(a, b) = 1$.
 \end{definition}
 
 As with any fundamental concept, let us explore some basic properties of the GCD operation.
 
-\begin{lemma} [Greatest common divisor properties]
+\begin{lemma}[Greatest common divisor properties]\label{lemma:gcd_properties}
     \hfil
     \begin{enumerate}
         \item $\gcd(a, b) = b \iff b \mid a$
         \item If $a \neq 0$, then $\gcd(a, 0) = a$
         \item If there exists $\delta \in \mathbb{Z}$ such that $\delta \mid a$ and $\delta \mid b$, then $\delta \mid \gcd(a, b)$
         \item If $c > 0$, then $\gcd(ac, bc) = c \cdot \gcd(a, b)$
-        \item Suppose $d = \gcd(a, b)$. Then, $\gcd(a/d, b/d) = 1$
+        \item Integers $a/\gcd(a,b)$ and $b/\gcd(a,b)$ are coprime.
     \end{enumerate}
 \end{lemma}
+
+Now, from the programming standpoint, you might ask how to implement the GCD 
+computation in practice. Consider the following lemma which, as of now, might 
+seem quite abstract.
 
 \begin{lemma} \label{lemma:gcd_basic_calculation}
     For any integers $a,b \in \mathbb{Z}$, we have $\gcd(a, b) = \gcd(b, a - b)$. 
 \end{lemma}
 
-When considering how to find the greatest common divisor (GCD) or exploring algorithms 
-for this purpose, \Cref{lemma:gcd_basic_calculation} serves as a useful starting point. 
-However, on its own, it is not sufficient. The following lemma will be extensively employed
-in the Euclidean algorithm, and its generalization is both natural and essential for more 
-advanced applications.
+How does it help? Here is how: instead of computing $\gcd(a,b)$ directly, we
+reduce the problem to a simpler one, where one of the numbers is smaller. We
+apply this recursively until, at some point, one of the integers is zero. The
+other one will be the GCD result, as follows from the second property of
+\Cref{lemma:gcd_properties}. Suprisingly, this can be written in a couple of
+lines of code:
+\begin{lstlisting}[language=Python, numbers=none]
+def gcd(a: int, b: int) -> int:
+    # We want a to be always greater than b
+    if a <= b:
+        a, b = b, a
+    return a if b == 0 else gcd(b, a - b)
+    
+print(gcd(42, 28)) # Output: 14
+print(gcd(36, 14)) # Output: 2
+print(gcd(13, 17)) # Output: 1
+
+\end{lstlisting}
+
+However, such an appraoch in the worst-case scenario still requires linear time
+in the size of the numbers: for example, when computing $\gcd(n, 1)$. The following lemma will be extensively employed in
+the so-called \textit{Euclidean algorithm}, which will reduce the complexity down
+to logarithmic time.
 
 \begin{corollary} \label{cor:euclidean}
     For any $a,b \in \mathbb{Z}$, we have 
-    $\gcd(a,b) =\gcd(b, a \; \texttt{mod} \; b)$.
+    $\gcd(a,b) =\gcd(b, a \; \text{mod} \; b)$.
 \end{corollary}
 
-These properties are interesting and useful from the theory standpoint, but
-you may wonder how to practically find $\gcd(a, b)$ (say, if you were to
-implement this function in the programming language). \emph{Euclidean algorithm} is an
-efficient method for computing the greatest common divisor. The main idea of 
-Euclidean algorithm is to recursively apply the \Cref{cor:euclidean}. The concrete implementation 
-in Python is specified below. 
+Now, this is much better! Let us apply this idea again, but with the modulo 
+operation instead of subtraction:
+
 \begin{lstlisting}[language=Python, numbers=none]
 def gcd(a: int, b: int) -> int:
     return gcd(b, a % b) if b != 0 else a
+    
+print(gcd(42, 28)) # Output: 14
+print(gcd(36, 14)) # Output: 2
+print(gcd(13, 17)) # Output: 1
 \end{lstlisting}
 
-Notice that the algorithm can be easily implemented in a single line.
+Notice that the algorithm can be easily implemented in a single line! Moreover,
+the complexity reduced down to logarithmic time: for computing $\gcd(a,b)$ we
+need $O(\log\max\{a, b\})$ time.
 
 \begin{example}
-    Let us find the $\gcd(535, 230)$. We will use the Euclidean algorithm for this purpose.
+    Let us find the $\gcd(535, 230)$ manually. We will use the Euclidean algorithm for this purpose.
     \hfill
     \begin{equation*}
         \begin{aligned}
@@ -203,11 +254,11 @@ While the greatest common divisor (GCD) focuses on finding the largest shared fa
 \begin{lemma} [Least Common Multiple Properties]
     \hfil
     \begin{enumerate}
-        \item We assume that $\lcm(a, 0)$ is undefined.
+        \item We consider $\lcm(a, 0)$ to be undefined.
         \item $\lcm(a, b) = a \iff b \mid a$.
         \item If $a$ and $b$ are coprime, then $\lcm(a, b) = a \cdot b$.
         \item Any common divisor $\delta$ of $a$ and $b$ satisfies $\delta \mid \lcm(a, b)$.
-        \item For any $c > 0$, we have $\lcm(a \cdot c, b \cdot b) =  c \cdot \lcm(a, b)$.
+        \item For any $c > 0$, we have $\lcm(a \cdot c, c \cdot b) =  c \cdot \lcm(a, b)$.
         \item Integers $\lcm(a, b)/a$ and $\lcm(a, b) / b$ are coprime.
     \end{enumerate}
 \end{lemma}
@@ -222,7 +273,7 @@ can simply use the formula $\text{lcm}(a, b) = ab / \gcd(a, b)$ with the
 previously computed $\gcd(a, b)$.
 
 The reasonable question is how to generalize the $\gcd$ and $\lcm$ operations to more than two arguments. 
-For that reason, we provide the following algorithm:
+For that reason, we provide the following definition.
 \begin{definition}[GCD and LCM for multiple arguments]
     We define the \textbf{greatest common divisor} $\gcd(a_1, a_2, \dots, a_n)$ and the \textbf{least common multiple} $\lcm(a_1, a_2, \dots, a_n)$ for any set of integers $a_1, a_2, \dots, a_n \in \mathbb{Z}$ as follows:
     \begin{align*}
@@ -239,10 +290,11 @@ For that reason, we provide the following algorithm:
     \end{itemize}
 \end{theorem}
 
-In conclusion, from these two theorems there is no necessity for specific
-algorithms for $\gcd(\cdot)$ and $\lcm(\cdot)$ when dealing with many arguments. There are
-more specialized algorithms for each when considering a specific number of
-arguments, but unfortunately, such topics are beyond the scope of this book.
+In conclusion, from these two theorems there is no conceptual necessity for
+specific algorithms for $\gcd(\cdot)$ and $\lcm(\cdot)$ when dealing with more
+than two arguments. It is worth noting that there are more effective algorithms
+for more than two arguments, but such a topic is well beyond the scope of this
+book.
 
 \subsection{Extended Euclidean algorithm}
 
@@ -258,19 +310,19 @@ subsequent sections.
 \end{lemma}
 
 \begin{example}
-    For example $\gcd(125, 93) = 1$, and we can find 
-    such $u, v \in \mathbb{Z}$ that $1 = 125 \cdot u + 93 \cdot v$. 
-    The Bezout coefficients are $u = 32$ and $v = -43$.
-    Therefore, $1 = 125 \cdot 32 + 93 \cdot (-43)$.
-    We will explain and show how to find these coefficients a little later.
+    It is evident that $\gcd(125, 93) = 1$, so we can find such $u, v \in
+    \mathbb{Z}$ that $1 = 125 \cdot u + 93 \cdot v$. One such example is $u =
+    32$ and $v = -43$ since $1 = 125 \cdot 32 + 93 \cdot (-43)$. In this case,
+    we call the tuple $(32,-43)$ as \textit{Bezout coefficients}. We will explain and show
+    how to find these coefficients concretely a bit later.
 \end{example}
 
 \begin{corollary} [From Bezout identity]
     \hfill
     \begin{enumerate}
-        \item Integers $u$ and $v$ are of different signs (excluding the case when either $u=0$ or $v=0$).
+        \item Integers $u$ and $v$ are of different signs (excluding the case when either of Bezout coefficients is zero).
         \item \textit{Generalization for multiple integers:} Suppose $d = \gcd(a_1, a_2, \dots, a_n)$, then there 
-        exist such integers $u_1, u_2, \dots, u_n \in \mathbb{Z}$ that $d = u_1 a_1 + u_2 a_2 + \cdots + u_n a_n$.
+        exist such integers $u_1, u_2, \dots, u_n \in \mathbb{Z}$ that $d = \sum_{i=1}^nu_ia_i$.
     \end{enumerate}    
 \end{corollary}
 
@@ -284,7 +336,7 @@ coefficients on each Euclidean algorithm step.
 
 Now we introduce the \textbf{extended Euclidean algorithm.} The extended
 Euclidean algorithm finds the Bezout coefficients together with the GCD
-efficiently.
+efficiently (in the polylogarithmic time).
 
 \begin{algorithm}[H]
     \caption{Extended Euclidean algorithm} \label{alg:extended_euclidean}
@@ -305,18 +357,17 @@ efficiently.
     \textbf{return} $(r_i, u_i, v_i)$
 \end{algorithm}
 
-The time complexity of the Extended Euclidean algorithm is $O(\log{a} \log{b})$ bit
-operations, which is very efficient. Although we already know how the
-Extended Euclidean Algorithm works, this method is still not very
-human-friendly. For that reason, let us consider an example of an easy way to
-find the GCD.
+The time complexity of the Extended Euclidean algorithm is $O(\log{a} \log{b})$.
+Although we already know how the Extended Euclidean Algorithm works, this method
+is still not very intuitive. Let us consider an example to better understand how
+it works.
 
 \begin{example} [Extended Euclidean algorithm example]
     \hfill
 
     First, we you need to find $d = \gcd(a,b)$. Then, knowing the sequence of
-    expansions, find the Bezout coefficients. Note that this can be done
-    simultaneously.
+    expansions (quotient $q_i$ at each step), we can find the Bezout
+    coefficients. 
 
     \hfill
 
@@ -338,7 +389,7 @@ find the GCD.
             \begin{tabular}{|c|c|c|c|c|c|c|c|}
                 \hline
                 
-                \rowcolor{gray!30} $i$   & $0$      & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ \\
+                \rowcolor{gray!30} $i$   & \textbf{0}      & \textbf{1} & \textbf{2} & \textbf{3} & \textbf{4} & \textbf{5} & \textbf{6} \\
                 
                 \hline
                 \hline
@@ -363,23 +414,26 @@ find the GCD.
         u_{i-1} - q_i u_i &= u_{i+1} \\
         v_{i-1} - q_i v_i &= v_{i+1} 
     \end{align*}
-    Knowing that, try to finish this example by filling in the missed cells
-    marked by \textcolor{green!60!black}{\textbf{?}}. After finding $v_6$, be
-    sure to check yourself.
 \end{example}
+
+\begin{exercise}
+    Finish this example by filling in the missed cells marked by
+    \textcolor{green!60!black}{\textbf{?}}. After finding $v_6$, be sure to
+    check yourself.
+\end{exercise}
 
 \subsection{Prime numbers}
 
 Prime numbers are fundamental in mathematics due to their role of the building
-blocks of all natural numbers. Every integer greater than 1 can be uniquely
-factored into primes, a concept known as the \emph{Fundamental Theorem of
-Arithmetic}, which we introduce in the next section. This property makes primes
-central to number theory, and they play a crucial role in various mathematical
-proofs and structures.
+blocks of all natural numbers: in fact, every integer $n>1$ can be uniquely
+factored into the product of primes, a concept known as the \emph{Fundamental
+Theorem of Arithmetic}, which we introduce in the next section. This property
+makes primes central to number theory and cryptography in particular, where 
+we will use them in finite fields extensively.
 
 \begin{definition}
-    Number $n \in \mathbb{N}$ is \textbf{prime} if and only if its only two divisors are $1$
-    and $n$. 
+    Number $p \in \mathbb{N}$ is called \textbf{prime} if and only if its only
+    two positive divisors are $1$ and $n$. 
 \end{definition}
 
 \begin{definition}
@@ -394,16 +448,20 @@ proofs and structures.
 \end{example}
 
 One might ask: what to do with the number $1$? We consider it to be neither prime 
-nor composite.
+nor composite. Another logical question is whether the set of prime numbers is finite or infinite.
+The next theorem settles this question.
 
 \begin{theorem} [Euclidean theorem]
-    If $P = \{p_1, p_2, p_3, \dots p_k\} \subset \mathbb{N}$ is a finite set,
-    consisting of prime numbers, then there exists a prime number $p$ such that
-    $p \notin P$.
+    If $P \subset \mathbb{N}$ is a finite set, consisting of prime numbers, then
+    there exists a prime number $p'$ such that $p' \notin P$.
 \end{theorem}
 
+\textbf{Proof Idea.} We can set $p' := \prod_{p \in P}p + 1$. Although it is 
+intuitively clear that $p'$ is not divisible by any prime number in $P$, the
+formal proof requires a bit more effort.
+
 \begin{corollary}
-    There are exist an infinite number of primes.
+    There exists an infinite number of primes.
 \end{corollary}
 
 \begin{lemma}
@@ -411,19 +469,22 @@ nor composite.
     minimal divisor $d>1$ of $n$, then $d$ is a prime number.
 \end{lemma}
 
-Let's say we have a large number, and we need to find out if it is prime or not, 
-how do we do it? In other words, are there any methods for checking a number for prime?
-Yes, there are, starting with logical reasoning, you can check numbers with brute force, although
-this method is not practically applicable. There are probabilistic prime tests that will fail
-with some error rate. In 2003, an effective deterministic test of simplicity was found, which moved
-the problem to the $P$ class (complexity).
+Consider a scenario where we have a large number and need to determine whether
+it is prime. How can this be achieved? In other words, what methods exist for
+primality testing? Several approaches are available. The most straightforward
+method is brute-force division, though it is impractical for large numbers.
+Probabilistic tests provide a more feasible alternative, though they introduce a
+small probability of error. In 2003, a significant breakthrough was made with
+the discovery of a deterministic primality test, which placed the problem within
+the $P$ complexity class.
 
-It is worth mentioning, that different forms of primes find their application in some 
-fields. For example, Mersenne primes, factorial primes, Euclidean primes, Fibonacci primes,
-and many other types of primes. We will consider one of the most famous types of 
-primes --- Mersenne primes.
+It is also important to note that various types of prime numbers have
+applications in different fields. Examples include Mersenne primes, factorial
+primes, Euclidean primes, and Fibonacci primes, among others. As an example,
+consider one of the most well-known categories (which you might encounter in the
+modern zero-knowledge protocols): Mersenne primes.
 
-\begin{definition} [Mersenne primes]
+\begin{definition}[Mersenne primes]
     The prime number of the form $2^p - 1$ is called \textbf{Mersenne prime}, where $p$ is a
     prime number, usually notated as following $M_p = 2^p - 1$.
 \end{definition}
@@ -434,17 +495,18 @@ primes --- Mersenne primes.
     As of 2025, only 52 such numbers were found, the largest of which is $2^{136279841} - 1$.
 \end{example}
 
-The following lemma about the form of prime numbers 
-is also worth mentioning. 
-
 \begin{lemma}
-    If the number $M_p$ is prime, then $p$ is also prime.
+    If the number $M_p$ is prime, then so is $p$.
 \end{lemma}
 
-Mersenne primes, are important in both number theory and cryptography.
-They have unique mathematical properties that make them useful for testing primality and generating large prime numbers.
-Mersenne primes are also crucial in the construction of efficient algorithms for error correction in coding theory and for generating random numbers in cryptographic applications, etc. 
-Beside, next theorem importan says that we can know the form of a prime numbers.
+Mersenne primes, are important in both number theory and cryptography. They have
+unique mathematical properties that make them useful for testing primality and
+generating large prime numbers. Mersenne primes are also crucial in the
+construction of efficient algorithms for error correction in coding theory and
+for generating random numbers in cryptographic applications, etc. 
+
+Finally, we introduce the Dirichlet's theorem, which is sometimes used for 
+prime generation in cryptographic systems or constructing special primes.
 
 \begin{theorem} [Dirichlet's theorem]
     For any $a, b \in \mathbb{N}$ if $\gcd(a, b) = 1$, then infinite primes number form of $am + b$ exists, where $m \in \mathbb{N}$.
@@ -459,17 +521,19 @@ It plays a key role in areas like number theory, cryptography, and simplifying
 calculations involving divisibility. 
 
 \begin{example}
-    For example let us decompose the number $n = 123456$ into a product of prime numbers.
+    To see this fact in action, let us decompose an integer $n = 123456$ into a product of prime numbers.
     \begin{equation*}
         123456 = 2^6 \cdot 3^1 \cdot 643^1.
     \end{equation*}
 \end{example}
 
-But before formal description of the theorem, for better understanding it is good to know the following Lemma \ref{euclidean_lemma}.
+Before formulating the Fundamental Theorem of Arithmetic, let us consider the auxiliary Lemma \ref{euclidean_lemma}.
 
 \begin{lemma}[Euclidean] \label{euclidean_lemma}
-    If $p$ is a prime and $p \mid ab$, then $p \mid a$ or $p \mid b$.
+    If $p$ is prime and $p \mid ab$, then $p \mid a$ or $p \mid b$.
 \end{lemma}
+
+As an exercise and to show where Bezout coefficients are used, let us prove both this lemma and the subsequent theorem.
 
 \textbf{Proof.} 
 $\blacktriangleright$
@@ -491,18 +555,24 @@ Theorem of Arithmetic.
 
 \textbf{Proof.} 
 $\blacktriangleright$  
-The theorem state equation then need to proof equation existence and uniqueness. Since the existence property is 
-easy to prove, let us make the small exception and show it. For other proves (in particular, for the uniqueness case, see literature)
+We need to prove both existence and uniqueness. Since the existence is
+easy to prove, let us make the small exception and show it. For other proves (in
+particular, for the uniqueness case), see the literature provided.
 
-\textcolor{green!60!black}{\textbf{Existence}}. Suppose the theorem statement is false and there exist $n$ that do not have such a representation.
-Let $n_0$ be the smallest of them.
-If $n_0$ is prime, it can be represented as $p_1=n_0$, $\alpha_1=1$, which satisfies the representation. Therefore, $n_0$ must be composite, which means $\exists a, b \in \mathbb{N}, 1 < a, b < n_0$ such that $n = ab$.
-Since $n_0$ is the smallest non-decomposable number and $a, b < n_0$, then $a$ and $b$ can be represented as 
+\textcolor{green!60!black}{\textbf{Existence}}. Suppose the theorem statement is
+false and there exists $n$ that does not have such a representation. Let $n_0$ be
+the smallest of them. If $n_0$ is prime, it can be represented as $p_1=n_0$,
+$\alpha_1=1$, which satisfies the representation. Therefore, $n_0$ must be
+composite, which means $\exists a, b \in \mathbb{N}, 1 < a, b < n_0$ such that
+$n = ab$. Since $n_0$ is the smallest non-decomposable number and $a, b < n_0$,
+then $a$ and $b$ can be represented as 
 \begin{align*}
     a &= p_{1}^{\alpha_{1}} \dots p_{t}^{\alpha_{t}} \\
     b &= q_{1}^{\beta_{1}} \dots q_{k}^{\beta_{k}}.
 \end{align*}
-Therefore, $n_0 = ab=p_{1}^{\alpha_{1}} \dots p_{t}^{\alpha_{t}} q_{1}^{\beta_{1}} \dots q_{k}^{\beta_{k}}$. Thus, the contradiction. $\blacktriangleleft$  
+Therefore, $n_0 = ab=p_{1}^{\alpha_{1}} \dots p_{t}^{\alpha_{t}}
+q_{1}^{\beta_{1}} \dots q_{k}^{\beta_{k}}$. Thus, the contradiction, as $n_0$ is
+represented as the product of primes. $\blacktriangleleft$  
 
 \begin{corollary}
     Suppose $n$ is decomposed as in \Cref{th:fundamental_arithmetic}. Then,
@@ -515,8 +585,14 @@ Therefore, $n_0 = ab=p_{1}^{\alpha_{1}} \dots p_{t}^{\alpha_{t}} q_{1}^{\beta_{1
     \end{enumerate}
 \end{corollary}
 
-The implications and applications of the Fundamental Theorem of Arithmetic are very large and important, and a number of “obvious” ones are listed above.
-However, you should also be aware that the problem of factorization, i.e., knowing the decomposition of a number into prime factors, is in a NP class (complexity) and is the basis of some cryptosystems, although it is gradually being abandoned, including due to the potential of quantum computers.
+The implications and applications of the Fundamental Theorem of Arithmetic are
+large and important, and the number of ``obvious'' ones are listed above. 
+\begin{remark}
+    Note that the problem of factorization, i.e., finding the decomposition of a
+number into prime factors, is in the $NP$ class (of complexity) and is the basis
+of certain cryptosystems such as RSA. For stricter $P$/$NP$ definitions, see 
+\Cref{section:intro-zk}.
+\end{remark}
 
 \subsection{Modular arithmetic}
 
@@ -526,20 +602,20 @@ its key properties. Understanding these properties will help simplify calculatio
 problems more efficiently in fields such as cryptography, algorithms, and number theory.
 
 \begin{definition}
-    Two integers $a, b \in \mathbb{Z}$ are said to be \textbf{congruent} modulo $n \in \mathbb{N}$ (congruence modulo $n$ is denoted as $a \equiv b \pmod{n}$), if one of the following conditions is met:
-    \begin{enumerate}
-        \item There exists such $t \in \mathbb{Z}$ that $a = b + nt$
-        \item $a \; \texttt{mod} \; n = b \; \texttt{mod} \; n$
-        \item $n \mid (a - b)$
-    \end{enumerate}
+    Two integers $a, b \in \mathbb{Z}$ are said to be \textbf{congruent} modulo
+    $n \in \mathbb{N}$ iff $n \mid (a-b)$. We denote this by $a \equiv b
+    \pmod{n}$.
 \end{definition}
 
 \begin{example}
-    It easy to see that $26 \equiv 5 \pmod{7}$, since $26 = 5 + 7 \cdot 3$ 
-    or $26 \; \texttt{mod} \; 7 = 5 \; \texttt{mod} \; 7 = 5$, etc.
+    It easy to see that $26 \equiv 5 \pmod{7}$ since $7 \mid (26-5)$. 
 \end{example}
 
-It is fairly easy to see that all conditions are equivalent to each other. Next, as always, it is necessary to formally describe the properties, although some of them may seem intuitive, they need to be formally defined.
+As always, we enumerate some key properties of congruence modulo $n$ relation to 
+better understand its nature. First, we consider the properties of reflexivity,
+symmetry, and transitivity to confirm that congruence modulo $n$ is what 
+is called an \textit{equivalence relation}. For general 
+equivalence relation definition, see \Cref{section:relations}.
 
 \begin{lemma}[Reflexivity, Symmetry, and Transitivity] 
     \hfill
@@ -550,8 +626,9 @@ It is fairly easy to see that all conditions are equivalent to each other. Next,
     \end{enumerate}
 \end{lemma}
 
-The lemma states three basic properties of congruence modulo $n$: reflexivity, symmetry, and transitivity. 
-These properties confirm that congruence modulo $n$ is an equivalence relation (for general equivalence relation definition, see \Cref{section:relations}).
+In turn, the following lemma states that we can perform addition, subtraction,
+and multiplication on the congruent numbers modulo $n$ similarly to the usual
+arithmetic.
 
 \begin{lemma}
     Suppose we have $a \equiv b \pmod{n}$ and $c \equiv d \pmod{n}$, then 
@@ -560,8 +637,6 @@ These properties confirm that congruence modulo $n$ is an equivalence relation (
             \item $ac \equiv bd \pmod{n}$
         \end{enumerate}
 \end{lemma}
-
-In turn, this lemma states that we can perform addition, subtraction, and multiplication on the congruent numbers modulo $n$ similarly to the usual arithmetic.
 
 \begin{example}
     Let use see how the lemma works in practice.
@@ -572,12 +647,16 @@ In turn, this lemma states that we can perform addition, subtraction, and multip
     \end{enumerate}
 \end{example}
 
+It is clear that we can perform additions and multiplications modulo $n$ as usual, but what 
+about division? Consider the following lemma.
+
 \begin{lemma}
     If $ca \equiv cb \pmod{n}$, $\gcd(c, n) = 1$, then $ a \equiv b \pmod{n}$.
 \end{lemma}
 
-This means that we can cancel out the same left and right parts respectively, but with a 
-certain requirement. You may ask why this is necessary, the answer is in the following example.
+This lemma states that we can cancel out the same left and right parts
+respectively, but with a certain requirement: this part must be coprime to $n$.
+Consider the following example that shows why this requirement is mandatory.
 
 \begin{example}
     Let us try to simplify the following equation: $6 \equiv 2 \pmod{4}$. Suppose we 
@@ -592,32 +671,27 @@ certain requirement. You may ask why this is necessary, the answer is in the fol
     You will see more details in \Cref{section:field_extensions}.
 \end{remark}
 
-\begin{lemma} \label{lemma:congruence_scale}
-    Modulo congruence can be scaled in both directions,
-    
+Now, in no particular order, we enumerate the key properties of the congruence relation modulo $n$, 
+which require special attention. Note that all these properties require the rigorous proof,
+but, as mentioned earlier, we will not delve into the details of the proofs in this book.
+
+\begin{lemma}[Key Congruence Relation Properties]\label{lemma:congruence_scale}
+    \hfill
     \begin{enumerate}
-        \item If $k \neq 0, a \equiv b \pmod{n}$, then $ak \equiv bk \pmod{nk}$
-        \item If $d = \gcd(a, b, n) \text{ and } a = a_1d, b =b_1d, n = n_1d, a \equiv b \, (\text{mod } n)$, then $a_1 = b_1 \, (\text{mod } n_1)$
-    \end{enumerate}
+        \item For any $k \neq 0$ and $a \equiv b \pmod{n}$, we have $ak \equiv bk \pmod{nk}$
+        \item If $a \equiv b \pmod{n}$, then we can divide both sides by $\gcd(a, b, n)$:
+        \begin{equation*}
+            a/d \equiv b/d \; (\text{mod}\; n/d) \; \text{with} \; d = \gcd(a,b,n)
+        \end{equation*}
+        \item If $d \mid n$ and $a \equiv b \, (\text{mod } n)$, then $a \equiv b \, (\text{mod } d)$
+        \item If $a \equiv b \pmod{n_i}$ for $i \in [k]$, then $a \equiv b \pmod{\lcm(n_0,\dots,n_{k-1})}$
+        \item If $a \equiv b \, (\text{mod } n)$, then $\gcd(a, n) = \gcd(b, n)$
+\end{enumerate}
 \end{lemma}
 
-\begin{lemma}
-    If $d \mid n$ and $a \equiv b \, (\text{mod } n)$, then $a \equiv b \, (\text{mod } d)$.
-\end{lemma}
-
-This property is very convenient when it comes to large calculations, if you know its decomposition.
-It allows you to significantly reduce them, and then restore the result by a large modulus.
-
-\begin{lemma}
-    Suppose $a \equiv b \pmod{n_1}$, $a \equiv b \pmod{n_2}$, \ldots, $a \equiv b \pmod{n_k}$. Then, the following statement is true: 
-    \begin{equation*}
-        a \equiv b \pmod{\lcm(n_1, n_2, \dots, n_k)}.
-    \end{equation*}
-\end{lemma}
-
-\begin{lemma}
-    If $a \equiv b \, (\text{mod } n)$, then $\gcd(a, n) = \gcd(b, n)$
-\end{lemma}
+Finally, we introduce the concept of congruence classes and residue rings, which is 
+the key concept in Cryptographic applications. In the subsequent discussion, we use 
+notation $n\mathbb{Z}$ to denote the set of all multiples of $n$.
 
 \begin{definition}
     The congruence class or residues of $k$ modulo $n$ is defined as a set 
@@ -625,15 +699,16 @@ It allows you to significantly reduce them, and then restore the result by a lar
 \end{definition}
 
 \begin{example}
-    As we can see congruence module 2 we have, 
+    For example, the congruence classes $[0]_2, [1]_2$ modulo $2$ are
+    respectively even and odd numbers:
     \begin{equation*}
         \begin{aligned}
         &[0]_2 = \{0, \pm 2, \pm 4, \pm 6, \pm 8, \ldots \}, \\
         &[1]_2 = \{1, \pm 3, \pm 5, \pm 7, \pm 9, \ldots \}.
         \end{aligned}
     \end{equation*}
-    Thus, the congruence classes of $[0]_2, [1]_2$ are respectively even and odd numbers.
-    However, with modulo 5, we have the following,
+    In turn, the congruence class $[3]_5$ modulo $5$ is the set of numbers that
+    give the remainder $3$ when divided by $5$:
     \begin{equation*}
         [3]_5 = \{3, 3 \pm 5, 3 \pm 10, 3 \pm 15, \ldots \}.
     \end{equation*}
@@ -641,30 +716,30 @@ It allows you to significantly reduce them, and then restore the result by a lar
 
 \begin{definition}
     The \textbf{complete residue system modulo} $n$ (or residue ring) is a set of integers, 
-    whereevery integer is congruent to a unique member of the set modulo $n$, usually 
+    where every integer is congruent to a unique member of the set modulo $n$, usually 
     denoted as $\mathbb{Z}_n = \{0, 1, 2, \dots, n-1\}$. 
-    In more formal literature, the set is often denoted as $\mathbb{Z}_n = \{ [0], [1], \ldots, [n-1] \}$.
+    In more formal literature, the set is often denoted as $\mathbb{Z}/n\mathbb{Z} = \{ [0], [1], \ldots, [n-1] \}$.
 \end{definition}
 
 \begin{example}
-    $\mathbb{Z}_{5}$ is a complete residue system modulo $5$ and consists of the following elements: $\mathbb{Z}_5 = \{0, 1, 2, 3, 4\}$.
-    Also, as another example $\mathbb{Z}_{7} = \{0, 1, 2, 3, 4, 5, 6\}$ and others.
+    $\mathbb{Z}_{5}$ is a complete residue system modulo $5$ and consists of the
+    following elements: $\mathbb{Z}_5 = \{0, 1, 2, 3, 4\}$. Sometimes, the formal literature 
+    defines $\mathbb{Z}/5\mathbb{Z}$ to be the set of congruence classes modulo $5$:
+    \begin{equation*}
+        \mathbb{Z}/5\mathbb{Z} = \{ \{5k: k \in \mathbb{Z}\}, \dots, \{5k+4: k \in \mathbb{Z}\}\}.
+    \end{equation*}
 \end{example}
-
-\begin{remark}
-    Sometimes, one might also encounter the notation $\mathbb{Z}/n\mathbb{Z}$, which is more frequently used in Abstract Algebra.
-\end{remark}
 
 The aforementioned lemmas and definitions describe the properties of addition, subtraction, and multiplication. But what about division? To define the division (if such operation is valid at all), we need to consider the so-called \emph{modular multiplicative inverse}, which is usually denoted as $a^{-1} \, (\text{mod } n)$, similarly to real/rational numbers.
 
 \begin{definition}
-    A modular multiplicative inverse of an integer $a \in \mathbb{Z}$ modulo $n \in \mathbb{N}$ is such an integer $a^{-1}$ that satisfies $a \cdot a^{-1} \equiv a^{-1}a \equiv 1 \pmod{n}$.
+    A modular multiplicative inverse of an integer $a$ modulo $n$ is such an integer $a^{-1}$ that satisfies $a \cdot a^{-1} \equiv a^{-1}a \equiv 1 \pmod{n}$.
 \end{definition}
 
 \begin{example}
     Let us find the modular multiplicative inverse of $a = 3$ modulo $n = 7$.
     We need to find such $a^{-1}$ that satisfies $3 \cdot a^{-1} \equiv 1 \pmod{7}$.
-    By simple brute force, we can find that $3 \cdot 5 \equiv 1 \pmod{7}$, thus~$3^{-1} = 5$.
+    By simple brute force, we find that $3 \cdot 5 \equiv 1 \pmod{7}$, thus~$3^{-1} = 5$.
 \end{example}
 
 \begin{remark}
@@ -693,39 +768,69 @@ Based on Extended Euclidean \Cref{alg:extended_euclidean} and \Cref{th:inverse_e
     \textbf{return} $u$
 \end{algorithm}
 
+Let us see the concrete implementation of the Extended Euclidean Algorithm and
+the Modular Multiplicative Inverse Algorithm in Python.
+\begin{lstlisting}[language=Python]
+def extended_gcd(a: int, b: int) -> Tuple[int, int]:
+    x0, x1, y0, y1 = 1, 0, 0, 1
+    while b:
+        q, a, b = a // b, b, a % b
+        x0, x1 = x1, x0 - q * x1
+        y0, y1 = y1, y0 - q * y1
+        
+    return a, x0, y0
+
+def inverse(a: int, n: int) -> int:
+    d, u, v = extended_gcd(a, n)
+    if d != 1:
+        raise ValueError('Inverse does not exist')
+    
+    return u
+
+# Example usage
+print(inverse(3, 7)) # Output: -2
+print(inverse(12, 17)) # Output: -7
+print(inverse(18, 24)) # Panics as gcd(18, 24) != 1
+\end{lstlisting}
+
+Let us verify manually that $12^{-1}$ modulo $17$ was found correctly. Consider 
+the following example.
+
 \begin{example}
     Let us find the modular multiplicative inverse of $a = 12$ modulo $n = 17$.
-    First of all, we need to verify that the inverse exists, in other words if $\gcd(12, 17) = 1$.
+    First of all, we need to verify that the inverse exists, in other words
+    whether $\gcd(12, 17) = 1$ is true at all.
 
     \begin{equation*}   
         \begin{aligned}
-            17 &= 12 \cdot 1 + 5 \\
-            12 &= 5 \cdot 2 + 2 \\
-            5 &= 2 \cdot 2 + 1 \\
-            2 &= 1 \cdot 2 + 0
+            (1) && 17 &= 1 \cdot 12 + \textcolor{green!50!black}{5} \\
+            (2) && 12 &= 2 \cdot \textcolor{green!50!black}{5} + \textcolor{blue}{2} \\
+            (3) && 5 &= 2 \cdot \textcolor{blue}{2} + \textcolor{purple}{1} \\
+            (4) &&2 &= 1 \cdot 2 + 0
         \end{aligned}
     \end{equation*}
 
-    Thus, we verify inverse existence. In the previous example, we used 
-    the Extended Euclidean \Cref{alg:extended_euclidean} to find Bezout coefficients,
-    but in this case, we will show another method.
+    Thus, we have verified the inverse existence. In the previous example, we
+    used the Extended Euclidean \Cref{alg:extended_euclidean} to find Bezout
+    coefficients, but in this case, we will show another method. Let us
+    iteratively go backwards from equation (3) and substitute the result from
+    the earlier step.
 
     \begin{equation*}
         \begin{aligned}
-            1 &= 5 - 2 \times 2 = 5 - 2(12 - 2 \times 5) = 5 \times 5 - 2 \times 12 \\
-              &= 5(17 - 12) - 2 \times 12 = 5 \times 17 - 7 \times 12.
+            \textcolor{purple}{1} &= 5 - 2 \cdot \textcolor{blue}{2} = 5 - 2\textcolor{blue}{(12 - 2 \cdot 5)} = 5 \cdot \textcolor{green!50!black}{5} - 2 \cdot 12 \\
+              &= 5\textcolor{green!50!black}{(17 - 12\cdot 1)} - 2 \cdot 12 = 5 \cdot 17 - 7 \cdot 12.
         \end{aligned}
     \end{equation*}
 
-    Intuitively, we go backward by substituting the corresponding composition.
-    As you can see, we have found Bezout coefficients, $\gcd(12, 17) = 5 \times 17 - 7 \times 12$.
-    Therefore, the inverse is $-7$, but as we already know, the inverse must be positive, thus $10$.
-    In the end, it is highly desirable to check the result obtained,~$12 \times 10 \equiv 1 \pmod{17}$.
-
+    As you can see, we have found Bezout coefficients, $\gcd(12, 17) = 5 \cdot 17 - 7 \cdot 12$.
+    Therefore, the inverse is $-7$, which is the output of the algorithm.
 \end{example}
 
 \begin{remark}
-    Note that the complexity of this algorithm is the same as for \Cref{alg:extended_euclidean}, which is $O(\log a \log n)$ bit operations.
+    Note that the complexity of this algorithm is the same as for
+    \Cref{alg:extended_euclidean}, which is $O(\log a \log n)$ bit operations. In real 
+    applications, typically $n>a$, so the complexity is simplified to $O(\log^2 n)$.
 \end{remark}
 
 \begin{definition}
@@ -733,18 +838,17 @@ Based on Extended Euclidean \Cref{alg:extended_euclidean} and \Cref{th:inverse_e
 \end{definition}
 
 \begin{example}
-    $\mathbb{Z}_{11}^{\times} = \{1, 2, 3, 4, 5, 6, 7, 8, 9, 10\}$ as you can see, 
-    all numbers are coprime to $11$.
-    However, $\mathbb{Z}_{12}^{\times} = \{1, 5, 7, 11\}$, since 
-    integers $2, 3, 4, 6, 8, 9, 10$ are not coprime to $12$. 
+    For instance, $\mathbb{Z}_{11}^{\times} = \{1, 2, 3, 4, 5, 6, 7, 8, 9, 10\}$
+    since all naturals less than $11$ are coprime to $11$ (since $11$ is prime).
+    However, $\mathbb{Z}_{12}^{\times} = \{1, 5, 7, 11\}$, since integers $2, 3,
+    4, 6, 8, 9, 10$ are not coprime to $12$. 
 \end{example}
 
-The $\mathbb{Z}_{n}^{\times}$ is a fundamental object in number theory and 
-plays a crucial role in cryptography, forming the basis almost for every cryptographic primitive.
-
-The structure of the group $\mathbb{Z}_{n}^{\times}$ has crucial meaning and has deep connections 
-with algebraic structures. We will consider this in more detail in the next sections, but for now, 
-let us consider a function that helps to understand the size (order) of $\mathbb{Z}_{n}^{\times}$. 
+The $\mathbb{Z}_{n}^{\times}$ is a fundamental object in number theory and plays
+a crucial role in cryptography, forming the basis almost for every cryptographic
+primitive. The structure of the group $\mathbb{Z}_{n}^{\times}$ has a crucial
+meaning and has deep connections with algebraic structures: even the number of 
+elements of $\mathbb{Z}_n^{\times}$ has the special name, which we define below.
 
 \begin{definition} \label{def:euler_totient_function}
     \textbf{Euler's Totient Function} $\varphi(n)$ is the cardinality of the multiplication 
@@ -752,10 +856,13 @@ let us consider a function that helps to understand the size (order) of $\mathbb
 \end{definition}
 
 \begin{remark}
-    The alternative Euler's totient function intuition is following: $\varphi(n)$ counts all coprimes with $n$ in range $[1, n]$. 
+    The alternative Euler's totient function interpretation is following:
+    $\varphi(n)$ counts all coprime integers with $n$ in range $[1, n]$. 
 \end{remark}
 
-\begin{lemma} [Euler's totient function properties]
+Remarkably, the Euler's totient function has a lot of interesting properties, which we specify below.
+
+\begin{lemma}[Euler's totient function properties]
     \hfill
     \begin{enumerate}
         \item $\varphi(1) = 1$.
@@ -786,7 +893,7 @@ With these properties, we can derive a general formula for Euler's totient funct
 
 \subsection{Chinese Remainder Theorem}
 The Chinese Remainder Theorem \cite[chapter 10]{Cohen_Frey_2005} is a fundamental result in number theory
-that provides an efficient method for solving congruence systems. It allows you to
+that provides an efficient method for solving congruence systems. It allows one to
 decompose a complex problem with large integers into several simpler 
 problems with smaller modules. This decomposition reduces the required computational 
 complexity, especially when working with large numbers, and is widely used 
@@ -803,13 +910,14 @@ in areas such as modular arithmetic, cryptography, and algorithmic number theory
             x \equiv x_t \pmod{n_t} \\
         \end{cases}
     \end{equation*}
-    where the $n_i$ are pairwise coprime and $x_1, x_2, \cdots x_t$ are fixed numbers. 
-    Then there is a unique solution in modulo $N = n_1n_2 \cdots n_t$.
+    where the $n_1,\dots,n_t$ are pairwise coprimes and $x_1, x_2, \cdots x_t$ are fixed numbers. 
+    Then, this system has a unique solution modulo $N = n_1n_2 \cdots n_t$.
 \end{theorem}
 
-In fact, we can easily find such a solution. Let $N_i = N/n_i$ since $n_i$ are pairwise coprime; 
-for all $i$ have $\gcd(N_i, n_i) = 1$, and by the Extended Euclidean Algorithm, there exists an integer
-$a_i$ such that $a_iN_i \equiv 1 \pmod{n_i}$. Thus, the solution is given by 
+In fact, we can easily find such a solution. Let $N_i = N/n_i$. Since
+$n_1,\dots,n_t$ are pairwise coprimes, we have $\gcd(N_i, n_i) = 1$ for each
+$i$. By the Extended Euclidean Algorithm, there exists an integer $a_i$ such
+that $a_iN_i \equiv 1 \pmod{n_i}$. Thus, the solution is given by 
 \begin{equation*}
     x_0 = a_1N_1x_1 + a_2N_2x_2 + \cdots + a_tN_tx_t \pmod{N}.
 \end{equation*}
@@ -826,7 +934,7 @@ Besides, using this idea, we can write an efficient algorithm to compute $x_0$ i
         \end{cases}
     \end{equation*}
 
-    First of all find the module $N = 5 \times 7 \times 11 = 385$, then each $N_i$. \\
+    First of all, we find $N = 5 \times 7 \times 11 = 385$, then we compute $N_i$. \\
     \vspace{-7mm}
     \begin{multicols*}{2}    
         \begin{itemize}
@@ -837,14 +945,13 @@ Besides, using this idea, we can write an efficient algorithm to compute $x_0$ i
     \end{multicols*}
     \vspace{-3mm}
 
-    To simplify the calculations, we are not going to find the each inverse, suppose 
-    we somehow know them, $a_1 = 3$, $a_2 = 6$, $a_3 = 6$.
-    Finally, the solution is $x_0 \equiv 3 \times 77 \times 1 + 6 \times 55 \times 2 + 6 \times 35 \times 3 \equiv 1521 \equiv 81 \pmod{385}$.
-    \\
+    To simplify the calculations, we give inverses for granted: $a_1 = 3$, $a_2
+    = 6$, $a_3 = 6$. The solution is then given by $x_0 \equiv 3 \times 77 \times 1 + 6
+    \times 55 \times 2 + 6 \times 35 \times 3 \equiv 1521 \equiv 81 \pmod{385}$.
     
-    However, as you can notice, the solution is not unique. We can increase the value with $N = 385$.
-    Thus, the final solutions are $x = 81 + 385k \in \mathbb{Z}$.
-
+    However, as you can notice, the solution is not unique in general. We can
+    increase the value with $N = 385$. Thus, the final solutions are $x = 81 +
+    385k \in \mathbb{Z}$.
 \end{example}
 
 \subsection{Euler's Theorem}
@@ -858,9 +965,8 @@ Essentially, it helps in understanding the structure of the multiplicative group
 integers modulo $n$ and gives a foundation for other important results in number theory. 
 Besides it provides the simplification of large exponents in modular arithmetic. 
 
-\begin{theorem} [Euler] \label{th:euler_theorem}
-    For all $n \in \mathbb{N}$, $a \in \mathbb{Z}_n^{\times}$ 
-    holds $a^{\varphi(n)} \equiv 1 \pmod{n}$.
+\begin{theorem}[Euler's] \label{th:euler_theorem}
+    $a^{\varphi(n)} \equiv 1 \pmod{n}$ for any $a \in \mathbb{Z}_n^{\times}$.
 \end{theorem}
 
 $\blacktriangleright$ To prove this fact, we prove the following auxiliary lemma.
@@ -901,23 +1007,11 @@ Since all $x_i$ are coprime to $n$ by definition, we can cancel out the product
 of all $x_i$ from both sides, leading to the conclusion of Euler's theorem.
 $\blacktriangleleft$
 
-\begin{corollary} \label{cor:fermat_little_theorem}
-    If $p$ is a prime number and $a$ is not divisible by $p$, then $a^{p - 1} \equiv 1 \pmod{p}$.
-\end{corollary}
-This result is commonly known as Fermat's Little Theorem. However, to maintain generality, 
-we state the theorem in a more general form below.
-
-\begin{theorem} [Fermat's Little Theorem.] \label{th:fermat_little_theorem}
-    Let $p$ is prime number. For any integer $a$, the following holds $a^{p} \equiv a \pmod{p}$.
-\end{theorem}
-
-The proof of Fermat's Little Theorem is a direct consequence of Euler's theorem.
-We can consider Euler's Theorem as a generalization of Fermat's Little Theorem.
-
 \begin{example}
-    How to find an integer $29^{202} \pmod{13}$?
-    By \Cref{th:euler_theorem} we have $29^{\varphi(n)} \equiv 1 \pmod{13}$, where $\varphi(13) = 12$. 
-    Using this, let us try to simplify the expression, 
+    Let us consider how Euler's Theorem works by computing seemingly scary
+    expression $29^{202} \pmod{13}$. By means of \Cref{th:euler_theorem} we have
+    $29^{\varphi(n)} \equiv 1 \pmod{13}$, where $\varphi(13) = 12$. Using this,
+    let us try to simplify the expression, 
  
     \begin{equation*}
         \begin{aligned}
@@ -934,8 +1028,36 @@ We can consider Euler's Theorem as a generalization of Fermat's Little Theorem.
     \end{equation*}
 \end{example}
 
-In other words, we significantly reduce computational complexity by using Euler's theorem,
-in practical applications.
+In other words, we significantly reduced the computational complexity by using the Euler's theorem. Now, 
+let us consider one essential corollary of Euler's theorem, which is used in finite field arithmetic.
+
+\begin{corollary} \label{cor:fermat_little_theorem}
+    If $p$ is a prime number and $a$ is not divisible by $p$, then $a^{p - 1} \equiv 1 \pmod{p}$.
+\end{corollary}
+This result is commonly known as Fermat's Little Theorem. However, to maintain generality, 
+we state the theorem in a more general form below.
+
+\begin{theorem} [Fermat's Little Theorem.] \label{th:fermat_little_theorem}
+    Let $p$ be a prime number. For any integer $a$, the following holds: $a^{p} \equiv a \pmod{p}$.
+\end{theorem}
+
+The proof of Fermat's Little Theorem is a direct consequence of Euler's theorem.
+We can consider Euler's Theorem as a generalization of Fermat's Little Theorem. Moreover,
+this fact allows to find the modular multiplicative inverse of an integer $a$ modulo prime 
+number faster than using the Extended Euclidean Algorithm.
+
+\begin{corollary}
+    For any integer $a$ and prime number $p$, the modular multiplicative inverse $a^{-1} \pmod{p}$ is $a^{p-2} \pmod{p}$.
+\end{corollary}
+
+\textbf{Proof.} Notice that $a \cdot a^{p-2} = a^{p-1} \equiv 1 \pmod{p}$ from \Cref{cor:fermat_little_theorem}. 
+Note that computing $a^{p-2} \; \text{mod} \; p$ requires less than $2\log_2p$ modular operations using 
+the fast exponentiation algorithm. In Python, implementation using in-built \texttt{pow} function 
+looks extremely simple:
+\begin{lstlisting}[language=Python]
+def inverse(a: int, p: int) -> int:
+    return pow(a, p - 2, p)
+\end{lstlisting}
 
 \subsection{Exercises}
 
@@ -953,11 +1075,11 @@ in practical applications.
 
 \begin{xexercise}
     {Exercise 2.}
-    {What element is not contained in $\mathbb{Z}_{19}^{\times}$.}
+    {What element is not contained in $\mathbb{Z}_{21}^{\times}$.}
     {4}
     {
         \item 2 
-        \item 3
+        \item 5
         \item 15
         \item 16
     }
@@ -979,7 +1101,7 @@ in practical applications.
 \begin{xexercise}
     {Exercise 4.}
     {
-        In the following quadratic equation, $p$ and $q$ are prime numbers smaller than $10$:
+        In the following quadratic equation, $p$ and $q$ are \emph{distinct} prime numbers smaller than $10$:
         \begin{xequation}
             (x-p)^2-p(x-q)+x^2-qx=0
         \end{xequation}

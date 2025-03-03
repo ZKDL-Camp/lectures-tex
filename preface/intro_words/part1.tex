@@ -1,3 +1,58 @@
-We assume the reader has a solid mathematical and technical background. To ensure we're aligned, 
-we will quickly review a few key concepts.  However, those with a strong grasp of these areas may 
-skip this section without any doubt.
+\documentclass[../../lecture-notes-148x210.tex]{subfiles}
+
+\begin{document}
+
+As any cryptography subfield, Cryptography requires a solid knowledge of
+Mathematics. While the practical development of cryptographic protocols might
+not include the need to understand the whole underlying theory, much of it
+typically still arises. For example, one might need to implement the Elliptic
+Curve Pairing operation verification in a Zero-Knowledge Proof system, or RSA
+encryption and decryption methods in Circom circuits. In case you specifically
+develop the zero-knowledge systems from scratch, there is no need to explain why
+you need to understand the underlying theory.
+
+This part of the book is dedicated to the mathematical background required for
+Cryptography. Namely, we will cover essentials specified in \Cref{tab:essentialls}.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|c|c|X|}
+        \hline
+        \rowcolor{blue!30}\textbf{Section} & \textbf{Topic} & \textbf{Key Concepts} \\
+        \hline
+        \rowcolor{blue!10}\ref{section:number-theory} & Number Theory & Modular
+        Arithmetic, Ring $\mathbb{Z}_n$ and field $\mathbb{Z}_n^{\times}$,
+        Fermat's Little Theorem \\
+        \hline
+        \rowcolor{blue!20}\ref{section:abstract-algebra} & Abstract Algebra &
+        Groups, Subgroups, Fields, Prime field $\mathbb{F}_p$, Isomorphisms,
+        Automorphisms \\
+        \hline
+        \rowcolor{blue!10}\ref{section:polynomial-rings} & Polynomials & Divisibility, Lagrange Interpolation, Shamir's Secret Sharing \\
+        \hline
+        \rowcolor{blue!20}\ref{section:linear-algebra} & Linear Algebra Basics & Basic Operations over Vectors and Matrices \\
+        \hline
+        \rowcolor{blue!10}\ref{section:finite-fields} & Fields Extensions & Definition of $\mathbb{F}_{p^m}$, Field Multiplicative Subgroup, Algebraic Closure \\
+        \hline
+    \end{tabularx}
+    \caption{Topics covered in Part I}
+    \label{tab:essentialls}
+\end{table}
+
+This is not the Mathematics book, so we will not prove every mentioned theorem
+or lemma, but we do provide reasoning for some key facts. We
+focus on the practical side of the theory, providing examples and exercises for
+the reader to solve.
+
+The reader should already be familiar with very basics of the first four topics,
+so they will be covered for the sake of completeness and reminding the reader of
+the key concepts. The last topic, Fields Extensions, is less frequent in 
+the Mathematics curriculum, so we will cover it in more detail.
+
+In case you feel comfortable with the aforementioned topics, feel free to skip 
+them and move to the next part of the book. Finally, if you are unsure about 
+your knowledge, you should open the corresponding section and check whether 
+you can solve exercises in the end without any help.
+
+
+\end{document}

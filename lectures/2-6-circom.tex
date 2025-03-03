@@ -113,12 +113,12 @@ constraints reflected in R1CS.
 
     \begin{lstlisting}[language=Circom,numbers=none]
 template Math() {
-signal input x;
-signal input y;
+    signal input x;
+    signal input y;
 
-signal b <-- x / y;
+    signal b <-- x / y;
 
-signal output r <== b * y;
+    signal output r <== b * y;
 }
 
 component main = Math();
@@ -148,7 +148,7 @@ with the \texttt{if} statement logic.
 
     \begin{lstlisting}[language=Python,numbers=none]
 def r(x1: bool, x2: F, x3: F) -> F:
-return x2 * x3 if x1 else x2 + x3
+    return x2 * x3 if x1 else x2 + x3
     \end{lstlisting}
 
     This can be represented as:
@@ -459,39 +459,39 @@ Consider the following circuit:
 
 \begin{lstlisting}[language=Circom,basicstyle=\ttfamily\footnotesize]
 template BinaryCheck() {
-signal input x1;
+    signal input x1;
 
-x1 * x1 === x1;
+    x1 * x1 === x1;
 }
 
 template SelectMult() {
-signal input x1;
+    signal input x1;
 
-signal input x2;
-signal input x3;
+    signal input x2;
+    signal input x3;
 
-signal mult <== x2 * x3;
+    signal mult <== x2 * x3;
 
-signal output out <== x1 * mult;
+    signal output out <== x1 * mult;
 }
 
 template Math() {
-signal output r;
+    signal output r;
 
-signal input x1;
+    signal input x1;
 
-signal input x2;
-signal input x3;
+    signal input x2;
+    signal input x3;
 
-component binCheck = BinaryCheck();
-binCheck.x1 <== x1;
+    component binCheck = BinaryCheck();
+    binCheck.x1 <== x1;
 
-component selectMult = SelectMult();
-selectMult.x1 <== x1;
-selectMult.x2 <== x2;
-selectMult.x3 <== x3;
+    component selectMult = SelectMult();
+    selectMult.x1 <== x1;
+    selectMult.x2 <== x2;
+    selectMult.x3 <== x3;
 
-(1 - x1) * (x2 + x3) + selectMult.out ==> r;
+    (1 - x1) * (x2 + x3) + selectMult.out ==> r;
 }
 \end{lstlisting}
 
@@ -549,9 +549,9 @@ pragma circom 2.0.6;
 pragma custom_templates;
 
 template custom MyCustomGate() {
-// Custom template's code
-// No R1CS constraints or subcomponents can be desclared here
-// Logic will be handled by snarkjs as a PLONK custom gates
+    // Custom template's code
+    // No R1CS constraints or subcomponents can be desclared here
+    // Logic will be handled by snarkjs as a PLONK custom gates
 }
 \end{lstlisting}
 
@@ -569,13 +569,13 @@ This keyword will be useful in the structures as below:
 
 \begin{lstlisting}[language=Circom,basicstyle=\ttfamily\footnotesize]
 template parallel ParallelExample(n) {
-signal input in[n];
-signal output out[n];
+    signal input in[n];
+    signal output out[n];
 
-// Each iteration is independent, so we can parallelize
-for (var i = 0; i < n; i++) {
-    out[i] <== in[i] * 2;
-}
+    // Each iteration is independent, so we can parallelize
+    for (var i = 0; i < n; i++) {
+        out[i] <== in[i] * 2;
+    }
 }
 \end{lstlisting}
 
