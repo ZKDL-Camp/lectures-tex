@@ -65,9 +65,9 @@ theorem} \cite[section 2]{Judson_2012}.
 
 \begin{theorem}[Division theorem]\label{th:division}
     For any integers $a,b \in \mathbb{Z}$ there exist unique integers $q, r \in \mathbb{Z}$ with $0 \leq r < |b|$ such that 
-    \begin{equation*}
+    \begin{xequation}
         a = b \cdot q + r.
-    \end{equation*}
+    \end{xequation}
 \end{theorem}
 
 This theorem allows us to define two new operations. Suppose $a,b,q,r$ are given
@@ -121,9 +121,9 @@ numbers. This is where the concept of the \textbf{greatest common divisor} (or
     \end{enumerate}
 
     One might right the above definition more concisely:
-    \begin{equation*}
+    \begin{xequation}
         \gcd(a,b) = \max\{d \in \mathbb{N}: d \mid a \; \text{and} \; d \mid b\}.
-    \end{equation*}
+    \end{xequation}
 \end{definition}
 
 \begin{example}
@@ -212,13 +212,13 @@ need $O(\log\max\{a, b\})$ time.
 \begin{example}
     Let us find the $\gcd(535, 230)$ manually. We will use the Euclidean algorithm for this purpose.
     \hfill
-    \begin{equation*}
+    \begin{xequation}
         \begin{aligned}
             535 &= 2 \cdot 230 + 75 \\
             230 &= 3 \cdot 75 + 5 \\
             75 &= 15 \cdot 5 + 0 \\            
         \end{aligned}
-    \end{equation*}
+    \end{xequation}
     Therefore, $\gcd(535, 230) = 5$.
 \end{example}
 
@@ -233,9 +233,9 @@ While the greatest common divisor (GCD) focuses on finding the largest shared fa
     \end{enumerate}
 
     One might right the above definition more concisely:
-    \begin{equation*}
+    \begin{xequation}
         \lcm(a,b) = \min\{m \in \mathbb{N}: a \mid m \; \text{and} \; b \mid m\}.
-    \end{equation*}
+    \end{xequation}
 \end{definition}
 
 \begin{example}
@@ -522,9 +522,9 @@ calculations involving divisibility.
 
 \begin{example}
     To see this fact in action, let us decompose an integer $n = 123456$ into a product of prime numbers.
-    \begin{equation*}
+    \begin{xequation}
         123456 = 2^6 \cdot 3^1 \cdot 643^1.
-    \end{equation*}
+    \end{xequation}
 \end{example}
 
 Before formulating the Fundamental Theorem of Arithmetic, let us consider the auxiliary Lemma \ref{euclidean_lemma}.
@@ -547,9 +547,9 @@ Theorem of Arithmetic.
 
 \begin{theorem}[Fundamental theorem of arithmetic]\label{th:fundamental_arithmetic}
     Any integer $n>1$ can be decomposed in the unique way into a product of prime numbers:
-    \begin{equation*}
+    \begin{xequation}
         n = p_1^{\alpha_1}p_2^{\alpha_2}\cdots p_t^{\alpha_t} = \prod_{j=1}^t p_j^{\alpha_j},
-    \end{equation*}
+    \end{xequation}
     where $p_1,\dots,p_t$ are prime numbers and $\alpha_1,\dots,\alpha_t \in \mathbb{N}$.
 \end{theorem}
 
@@ -680,9 +680,9 @@ but, as mentioned earlier, we will not delve into the details of the proofs in t
     \begin{enumerate}
         \item For any $k \neq 0$ and $a \equiv b \pmod{n}$, we have $ak \equiv bk \pmod{nk}$
         \item If $a \equiv b \pmod{n}$, then we can divide both sides by $\gcd(a, b, n)$:
-        \begin{equation*}
+        \begin{xequation}
             a/d \equiv b/d \; (\text{mod}\; n/d) \; \text{with} \; d = \gcd(a,b,n)
-        \end{equation*}
+        \end{xequation}
         \item If $d \mid n$ and $a \equiv b \, (\text{mod } n)$, then $a \equiv b \, (\text{mod } d)$
         \item If $a \equiv b \pmod{n_i}$ for $i \in [k]$, then $a \equiv b \pmod{\lcm(n_0,\dots,n_{k-1})}$
         \item If $a \equiv b \, (\text{mod } n)$, then $\gcd(a, n) = \gcd(b, n)$
@@ -701,17 +701,17 @@ notation $n\mathbb{Z}$ to denote the set of all multiples of $n$.
 \begin{example}
     For example, the congruence classes $[0]_2, [1]_2$ modulo $2$ are
     respectively even and odd numbers:
-    \begin{equation*}
+    \begin{xequation}
         \begin{aligned}
         &[0]_2 = \{0, \pm 2, \pm 4, \pm 6, \pm 8, \ldots \}, \\
         &[1]_2 = \{1, \pm 3, \pm 5, \pm 7, \pm 9, \ldots \}.
         \end{aligned}
-    \end{equation*}
+    \end{xequation}
     In turn, the congruence class $[3]_5$ modulo $5$ is the set of numbers that
     give the remainder $3$ when divided by $5$:
-    \begin{equation*}
+    \begin{xequation}
         [3]_5 = \{3, 3 \pm 5, 3 \pm 10, 3 \pm 15, \ldots \}.
-    \end{equation*}
+    \end{xequation}
 \end{example}
 
 \begin{definition}
@@ -725,9 +725,9 @@ notation $n\mathbb{Z}$ to denote the set of all multiples of $n$.
     $\mathbb{Z}_{5}$ is a complete residue system modulo $5$ and consists of the
     following elements: $\mathbb{Z}_5 = \{0, 1, 2, 3, 4\}$. Sometimes, the formal literature 
     defines $\mathbb{Z}/5\mathbb{Z}$ to be the set of congruence classes modulo $5$:
-    \begin{equation*}
+    \begin{xequation}
         \mathbb{Z}/5\mathbb{Z} = \{ \{5k: k \in \mathbb{Z}\}, \dots, \{5k+4: k \in \mathbb{Z}\}\}.
-    \end{equation*}
+    \end{xequation}
 \end{example}
 
 The aforementioned lemmas and definitions describe the properties of addition, subtraction, and multiplication. But what about division? To define the division (if such operation is valid at all), we need to consider the so-called \emph{modular multiplicative inverse}, which is usually denoted as $a^{-1} \, (\text{mod } n)$, similarly to real/rational numbers.
@@ -801,14 +801,14 @@ the following example.
     First of all, we need to verify that the inverse exists, in other words
     whether $\gcd(12, 17) = 1$ is true at all.
 
-    \begin{equation*}   
+    \begin{xequation}   
         \begin{aligned}
             (1) && 17 &= 1 \cdot 12 + \textcolor{green!50!black}{5} \\
             (2) && 12 &= 2 \cdot \textcolor{green!50!black}{5} + \textcolor{blue}{2} \\
             (3) && 5 &= 2 \cdot \textcolor{blue}{2} + \textcolor{purple}{1} \\
             (4) &&2 &= 1 \cdot 2 + 0
         \end{aligned}
-    \end{equation*}
+    \end{xequation}
 
     Thus, we have verified the inverse existence. In the previous example, we
     used the Extended Euclidean \Cref{alg:extended_euclidean} to find Bezout
@@ -816,12 +816,12 @@ the following example.
     iteratively go backwards from equation (3) and substitute the result from
     the earlier step.
 
-    \begin{equation*}
+    \begin{xequation}
         \begin{aligned}
             \textcolor{purple}{1} &= 5 - 2 \cdot \textcolor{blue}{2} = 5 - 2\textcolor{blue}{(12 - 2 \cdot 5)} = 5 \cdot \textcolor{green!50!black}{5} - 2 \cdot 12 \\
               &= 5\textcolor{green!50!black}{(17 - 12\cdot 1)} - 2 \cdot 12 = 5 \cdot 17 - 7 \cdot 12.
         \end{aligned}
-    \end{equation*}
+    \end{xequation}
 
     As you can see, we have found Bezout coefficients, $\gcd(12, 17) = 5 \cdot 17 - 7 \cdot 12$.
     Therefore, the inverse is $-7$, which is the output of the algorithm.
@@ -876,9 +876,9 @@ With these properties, we can derive a general formula for Euler's totient funct
 
 \begin{corollary}
     For any number $n = p_{1}^{\alpha_1}p_{2}^{\alpha_2} \dots p_{t}^{\alpha_t}$ general formula for Euler's totient function is: 
-    \begin{equation*}
+    \begin{xequation}
         \varphi(n) = \prod_{i = 1}^{t} \left( p_{i}^{\alpha_i} - p_{i}^{\alpha_i - 1} \right) = n \prod_{i = 1}^{t} \left( 1 - \frac{1}{p_i} \right).
-    \end{equation*}
+    \end{xequation}
 \end{corollary}
 
 \begin{example}
@@ -901,7 +901,7 @@ in areas such as modular arithmetic, cryptography, and algorithmic number theory
 
 \begin{theorem} [Chinese Remainder Theorem] \label{th:chinese_remainder_theorem}
     Suppose there is the following system
-    \begin{equation*}    
+    \begin{xequation}    
         \begin{cases}
             x \equiv x_1 \pmod{n_1} \\
             x \equiv x_2 \pmod{n_2} \\
@@ -909,7 +909,7 @@ in areas such as modular arithmetic, cryptography, and algorithmic number theory
             \cdots \\
             x \equiv x_t \pmod{n_t} \\
         \end{cases}
-    \end{equation*}
+    \end{xequation}
     where the $n_1,\dots,n_t$ are pairwise coprimes and $x_1, x_2, \cdots x_t$ are fixed numbers. 
     Then, this system has a unique solution modulo $N = n_1n_2 \cdots n_t$.
 \end{theorem}
@@ -918,21 +918,21 @@ In fact, we can easily find such a solution. Let $N_i = N/n_i$. Since
 $n_1,\dots,n_t$ are pairwise coprimes, we have $\gcd(N_i, n_i) = 1$ for each
 $i$. By the Extended Euclidean Algorithm, there exists an integer $a_i$ such
 that $a_iN_i \equiv 1 \pmod{n_i}$. Thus, the solution is given by 
-\begin{equation*}
+\begin{xequation}
     x_0 = a_1N_1x_1 + a_2N_2x_2 + \cdots + a_tN_tx_t \pmod{N}.
-\end{equation*}
+\end{xequation}
 This expression provides the unique solution modulo $N$, where $N = n_1 n_2 \cdots n_t$. 
 Besides, using this idea, we can write an efficient algorithm to compute $x_0$ iteratively.
 
 \begin{example}
     Let us solve the following system of congruences.
-    \begin{equation*}    
+    \begin{xequation}    
         \begin{cases}
             x \equiv 1 \pmod{5} \\
             x \equiv 2 \pmod{7} \\
             x \equiv 3 \pmod{11}
         \end{cases}
-    \end{equation*}
+    \end{xequation}
 
     First of all, we find $N = 5 \times 7 \times 11 = 385$, then we compute $N_i$. \\
     \vspace{-7mm}
@@ -999,9 +999,9 @@ $\blacktriangleleft$
 
 So we know, $a\mathbb{Z}_n^{\times} = \mathbb{Z}_n^{\times}$, how do we proceed? Notice, from the 
 set equality follows the equality of the products of all elements. Let us write this down:
-\begin{equation*}
+\begin{xequation}
     \prod_{i = 1}^{\varphi(n)} x_i \equiv \prod_{i = 1}^{\varphi(n)} a x_i \pmod{n} \implies \prod_{i = 1}^{\varphi(n)} x_i \equiv a^{\varphi(n)} \prod_{i = 1}^{\varphi(n)} x_i \pmod{n}
-\end{equation*}    
+\end{xequation}    
     
 Since all $x_i$ are coprime to $n$ by definition, we can cancel out the product
 of all $x_i$ from both sides, leading to the conclusion of Euler's theorem.
@@ -1013,7 +1013,7 @@ $\blacktriangleleft$
     $29^{\varphi(n)} \equiv 1 \pmod{13}$, where $\varphi(13) = 12$. Using this,
     let us try to simplify the expression, 
  
-    \begin{equation*}
+    \begin{xequation}
         \begin{aligned}
             29^{202} \pmod{13}  &\equiv \\
                                 &\equiv 29^{12 \times 16 + 10} \pmod{13} \\
@@ -1025,7 +1025,7 @@ $\blacktriangleleft$
                                 &\equiv 27^{3}3 \pmod{13} \\
                                 &\equiv 3 \pmod{13}.
         \end{aligned}
-    \end{equation*}
+    \end{xequation}
 \end{example}
 
 In other words, we significantly reduced the computational complexity by using the Euler's theorem. Now, 

@@ -175,9 +175,9 @@ opposed to $E \cap F$). To denote the conditional probability, we write
 $\Pr[E|F]$, which means the probability of $E$ happening given that $F$ has
 already happened. In practice, we place the protocol execution in $F$, while $E$
 is the event of the protocol outputting a certain result. For example,
-\begin{equation*}
+\begin{xequation}
     \Pr\left[x \equiv 1 \; (\text{mod}\,3) \;|\; x \gets \mathsf{RollDice}(\cdot)\right] = \frac{1}{3}.
-\end{equation*}
+\end{xequation}
 
 When event $F$ can be written concisely, we write it in the subindex of $\Pr$.
 For instance, $\underset{x \xleftarrow{R} [6]}{\Pr}[x \equiv 0 \; (\text{mod}\,2)]=\frac{1}{2}$.
