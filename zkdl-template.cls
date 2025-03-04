@@ -224,61 +224,8 @@
 \theoremstyle{definition}{\newtheorem*{exercise}{Exercise}}
 \theoremstyle{cstyle}{\newtheorem*{cthm}{}}
 
-%  --- x env's ---
-\newenvironment{xequation}
-{
-  \vspace{-2mm}
-  \begin{equation*}
-}
-{
-  \vspace{-0.5mm}
-  \vspace{-0.5mm}
-  \end{equation*}
-}
-
-\newenvironment{xmulticols}[1]
-{
-  \vspace{-2.5mm}
-  \begin{multicols*}{#1}
-} 
-{
-  \end{multicols*}
-  \vspace{-2.5mm}
-} 
-
-% --- Exercise env ---
-\newcommand{\exerciseTitle}[2]{
-  \vspace{1mm}
-
-  \textbf{#1} #2
-}
-
-\newcommand{\exerciseList}[1]{
-  \begin{enumerate}[a),left=5mm]
-    #1
-  \end{enumerate}
-}
-
-\newcommand{\exerciseMulticols}[2]{
-  \vspace{-3mm}
-  
-  \begin{multicols}{#1}
-    \begin{enumerate}[a),left=5mm]
-      #2
-    \end{enumerate}
-  \end{multicols}
-  
-  \vspace{-3.5mm}
-}
-
-\newenvironment{xexercise}[4]{
-  \exerciseTitle{#1}{#2}
-  \ifnum#3=1
-    \exerciseList{#4}
-  \else
-    \exerciseMulticols{#3}{#4}
-  \fi
-}{}
+% Load custom environment 
+\input{x_environments.cls}
 
 % --Warning environment--
 \newtheoremstyle{warn}{}{}{}{}{\normalfont}{}{ }{}
