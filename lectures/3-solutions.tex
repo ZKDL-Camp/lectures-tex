@@ -1,0 +1,399 @@
+\documentclass[../lecture-notes-148x210.tex]{subfiles}
+
+\begin{document}
+\subsection*{Introduction to Number Theory}
+
+\textbf{Exercise 1. Answer: E.} Statement ``any prime number $p$ equals to 
+the product of its divisors'' is true since the only divisors of $p$
+are $1$ and $p$ by definition.
+
+\textbf{Exercise 2. Answer: D.} Statement $\lcm(n+1,n-1)=n^2-1$ is false. For 
+instance, take $n := 5$. Then, $\lcm(6,4) = 12 \neq 5^2-1 = 24$. 
+
+\textbf{Exercise 3. Answer: C.} Answer is $9$. Indeed, $9 \cdot 5 = 45 \equiv 1 \pmod{11}$.
+
+\textbf{Exercise 4. Answer: C.} Answer is $15$. Indeed, $\gcd(15, 21) = 3 \neq 1$, so 
+$15 \not\in \mathbb{Z}_{21}^{\times}$ by definition.
+
+\textbf{Exercise 5. Answer: A.} Notice that $n^2+1=n(n+1)-(n-1)$. Thus, if 
+$(n+1)\mid(n^2+1)$ we should have $(n+1)\mid (n-1)$ which is possible 
+only if $n-1=0$. Thus, $n=1$ is the only such number.
+
+\textbf{Exercise 6. Answer: C.} Let us find roots of $f$. Notice that:
+\begin{equation*}
+    f(x) = 2x^2 - (3p+q)x + (p^2 + pq)
+\end{equation*}
+
+By equating $f(x)=0$ we get two solutions: $r_1 = p$ and $r_2=\frac{p+q}{2}$. One 
+can easily check that the only possible $p$ and $q$ for $r_2$ to be prime is $(7,3)$.
+Thus, the sum is $10$.
+
+\textbf{Exercise 7. Answer: B.} We have the only $\alpha_1=100$ which 
+by the definition of $\tau$ function gives $\tau(p^{\alpha_1})=\alpha_1+1=101$.
+
+\textbf{Exercise 8. Answer: D.} Suppose $n=\prod_{j=1}^r p_j^{\alpha_j}$. Then,
+$\tau(n) = \prod_{j=1}^r (\alpha_j+1) = 7$. The only possible way to represent $7$
+as a product of integers is to have the only non-zero $\alpha$ such that $\alpha+1=7$.
+Thus, $\alpha=6$, so $n=p^6$ for aribtrary prime $p$. Therefore, $\tau(n^2)=\tau(p^{12})=13$, 
+following the reasoning from the previous exercise.
+
+\textbf{Exercise 9. Answer: B.} Suppose $m=\prod_{j=1}^rp_j^{\alpha_j}$, so 
+again $\tau(m) = \prod_{j=1}^r (\alpha_j+1)$. For this expression to be odd, we 
+need every term $\alpha_j+1$ to be odd. This is possible only if every $\alpha_j$ is even.
+Therefore, $m$ must be a square of a number. The smallest square greater than $n^2$ is 
+of course $(n+1)^2$.
+
+\subsection*{Introduction to Abstract Algebra}
+
+\textbf{Exercise 1. Answer: E.} Notice that if $xy=1$ then $y=\frac{1}{x}$. If 
+$x$ is an integer then $y$ is integer only if $x=\pm 1$. Therefore,
+\begin{equation*}
+    X \cap \mathbb{Z}^2 = \{(1,1),(-1,-1)\}, \quad X \cap \mathbb{N}^2 = \{(1,1)\}.
+\end{equation*}
+
+Therefore, first two statements are correct. When it comes to the third
+statement, it is also true: indeed, the identity element is $(1,1)$ while the
+inverse element for $(x_1,x_2)$ is $(1/x_1,1/x_2)$ (such operation is closed since
+$(1/x_1)(1/x_2) = 1/(x_1x_2) = 1$). Other properties are also satisfied.
+
+\textbf{Exercise 2. Answer: A.} Identity element in this group is $1$. Indeed,
+$a \oplus 1 = 1 \oplus a = a+1-1 = a$. Associativity follows immediately from 
+the sum operation associativity. Inverse element for $a$ is $2-a$ since:
+\begin{equation*}
+    a \oplus (2-a) = a + 2 - a - 1 = 1
+\end{equation*}
+
+All operations are closed since the sum and subtraction of two integers is an
+integer.
+
+\textbf{Exercise 3. Answer: C.} Suppose the identity element $E \in
+\mathbb{R}^2$ exists. Then, $A\oplus E = E$ by definition. However, the 
+midpoint of $AE$ is $E$ only if $A=E$. Since identity element depends 
+on the chosen group element $A$, it does not exist.
+
+\textbf{Exercise 4. Answer: E.} Indeed, take $A = \begin{bmatrix}
+    2 & 0 \\ 0 & 2
+\end{bmatrix}$. Suppose inverse $B$ exists. Then, $AB=E_{2 \times 2}$ where 
+$E_{2 \times 2}$ is an identity matrix. Therefore, $\det(AB) = \det A \cdot \det B$.
+Since $\det A = 4$ we have $\det B = \frac{1}{4}$. However, the determinant 
+of a matrix, composed of integers, cannot be a fraction. Therefore, the inverse
+does not exist for $A$.
+
+\textbf{Exercise 5. Answer: A.} Let us check all the properties carefully:
+\begin{itemize}
+    \item \textbf{Closure:} Take $f,g \in \mathcal{F}$. The function $f \times
+    g$ has a domain $\Omega$ and range $\mathbb{G}$ since $f(\omega)\times
+    g(\omega)$ always outputs $\mathbb{G}$ for any $\omega \in \Omega$ due to
+    the closure of $\mathbb{G}$.
+    \item \textbf{Identity Element:} Define identity element $i \in \mathcal{F}$
+    as a function $i(\omega) = e$ for any $\omega \in \Omega$ where $e$ is an
+    identity element in $\mathbb{G}$. Then:
+    \begin{equation*}
+        (f \star i)(\omega) = f(\omega) \times i(\omega) = f(\omega) \times e = f(\omega) \implies f \star i = f
+    \end{equation*}
+    \item \textbf{Inverse:} Define inverse element for $f \in \mathcal{F}$ as 
+    $g$ defined as $g := (f(\omega))^{-1}$ for every $\omega \in \Omega$. Then:
+    \begin{equation*}
+        (f \star g)(\omega) = f(\omega) \times (f(\omega))^{-1} = e \; \forall \omega \in \Omega \implies f \star g = i
+    \end{equation*}
+    \item \textbf{Associativity:} Holds due to the associativity of $\times$.
+    \item \textbf{Commutativity:} Holds due to the commutativity of $\times$.
+\end{itemize}
+
+\textbf{Exercise 6. Answer: A.} First, $f: x \mapsto x^2$ is obviously closed over
+$[0,1]$. Let us check why it is an automorphism. First, check whether it is a homomorphism:
+\begin{equation*}
+    f(x \cdot y) = (x \cdot y)^2 = x^2 \cdot y^2 = f(x) \cdot f(y)
+\end{equation*}
+
+Now, let us show that $f$ is a bijection. Indeed, $f$ is injective since
+$f(x)=f(y)$ implies $x^2=y^2$ which is possible only if $x=y$ when both $x$ and
+$y$ are positive. $f$ is surjective since for any $y \in [0,1]$ there is 
+$x=\sqrt{y}$ such that $f(x)=y$. Therefore, $f$ is an automorphism.
+
+\textbf{Exercise 7. Answer: C.} In fact, $\varphi_1=\det$ while
+$\varphi_2=\text{trace}$. It is well-known that $\det(AB)=\det A \det B$ and
+$\text{trace}(A+B)=\text{trace}(A)+\text{trace}(B)$. Therefore, both 
+functions are homomorphisms.
+
+\textbf{Exercise 8. Answer: A.} Let us check the homomorphism property. Take 
+$a+bi,c+di \in \mathbb{C} \setminus \{0\}$. Then:
+\begin{equation*}
+    \psi((a+bi)(c+di)) = \psi((ac-bd)+(ad+bc)i) = \begin{bmatrix}
+        ac-bd & -(ad+bc) \\ ad+bc & ac-bd
+    \end{bmatrix}
+\end{equation*}
+
+On the other hand:
+\begin{equation*}
+    \psi(a+bi)\psi(c+di) = \begin{bmatrix}
+        a & -b \\ b & a
+    \end{bmatrix}\cdot \begin{bmatrix}
+        c & -d \\ d & c
+    \end{bmatrix} = \begin{bmatrix}
+        ac-bd & -(ad+bc) \\ ad+bc & ac-bd
+    \end{bmatrix}
+\end{equation*}
+
+Therefore, $\psi((a+bi)(c+di))=\psi(a+bi)\psi(c+di)$, so $\psi$ is a homomorphism.
+Let us show it is a bijection. Suppose $\psi(a+bi)=\psi(c+di)$. Then:
+\begin{equation*}
+    \begin{bmatrix}
+        a & -b \\ b & a
+    \end{bmatrix} = \begin{bmatrix}
+        c & -d \\ d & c
+    \end{bmatrix} \implies a=c, b=d
+\end{equation*}
+
+Thus, $\psi$ is injective. To show the surjectivity notice that for any matrix
+$\begin{bmatrix} a & -b \\ b & a \end{bmatrix}$ there is $a+bi$ such that
+$\psi(a+bi)=\begin{bmatrix} a & -b \\ b & a \end{bmatrix}$. Therefore, $\psi$ is
+a bijection. Therefore, $\psi$ is an isomorphism.
+
+\textbf{Exercise 9.} Let $\mathbb{G}$ be a group of order $9$. If $\mathbb{G}$
+contains the element of order $9$, then it is cyclic and thus abelian, so we are
+done. Suppose this is not the case and we have the element $x \in \mathbb{G}$ of
+order other than $9$. Due to Lagrange's theorem, the order of $g$ must divide
+the order of $\mathbb{G}$, so it is either $1$, $3$ or $9$. Since $1$
+corresponds to the identity element, suppose $\mathbb{H}_X = \langle x\rangle$
+has order $3$. Let $y \in \mathbb{G} \setminus \mathbb{H}_X$ be some other
+non-identity element of $\mathbb{G}$ and $\mathbb{H}_Y := \langle y \rangle$.
+Since $\mathbb{H}_X \cap \mathbb{H}_Y$ is a subgroup of $\mathbb{H}_X$ and
+$|\mathbb{H}_X|=3$ by Lagrange's Theorem either $\mathbb{H}_X \cap
+\mathbb{H}_Y=\{e\}$ or equals $\mathbb{H}_X$. Since $y \not\in \mathbb{H}_X$, we
+conclude that $\mathbb{H}_X \cap \mathbb{H}_Y=\{e\}$. Therefore,
+\begin{equation*}
+    |\mathbb{H}_X\mathbb{H}_Y| = \frac{|\mathbb{H}_X|\cdot|\mathbb{H}_Y|}{|\mathbb{H}_X \cap \mathbb{H}_Y|} = 9
+\end{equation*}
+
+Therefore, $\mathbb{G} = \mathbb{H}_X\mathbb{H}_Y =
+\{e,x,x^2,y,y^2,xy,xy^2,x^2y,x^2y^2\}$ since $x^3=y^3=e$. Now, consider $yx \in
+\mathbb{G}$. It must be one of elements listed in $\mathbb{G}$:
+\begin{itemize}
+    \item $yx \neq e$, otherwise $y=x^2$ but $\mathbb{H}_X \cap \mathbb{H}_Y = \{e\}$.
+    \item $yx \neq x$, otherwise $y=e$.
+    \item $yx \neq x^2$, otherwise $x=y$.
+    \item $yx \neq y$, otherwise $x=e$.
+    \item $yx \neq y^2$, otherwise $x=y$.
+    \item $yx \neq xy^2$, otherwise $yxy=x$ (multiplied both sides by $y$), but $(yx)^3=yx(yxy)x=yx^3=y=e$, so $y=e$.
+    \item $yx \neq x^2y$, otherwise $xyx=y$ and thus $x=e$ (see explanation above).
+    \item $yx \neq x^2y^2$, otherwise $(yx)^2=(yx)(yx)=(x^2y^2)(yx) = e$. Yet, $(yx)^3=e$, so $yx=e$ or $y=x^2$, contradicting $\mathbb{H}_X \cap \mathbb{H}_Y = \{e\}$.
+\end{itemize} 
+
+Therefore, $yx=xy$, so $\mathbb{G}$ is an abelian group.
+
+\subsection*{Polynomials}
+
+\textbf{Exercise 1. Answer: A.} Note that $\deg(p-q)=4$ since $p$ and $q$ are of
+different degrees. Therefore, $\deg((p-q)r)=\deg(p-q)+\deg(r) = 4+5=9$.
+
+\textbf{Exercise 2. Answer: D.} It suffices to plug each of $\{0,1,2,3,4\}$
+in $4x^2+7$ and verify that the result is never $0$ over $\mathbb{F}_5$.
+
+\textbf{Exercise 3. Answer: A.} Note that $p(x)=a(x-1)(x-2)$. Since $p(0)=2$, 
+we have $a=1$. Therefore, $p(x)=x^2-3x+2$ and thus $b=-3$, $c=2$. The sum 
+$a+b+c$ is then $0$.
+
+\textbf{Exercise 4. Answer: C.} Roots of $Q$ are $\pm i$. If $Q(x) \mid P(x)$,
+we must have $P(\pm i) = 0$. Thus we have $P(i)=i^{2n}+i^n-2=(-1)^n+i^n-2$. 
+Consider four cases:
+\begin{itemize}
+    \item $n=4k$. Then, $P(i)=(-1)^{4k}+i^{4k}-2=0$.
+    \item $n=4k+1$. Then, $P(i)=(-1)^{4k+1}+i^{4k+1}-2=-3+i \neq 0$.
+    \item $n=4k+2$. Then, $P(i)=(-1)^{4k+2}+i^{4k+2}-2=-2 \neq 0$.
+    \item $n=4k+3$. Then, $P(i)=(-1)^{4k+3}+i^{4k+3}-2=-3-i \neq 0$.
+\end{itemize}
+
+Therefore, $n$ must be divisible by $4$. It is easy to check that in such 
+case $P(-i)$ equals $0$ as well.
+
+\textbf{Exercise 5. Answer: A.} Since polynomial has $d$ distinct roots,
+the probability of choosing a root is \emph{exactly} $d/p$. The probability 
+that Alice fools Bob after $n$ rounds is then $(d/p)^n$.
+
+\textbf{Exercise 6. Answer: B.} According to the Schwartz-Zippel Lemma, we have
+$\text{Pr}[f(\mathbf{x})=0 \,|\, \mathbf{x} \xleftarrow{R} \mathbb{S}] \leq \deg
+f/|\mathbb{S}|$, so we need to find the size $|\mathbb{S}|$. Our claim is that 
+the number of solutions to $x_1+\dots+x_n=1$ over $\mathbb{F}_p$ is exactly 
+$p^{n-1}$. Indeed, for any $p^{n-1}$ possible values of $(x_2,\dots,x_n)$ there 
+is a unique $x_1$ such that $x_1+\dots+x_n=1$, which is $1-\sum_{i=2}^nx_i$. 
+Therefore, $\text{Pr}[f(\mathbf{x})=0] \leq \deg f/p^{n-1}$.
+
+\subsection*{Field Extensions}
+
+\textbf{Exercise 1. Answer: D.} Since $i^2=-1$, we have
+$(3+i)(4+i)=12+7i+i^2=11+7i$. Reducing this modulo $7$ gives $4$.
+
+\textbf{Exercise 2. Answer: D.} Note that $2/i=2i/i^2=2i/(-2)=-i=(p-1)i$. 
+
+\textbf{Exercise 3. Answer: A.} Such field extension is valid as long as $v^2+v+1$
+has no roots over $\mathbb{F}_p$. Note that $v^2+v+1=0$ has no solutions if and
+only if $v^3-1$ has no trivial solutions: indeed, $v^3-1=(v-1)(v^2+v+1)$. From
+the problem statement we know this is the case when $p \equiv 1 \pmod{3}$. From 
+the provided choice, this is the case for $p=8431$.
+
+\textbf{Exercise 4. Answer: B.} Field extension $\mathbb{F}_5[i]/(r(i))$
+is valid only when $r(x)$ is irreducible over $\mathbb{F}_5$. This is the 
+case when $r(x) = x^2+2$.
+
+\textbf{Exercise 5. Answer: A.} The zero of the provided polynomial is:
+\begin{equation*}
+    x_0 = \frac{i+3}{i} = \frac{i^2+3i}{i^2} = 1 + \frac{3i}{-2} = 1 + -3i \cdot 3 = 1-9i=1+i
+\end{equation*}
+
+\textbf{Exercise 6. Answer: A.} Notice that $j^4=(j^2)^2=\xi^2$. Since $\xi=1+i$
+by definition, we have $j^4=(1+i)^2=-1+2i=4+2i$.
+
+\textbf{Exercise 7. Answer: C.} Again, using identity $j^2=\xi$, we arrive at 
+$j^3+2i^2\xi = j\xi-4\xi = j\xi+\xi$. Therefore, both the real and imaginary 
+parts are same and equal to $\xi$.
+
+\textbf{Exercise 8. Answer: B.} Let us expand the expression: $(a_0+a_1j)b_1j=
+a_0b_1j+a_1b_1j^2=a_1b_1\xi+a_0b_1j$. So the real part is thus $a_1b_1\xi$.
+
+\textbf{Exercise 9. Answer: B.} $z\overline{z}=(c_0+c_1j)(c_0-c_1j) = c_0^2-c_1^2j^2=c_0^2-\xi c_1^2$.
+
+\subsection*{Elliptic Curves and Pairing}
+
+\textbf{Exercise 1. Answer: 1.} If $(2,3) \in E/\mathbb{F}_7$, then $3^2=2^3+b$ 
+and thus $b=9-8=1$. 
+
+\textbf{Exercise 2. Answer: A.} If $P\oplus Q=\mathcal{O}$, then $P$ and $Q$ must have 
+the same $x$ coordinates and opposite $y$ coordinates. Points $P=(2,3)$ and 
+$Q=(2,8)$ satisfy this condition.
+
+\textbf{Exercise 3. Answer: A.} According to Hasse's theorem, we have
+\begin{equation*}
+    r = p^2 + 1 - t, \quad |t| \leq 2p
+\end{equation*}
+
+In our case, $p=167$, so $r=167^2 + 1 - t$ for $|t| \leq 334$. The only 
+suitable option among provided is $167^2 - 5$.
+
+\textbf{Exercise 4. Answer: C.} Upper bound for factors of $|E|=qr$ is
+$\max\{q,r\}$, so the complexity is $\mathcal{O}(\sqrt{\max\{q,r\}})$.
+
+\textbf{Exercise 5. Answer: A.} Note that reflexivity is not satisfied. Indeed,
+$a+a<0$ does not hold for $a \in \mathbb{Q}_{>0}$.
+
+\textbf{Exercise 6. Answer: C.} By definition, $[1.4]_{\sim} = \{x \in \mathbb{R}: x-1.4 \in \mathbb{Z}\}$. That means 
+that every $x \in [1.4]_{\sim}$ is of form $x=1.4+n$ where $n \in \mathbb{Z}$. This can be 
+further simplified to $x=0.4 + n'$ with $n' \in \mathbb{Z}$. Thus, the fractional part 
+must be $0.4$.
+
+\textbf{Exercise 7. Answer: D.} For homogeneous projective coordinates we must
+have $X_2/X_1=Y_2/Y_1=Z_2/Z_1$. In our case, the fraction $X_2/X_1=16/4=4$ while
+$Y_2/Y_1=8/3$, so two points are not equivalent.
+
+\textbf{Exercise 8. Answer: E.} Projective coordinates are effective since 
+addition of points over the projective space does not require inversion. The 
+only inversion needed is during the transforming point back to the affine space.
+
+\textbf{Exercise 9. Answer: D.} The number of additions equals the number of 
+non-zero bits in the binary representation of $k$. Since $19=10011_2$, the number
+of additions is $3$.
+
+\textbf{Exercise 10. Answer: A.} One way to reduce the number of inversions 
+is to calculate the $t \gets (a+b)^{-1}$ first, which gives $(a+b)^{-4}=t^4$
+for free. All left to do is to calculate $(a^2+c^2)^{-1}$, making the 
+total cost $2$ inversions. However, we can use only one inversion: notice 
+that
+\begin{equation*}
+    \frac{a-b}{(a+b)^4} + \frac{c}{a+b} + \frac{d}{a^2+c^2} = \frac{(a-b)(a^2+c^2) + c(a+b)^3(a^2+c^2) + d(a+b)^4}{(a+b)^4(a^2+c^2)}
+\end{equation*}
+
+Therefore, we need only one inversion: first we calculate $z \gets (a+b)^4(a^2+c^2)$ and then calculate $z^{-1}$. Then we multiply 
+by the numerator, costing zero inversions. So the optimal solution is $1$ inversion. Note that the second approach 
+requires larger number of field multiplications, so it might be not optimal in case inversion is cheap.
+
+\textbf{Exercise 11. Answer: B.} Notice that $e([4]G_1,[4]G_2)=e(G_1,G_2)^{4 \cdot 4} = e(G_1,G_2)^{16} \neq e([3]G_1,[5]G_2)=e(G_1,G_2)^{15}$.
+
+\textbf{Exercise 12. Answer: E.} Note that
+$e(P,P)e(Q,Q)=e(G,G)^{x^2}e(G,G)^{y^2}=e(G,G)^{x^2+y^2}$. Therefore, checking
+whether $e(P,P)e(Q,Q)=e(G,G)$ is equivalent to checking whether $x^2+y^2=1$.
+
+\subsection*{Commitment Schemes}
+
+\textbf{Exercise 1. Answer: C.} We have $H(x)=C$. By the definition of $H$,
+we have $13x+17=39$ over $\mathbb{F}_{41}$. Therefore, $13x=22$,
+so $x=22 \cdot 13^{-1} = 8$. 
+
+\textbf{Exercise 2. Answer: A.} If $U=[6]G$ then the Pedersen commitment for element
+$(m,r)$ can be written as $\mathsf{com}(m,r) = [m]G+[r]U=[m]G+[6r]G=[m+6r]G$.
+Therefore, to fool Dmytro, if suffices to take such $(m_2,r_2)$ that
+$m_2+6r_2=m_1+6r_1$. Substituting numbers we get $15+6r_2=3+6\cdot 7=45$.
+Therefore, $6r_2=30$ so finally $r_2=5$.
+
+\textbf{Exercise 3. Answer: D.} It suffices to manually check every option. For
+option (D) we indeed have $H(H(17, H(3,4)), 13) = 37$.  
+
+\textbf{Exercise 4. Answer: C.} The quotient polynomial $q(x)$ must satisfy
+$q(x)\cdot (x-2)=p(x)$. It is easy to check that for $q(x)=x^2-8x+15$ we indeed
+have $(x^2-8x+15)(x-2) = x^3-10x^2+31x-30$.
+
+\subsection*{Security Analysis}
+
+\textbf{Exercise 1. Answer: B.} Adversary $\mathcal{A}$ can safely send two
+different messages $m_0$ and $m_1$ to the challenger with $\mathsf{lsb}(m_b)=b$
+for $b \in \{0,1\}$. Then, having received $c$, $\mathcal{A}$ can output $b'
+\gets \mathcal{O}_{\text{lsb}}(c)$ where $\mathcal{O}_{\text{lsb}}(c)$ is an
+oracle that returns the least significant bit of $m$. Thus,
+$\text{Pr}[b=\hat{b}] = 1$ and thus $\text{SSAdv}[\mathcal{A}]=1/2$.
+
+\textbf{Exercise 2. Answer: D.} The probability should be subtracted from 
+the probability of random guess. The random guess corresponds to the probability 
+$1/|\mathcal{M}|$, thus the answer.
+
+\textbf{Exercise 3. Answer: D.} Take $f=g$. Then, $f/g=1 \neq
+\text{negl}(\lambda)$.
+
+\subsection*{Introduction to Zero-Knowledge Proofs}
+
+\textbf{Exercise 1. Answer: A.}
+
+\textbf{Exercise 2. Answer: B.} The probability of accepting the false statement after 
+$n$ rounds is $(1/8)^n=2^{-3n}$. To guarantee $120$ bits of security, we 
+need $3n=120$ or $n=40$ rounds.
+
+\textbf{Exercise 3. Answer: C.} To check a great explanation, see the answer
+from
+\href{https://crypto.stackexchange.com/questions/9528/zero-knowledge-proof-using-quadratic-residue-why-two-options}{this
+forum}.
+
+\textbf{Exercise 4. Answer: C.}
+
+\textbf{Exercise 5. Answer: B.}
+
+\textbf{Exercise 6. Answer: D.}
+
+\subsection*{Sigma Protocols}
+
+\textbf{Exercise 1.} The protocol is sound and complete, but it is not zero-knowledge.
+
+\textbf{Exercise 2.} The protocol is not complete. Yet, it is sound and zero-knowledge.
+
+\textbf{Exercise 3.} While the protocol is sound and complete, it is not zero-knowledge: 
+based on $(a,r)$, the verifier can find $\alpha$ as $a-r$.
+
+\textbf{Exercise 4.} The protocol is complete and zero-knowledge, but it is not
+sound. Indeed, the prover does not prove that $r$ is chosen randomly, so he can
+send $(g^z/h, z)$ to the verifier, which would make the verifier accept the
+statement, yet the prover might not know the discrete logarithm of $h$.
+
+\textbf{Exercise 5.} This is a Schnorr's protocol. It is sound, complete, and
+zero-knowledge.
+
+\textbf{Exercise 6. Answer: B.} Note that
+$w=g^{\alpha\beta}=(g^{\alpha})^{\beta}=u^{\beta}$. 
+
+\textbf{Exercise 7. Answer: C.} $v=g^{\beta}$ and $w=u^{\beta}$.
+
+\textbf{Exercise 8. Answer: C.} $v_r=g^{\beta_r}$ and $w_r=u^{\beta_r}$.
+
+\textbf{Exercise 9. Answer: A.} We need to hash both the initial statement
+$(u,v,w)$ and the commitment $(v_r,w_r)$, so the hash function should input five 
+group elements.
+
+\textbf{Exercise 10. Answer: A.} $c \gets H((u,v,w),(v_r,w_r))$.
+
+\end{document}

@@ -269,20 +269,19 @@ The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
 
 \end{enumerate}
 
-\newpage
 \subsection{Exercises}
 
-\textbf{Exercise 1.} Dmytro and Denis were watching a horse race. 
-    Confident in his ability to predict the outcome, Dmytro decided to commit to his prediction. 
-    However, in his haste, he forgot to use a blinding factor. 
-    Now, Dmytro is concerned that Denis might discover his prediction before the race ends, 
-    which would defeat the purpose of his commitment.
+\textbf{Exercise 1.} Dmytro and Denis were watching a horse race. Confident in
+    his ability to predict the outcome, Dmytro decided to commit to his
+    prediction. However, in his haste, he forgot to use a blinding factor. Now,
+    Dmytro is concerned that Denis might discover his prediction before the race
+    ends, which would defeat the purpose of his commitment.
     
-    We define a dummy hash function $H(a) = (a \cdot 13 + 17) \pmod{41}$.
-    Dmytro used a \textit{hash-based commitment} and $H$ as a hash function. 
-    Set of race horse numbers is $(3, 5, 8, 15)$.
-    Help Denis to find out the horse number Dmytro have made a commitment to, 
-    if commitment equals $C = 39$.
+    We define a dummy hash function $H: \mathbb{Z} \to \mathbb{F}_{41}$ as $H(x)
+    = 13x+17$. Dmytro used a \textit{hash-based commitment} and $H$ as a hash
+    function. The set of race horse numbers is $\{3, 5, 8, 15\}$. Help Denis to
+    find out the horse number Dmytro have made a commitment to, if the
+    commitment equals $C = 39$.
 
 \vspace{-0.5em}
 
@@ -297,10 +296,12 @@ The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
 
 \vspace{-0.5em}
 
-\textbf{Exercise 2.} Denis made a setup (points $G$ and $U$) for a Pedersen commitment scheme and commited values $(m, r) = (3, 7)$ to Dmytro
-by sending him $\mathcal{C} = [3]G + [7]U$. Dmytro did not verify the setup. Turns out that Denis knows that $U$ = $[6]G$. 
-Denis is planning to send a different message from the one he originally committed to
-to $m_2 = 15$. Which values $(m_2, r_2)$ should he send to Dmytro at the opening stage?
+\textbf{Exercise 2.} Denis made a setup (points $G$ and $U$) for a Pedersen
+commitment scheme and commited values $(m, r) = (3, 7)$ to Dmytro by sending him
+$C = [3]G + [7]U$. Dmytro did not verify the setup. Turns out that Denis knows
+that $U$ = $[6]G$. Denis is planning to send a different message from the one he
+originally committed to: $m_2 = 15$. Which values of $(m_2, r_2)$ should he send
+to Dmytro at the opening stage?
 
 \vspace{-0.5em}
 
@@ -315,19 +316,20 @@ to $m_2 = 15$. Which values $(m_2, r_2)$ should he send to Dmytro at the opening
 
 \vspace{-0.5em}
 
-\textbf{Exercise 3.} We define a dummy hash function $H(a, b) = (a \cdot 3 + b \cdot 7) \pmod{41}$. You have a Merkle tree built with depth $4$ 
-using hash function $H$ with root equal $37$. Which inclusion proof is valid for element $3$?
-Position defines how leaves should be hashed:
-
-    - if $left \rightarrow h_i = Hash(h_{i-1}, branch[i])$
-
-    - if $right \rightarrow  h_i = Hash(branch[i], h_{i-1})$
-
+\textbf{Exercise 3.} We define a dummy hash function $H: \mathbb{Z} \times
+\mathbb{Z} \to \mathbb{F}_{41}$ as $H(x, y) = 3x+7y$. You have a Merkle tree
+built with depth $4$ using the hash function $H$ with a root that equals $37$.
+Which inclusion proof is valid for element $3$? Position defines how leaves
+should be hashed:
+\begin{itemize}
+    \item if $\ell$, then $h_i \gets H(h_{i-1}, \mathsf{branch}[i])$,
+    \item if $r$, then $h_i \gets H(\mathsf{branch}[i], h_{i-1})$.
+\end{itemize}
 \begin{enumerate}[(A)]
-    \item branch: $[4, 16, 13]$, position: $[left, right, left]$
-    \item branch: $[1, 40, 3]$, position: $[left, left, left]$
-    \item branch: $[5, 12, 13]$, position: $[right, right, left]$
-    \item branch: $[4, 17, 13]$, position: $[left, right, left]$
+    \item Branch: $[4, 16, 13]$, Position: $[\ell,r,\ell]$
+    \item Branch: $[1, 40, 3]$, Position: $[\ell, \ell, \ell]$
+    \item Branch: $[5, 12, 13]$, Position: $[r, r, \ell]$
+    \item Branch: $[4, 17, 13]$, Position: $[\ell, r, \ell]$
 \end{enumerate}
 
 \textbf{Exercise 4.} Given a polynomial $p(x) = x^3 - 10x^2 + 31x - 30$, Oleksandr wants to prove that $p(2)=0$. 

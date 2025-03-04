@@ -113,11 +113,17 @@ The aforementioned definition is illustrated in the Figure below\footnote{Illust
 Now, let us talk a bit about the group order. The group order is the number of elements in the group. For elliptic curves, the group order is typically denoted as $r$ or $n$, but we are going to use $r$. Also, the following theorem is quite important.
 
 \begin{theorem}
-    Define $r := |E(\mathbb{F}_{p^m})|$. Then, $r = p^m + 1 - t$ for some integer $|t| \leq 2\sqrt{p^m}$. A bit more intuitive explanation: the number of points on the curve is close to $p^m+1$. This theorem is commonly called the \textbf{Hasse's theorem on elliptic curves}, and the value $t$ is called the \textbf{trace of Frobenius}.
+    Define $r := |E(\mathbb{F}_{p^m})|$. Then, $r = p^m + 1 - t$ for some
+    integer $|t| \leq 2\sqrt{p^m}$. A bit more intuitive explanation: the number
+    of points on the curve is close to $p^m$. This theorem is commonly called
+    the \textbf{Hasse's Theorem}, and the value $t$ is called
+    the \textbf{Trace of Frobenius}.
 \end{theorem}
 
 \begin{remark}
-    In fact, $r=|E(\mathbb{F}_{p^m})|$ can be computed in $O(\log(p^m))$, so the number of points can be computed efficiently even for fairly large primes $p$.
+    In fact, $r=|E(\mathbb{F}_{p^m})|$ can be computed in polylogarithmic time
+    $O(\log^{\gamma}(p^m))$ for some $\gamma>1$. That being said, the number of
+    points can be computed efficiently even for fairly large primes $p$.
 \end{remark}
 
 Finally, let us define the scalar multiplication operation. 
@@ -657,18 +663,22 @@ This scheme is also quite famous for its aggregation properties, which we are no
 \end{remark}
 
 \begin{example}
-    Finally, let us prove something more interesting. Like, based on $(x_1,x_2)$, whether
+    Finally, let us prove something more interesting. For instance, based on
+    $(x_1,x_2)$, whether
     \begin{equation*}
         x_1^2 + x_1x_2 = x_2
     \end{equation*}
-    Alice can calculate $P_1 \gets [x_1]G_1 \in \mathbb{G}_1, P_2 \gets [x_1]G_2 \in \mathbb{G}_2, Q \gets [x_2]G_2 \in \mathbb{G}_2$. Then, the condition can be verified by checking whether
+
+    Suppose pairing $e: \mathbb{G} \times \mathbb{G} \to \mathbb{G}_T$ is
+    symmetric. Alice can then calculate $P \gets [x_1]G, Q \gets [x_2]G \in
+    \mathbb{G}$. Then, the condition can be verified by checking whether
     \begin{equation*}
-        e(P_1,P_2\oplus Q)e(G_1,\ominus Q) = 1
+        e(P,P \oplus Q)e(G,\ominus Q) = 1
     \end{equation*}
     Let us see the correctness of this equation:
-    \begin{gather}
-        e(P_1,P_2\oplus Q)e(G_1,\ominus Q) = e([x_1]G_1,[x_1+x_2]G_2)e(G_1,[x_2]G_2)^{-1} \nonumber \\= e(G_1,G_2)^{x_1(x_1+x_2)}e(G_1,G_2)^{-x_2} = e(G_1,G_2)^{x_1^2+x_1x_2-x_2}
-    \end{gather}
+    \begin{gather*}
+        e(P,P\oplus Q)e(G,\ominus Q) = e([x_1]G,[x_1+x_2]G)e(G,[x_2]G)^{-1} \nonumber \\= e(G,G)^{x_1(x_1+x_2)}e(G,G)^{-x_2} = e(G,G)^{x_1^2+x_1x_2-x_2}
+    \end{gather*}
     Now, if this is $1$, then $x_1^2+x_1x_2=x_2$, which was exactly what we wanted to prove.
 \end{example}
 
@@ -676,7 +686,44 @@ This scheme is also quite famous for its aggregation properties, which we are no
 
 \subsection{Exercises}
 
-\textbf{Exercise 1.} What is \textbf{not} a valid equivalence relation $\sim$ over a set $\mathcal{X}$?
+
+\textbf{Exercise 1.} Suppose that elliptic curve is defined as $E/\mathbb{F}_{7}: y^2=x^3+b$. Suppose $(2,3)$ lies on the curve. What is the value of $b$?
+
+\textbf{Exercise 2.} Sum of which of the following pairs of points on the elliptic curve $E/\mathbb{F}_{11}$ is equal to the point at infinity $\mathcal{O}$ for any valid curve equation?
+\begin{multicols}{2}    
+    \begin{enumerate}[a)]
+        \item $P=(2,3),Q=(2,8)$.
+        \item $P=(9,2),Q=(2,8)$.
+        \item $P=(9,9),Q=(5,7)$.
+        \item $P=\mathcal{O},Q=(2,3)$.
+        \item $P=[10]G,Q=G$ where $G$ is a generator.
+    \end{enumerate}
+\end{multicols}
+
+% \newpage
+\textbf{Exercise 3.} Consider an elliptic curve $E$ over $\mathbb{F}_{167^2}$. Denote by $r$ the order of the group of points on $E$ (that is, $r=|E|$). Which of the following \textbf{can} be the value of $r$?
+\begin{multicols}{3}    
+    \begin{enumerate}[a)]
+        \item $167^2 - 5$
+        \item $167^2-1000$
+        \item $167^2+5 \cdot 167$
+        \item $170^2$
+        \item $160^2$
+    \end{enumerate}
+\end{multicols}
+
+\textbf{Exercise 4.} Suppose that for some elliptic curve $E$ the order is $|E| = qr$ where both $q$ and $r$ are prime numbers. Among listed, what is the most optimal complexity of algorithm to solve the discrete logarithm problem on $E$?
+\begin{multicols}{3}    
+    \begin{enumerate}[a)]
+        \item $O(qr)$
+        \item $O(\sqrt{qr})$
+        \item $O(\sqrt{\max\{q,r\}})$
+        \item $O(\sqrt{\min\{q,r\}})$
+        \item $O(\max\{q,r\})$
+    \end{enumerate}
+\end{multicols}
+
+\textbf{Exercise 5.} What is \textbf{not} a valid equivalence relation $\sim$ over a set $\mathcal{X}$?
 \begin{enumerate}[(A)]
     \item $a \sim b$ iff $a+b < 0$, $\mathcal{X} = \mathbb{Q}$.
     \item $a\sim b$ iff $a=b$, $\mathcal{X} = \mathbb{R}$.
@@ -685,7 +732,7 @@ This scheme is also quite famous for its aggregation properties, which we are no
     \item $(a_1,a_2,a_3)\sim (b_1,b_2,b_3)$ iff $a_3=b_3$, $\mathcal{X} = \mathbb{R}^3$.
 \end{enumerate}
 
-\textbf{Exercise 2.} Suppose that over $\mathbb{R}$ we define the following equivalence relation: $a \sim b$ iff $a-b \in \mathbb{Z}$ ($a,b \in \mathbb{R}$). What is the equivalence class of $1.4$ (that is, $[1.4]_{\sim}$)?
+\textbf{Exercise 6.} Suppose that over $\mathbb{R}$ we define the following equivalence relation: $a \sim b$ iff $a-b \in \mathbb{Z}$ ($a,b \in \mathbb{R}$). What is the equivalence class of $1.4$ (that is, $[1.4]_{\sim}$)?
 \begin{enumerate}[(A)]
     \item A set of all real numbers.
     \item A set of all integers.
@@ -694,7 +741,7 @@ This scheme is also quite famous for its aggregation properties, which we are no
     \item A set of reals $x \in \mathbb{R}$ with the fractional part of $x$ equal to $0.6$.
 \end{enumerate}
 
-\textbf{Exercise 3.} Which of the following pairs of points in homogeneous projective space $\mathbb{P}^2(\mathbb{R})$ are \textbf{not} equivalent?
+\textbf{Exercise 7.} Which of the following pairs of points in homogeneous projective space $\mathbb{P}^2(\mathbb{R})$ are \textbf{not} equivalent?
 \begin{multicols}{2}
     \begin{enumerate}[(A)]
         \item $(1:2:3)$ and $(2:4:6)$.
@@ -704,7 +751,7 @@ This scheme is also quite famous for its aggregation properties, which we are no
     \end{enumerate}
 \end{multicols}
 
-\textbf{Exercise 4.} The main reason for using projective coordinates in elliptic curve cryptography is:
+\textbf{Exercise 8.} The main reason for using projective coordinates in elliptic curve cryptography is:
 \begin{enumerate}[(A)]
     \item To reduce the number of point additions in algorithms involving elliptic curves.
     \item To make the curve more secure against attacks.
@@ -713,7 +760,7 @@ This scheme is also quite famous for its aggregation properties, which we are no
     \item To avoid making too many field inversions in complicated algorithms involving elliptic curves.
 \end{enumerate}
 
-\textbf{Exercise 5.} Suppose $k=19$ is a scalar and we are calculating $[k]P$ using the double-and-add algorithm. How many elliptic curve point addition operations will be performed?
+\textbf{Exercise 9.} Suppose $k=19$ is a scalar and we are calculating $[k]P$ using the double-and-add algorithm. How many elliptic curve point addition operations will be performed?
 \begin{multicols}{5}
     \begin{enumerate}[(A)]
         \item $0$.
@@ -724,7 +771,7 @@ This scheme is also quite famous for its aggregation properties, which we are no
     \end{enumerate}
 \end{multicols}
 
-\textbf{Exercise 6.} What is the minimal number of inversions needed to calculate the value of expression (over $\mathbb{F}_p$)
+\textbf{Exercise 10.} What is the minimal number of inversions needed to calculate the value of expression (over $\mathbb{F}_p$)
 \begin{equation*}
     \frac{a-b}{(a+b)^4} + \frac{c}{a+b} + \frac{d}{a^2+c^2},
 \end{equation*}
@@ -739,7 +786,7 @@ for the given scalars $a,b,c,d \in \mathbb{F}_p$?
     \end{enumerate}
 \end{multicols}
 
-\textbf{Exercise 7.} Given pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ with $G_1$ --- generator of $\mathbb{G}_1$ and $G_2 \in \mathbb{G}_2$ --- generator of $\mathbb{G}_2$, which of the following is \textbf{not} equal to $e([3]G_1, [5]G_2)$?
+\textbf{Exercise 11.} Given pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ with $G_1$ --- generator of $\mathbb{G}_1$ and $G_2 \in \mathbb{G}_2$ --- generator of $\mathbb{G}_2$, which of the following is \textbf{not} equal to $e([3]G_1, [5]G_2)$?
 \begin{multicols}{2}
     \begin{enumerate}[(A)]
         \item $e([5]G_1, [3]G_2)$.
@@ -750,7 +797,7 @@ for the given scalars $a,b,c,d \in \mathbb{F}_p$?
     \end{enumerate} 
 \end{multicols}
 
-\textbf{Exercise 8*.} \textit{Unit Circle Proof.} Suppose Alice wants to convince Bob that she knows a point on the unit circle $x^2+y^2=1$. Suppose we are given a symmetric pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ for $\mathbb{G}_1=\mathbb{G}_2=\langle G \rangle$ and Alice computes $P \gets [x]G, Q \gets [y]G$. She then proceeds to sending $(P,Q)$ to Bob. Which of the following checks should Bob perform to verify that Alice indeed knows a point on the unit circle?
+\textbf{Exercise 12.} \textit{Unit Circle Proof.} Suppose Alice wants to convince Bob that she knows a point on the unit circle $x^2+y^2=1$. Suppose we are given a symmetric pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ for $\mathbb{G}_1=\mathbb{G}_2=\langle G \rangle$ and Alice computes $P \gets [x]G, Q \gets [y]G$. She then proceeds to sending $(P,Q)$ to Bob. Which of the following checks should Bob perform to verify that Alice indeed knows a point on the unit circle?
 \begin{enumerate}[(A)]
     \item Check if $e(P,Q)e(Q,P)=1$.
     \item Check if $e([2]P,[2]Q) = e(G,G)$.
@@ -758,41 +805,5 @@ for the given scalars $a,b,c,d \in \mathbb{F}_p$?
     \item Check if $e(P,P)+e(Q,Q) = 1$.
     \item Check if $e(P,P)e(Q,Q)=e(G,G)$.
 \end{enumerate}
-
-\textbf{Exercise 10.} Suppose that elliptic curve is defined as $E/\mathbb{F}_{7}: y^2=x^3+b$. Suppose $(2,3)$ lies on the curve. What is the value of $b$?
-
-\textbf{Exercise 11.} Sum of which of the following pairs of points on the elliptic curve $E/\mathbb{F}_{11}$ is equal to the point at infinity $\mathcal{O}$ for any valid curve equation?
-\begin{multicols}{2}    
-    \begin{enumerate}[a)]
-        \item $P=(2,3),Q=(2,8)$.
-        \item $P=(9,2),Q=(2,8)$.
-        \item $P=(9,9),Q=(5,7)$.
-        \item $P=\mathcal{O},Q=(2,3)$.
-        \item $P=[10]G,Q=G$ where $G$ is a generator.
-    \end{enumerate}
-\end{multicols}
-
-% \newpage
-\textbf{Exercise 12.} Consider an elliptic curve $E$ over $\mathbb{F}_{167^2}$. Denote by $r$ the order of the group of points on $E$ (that is, $r=|E|$). Which of the following \textbf{can} be the value of $r$?
-\begin{multicols}{3}    
-    \begin{enumerate}[a)]
-        \item $167^2 - 5$
-        \item $167^2-1000$
-        \item $167^2+5 \cdot 167$
-        \item $170^2$
-        \item $160^2$
-    \end{enumerate}
-\end{multicols}
-
-\textbf{Exercise 13.} Suppose that for some elliptic curve $E$ the order is $|E| = qr$ where both $q$ and $r$ are prime numbers. Among listed, what is the most optimal complexity of algorithm to solve the discrete logarithm problem on $E$?
-\begin{multicols}{3}    
-    \begin{enumerate}[a)]
-        \item $O(qr)$
-        \item $O(\sqrt{qr})$
-        \item $O(\sqrt{\max\{q,r\}})$
-        \item $O(\sqrt{\min\{q,r\}})$
-        \item $O(\max\{q,r\})$
-    \end{enumerate}
-\end{multicols}
 
 \end{document}

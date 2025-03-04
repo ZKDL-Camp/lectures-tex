@@ -855,12 +855,40 @@ Here, there are two tricky moments:
     \item To generate a random rotation matrix, we generate three random angles and create a rotation matrix from these angles.
 \end{enumerate}
 
+\subsection*{Acknowledgements}
+This section was greatly inspired by
+\href{https://www.youtube.com/watch?v=j5nkkCp0ARw&list=PLVMgvCDIRy1y4JFpnpzEQZ0gRwr-sPTpw}{Michael
+Penn's ``Abstract Algebra'' Youtube series} and
+\href{https://ocw.mit.edu/courses/18-703-modern-algebra-spring-2013/}{MIT Modern
+Algebra Class (18.703)}. For those interested to dive deeper into the topic, we
+highly recommend these resources.
+
 \newpage
 
 \subsection{Exercises}
 
 \begin{xexercise}
     {Exercise 1.}
+    {Define $X := \{(x,y) \in \mathbb{Q}^2: xy=1\}$. Oleksandr claims that:
+    \begin{enumerate}
+        \item $X \cap \mathbb{N}^2 = \{(1,1)\}$.
+        \item $|X \cap \mathbb{Z}^2| = 2|X \cap \mathbb{N}^2|$.
+        \item $(X,\odot)$ is a group for $(x_1,y_1)\odot (x_2,y_2) = (x_1x_2,y_1y_2)$.
+    \end{enumerate}
+    Which statements are \textbf{true}?
+    }
+    {1}
+    {
+        \item Only 1.
+        \item Only 1 and 2.
+        \item Only 1 and 3.
+        \item Only 2 and 3.
+        \item All statements are correct.
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 2.}
     {Does a tuple $(\mathbb{Z},\oplus)$ with operation $a \oplus b = a + b - 1$ define a group?}
     {1}
     {
@@ -868,12 +896,12 @@ Here, there are two tricky moments:
         \item Yes, but this group is not abelian.
         \item No, since the associativity property does not hold.
         \item No, since there is no identity element in this group.
-        \item No, since there is no inverse element in this group.
+        \item No, since there is no inverse for some elements in this group.
     }
 \end{xexercise}
 
 \begin{xexercise}
-    {Exercise 2.}
+    {Exercise 3.}
     {Consider the Cartesian plane $\mathbb{R}^2$, where two coordinates are real numbers. For two points $A,B$ 
     define the operation $\oplus$ as follows: $A \oplus B$ is the midpoint on segment $AB$. Does 
     $(\mathbb{R}^2, \oplus)$ define a group?}
@@ -887,8 +915,33 @@ Here, there are two tricky moments:
 \end{xexercise}
 
 \begin{xexercise}
-    {Exercise 3.}
-    {Which of the following is a \textbf{valid} endomorphism $f: X \to X$? }
+    {Exercise 4.} {Let $\mathbb{G}$ be the set of $2\times 2$ matrices with integer 
+    entries and a non-zero determinant. Does $(\mathbb{G},\times)$ form a group?} {1} {
+        \item Yes, and this group is abelian.
+        \item Yes, but this group is not abelian.
+        \item No, since the associativity property does not hold.
+        \item No, since there is no identity element in this group.
+        \item No, since there is no inverse for some elements in this group.
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 5*.} {Let $(\mathbb{G},\times)$ be an abelian group and $\Omega$
+    be any set. Let $\mathcal{F}$ be the set of functions $f: \Omega \to
+    \mathbb{G}$ with domain $\Omega$ and range $\mathbb{G}$. Define the
+    operation $\star$ on $\mathcal{F}$ by $(f \star g)(\omega) = f(\omega)\times
+    g(\omega)$. Is $(\mathcal{F}, \star)$ a group?} {1} {
+        \item Yes, and this group is abelian.
+        \item Yes, but this group is not abelian.
+        \item No, since the associativity property does not hold.
+        \item No, since there is no identity element in this group.
+        \item No, since there is no inverse for some elements in this group.
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 6.}
+    {Which of the following is a \textbf{valid} automorphism $f: X \to X$?\vspace{-10pt}}
     {2}
     {
         \item $X = [0,1]$, $f: x \mapsto x^2$.
@@ -899,7 +952,7 @@ Here, there are two tricky moments:
 \end{xexercise}
 
 \begin{xexercise}
-    {Exercise 4*.}
+    {Exercise 7*.}
     {
         Denote by $\text{GL}(2,\mathbb{R})$ a set of $2\times 2$ invertable matrices with real entries. Define 
         two functions $\varphi: \text{GL}(2,\mathbb{R}) \to \mathbb{R}$:
@@ -927,7 +980,35 @@ Here, there are two tricky moments:
         \item Both statements 1 and 2 are correct.
         \item None of the statements is correct.
     }
-
 \end{xexercise}
+
+\begin{xexercise}
+    {Exercise 8*.}
+    {
+        Introduce the set $\mathbb{M}$ as follows:
+        \begin{equation*}
+            \mathbb{M} = \left\{ \begin{bmatrix}
+                a & -b \\ b & a
+            \end{bmatrix}: a,b \in \mathbb{R}, \; a^2+b^2 \neq 0 \right\}
+        \end{equation*}
+
+        Suppose the function $\psi: \mathbb{C} \setminus \{0\} \to (\mathbb{M},\times)$ is given by:
+        \begin{equation*}
+            \psi(a+bi) = \begin{bmatrix}
+                a & -b \\ b & a
+            \end{bmatrix}
+        \end{equation*}
+
+        Is the function $\psi$ an isomorphism?
+    }
+    {1}
+    {
+        \item Yes, $\psi$ is an isomorphism.
+        \item No, $\psi$ is not an isomorphism, but it is a homomorphism.
+        \item $\psi$ is neither an isomorphism nor a homomorphism.
+    }
+\end{xexercise}
+
+\textbf{Exercise 9*.} Prove that a group of order $9$ is abelian.
 
 \end{document}

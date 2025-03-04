@@ -61,7 +61,7 @@
 
 % --- Mathematical Preliminaries ---
 
-    \part{Mathematical Background}
+    \part{Mathematics Crash Course}
     \subfile{preface/intro_words/part1}
 
     \section{Introduction to Number Theory}\label{section:number-theory}
@@ -79,10 +79,10 @@
     \section{Fields Extension}\label{section:finite-fields}
     \subfile{lectures/1-5-field-extension.tex}
 
-% --- Cryptography Preliminaries ---
+    % --- Cryptography Preliminaries ---
 
-    \part{Cryptography Preliminaries}
-    \input{preface/intro_words/part2.tex}
+    \part{Cryptography Tools}
+    \subfile{preface/intro_words/part2.tex}
 
     \section{Elliptic Curves and Pairing}\label{section:elliptic-curves}
     \subfile{lectures/1-6-ec.tex}
@@ -93,10 +93,10 @@
     \section{Basics of Security Analysis}\label{section:security-analysis}
     \subfile{lectures/1-8-security-basics.tex}
 
-% --- Zero-Knowledge ---
+    % --- Zero-Knowledge ---
 
-    \part{Zero-Knowledge}
-    \input{preface/intro_words/part3.tex}
+    \part{Zero-Knowledge Protocols}
+    \subfile{preface/intro_words/part3.tex}
 
     \section{Introduction to Zero-Knowledge Proofs}\label{section:intro-zk}
     \subfile{lectures/2-1-intro-zk}
@@ -122,12 +122,20 @@
     \section{Basics of STARKs}\label{section:stark}
     \subfile{lectures/2-8-stark}
 
-% --- References ---
+    % --- Solutions ---
+    \part{Concluding Remarks}\label{section:solutions}
+    \subsection*{Solutions to Exercises}
+    \subfile{lectures/3-solutions}
+
+    \section{Acknowledgements}
+    \subfile{preface/acknowledgements}
+
+    % --- References ---
 
     \bibliographystyle{ieeetr} 
     \bibliography{bibliography}
 
-% --- Contact Page ---
+    % --- Contact Page ---
 
     \newpage
     \pagestyle{empty}

@@ -24,7 +24,7 @@ see later, we will primarily need notions of \emph{finite fields} and
 \emph{groups} further, the basic concepts of number theory will be used
 extensively nonetheless.
 
-\subsection{The Basics}
+\subsection{Division, GCD, LCM}
 
 We start with the most basic definition of number theory --- \emph{divisibility}.
 
@@ -1017,12 +1017,10 @@ $\blacktriangleleft$
         \begin{aligned}
             29^{202} \pmod{13}  &\equiv \\
                                 &\equiv 29^{12 \times 16 + 10} \pmod{13} \\
-                                &\equiv (29^{12})^{16} 29^{10} \pmod{13} \\
-                                &\equiv 29^{10} \pmod{13} \\
+                                &\equiv \cancel{(29^{12})^{16}} 29^{10} \pmod{13} \\
+                                &\equiv 29^10 \pmod{13} \\
                                 &\equiv 3^{10} \pmod{13} \\
-                                &\equiv 3^{3 \times 3} 3 \pmod{13} \\
-                                % &\equiv 27^{3}3 \pmod{13} \quad \text{/*} 27^{3} \equiv 1 \pmod{13} \text{*/} \\
-                                &\equiv 27^{3}3 \pmod{13} \\
+                                &\equiv 59049 \pmod{13} \\
                                 &\equiv 3 \pmod{13}.
         \end{aligned}
     \end{xequation}
@@ -1056,26 +1054,50 @@ the fast exponentiation algorithm. In Python, implementation using in-built \tex
 looks extremely simple:
 \begin{lstlisting}[language=Python]
 def inverse(a: int, p: int) -> int:
-    return pow(a, p - 2, p)
+    return pow(a, p-2, p)
+
+print(inverse(3, 5))  # Output: 2
+print(inverse(7, 39)) # Output: 7
+print(inverse(8, 17)) # Output: 15
 \end{lstlisting}
 
 \subsection{Exercises}
 
+
+\textbf{Exercise 1.} Which of the following statements is \textbf{true}?
+
+\begin{enumerate}[(A)]
+    \item Prime factorization of $30$ is $30=5 \cdot 6$.
+    \item Number $2^{10}+1$ is prime.
+    \item Suppose $n \mid m$. Then $m^2/n$ might not be an integer for some $n,m$.
+    \item Any natural number $n$ equals to the product of its divisors.
+    \item Any prime number $p$ equals to the product of its divisors.
+\end{enumerate}
+
+\textbf{Exercise 2.} Which of the following statements is \textbf{false}?
+
+\begin{enumerate}[(A)]
+    \item $\gcd(p,q)=1$ for any two prime numbers $p$ and $q$.
+    \item $\lcm(p,q)=pq$ for any two primes $p$ and $q$.
+    \item $\gcd(n,m) = \gcd(m,n)$ for any integers $n,m$.
+    \item $\lcm(n+1,n-1) = n^2-1$ for any integer $n$.
+\end{enumerate}
+
 \begin{xexercise}
-    {Exercise 1.}
-    {What the inverse element $37^{-1} \pmod{113}$.}
+    {Exercise 3.}
+    {What the inverse element $5^{-1} \pmod{11}$?}
     {4}
     {
-        \item -18
-        \item 55
-        \item 22
-        \item Not exist
+        \item $5$
+        \item $7$
+        \item $9$
+        \item $10$
     }
 \end{xexercise}
 
 \begin{xexercise}
-    {Exercise 2.}
-    {What element is not contained in $\mathbb{Z}_{21}^{\times}$.}
+    {Exercise 4.}
+    {What element is not contained in $\mathbb{Z}_{21}^{\times}$?}
     {4}
     {
         \item 2 
@@ -1087,7 +1109,7 @@ def inverse(a: int, p: int) -> int:
 
 % todo add answer
 \begin{xexercise}
-    {Exercise 3.}
+    {Exercise 5.}
     {What sum of all integers $n$ satisfying $(n + 1) \mid (n^2 + 1)$?}
     {4}
     {
@@ -1099,56 +1121,33 @@ def inverse(a: int, p: int) -> int:
 \end{xexercise}
 
 \begin{xexercise}
-    {Exercise 4.}
-    {
-        In the following quadratic equation, $p$ and $q$ are \emph{distinct} prime numbers smaller than $10$:
-        \begin{xequation}
-            (x-p)^2-p(x-q)+x^2-qx=0
-        \end{xequation}
-        The left hand side of this equation can be expressed as 
-
-        \begin{xequation}
-            2(x-x_1)(x-x_2)
-        \end{xequation}
-
-        Where $x_1$ and $x_2$ are the roots of the equation. If $x_1$ and $x_2$ are both prime numbers, 
-        what is their sum?
-    }
-    {4}
-    {
-        \item 8
+    {Exercise 6.} { In the quadratic polynomial $f(x) = (x-p)^2-p(x-q)+x^2-qx$,
+    $p$ and $q$ are \emph{distinct} prime numbers both less than $10$. This
+    polynomial can be rewritten as $f(x) = 2(x-r_1)(x-r_2)$ where $r_1$ and
+    $r_2$ are the roots of $f$. If both $r_1$ and $r_2$ are prime numbers, what
+    is their sum $r_1+r_2$? } {4} {
         \item 7
+        \item 8
         \item 10
         \item 11
     }
 \end{xexercise}
 
-\vspace*{4mm}
-
 \begin{tcolorbox}
-[
-    colback=blue!5!white,
-    fonttitle=\bfseries,
-    colframe=blue!80!white,
-]
-    Suppose that function $\tau(n)$ is the number of positive divisors of $n$. For example, $12$ has 6 
-    divisors: $1,2,3,4,6,12$ and therefore $\tau(12)=6$. In fact, using \Cref{th:fundamental_arithmetic}
-    notation, the following relation holds: 
-    \begin{xequation}
-        \tau(n) = (\alpha_1 + 1)(\alpha_2 + 1)\dots (\alpha_r + 1)
-    \end{xequation}
-
-    So, for example, since $12=2^2 \cdot 3^1$ we have $i_1=2,i_2=1$ and therefore $\tau(12)=(2+1)\cdot (1+1)=6$. 
-    Also define function $\sigma(n)$ which is a sum of positive divisors. 
-    For example, $\sigma(12)=1+2+3+4+6+12=28$.
+[ colback=blue!5!white, fonttitle=\bfseries, colframe=blue!80!white,
+    title=Exercises 7-9. Tau Function] Define function $\tau(n) := \{\text{\#
+    of positive divisors of}\; n\}$. For example, the number $12$ has 6 divisors:
+    $1,2,3,4,6,12$, so $\tau(12)=6$. In fact, following
+    \Cref{th:fundamental_arithmetic} notation, if $n=\prod_{j=1}^r
+    p_j^{\alpha_j}$, then the following holds: $\tau(n) =
+    \prod_{j=1}^r(\alpha_j + 1)$. For example, since $12=2^2 \cdot 3^1$ we have
+    $\alpha_1=2,\alpha_2=1$ and therefore $\tau(12)=(2+1)\cdot (1+1)=6$. 
 \end{tcolorbox}
-
-\vspace*{4mm}
 
 % todo add answer
 \begin{xexercise}
-    {Exercise 5.}
-    {Suppose that $p$ is an arbitrary prime. What is $\tau(p^{100})$. }
+    {Exercise 7.}
+    {Suppose that $p$ is an arbitrary prime. What is $\tau(p^{100})$? }
     {4}
     {
         \item 100
@@ -1160,7 +1159,7 @@ def inverse(a: int, p: int) -> int:
 
 % todo add answer
 \begin{xexercise}
-    {Exercise 6.}
+    {Exercise 8.}
     {Suppose for some integer $n$ we have $\tau(n)=7$. What is $\tau(n^2)$? \vspace*{-4mm}}
     {4}
     {
@@ -1171,8 +1170,16 @@ def inverse(a: int, p: int) -> int:
     }    
 \end{xexercise}
 
-\exerciseTitle
-{Exercise 7*.}
-{Prove that for arbitrary natural numbers $n \in \mathbb{N}$ the following holds $\gcd(n, n + 1) = 1$.}
+\begin{xexercise}
+    {Exercise 9*.}
+    {What is the smallest integer $m$, greater than $n^2$ for some $n \in \mathbb{N}$, for which $\tau(m)$ is odd?}
+    {4}
+    {
+        \item $n^2+n$
+        \item $(n+1)^2$
+        \item $n^2+1$
+        \item $n^3$
+    }    
+\end{xexercise}
 
 \end{document}

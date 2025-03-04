@@ -456,7 +456,15 @@ The reason why such transformation works is that the random oracle $\mathcal{O}_
     Suppose that $(\mathcal{P},\mathcal{V})$ is a public-coin interactive argument of knowledge for some language $\mathcal{L}_{\mathcal{R}}$ with a negligible soundness error. Then, the Fiat-Shamir transformation of $(\mathcal{P}^{\mathcal{O}_{\text{R}}},\mathcal{V}^{\mathcal{O}_{\text{R}}})$ is a non-interactive argument for $\mathcal{L}_{\mathcal{R}}$ with negligible soundness error in the random oracle model $\mathcal{O}_{\text{R}}$.
 \end{theorem}
 
-\newpage
+\subsection*{Acknowledgements}
+
+The material of this section was greatly inspired by the
+\href{https://rdi.berkeley.edu/zk-learning/}{``Zero Knowledge Proofs MOOC,
+Spring 2023''} series of lectures, in particular by the first lecture by Shafi
+Goldwasser, and
+\href{https://www.cs.princeton.edu/courses/archive/fall07/cos433/lec15.pdf}{``Zero
+Knowledge Proofs Lecture''} by Boaz Barak.
+
 \subsection{Exercises}
 
 \textbf{Exercise 1.} When dealing with RSA protocol, one frequently encounters the following relation where $e$ is a prime number and $n \in \mathbb{N}$:
@@ -499,8 +507,6 @@ Suppose we use the protocol $(\mathcal{P}, \mathcal{V}^*)$ where the ``broken'' 
     \item The completeness of the protocol is preserved, but the soundness is broken.
     \item Both the soundness and completeness of the protocol are broken.
 \end{enumerate}
-
-\newpage
 
 \textbf{Exercise 4.} What is the difference between the cryptographic proof and the proof of knowledge?
 \begin{enumerate}[(A)]

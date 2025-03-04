@@ -49,7 +49,8 @@ Notice that for now we did not specify what are $c_i$'s. We are interested in th
 \end{definition}
 
 \begin{example}
-    The degree of the polynomial $p(x) = 1 + 2x + 3x^2$ is $2$, so $p(x) \in \mathbb{F}_3^{(\leq 2)}[x]$.
+    The degree of the polynomial $p(x) = 1 + 2x + 3x^2$ is $2$, so $p(x) \in
+    \mathbb{F}_5^{(\leq 2)}[x]$.
 \end{example}
 
 \begin{theorem}
@@ -290,25 +291,40 @@ Instead, suppose we have only $t-1$ (or less) pairs $\{i,\alpha_i\}_{i \in \math
 \begin{xexercise}
     {Exercise 2.}
     {
-        Define the polynomial over $\mathbb{F}_5$: $f(x) := 4x^2 + 7$. Which of the following is the root of $f(x)$?
+        Define the polynomial over $\mathbb{F}_5$: $f(x) := 4x^2 + 2$. Which of the following is the root of $f(x)$?
     }
     {2}
     {
         \item $2$
         \item $3$
         \item $4$
-        \item No roots.
+        \item $f$ has no roots.
     }
 \end{xexercise}
 
 \begin{xexercise}
     {Exercise 3.}
     {
+        Quadratic polynomial $p(x) = ax^2+bx+c \in \mathbb{R}[x]$ has zeros at $1$ and $2$ and $p(0) = 2$. 
+        Find the value of $a+b+c$.
+    }
+    {2}
+    {
+        \item $0$
+        \item $-1$
+        \item $1$
+        \item Not enough information is provided.
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 4*.}
+    {
         Consider two polynomials: 
         \begin{xequation}
-            P(x) = x^{2n} + x^n -2, Q(x) = x^2 + 1
+            P_n(x) = x^{2n} + x^n -2, \quad Q(x) = x^2 + 1
         \end{xequation}
-        For which values of $n$ does polynomial $Q(x)$ divides $P(x)$
+        For which values of $n$ does polynomial $Q(x)$ divides $P_n(x)$
     }
     {1}
     {
@@ -321,17 +337,32 @@ Instead, suppose we have only $t-1$ (or less) pairs $\{i,\alpha_i\}_{i \in \math
 \end{xexercise}
 
 \begin{xexercise}
-    {Exercise 4.}
-    {
-        Quadratic polynomial $p(x) = ax^2+bx+c \in \mathbb{R}[x]$ has zeros at $1$ and $2$ and $p(0) = 2$. 
-        Find the value of $a+b+c$.
+    {Exercise 5.} { Suppose $f \in \mathbb{F}_p[x]$ is a $d$-degree polynomial
+    with $d$ \textbf{distinct} roots in $\mathbb{F}_p$. Suppose Alice wants to
+    fool Bob by claiming that $f$ is not a zero polynomial. The protocol
+    consists of $n$ rounds, where on each round Bob samples the random scalar
+    $\tau \xleftarrow{R} \mathbb{F}_p$ and checks the value of $f(\tau)$. What
+    is the probability that Alice successfully fools Bob during the protocol?}
+    {1} {
+        \item Exactly $(d/p)^n$
+        \item Strictly less than $(d/p)^n$
+        \item Exactly $nd/p$.
+        \item Strictly less than $d/np$.
     }
-    {2}
-    {
-        \item $0$
-        \item $-1$
-        \item $1$
-        \item Not enough information.
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 6.} { Suppose $f \in \mathbb{F}_p[x_1,\dots,x_n]$ is an
+    $n$-variable polynomial. Carol randomly samples the point $\mathbf{x}
+    \xleftarrow{R} \mathbb{S}$ where $\mathbb{S} \subseteq \mathbb{F}_p^n$ is a
+    set of points $(x_1,\dots,x_n)$ such that $\sum_{i=1}^n x_i=1$ over
+    $\mathbb{F}_p$. According to the Schwartz-Zippel Lemma, what is the tightest
+    upper bound for $\Pr[f(\mathbf{x})=0]$ among specified below?}
+    {1} {
+        \item $\deg f/p^n$
+        \item $\deg f/p^{n-1}$
+        \item $\deg f/p^{n-2}$
+        \item $\deg f/p$
     }
 \end{xexercise}
 

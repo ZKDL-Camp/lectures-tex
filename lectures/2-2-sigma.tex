@@ -192,7 +192,7 @@ Now, let us consider some more examples of Sigma protocols.
 
 \subsection{More Sigma Protocol Examples}
 
-\subsubsection{Okamoto's Protocol for Representations}
+\subsubsection{Okamoto's Protocol for Representations}\label{section:okamoto_protocol}
 
 Again, let $\mathbb{G}$ be a cyclic group of prime order $q$ with a generator $g \in \mathbb{G}$ and let $h \in \mathbb{G}$ an arbitrary group element (for example, it might be yet another group generator). While considering Pedersen Commitments, you already encountered form $g^{\alpha}h^{\beta}$. Now, let us generalize this concept a bit.
 
@@ -389,6 +389,157 @@ Now, we describe the algorithm.
         \item Verifier computes $c_1 \gets c \oplus c_0$ and checks that both verifications $\mathcal{V}_0(a_0,c_0,z_0)$ and $\mathcal{V}_1(a_1,c_1,z_1)$ pass.
     \end{enumerate}
 \end{definition}
+
+\subsection{Okamoto Protocol Sage Implementation}
+
+Now, let us implement the Okamoto Protocol from \Cref{section:okamoto_protocol} in SageMath! We propose to make the proof 
+over the secp256k1 curve, which is widely used in Bitcoin. We define it as follows (we shorten the curve parameters for brevity):
+\begin{lstlisting}[language=Python]
+p = 2**256-2**32-2**9-2**8-2**7-2**6-2**4-1
+Fp = GF(p)
+a = 0
+b = 7
+E = EllipticCurve(Fp, [a, b])
+G = E((55066...29240, 32670...82424))
+
+# Group order
+q = 115792...494337
+Fq = FiniteField(q)
+\end{lstlisting}
+
+Now, recall that the Okamoto protocol is used to prove the knowledge of a
+representation $u=g^{\alpha}h^{\beta}$ of a given $u \in \mathbb{G}$ relative to
+$g$ and $h$. This means that we also need to define the point $h \in \mathbb{G}$.
+Just for simplicity, let us take some random point on the curve:
+\begin{lstlisting}[language=Python]
+random_salt = 14159...44592
+H = random_salt * G
+\end{lstlisting}
+
+\subsubsection{Prover Implementation}
+
+Let us start from the prover's side. Let us first generate a random representation for him:
+\begin{lstlisting}[language=Python]
+alpha = Fq.random_element()
+beta = Fq.random_element()
+u = alpha * G + beta * H # This is the value we want to prove knowledge of
+\end{lstlisting}
+
+Now, the prover needs to generate the random commitment. This is done by choosing
+two random scalars $\alpha_r, \beta_r \xleftarrow{R} \mathbb{Z}_q$ and computing
+$u_r = g^{\alpha_r}h^{\beta_r}$:
+\begin{lstlisting}[language=Python]
+# Next, we compute the commitment
+alpha_r = Fq.random_element()
+beta_r = Fq.random_element()
+u_r = alpha_r * G + beta_r * H
+\end{lstlisting}
+
+Next, we need to compute the challenge. The challenge is computed using 
+the Fiat-Shamir heuristic. We hash the commitment $u_r$ and the public
+parameter $u$ to get the challenge $c$: $c \gets H(u,u_r)$. The only 
+caveat, though, is that we need to implement the hash function 
+$H: \mathbb{G} \times \mathbb{G} \to \mathbb{Z}_q$. For simplicity, let us 
+take the hash function that concatenates the $x$-coordinates of the points
+and hashes the result: $H(u,u_r) = \mathsf{SHA256}(u_x \parallel (u_r)_x)$:
+\begin{lstlisting}[language=Python]
+def compute_hash(u: E, u_r: E) -> Fq:
+    """
+    Given two points u and u_r, compute the hash
+    """
+
+    result = str(u[0])+str(u_r[0]) # Concatenate x values
+    hexdigest = result.encode('utf-8') # Compute the hash
+    return Fq('0x'+sha256(hexdigest).hexdigest()) # Return the result as an element of Fq
+\end{lstlisting}
+
+So now we can compute the challenge $c$:
+\begin{lstlisting}[language=Python]
+# Next, we compute the challenge
+c = compute_hash(u, u_r)
+\end{lstlisting}
+
+Finally, the prover computes the response (as if he received the challenge $c$
+randomly from the verifier). It consists of two values: $\alpha_z \gets \alpha_r
++ \alpha c$ and $\beta_z \gets \beta_r + \beta c$. Finally, the proof is simply
+the tuple $\pi=(u_r,\alpha_z,\beta_z)$. Let us write this down:
+\begin{lstlisting}[language=Python]
+# Finally, we compute the response
+alpha_z = alpha_r + alpha * c
+beta_z = beta_r + beta * c
+
+# The proof is the tuple (u_r, alpha_z, beta_z)
+proof = (u_r, alpha_z, beta_z)
+\end{lstlisting}
+
+The prover is pretty much ready. The prover can publish these three values and anyone 
+can verify their correctness. An example proof can be seen below:
+\begin{center}
+    \begin{tcolorbox}[enhanced,
+        width=0.925\textwidth,
+        title=\textbf{proof.json},
+        coltitle=gray!25!black,
+        attach boxed title to top center={yshift=-2mm,yshifttext=-1mm},
+        boxed title style={size=small,colframe=gray!75!black,
+        colback=purple!30!white,boxrule=1pt},
+        top=-0.35cm,
+        bottom=-0.35cm]
+        \begin{lstlisting}[language=JSON,numbers=none,basicstyle=\ttfamily\scriptsize]
+{
+    "u": {
+        "x": "11050591345070626365101441740
+              82670483149869135024966242
+              0811897099927372480071",
+        "y": "1157074364076179484338
+              713344214935372053569769586171
+              54462107638165337575096741"
+    },
+    "u_r": {
+        "x": "8574306559776637845628844
+              48547110595224508175437242645427
+              65740484898155470860",
+        "y": "523740737975951915508
+              947372920060058211234306708764
+              52163938960831568703982553"
+    },
+    "alpha_z": "431003649207811109284441
+                06669886824502097947434355785
+                088419275337575495885477",
+    "beta_z": "1922706121205495962866045
+               80605512169180433142550168819
+               52138699213252756999901"
+}
+        \end{lstlisting}
+    \end{tcolorbox}
+\end{center}
+
+\subsubsection{Verifier Implementation}
+
+Finally, the verifier code is extremely simple. All the verifier has to do is to
+restore the challenge $c \gets H(u,u_r)$ from $u$ and $u_r$ values, specified in
+proof $\pi$, and then check whether $g^{\alpha_z}h^{\beta_z}=u_ru^c$. Also assume 
+that the verifier can get these parameters by calling the method \texttt{read\_proof}.
+\begin{lstlisting}[language=Python]
+# Read the proof from the file
+(u, u_r, alpha_z, beta_z) = read_proof()
+
+c = compute_hash(u, u_r)
+check = (alpha_z * G + beta_z * H) == u_r + c * u
+
+if check:
+    print('Proof verified successfully!')
+else:
+    print('Proof verification failed!')
+\end{lstlisting}
+
+The proof above passes perfectly.
+
+\subsection*{Acknowledgements}
+
+This lecture was greatly inspired by \href{https://toc.cryptobook.us/}{``A
+Graduate Course in Applied Cryptography''} by Dan Boneh and Victor Shoup, in
+particular the Section 19: ``Identification and Signatures from $\Sigma$
+protocols''.
 
 \subsection{Exercises}
 

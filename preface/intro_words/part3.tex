@@ -1,0 +1,41 @@
+\documentclass[../../lecture-notes-148x210.tex]{subfiles}
+
+\begin{document}
+
+Finally, we consider the last part of the book. This part is dedicated to the
+zero-knowledge proofs, their applications, and the underlying theory. Namely, we
+will cover essentials specified in \Cref{tab:essentialls-3}.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{|c|c|X|}
+        \hline
+        \rowcolor{purple!30}\textbf{Section} & \textbf{Topic} & \textbf{Key Concepts} \\
+        \hline
+        \rowcolor{purple!10}\ref{section:intro-zk} & Introduction to Zero-Knowledge & Proof of Knowledge, 
+        Soundness, Relation and Language, P/NP Complexities, Fiat-Shamir Heuristic  \\
+        \hline
+        \rowcolor{purple!20}\ref{section:sigma} & $\Sigma$-Protocols &
+        Shnorr Signatures, Okamoto Representation Protocol, Generalization \\
+        \hline
+        \rowcolor{purple!10}\ref{section:r1cs} & R1CS & Arithmetical Circuits, Why Rank-1, Matrix Form \\
+        \hline
+        \rowcolor{purple!20}\ref{section:qap-pcp} & QAP & Quadratic Arithmetic Program, Polynomial as Universal Encoders \\
+        \hline
+        \rowcolor{purple!10}\ref{section:groth} & Pairing-based SNARKs & Pinnochio and Groth16 Protocols; why such complicated expressions? \\
+        \hline
+        \rowcolor{purple!20}\ref{section:circom} & Circom & Programming R1CS in Circom, the language of zk-SNARKs \\
+        \hline
+        \rowcolor{purple!10}\ref{section:plonk} & PlonK & FFT, Blinding, PlonKish Arithmetization \\
+        \hline
+        \rowcolor{purple!20}\ref{section:stark} & STARK & FRI, Hash-based proving system, Example \\
+    \end{tabularx}
+    \caption{Topics covered in Part III}
+    \label{tab:essentialls-3}
+\end{table}
+
+While currently book features only $\Sigma$-proofs, zk-SNARKs, and STARKs, we
+plan to extend it with more topics in the future (such as Bulletproofs). 
+
+
+\end{document}
