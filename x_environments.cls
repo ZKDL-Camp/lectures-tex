@@ -4,16 +4,30 @@
 % ------ X env ------ %
 %=====================%
 
+% There may be exceptions to where to use what
+
+% Last equation in block (in lemma, theorem, etc)
 \newenvironment{xequation}
 {
-  \vspace{-2mm}
+  \vspace{-2.5mm}
   \begin{equation*}
 }
 {
-%   \vspace{-1mm}
   \end{equation*}
 }
 
+% Not last equation in block (there is text after)
+\newenvironment{xequation*}
+{
+  \vspace{-1.75mm}
+  \begin{equation*}
+}
+{
+  \vspace{-2.25mm}
+  \end{equation*}
+}
+
+% Last multicols in block (lemma, theorem, etc)
 \newenvironment{xmulticols}[1]
 {
   \vspace{-2.5mm}
@@ -24,7 +38,7 @@
   \vspace{-2.5mm}
 } 
 
-% Use when 
+% Not last multicols in block (there is text after)
 \newenvironment{xmulticols*}[1]
 {
   \vspace{-2.5mm}

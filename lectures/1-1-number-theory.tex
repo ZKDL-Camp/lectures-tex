@@ -129,14 +129,14 @@ numbers. This is where the concept of the \textbf{greatest common divisor} (or
 \begin{example}
     Just as an example, let us find the $\gcd(a, b)$ for a few pairs of integers.
     
-    \begin{multicols}{2}
+    \begin{xmulticols}{2}
         \begin{enumerate}
             \item $\gcd(42, 28) = 14$
             \item $\gcd(36, 14) = 2$
             \item $\gcd(13, 17) = 1$
             \item $\gcd(13, 18) = 1$
         \end{enumerate}
-    \end{multicols}
+    \end{xmulticols}
 \end{example}
 
 \begin{definition}
@@ -212,13 +212,13 @@ need $O(\log\max\{a, b\})$ time.
 \begin{example}
     Let us find the $\gcd(535, 230)$ manually. We will use the Euclidean algorithm for this purpose.
     \hfill
-    \begin{xequation}
+    \begin{xequation*}
         \begin{aligned}
             535 &= 2 \cdot 230 + 75 \\
             230 &= 3 \cdot 75 + 5 \\
             75 &= 15 \cdot 5 + 0 \\            
         \end{aligned}
-    \end{xequation}
+    \end{xequation*}
     Therefore, $\gcd(535, 230) = 5$.
 \end{example}
 
@@ -241,14 +241,14 @@ While the greatest common divisor (GCD) focuses on finding the largest shared fa
 \begin{example}
     Let us again find, but now $\lcm$ for few pairs of numbers.
     \hfill
-    \begin{multicols}{2}
+    \begin{xmulticols}{2}
         \begin{enumerate}
             \item $\lcm(12, 4) = 12$
             \item $\lcm(13, 17) = 221$
             \item $\lcm(13, 18) = 234$
             \item $\lcm(42, 28) = 84$
         \end{enumerate}
-    \end{multicols}
+    \end{xmulticols}
 \end{example}
 
 \begin{lemma} [Least Common Multiple Properties]
@@ -276,10 +276,12 @@ The reasonable question is how to generalize the $\gcd$ and $\lcm$ operations to
 For that reason, we provide the following definition.
 \begin{definition}[GCD and LCM for multiple arguments]
     We define the \textbf{greatest common divisor} $\gcd(a_1, a_2, \dots, a_n)$ and the \textbf{least common multiple} $\lcm(a_1, a_2, \dots, a_n)$ for any set of integers $a_1, a_2, \dots, a_n \in \mathbb{Z}$ as follows:
-    \begin{align*}
+    \begin{xequation}
+        \begin{aligned}
         \gcd(a_1, a_2, \dots, a_n) &= \max\{ d \in \mathbb{N}: d \mid a_1, d \mid a_2, \dots, d \mid a_n \}. \\
         \lcm(a_1, a_2, \dots, a_n) &= \min\{ m \in \mathbb{N}: a_1 \mid m, a_2 \mid m, \dots, a_n \mid m \}.
-    \end{align*}
+        \end{aligned}
+    \end{xequation}
 \end{definition}
 
 \begin{theorem}[Computational Properties Of GCD and LCM For Multiple Arguments.]
@@ -386,6 +388,7 @@ it works.
     \end{minipage}
     \begin{minipage}{0.75\textwidth}
         \resizebox{0.8\textwidth}{!}{
+            \renewcommand{\arraystretch}{1.2}
             \begin{tabular}{|c|c|c|c|c|c|c|c|}
                 \hline
                 
@@ -410,10 +413,12 @@ it works.
     \hfill
     
     Here, each corresponding cell is calculated with the following formula: 
-    \begin{align*}
-        u_{i-1} - q_i u_i &= u_{i+1} \\
-        v_{i-1} - q_i v_i &= v_{i+1} 
-    \end{align*}
+    \begin{xequation}
+        \begin{aligned}
+            u_{i-1} - q_i u_i &= u_{i+1} \\
+            v_{i-1} - q_i v_i &= v_{i+1} 
+        \end{aligned}
+    \end{xequation}
 \end{example}
 
 \begin{exercise}
@@ -523,7 +528,7 @@ calculations involving divisibility.
 \begin{example}
     To see this fact in action, let us decompose an integer $n = 123456$ into a product of prime numbers.
     \begin{xequation}
-        123456 = 2^6 \cdot 3^1 \cdot 643^1.
+        123456 = 2^6 \cdot 3^1 \cdot 643^1
     \end{xequation}
 \end{example}
 
@@ -547,9 +552,9 @@ Theorem of Arithmetic.
 
 \begin{theorem}[Fundamental theorem of arithmetic]\label{th:fundamental_arithmetic}
     Any integer $n>1$ can be decomposed in the unique way into a product of prime numbers:
-    \begin{xequation}
+    \begin{xequation*}
         n = p_1^{\alpha_1}p_2^{\alpha_2}\cdots p_t^{\alpha_t} = \prod_{j=1}^t p_j^{\alpha_j},
-    \end{xequation}
+    \end{xequation*}
     where $p_1,\dots,p_t$ are prime numbers and $\alpha_1,\dots,\alpha_t \in \mathbb{N}$.
 \end{theorem}
 
@@ -566,10 +571,12 @@ $\alpha_1=1$, which satisfies the representation. Therefore, $n_0$ must be
 composite, which means $\exists a, b \in \mathbb{N}, 1 < a, b < n_0$ such that
 $n = ab$. Since $n_0$ is the smallest non-decomposable number and $a, b < n_0$,
 then $a$ and $b$ can be represented as 
-\begin{align*}
-    a &= p_{1}^{\alpha_{1}} \dots p_{t}^{\alpha_{t}} \\
-    b &= q_{1}^{\beta_{1}} \dots q_{k}^{\beta_{k}}.
-\end{align*}
+\begin{equation*}
+    \begin{aligned}
+        a &= p_{1}^{\alpha_{1}} \dots p_{t}^{\alpha_{t}} \\
+        b &= q_{1}^{\beta_{1}} \dots q_{k}^{\beta_{k}}.
+    \end{aligned}
+\end{equation*}
 Therefore, $n_0 = ab=p_{1}^{\alpha_{1}} \dots p_{t}^{\alpha_{t}}
 q_{1}^{\beta_{1}} \dots q_{k}^{\beta_{k}}$. Thus, the contradiction, as $n_0$ is
 represented as the product of primes. $\blacktriangleleft$  
@@ -668,7 +675,7 @@ Consider the following example that shows why this requirement is mandatory.
     In particular, the example above shows why the division operation is fundamentally 
     different from the regular real/rational numbers. We will see that, in fact, the 
     arithmetic modulo $n$ is not always what mathematicians call a \textbf{field}. 
-    You will see more details in \Cref{section:field_extensions}.
+    You will see more details in \Cref{section:finite-fields}.
 \end{remark}
 
 Now, in no particular order, we enumerate the key properties of the congruence relation modulo $n$, 
@@ -680,9 +687,9 @@ but, as mentioned earlier, we will not delve into the details of the proofs in t
     \begin{enumerate}
         \item For any $k \neq 0$ and $a \equiv b \pmod{n}$, we have $ak \equiv bk \pmod{nk}$
         \item If $a \equiv b \pmod{n}$, then we can divide both sides by $\gcd(a, b, n)$:
-        \begin{xequation}
+        \begin{xequation*}
             a/d \equiv b/d \; (\text{mod}\; n/d) \; \text{with} \; d = \gcd(a,b,n)
-        \end{xequation}
+        \end{xequation*}
         \item If $d \mid n$ and $a \equiv b \, (\text{mod } n)$, then $a \equiv b \, (\text{mod } d)$
         \item If $a \equiv b \pmod{n_i}$ for $i \in [k]$, then $a \equiv b \pmod{\lcm(n_0,\dots,n_{k-1})}$
         \item If $a \equiv b \, (\text{mod } n)$, then $\gcd(a, n) = \gcd(b, n)$
@@ -701,12 +708,12 @@ notation $n\mathbb{Z}$ to denote the set of all multiples of $n$.
 \begin{example}
     For example, the congruence classes $[0]_2, [1]_2$ modulo $2$ are
     respectively even and odd numbers:
-    \begin{xequation}
+    \begin{xequation*}
         \begin{aligned}
         &[0]_2 = \{0, \pm 2, \pm 4, \pm 6, \pm 8, \ldots \}, \\
         &[1]_2 = \{1, \pm 3, \pm 5, \pm 7, \pm 9, \ldots \}.
         \end{aligned}
-    \end{xequation}
+    \end{xequation*}
     In turn, the congruence class $[3]_5$ modulo $5$ is the set of numbers that
     give the remainder $3$ when divided by $5$:
     \begin{xequation}
@@ -747,6 +754,8 @@ The aforementioned lemmas and definitions describe the properties of addition, s
 \end{remark}
 
 The question then is when does the number have the inverse? Consider the following theorem.
+
+\vspace{-1.5mm}
 
 \begin{theorem}\label{th:inverse_existence}
     The modular multiplicative inverse $a^{-1} \pmod{n}$ exists if and only if $\gcd(a, n) = 1$.
@@ -905,7 +914,6 @@ in areas such as modular arithmetic, cryptography, and algorithmic number theory
         \begin{cases}
             x \equiv x_1 \pmod{n_1} \\
             x \equiv x_2 \pmod{n_2} \\
-            x \equiv x_3 \pmod{n_3} \\
             \cdots \\
             x \equiv x_t \pmod{n_t} \\
         \end{cases}
@@ -918,15 +926,16 @@ In fact, we can easily find such a solution. Let $N_i = N/n_i$. Since
 $n_1,\dots,n_t$ are pairwise coprimes, we have $\gcd(N_i, n_i) = 1$ for each
 $i$. By the Extended Euclidean Algorithm, there exists an integer $a_i$ such
 that $a_iN_i \equiv 1 \pmod{n_i}$. Thus, the solution is given by 
-\begin{xequation}
+\begin{equation*}
     x_0 = a_1N_1x_1 + a_2N_2x_2 + \cdots + a_tN_tx_t \pmod{N}.
-\end{xequation}
+\end{equation*}
 This expression provides the unique solution modulo $N$, where $N = n_1 n_2 \cdots n_t$. 
 Besides, using this idea, we can write an efficient algorithm to compute $x_0$ iteratively.
 
 \begin{example}
     Let us solve the following system of congruences.
-    \begin{xequation}    
+    
+    \begin{xequation}
         \begin{cases}
             x \equiv 1 \pmod{5} \\
             x \equiv 2 \pmod{7} \\
@@ -934,16 +943,15 @@ Besides, using this idea, we can write an efficient algorithm to compute $x_0$ i
         \end{cases}
     \end{xequation}
 
-    First of all, we find $N = 5 \times 7 \times 11 = 385$, then we compute $N_i$. \\
-    \vspace{-7mm}
-    \begin{multicols*}{2}    
+    First of all, we find $N = 5 \times 7 \times 11 = 385$, then we compute $N_i$.
+    
+    \begin{xmulticols}{2}
         \begin{itemize}
             \item $N_1 = 7 \times 11$ = 77
             \item $N_2 = 5 \times 11$ = 55
             \item $N_3 = 5 \times 7$ = 35
         \end{itemize}
-    \end{multicols*}
-    \vspace{-3mm}
+    \end{xmulticols}
 
     To simplify the calculations, we give inverses for granted: $a_1 = 3$, $a_2
     = 6$, $a_3 = 6$. The solution is then given by $x_0 \equiv 3 \times 77 \times 1 + 6
@@ -999,9 +1007,9 @@ $\blacktriangleleft$
 
 So we know, $a\mathbb{Z}_n^{\times} = \mathbb{Z}_n^{\times}$, how do we proceed? Notice, from the 
 set equality follows the equality of the products of all elements. Let us write this down:
-\begin{xequation}
+\begin{equation*}
     \prod_{i = 1}^{\varphi(n)} x_i \equiv \prod_{i = 1}^{\varphi(n)} a x_i \pmod{n} \implies \prod_{i = 1}^{\varphi(n)} x_i \equiv a^{\varphi(n)} \prod_{i = 1}^{\varphi(n)} x_i \pmod{n}
-\end{xequation}    
+\end{equation*}
     
 Since all $x_i$ are coprime to $n$ by definition, we can cancel out the product
 of all $x_i$ from both sides, leading to the conclusion of Euler's theorem.
@@ -1018,7 +1026,7 @@ $\blacktriangleleft$
             29^{202} \pmod{13}  &\equiv \\
                                 &\equiv 29^{12 \times 16 + 10} \pmod{13} \\
                                 &\equiv \cancel{(29^{12})^{16}} 29^{10} \pmod{13} \\
-                                &\equiv 29^10 \pmod{13} \\
+                                &\equiv 29^{10} \pmod{13} \\
                                 &\equiv 3^{10} \pmod{13} \\
                                 &\equiv 59049 \pmod{13} \\
                                 &\equiv 3 \pmod{13}.
@@ -1063,25 +1071,32 @@ print(inverse(8, 17)) # Output: 15
 
 \subsection{Exercises}
 
+\begin{xexercise}
+    {Exercise 1.}
+    {Which of the following statements is \textbf{true}?}
+    {1}
+    {
+        \item Prime factorization of $30$ is $30=5 \cdot 6$.
+        \item Number $2^{10}+1$ is prime.
+        \item Suppose $n \mid m$. Then $m^2/n$ might not be an integer for some $n,m$.
+        \item Any natural number $n$ equals to the product of its divisors.
+        \item Any prime number $p$ equals to the product of its divisors.
+    }
+\end{xexercise}
 
-\textbf{Exercise 1.} Which of the following statements is \textbf{true}?
+\begin{xexercise}
+    {Exercise 2.}
+    {Which of the following statements is \textbf{false}?}
+    {1}
+    {
+        \item $\gcd(p,q)=1$ for any two prime numbers $p$ and $q$.
+        \item $\lcm(p,q)=pq$ for any two primes $p$ and $q$.
+        \item $\gcd(n,m) = \gcd(m,n)$ for any integers $n,m$.
+        \item $\lcm(n+1,n-1) = n^2-1$ for any integer $n$.
+    }
+\end{xexercise}
 
-\begin{enumerate}[(A)]
-    \item Prime factorization of $30$ is $30=5 \cdot 6$.
-    \item Number $2^{10}+1$ is prime.
-    \item Suppose $n \mid m$. Then $m^2/n$ might not be an integer for some $n,m$.
-    \item Any natural number $n$ equals to the product of its divisors.
-    \item Any prime number $p$ equals to the product of its divisors.
-\end{enumerate}
-
-\textbf{Exercise 2.} Which of the following statements is \textbf{false}?
-
-\begin{enumerate}[(A)]
-    \item $\gcd(p,q)=1$ for any two prime numbers $p$ and $q$.
-    \item $\lcm(p,q)=pq$ for any two primes $p$ and $q$.
-    \item $\gcd(n,m) = \gcd(m,n)$ for any integers $n,m$.
-    \item $\lcm(n+1,n-1) = n^2-1$ for any integer $n$.
-\end{enumerate}
+\newpage
 
 \begin{xexercise}
     {Exercise 3.}
@@ -1107,7 +1122,6 @@ print(inverse(8, 17)) # Output: 15
     }
 \end{xexercise}
 
-% todo add answer
 \begin{xexercise}
     {Exercise 5.}
     {What sum of all integers $n$ satisfying $(n + 1) \mid (n^2 + 1)$?}
@@ -1144,7 +1158,6 @@ print(inverse(8, 17)) # Output: 15
     $\alpha_1=2,\alpha_2=1$ and therefore $\tau(12)=(2+1)\cdot (1+1)=6$. 
 \end{tcolorbox}
 
-% todo add answer
 \begin{xexercise}
     {Exercise 7.}
     {Suppose that $p$ is an arbitrary prime. What is $\tau(p^{100})$? }
@@ -1157,7 +1170,6 @@ print(inverse(8, 17)) # Output: 15
     }    
 \end{xexercise}
 
-% todo add answer
 \begin{xexercise}
     {Exercise 8.}
     {Suppose for some integer $n$ we have $\tau(n)=7$. What is $\tau(n^2)$? \vspace*{-4mm}}
