@@ -379,9 +379,9 @@ Finally, let us summarize what we have observed so far.
 
 \begin{definition}
     The \textbf{homogenous projective form of the elliptic curve} $E_{\mathbb{P}}(\overline{\mathbb{F}}_p)$ is defined as the set of all points $(X:Y:Z) \in \mathbb{P}^2(\overline{\mathbb{F}}_p)$ in the projective space that satisfy the equation
-    \begin{equation*}
+    \begin{xequation*}
         E_{\mathbb{P}}(\overline{\mathbb{F}}_p): Y^2Z = X^3 + aXZ^2 + bZ^3, \;\; a,b \in \overline{\mathbb{F}}_p,
-    \end{equation*}
+    \end{xequation*}
     where the point at infinity is encoded as $\mathcal{O} = (0:1:0)$.
 \end{definition}
 
@@ -398,23 +398,26 @@ Finally, let us summarize what we have observed so far.
 
 \subsubsection{General Projective Coordinates}
 Hold on, but why did we use the term \textit{homogenous}? The reason why is because we defined equivalence as follows: $(X:Y:Z) \sim (\lambda X: \lambda Y: \lambda Z)$ for some $\lambda \in \overline{\mathbb{K}}$, called \textbf{homogenous coordinates}. However, this is not the only way to define equivalence. Consider a more general form of equivalence relation:
-\begin{equation*}
+\begin{xequation*}
     (X:Y:Z) \sim (X':Y':Z') \;\; \text{iff} \;\; \exists \lambda \in \overline{\mathbb{K}}: (X,Y,Z) = (\lambda^n X', \lambda^m Y', \lambda Z')
-\end{equation*}
+\end{xequation*}
 
 In this case, to come back to the affine form, we need to use the map $\phi: (X:Y:Z) \mapsto (X/Z^n, Y/Z^m)$. 
 \begin{example}
     The case $n=2,m=3$ is called the \textbf{Jacobian Projective Coordinates}. An Elliptic Curve equation might be then rewritten as: 
-    \begin{equation*}
+    \begin{xequation*}
         Y^2 = X^3 + aXZ^4 + bZ^6
-    \end{equation*}
+    \end{xequation*}
     The reason why we might want to use such coordinates is that they can be more efficient in some operations, such as point addition. However, we will not delve into this topic much further.
 \end{example}
 
 \begin{example}
     Consider the BN254 curve $y^2 = x^3 + 3$ over reals $\mathbb{R}$, again. Its \textit{Jacobian projective form} is given by the equation $Y^2 = X^3 + 3Z^6$, which gives a surface, depicted below.
+    
+    \vspace{-5mm}
+
     \begin{center}
-        \includegraphics[trim={275 140 225 100}, width=0.35\linewidth, clip]{images/lecture_4/projective_ec_jacobian.pdf}
+        \includegraphics[trim={275 140 225 100}, width=0.3\linewidth, clip]{images/lecture_4/projective_ec_jacobian.pdf}
         
         {\textbf{Illustration:} BN254 Curve Elliptic Curve in Jacobian Projective Form over $\mathbb{R}$. In \textcolor{black!80}{\textbf{gray}} is the surface, while \textcolor{red}{\textbf{red}} points are the points on the affine curve (lying on the plane $\pi: z=1$).}
     \end{center}
@@ -682,10 +685,7 @@ This scheme is also quite famous for its aggregation properties, which we are no
     Now, if this is $1$, then $x_1^2+x_1x_2=x_2$, which was exactly what we wanted to prove.
 \end{example}
 
-\newpage
-
 \subsection{Exercises}
-
 
 \textbf{Exercise 1.} Suppose that elliptic curve is defined as $E/\mathbb{F}_{7}: y^2=x^3+b$. Suppose $(2,3)$ lies on the curve. What is the value of $b$?
 
@@ -759,6 +759,8 @@ This scheme is also quite famous for its aggregation properties, which we are no
     \item To reduce the number of field multiplications when performing scalar multiplication.
     \item To avoid making too many field inversions in complicated algorithms involving elliptic curves.
 \end{enumerate}
+
+\newpage
 
 \textbf{Exercise 9.} Suppose $k=19$ is a scalar and we are calculating $[k]P$ using the double-and-add algorithm. How many elliptic curve point addition operations will be performed?
 \begin{multicols}{5}
