@@ -1,0 +1,87 @@
+\begin{center}
+    {\Large\sffamily \emph{Distributed Lab}} \\ \vspace{30mm}
+
+    \colorlet{coverBackground}{oc-indigo-1}
+    \colorlet{coverBoxBackground}{oc-indigo-7}
+
+    \begin{tcolorbox}[
+        standard jigsaw,
+        colframe=coverBoxBackground, 
+        colback=coverBackground,
+        width=\textwidth, 
+        halign=center, 
+        valign=center,
+        arc=1em,
+        shadow={1mm}{-2mm}{0mm}{black!30!white},
+        enhanced,
+        boxrule=2pt,
+        rightrule=3pt,
+        bottomrule=3pt]
+
+        {\huge\sffamily\bfseries ZKDL Lecture Notes} \\ \vspace{5mm}
+        {Version 0.3}
+    \end{tcolorbox}
+
+    \vspace{10mm}
+
+    % Define circle styles and colors
+\colorlet{circle edge}{gray!50!black}
+\colorlet{circle area}{gray!20}
+\colorlet{gate1 edge}{oc-indigo-7}
+\colorlet{gate1 area}{oc-indigo-1}
+\colorlet{gate2 edge}{orange!50!black}
+\colorlet{gate2 area}{orange!20}
+\colorlet{gate3 edge}{blue!50!black}
+\colorlet{gate3 area}{blue!20}
+
+\tikzset{
+    var/.style={circle, draw=circle edge, fill=circle area, very thick, minimum size=1cm, text centered},
+    gate1/.style={circle, draw=gate1 edge, fill=gate1 area, ultra thick, minimum size=1cm, text centered},
+    gate2/.style={circle, draw=gate2 edge, fill=gate2 area, ultra thick, minimum size=1cm, text centered},
+    gate3/.style={circle, draw=gate3 edge, fill=gate3 area, ultra thick, minimum size=1cm, text centered},
+    arrow/.style={-Stealth, ultra thick}
+}
+    % Preview image
+    \begin{figure}[h!]
+        \centering
+        \scalebox{1.0}{
+        \begin{tikzpicture}
+            % Nodes
+            \node[var] (x1) at (0, 1) {$x_1$};
+            \node[gate2] (x1_x1) at (2, 1) {$\times$};
+            \node[gate2] (x1_x1_x1) at (4, 1) {$\times$};
+    
+            \node[var] (x2) at (0, -1) {$x_2$};
+            \node[gate2] (x2_x2) at (2, -1) {$\times$};
+    
+            \node[gate1] (plus) at (5.0, -0.5) {$+$};
+    
+            % x1**3
+            \draw[arrow,gray] (x1) to [bend left=45] (x1_x1);
+            \draw[arrow,gray] (x1) to [bend right=15] (x1_x1);
+            \draw[arrow,gray] (x1_x1) -- (x1_x1_x1);
+            \draw[arrow,gray] (x1) to [bend right=45] (x1_x1_x1);
+    
+            % x2**2
+            \draw[arrow,gray] (x2) to [bend left=30] (x2_x2);
+            \draw[arrow,gray] (x2) to [bend right=30] (x2_x2);
+    
+            % Summation
+            \draw[arrow,gray] (x1_x1_x1) -- (plus);
+            \draw[arrow,gray] (x2_x2) -- (plus);
+    
+            % Result
+            \node[var] (q) at (7.0, -0.5) {$Q$};
+            \draw[arrow,gray!50!black] (plus) -- (q);
+        \end{tikzpicture}}
+    \end{figure}
+\end{center}
+
+\vfill
+
+\begin{center}
+    {Ukraine} \\ \vspace{2mm}
+    {\sffamily \the\year}
+\end{center}
+
+\thispagestyle{empty}
