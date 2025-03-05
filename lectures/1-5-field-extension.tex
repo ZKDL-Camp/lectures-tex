@@ -11,9 +11,9 @@ extending $\mathbb{F}_p$ to, in a sense, the analogous of complex numbers.
 From school and, possibly, university, you might remember how complex numbers $\mathbb{C}$ are constructed. You take two real numbers, say, $x,y \in \mathbb{R}$, introduce a new
 symbol $i$ satisfying $i^2 = -1$, and define the complex number as $z = x + iy$. In certain cases, one might encounter a bit more rigorous and abstract definition of complex numbers as
 the set of pairs $(x,y) \in \mathbb{R}^2$ where addition in naturally defined as $(x_1,y_1)+(x_2,y_2)=(x_1+x_2,y_1+y_2)$, and the multiplication is:
-\begin{equation*}
+\begin{xequation*}
     (x_1,y_1) \cdot (x_2,y_2) = (x_1x_2-y_1y_2,x_1y_2+x_2y_1)\footnote{Notice that $(x_1+iy_1)(x_2+iy_2) = x_1x_2+iy_2x_1+iy_1x_2+i^2y_1y_2 = (x_1x_2-y_1y_2) + (x_1y_2+x_2y_1)i$.}.
-\end{equation*}
+\end{xequation*}
 
 In spite of what interpretation you have seen, the complex number is just a tuple of two real numbers that satisfy a bit different rules of multiplication (since addition is typically defined in the same way). What is even more important to us, is that $\mathbb{C}$ is our first example of the so-called \textbf{field extension} of $\mathbb{R}$.
 
@@ -26,31 +26,31 @@ Despite just a simplicity of the definition, the field extensions are a very pow
 
 \begin{example}
     Denote by $\mathbb{Q}(\sqrt{2}) = \{x + y\sqrt{2}: x,y \in \mathbb{Q}\}$. This is a field extension of $\mathbb{Q}$. It is obvious that $\mathbb{Q} \subset \mathbb{Q}(\sqrt{2})$, but why is $\mathbb{Q}(\sqrt{2})$ a field? Addition and multiplication operations are obviously closed:
-    \begin{equation*}
+    \begin{xequation*}
         \begin{aligned}
             (x_1+y_1\sqrt{2}) + (x_2+y_2\sqrt{2}) = (x_1+x_2) + (y_1+y_2)\sqrt{2},\\
             (x_1+y_1\sqrt{2}) \cdot (x_2+y_2\sqrt{2}) = (x_1x_2+2y_1y_2) + (x_1y_2+x_2y_1)\sqrt{2}.
         \end{aligned}
-    \end{equation*}
+    \end{xequation*}
     But what about the inverse element? Well, here is the trick:
-    \begin{equation*}
+    \begin{xequation*}
         \begin{aligned}
             &\frac{1}{x+y\sqrt{2}} = \frac{x-y\sqrt{2}}{(x+y\sqrt{2})(x-y\sqrt{2})} = \frac{x-y\sqrt{2}}{x^2-2y^2} = \\
             & = \frac{x}{x^2-2y^2} - \frac{y}{x^2-2y^2}\sqrt{2} \in \mathbb{Q}(\sqrt{2}).            
         \end{aligned}
-    \end{equation*}
+    \end{xequation*}
 \end{example}
 
 \begin{example}
     Consider $\mathbb{Q}(\sqrt{2}, i) = \{a+bi: a,b \in \mathbb{Q}(\sqrt{2})\}$ where $i^2=-1$. This is a field extension of $\mathbb{Q}(\sqrt{2})$ and, consequently, of $\mathbb{Q}$. The representation of the element is:
-    \begin{equation*}
+    \begin{xequation*}
         (a+b\sqrt{2}) + (c+d\sqrt{2})i = a + b\sqrt{2} + ci + d\sqrt{2}i
-    \end{equation*}
+    \end{xequation*}
 
     Showing that this is a field is a bit more tedious, but still straightforward. Suppose we take $\alpha+\beta i \in \mathbb{Q}(\sqrt{2}, i)$ with $\alpha,\beta \in \mathbb{Q}(\sqrt{2})$. Then:
-    \begin{equation*}
+    \begin{xequation*}
         \frac{1}{\alpha+\beta i} = \frac{\alpha-\beta i}{\alpha^2+\beta^2} = \frac{\alpha}{\alpha^2+\beta^2} - \frac{\beta}{\alpha^2+\beta^2}i
-    \end{equation*}
+    \end{xequation*}
 
     Since $\mathbb{Q}(\sqrt{2})$ is a field, both $\frac{\alpha}{\alpha^2+\beta^2}$ and $\frac{\beta}{\alpha^2+\beta^2}$ are in $\mathbb{Q}(\sqrt{2})$, and, consequently, $\mathbb{Q}(\sqrt{2}, i)$ is a field as well.
 \end{example}
@@ -73,28 +73,30 @@ Now, could we have picked another polynomial, say, $q(x) = x^2+4$? Sure! As long
 
 \begin{example}
     Suppose $\beta$ is the root of $q(x):=x^2+4$. Then we could have defined complex numbers as a set of $x+y\beta$ for $x,y \in \mathbb{R}$. In this case, multiplication, for example, would be defined a bit differently than in the case of $\mathbb{C}$:
-    \begin{equation*}
+    \begin{xequation}
         (x_1+y_1\beta) \cdot (x_2+y_2\beta) = (x_1x_2-4y_1y_2) + (x_1y_2+x_2y_1)\beta.
-    \end{equation*}
+    \end{xequation}
 \end{example}
 
 We shifted to the polynomial consideration for a reason: now, instead of considering the complex number $\mathbb{C}$ as ``some'' tuple of real numbers $(c_0,c_1)$, now let us view it as a polynomial\footnote{Here, we use $X$ to represent the polynomial variable to avoid confusion with the notation $x+yi$.} $c_0+c_1X$ modulo polynomial $X^2+1$. 
 
 \begin{example}
-Indeed, take, for example, $p_1(X) := 1+2X$ and $p_2(X) := 2+3X$. Addition is performed as we are used to:
-\begin{equation*}
-    p_1 + p_2 = (1+2X) + (2+3X) = 3+5X,
-\end{equation*}
-but multiplication is a bit different:
-\begin{equation*}
-    p_1p_2 = (1+2X) \cdot (2+3X) = 2+3X+4X+6X^2 = 6X^2+7X+2.
-\end{equation*}
+    Indeed, take, for example, $p_1(X) := 1+2X$ and $p_2(X) := 2+3X$. Addition is performed as we are used to:
+    \begin{xequation*}
+        p_1 + p_2 = (1+2X) + (2+3X) = 3+5X,
+    \end{xequation*}
 
-Well, and what next? Recall that we are doing arithmetic modulo $X^2+1$ and for that reason, we divide the polynomial by $X^2+1$:
-\begin{equation*}
-    6X^2+7X+2 = 6(X^2+1) + 7X - 4 \implies (6X^2+7X+2) \,\text{mod}\, (X^2+1) = 7X-4,
-\end{equation*}
-meaning that $p_1p_2 = 7X-4$. Oh wow, hold on! Let us come back to our regular complex number representation and multiply $(1+2i)(2+3i)$. We get $2+3i+4i+6i^2=-4+7i$. That is exactly the same result if we change $X$ to $i$ above! In fact, what we have observed is the fact that our polynomial quotient ring $\mathbb{R}[X]/(X^2+1)$ is isomorphic to $\mathbb{C}$.
+    but multiplication is a bit different:
+    \begin{xequation*}
+        p_1p_2 = (1+2X) \cdot (2+3X) = 2 + 3X + 4X + 6X^2 = 6X^2 +7X + 2.
+    \end{xequation*}
+
+    Well, and what next? Recall that we are doing arithmetic modulo $X^2+1$ and for that reason, we divide the polynomial by $X^2+1$:
+    \begin{xequation*}
+        6X^2+7X+2 = 6(X^2+1) + 7X - 4 \implies (6X^2+7X+2) \,\text{mod}\, (X^2+1) = 7X-4,
+    \end{xequation*}
+
+    meaning that $p_1p_2 = 7X-4$. Oh wow, hold on! Let us come back to our regular complex number representation and multiply $(1+2i)(2+3i)$. We get $2+3i+4i+6i^2=-4+7i$. That is exactly the same result if we change $X$ to $i$ above! In fact, what we have observed is the fact that our polynomial quotient ring $\mathbb{R}[X]/(X^2+1)$ is isomorphic to $\mathbb{C}$.
 \end{example}
 
 So, let us generalize this observation to any field $\mathbb{F}$ and any irreducible polynomial $\mu(x) \in \mathbb{F}[x]$.
@@ -115,12 +117,12 @@ So, let us generalize this observation to any field $\mathbb{F}$ and any irreduc
 
 \begin{remark}
     Although we have not defined the isomorphism between two rings/fields, it is defined similarly to group isomorphism. Suppose we have fields $(\mathbb{F},+,\times)$ and $(\mathbb{K}, \oplus, \otimes)$. Bijective function $\phi: \mathbb{F} \to \mathbb{K}$ is called an isomorphism if it preserves additive and multiplicative structures, that is for all $a,b \in \mathbb{F}$:
-    \begin{equation*}
+    \begin{xequation}
         \begin{aligned}
             \phi(a+b) = \phi(a) \oplus \phi(b),\\
             \phi(a\times b) = \phi(a) \otimes \phi(b).
         \end{aligned}
-    \end{equation*}
+    \end{xequation}
 \end{remark}
 
 This theorem (aka definition) corresponds to viewing complex numbers as a polynomial quotient ring $\mathbb{R}[X]/(X^2+1)$. But, we can give a theorem (aka definition) for our classical representation via magical root $i$ of $x^2+1$.
@@ -190,11 +192,11 @@ The order of $x \in \mathbb{F}_p^{\times}$ is the smallest positive integer $r$ 
 
 \begin{example}
     $\omega=3$ is the primitive root of $\mathbb{F}_7$. Indeed,
-    \begin{equation*}
+    \begin{xequation*}
         \begin{aligned}
             3^1=3, 3^2=2, 3^3=6, 3^4=4, 3^5=5, 3^6=1.
         \end{aligned}
-    \end{equation*}
+    \end{xequation*}
 
     So clearly $\langle \omega \rangle = 7$.
 \end{example}
@@ -238,9 +240,9 @@ Since we are doing cryptography and not mathematics, we are interested in the al
 \end{theorem}
 
 \textbf{Proof.} Suppose $f_1,f_2,\dots,f_n \in \mathbb{F}$ are all elements of $\mathbb{F}$. Consider the following polynomial:
-\begin{equation*}
+\begin{xequation*}
     p(x) = \prod_{i=1}^n (x-f_i)+1 = (x-f_1)(x-f_2)\cdots(x-f_n)+1.
-\end{equation*}
+\end{xequation*}
 
 Clearly, $p(x)$ is a non-constant polynomial and has no roots in $\mathbb{F}$, since for any $f \in \mathbb{F}$, one has $p(f)=1$. $\blacksquare$
 
@@ -249,17 +251,58 @@ But what form does the $\overline{\mathbb{F}}_{p}$ have? Well, it is a union of 
     \overline{\mathbb{F}}_{p} = \bigcup_{k \in \mathbb{N}} \mathbb{F}_{p^k}.
 \end{equation*} 
 
+\vspace{-4mm}
+
 \begin{remark}
     But this definition is super counter-intuitive! So here how we usually interpret it. Suppose I tell you that polynomial $q(x)$ has a root in $\overline{\mathbb{F}}_p$. What that means is that there exists some extension $\mathbb{F}_{p^m}$ such that for some $\alpha \in \mathbb{F}_{p^m}$, $q(\alpha)=0$. We do not know how large this $m$ is, but we know that it exists. For that reason, $\overline{\mathbb{F}}_p$ is defined as an infinite union of all possible field extensions.
 \end{remark}
 
 \subsection{Exercises}
 
-\begin{tcolorbox}[colback=blue!5!white,fonttitle=\bfseries,colframe=blue!80!white,title=Exercises 4-9. Tower of Extensions]
+% \subsection*{Warmup (Oleksandr in search of perfect field extension)}
+\begin{xexercise}
+    {Exercise 1.}
+    {Oleksandr decided to build $\mathbb{F}_{49}$ as $\mathbb{F}_7[i]/(i^2+1)$. Compute $(3+i)(4+i)$. }
+    {5}
+    {
+        \item $6+i$.
+        \item $6$.
+        \item $4+i$.
+        \item $4$.
+        \item $2+4i$.
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 2.}
+    {Oleksandr came up with yet another extension $\mathbb{F}_{p^2} = \mathbb{F}_p[i]/(i^2+2)$. He asked interns to calculate $2/i$. Based on five answers given below, help Oleksandr to find the correct one.}
+    {3}
+    {
+        \item $1$.
+        \item $p-2$.
+        \item $(p-3)i$.
+        \item $(p-1)i$.
+        \item $p-1$.
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 3*.}
+    {After endless tries, Oleksandr has finally found the perfect field extension: $\mathbb{F}_{p^2} := \mathbb{F}_p[v] / (v^2+v+1)$. However, Oleksandr became very frustrated since not for any $p$ this would be a valid field extension. For which of the following values $p$ such construction would \textbf{not} be a valid field extension? Use the fact that equation $\omega^3=1$ over $\mathbb{F}_p$ has non-trivial solutions (meaning, two others except for $\omega=1$) if $p \equiv 1 \pmod{3}$. You can assume that listed numbers are primes.}
+    {4}
+    {
+        \item $8431$.
+        \item $9173$.
+        \item $9419$.
+        \item $6947$.
+    }
+\end{xexercise}
+
+\begin{tcolorbox}[breakable, colback=blue!5!white,fonttitle=\bfseries,colframe=blue!80!white,title=Exercises 4-9. Tower of Extensions]
     \textit{You are given the passage explaining the topic of tower of extensions. The text has gaps that you need to fill in with the correct statement among the provided choices.}
-    \vspace{10px}
+    \vspace{5px}
     
-    This question demonstrates the concept of the so-called \textbf{tower of extensions}. Suppose we want to build an extension field $\mathbb{F}_{p^4}$. Of course, we can find some irreducible polynomial $p(X)$ of degree $4$ over $\mathbb{F}_p$ and build $\mathbb{F}_{p^4}$ as $\mathbb{F}_p[X]/(p(X))$. However, this method is very inconvenient since implementing the full $4$-degree polynomial arithmetic is inconvenient. Moreover, if we were to implement arithmetic over, say, $\mathbb{F}_{p^{24}}$, that would make the matters worse. For this reason, we will build $\mathbb{F}_{p^4}$ as $\mathbb{F}_{p^2}[j]/(q(j))$ where $q(j)$ is an irreducible polynomial of degree $2$ over $\mathbb{F}_{p^2}$, which itself is represented as $\mathbb{F}_p[i]/(r(i))$ for some suitable irreducible quadratic polynomial $r(i)$. This way, we can first implement $\mathbb{F}_{p^2}$, then $\mathbb{F}_{p^4}$, relying on the implementation of $\mathbb{F}_{p^2}$ and so on.
+    This question demonstrates the concept of the so-called \textbf{tower of extensions}. Suppose we want to build an extension field $\mathbb{F}_{p^4}$. Of course, we can find some irreducible polynomial $p(X)$ of degree $4$ over $\mathbb{F}_p$ and build $\mathbb{F}_{p^4}$ as $\mathbb{F}_p[X]/(p(X))$. However, this method is very inconvenient since implementing the full $4$-degree polynomial arithmetic is inconvenient. Moreover, if we were to implement arithmetic over, say, $\mathbb{F}_{p^{24}}$, that would make the matters worse. For this reason, we will build $\mathbb{F}_{p^4}$ as $\mathbb{F}_{p^2}[j]/(q(j))$ where $q(j)$ is an irreducible polynomial of degree $2$ over $\mathbb{F}_{p^2}$, which itself is represented as $\mathbb{F}_p[i]/(r(i))$ for some suitable irreducible quadratic polynomial $r(i)$. This way, we can first implement $\mathbb{F}_{p^2}$, then $\mathbb{F}_{p^4}$, relying on the implementation of $\mathbb{F}_{p^2}$.
     \vspace{5px}
 
     For illustration purposes, let us pick $p:=5$. As noted above, we want to build $\mathbb{F}_{5^2}$ first. A valid way to represent $\mathbb{F}_{5^2}$ would be to set $\mathbb{F}_{5^2} := \boxed{\textcolor{blue}{\textbf{4}}}$. Given this representation, the zero of a linear polynomial $f(x) = ix - (i+3)$, defined over $\mathbb{F}_{5^2}$, is $\boxed{\textcolor{blue}{\textbf{5}}}$.
@@ -268,45 +311,8 @@ But what form does the $\overline{\mathbb{F}}_{p}$ have? Well, it is a union of 
     Now, assume that we represent $\mathbb{F}_{5^4}$ as $\mathbb{F}_{5^2}[j]/(j^2-\xi)$ for $\xi = i+1$. Given such representation, the value of $j^4$ is $\boxed{\textcolor{blue}{\textbf{6}}}$. Finally, given $c_0+c_1j \in \mathbb{F}_{5^4}$ we call $c_0 \in \mathbb{F}_{5^2}$ a \textbf{real part}, while $c_1 \in \mathbb{F}_{5^2}$ an \textbf{imaginary part}. For example, the imaginary part of number $j^3+2i^2\xi$ is $\boxed{\textcolor{blue}{\textbf{7}}}$, while the real part of $(a_0+a_1j)b_1j$ is $\boxed{\textcolor{blue}{\textbf{8}}}$. Similarly to complex numbers, it motivates us to define the number's \textbf{conjugate}: for $z = c_0+c_1j$, define the conjugate as $\overline{z} := c_0-c_1j$. The expression $z\overline{z}$ is then $\boxed{\textcolor{blue}{\textbf{9}}}$.
 \end{tcolorbox}
 
-\newpage
-
-\subsection*{Warmup (Oleksandr in search of perfect field extension)}
-\textbf{Exercise 1.} Oleksandr decided to build $\mathbb{F}_{49}$ as $\mathbb{F}_7[i]/(i^2+1)$. Compute $(3+i)(4+i)$. 
-
-\begin{multicols}{5}
-    \begin{enumerate}[a)]
-        \item $6+i$.
-        \item $6$.
-        \item $4+i$.
-        \item $4$.
-        \item $2+4i$.
-    \end{enumerate}
-\end{multicols}
-
-\textbf{Exercise 2.} Oleksandr came up with yet another extension $\mathbb{F}_{p^2} = \mathbb{F}_p[i]/(i^2+2)$. He asked interns to calculate $2/i$. Based on five answers given below, help Oleksandr to find the correct one.
-\begin{multicols}{5}
-    \begin{enumerate}[a)]
-        \item $1$.
-        \item $p-2$.
-        \item $(p-3)i$.
-        \item $(p-1)i$.
-        \item $p-1$.
-    \end{enumerate}
-\end{multicols}
-
-\textbf{Exercise 3*.} After endless tries, Oleksandr has finally found the perfect field extension: $\mathbb{F}_{p^2} := \mathbb{F}_p[v] / (v^2+v+1)$. However, Oleksandr became very frustrated since not for any $p$ this would be a valid field extension. For which of the following values $p$ such construction would \textbf{not} be a valid field extension? Use the fact that equation $\omega^3=1$ over $\mathbb{F}_p$ has non-trivial solutions (meaning, two others except for $\omega=1$) if $p \equiv 1 \pmod{3}$. You can assume that listed numbers are primes.
-\begin{multicols}{4}
-    \begin{enumerate}[a)]
-        \item $8431$.
-        \item $9173$.
-        \item $9419$.
-        \item $6947$.
-    \end{enumerate}
-\end{multicols}
-
 \begin{center}
     \begin{tabular}{p{4.5cm}p{3cm}p{4cm}}
-        % Exercise 3
         \textbf{Exercise 4.}
         \begin{enumerate}[a)]
             \item $\mathbb{F}_5[i]/(i^2+1)$
