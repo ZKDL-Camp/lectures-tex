@@ -1,4 +1,5 @@
-# --- Question 2 ---
+# --- Code for Exercises ---
+
 # Defining the base prime field
 qs = [8431, 9173, 9419, 6947]
 for q in qs:
