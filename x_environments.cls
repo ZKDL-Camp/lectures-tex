@@ -38,6 +38,7 @@
   \vspace{-2.5mm}
 } 
 
+% !!! Depercated !!!
 % Not last multicols in block (there is text after)
 \newenvironment{xmulticols*}[1]
 {
