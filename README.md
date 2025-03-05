@@ -1,5 +1,5 @@
 <div align="center">
-<h1> :ninja: [ZKDL Camp Lecture Notes](lts-notes-148x210.pdf) :teacher: </h1>
+<h1> :ninja: ZKDL Camp Lecture Notes :teacher: </h1>
 </div>
 
 This is a series of lectures on zero-knowledge conducted internally at
