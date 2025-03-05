@@ -129,18 +129,18 @@ This theorem (aka definition) corresponds to viewing complex numbers as a polyno
 
 \begin{theorem}
     Let $\mathbb{F}$ be a field and $\mu \in \mathbb{F}[X]$ is an irreducible polynomial of degree $n$ and let $\mathbb{K} := \mathbb{F}[X]/(\mu(X))$. Let $\theta \in \mathbb{K}$ be the root of $\mu$ over $\mathbb{K}$. Then,
-    \begin{equation*}
+    \begin{xequation}
         \mathbb{K} = \{c_0+c_1\theta+\cdots+c_{n-1}\theta^{n-1}: c_0,\dots,c_{n-1} \in \mathbb{F}\}
-    \end{equation*}
+    \end{xequation}
 \end{theorem}
 
 Although this definition is quite useful, we will mostly rely on the polynomial quotient ring definition. Let us define the \textbf{prime field extension}.
 
 \begin{definition}
     Suppose $p$ is prime and $m \geq 2$. Let $\mu \in \mathbb{F}_p[X]$ be an irreducible polynomial of degree $m$. Then, elements of $\mathbb{F}_{p^m}$ are polynomials in $\mathbb{F}_p^{(\leq m)}[X]$. In other words,
-    \begin{equation*}
+    \begin{xequation*}
         \mathbb{F}_{p^m} = \{c_0+c_1X+\cdots+c_{m-1}X^{m-1}: c_0,\dots,c_{m-1} \in \mathbb{F}_p\},
-    \end{equation*}
+    \end{xequation*}
     where all operations are performed modulo $\mu(X)$.
 \end{definition}
 
@@ -148,21 +148,21 @@ Again, let us consider a few examples.
 
 \begin{example}
     Consider the $\mathbb{F}_{2^4}$. Then, there are $16$ elements in this set:
-    \begin{equation*}
+    \begin{xequation*}
         \begin{aligned}
             &0, 1, X, X+1,\\ &X^2, X^2+1, X^2+X, X^2+X+1,\\
             &X^3, X^3+1, X^3+X, X^3+X+1,\\ &X^3+X^2, X^3+X^2+1, X^3+X^2+X, X^3+X^2+X+1.
         \end{aligned}
-    \end{equation*}
+    \end{xequation*}
 
     One might choose the following reduction polynomial: $\mu(X)=X^4+X+1$ (of degree $4$). Then, operations are performed in the following manner:
     \begin{itemize}
         \item Addition: $(X^3+X^2+1)+(X^2+X+1) = X^3+X$.
         \item Subtraction: $(X^3+X^2+1)-(X^2+X+1) = X^3+X$.
         \item Multiplication: $(X^3+X^2+1)\cdot(X^2+X+1)=X^2+1$ since:
-        \begin{equation*}
+        \begin{xequation*}
             (X^3+X^2+1)\cdot(X^2+X+1) = X^5+X+1 \; \text{mod} \; (X^4+X+1) = X^2+1
-        \end{equation*}
+        \end{xequation*}
         \item Inversion: $(X^3+X^2+1)^{-1}=X^2$ since $(X^3+X^2+1)\cdot X^2 \; \text{mod} \; (X^4+X+1) = 1$.
     \end{itemize}
 \end{example}
