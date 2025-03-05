@@ -199,28 +199,30 @@ To ensure that the specified polynomials have roots in given values, we can use 
 
 \begin{example}
 Finally, we define the following STARK constraints:
+\vspace{-1mm}
 \begin{gather*}
     p_0(x) = \frac{f(x)-1}{x - 1} \\
     p_1(x) = \frac{f(x) - 2338775057}{x - g^{1022}} \\
     p_2(x) = \frac{f(g^2x) - f(gx)^2 - f(x)^2}{\prod_{i=0}^{1020} (x - g^i)}
 \end{gather*}
+\vspace{-1mm}
 Unfortunately, the $p_2$ polynomial still looks inconvenient to work with, so we
 may want to simplify it (this is not a part of the protocol in general, but you
 always may want to simplify your equations to achieve better proving time). Note
 that $p_2$ is \textit{almost} a vanishing polynomial of $\mathbb{G}$, which has
 a form $x^{\text{ord}(\mathbb{G})} - 1$, except for points $g^{1021},
 g^{1022}, g^{1023}$. In other words, we can simplify the denominator as:
-\begin{equation*}
+\begin{xequation*}
     \prod_{i=0}^{1020} (x - g^i) = \frac{x^{1024} - 1}{(x-g^{1021})(x-g^{1022})(x-g^{1023})}
-\end{equation*}
+\end{xequation*}
 
 Note, that while evaluating our polynomial on a larger domain
 then $\mathbb{G}$ we should only ensure that the resulting polynomial still
 holds the relation $f(g^i) = a_i$, so it is acceptable to use properties that
 only work over $\mathbb{G}$. So, finally we have:
-\begin{equation*}
-p_2(x) = \frac{(f(g^2x) - f(gx)^2 - f(x)^2)(x - g^{2021})(x - g^{2022})(x - g^{2024})}{x^{1024} - 1}  
-\end{equation*}
+    \begin{xequation}
+        p_2(x) = \frac{(f(g^2x) - f(gx)^2 - f(x)^2)(x - g^{2021})(x - g^{2022})(x - g^{2024})}{x^{1024} - 1}  
+    \end{xequation}
 \end{example}
 
 In addition, there is one obvious requirement for the STARK constraints: the
@@ -238,18 +240,18 @@ commonly used principle by taking a linear combination with the challenges from
 the verifier. In particular, after receiving trace polynomial commitment from
 the prover, the verifier selects scalars $\alpha_1,\dots,\alpha_m$ and sends it
 to the prover. Then, the prover puts the \textbf{composition polynomial} as:
-\begin{equation*}
-\text{CP}(x) := \sum_{j = 1}^m \alpha_j\cdot p_j(x)
-\end{equation*}
+\begin{xequation*}
+    \text{CP}(x) := \sum_{j = 1}^m \alpha_j\cdot p_j(x)
+\end{xequation*}
 Additionally, prover also commits this polynomial by evaluating on the evaluation domain and building a Merkle tree.
 
 \begin{example}
 The Fibonacci composition polynomial looks like as follows:
-\begin{gather*}
-    \text{CP}(x) = \alpha_0 p_0(x) + \alpha_1 p_1(x) + \alpha_2 p_2(x) =\\
-    \alpha_0 \frac{f(x)-1}{x - 1} + \alpha_1 \frac{f(x) - 2338775057}{x - g^{1022}} + \\
-    \alpha_2 \frac{(f(g^2x) - f(gx)^2 - f(x)^2)(x - g^{2021})(x - g^{2022})(x - g^{2024})}{x^{1024} - 1}
-\end{gather*}
+    \begin{gather*}
+        \text{CP}(x) = \alpha_0 p_0(x) + \alpha_1 p_1(x) + \alpha_2 p_2(x) =\\
+        \alpha_0 \frac{f(x)-1}{x - 1} + \alpha_1 \frac{f(x) - 2338775057}{x - g^{1022}} + \\
+        \alpha_2 \frac{(f(g^2x) - f(gx)^2 - f(x)^2)(x - g^{2021})(x - g^{2022})(x - g^{2024})}{x^{1024} - 1}
+    \end{gather*}
 \end{example}
 
 \subsubsection{FRI protocol}
@@ -270,17 +272,19 @@ polynomial $z_0(x) = \sum_i a_i\cdot x^i$ of degree $n=2^t$ and the evaluation
 domain $\mathbb{E}_0 = \mathbb{E}$. We suppose to group the \textit{odd} and the
 \textit{even} coefficients of the $z_0$ together into the two separate
 polynomials($z_0^O$ and $z_0^E$ respectively):
-\begin{gather*}
-    z_0^O(x^2) = \sum_{i=0}^{n/2} (a_{2i+1}\cdot x^{2i})\\
-    z_0^E(x^2) = \sum_{i=0}^{n/2} (a_{2i}\cdot x^{2i})
-\end{gather*}
+\begin{xequation*}
+    \begin{aligned}
+        z_0^O(x^2) = \sum_{i=0}^{n/2} (a_{2i+1}\cdot x^{2i}), \quad z_0^E(x^2) = \sum_{i=0}^{n/2} (a_{2i}\cdot x^{2i})
+\end{aligned}
+\end{xequation*}
 
 Or, in a more comfortable form (we have already examined why searching of $-x$
 can be done easily in our two-adicity subgroup):
-\begin{gather*}
-    z_0^E(x^2) = \frac{z_0(x) + z_0(-x)}{2}\\
-    z_0^O(x^2) = \frac{z_0(x) - z_0(-x)}{2x}
-\end{gather*}
+\begin{xequation*}
+    \begin{aligned}
+        z_0^E(x^2) = \frac{z_0(x) + z_0(-x)}{2}, \quad z_0^O(x^2) = \frac{z_0(x) - z_0(-x)}{2x}
+    \end{aligned}
+\end{xequation*}
 
 Then, we define a next-layer of the FRI polynomial as $z_1(x^2) = z_0^E(x^2) +
 \beta z_0^O(x^2)$, where $\beta$ is a challenge received from verifier. The
@@ -291,6 +295,8 @@ other elements in $\mathbb{E}_0$ will result in the same values.
 Next, we commit to the $z_1(x^2)$ using a next-layer evaluation domain
 $\mathbb{E}_1$ (is also reduced by a factor two) and continue to repeat the
 described operations until $z_j(x^{2^j})$ becomes constant.
+
+\vspace{-2mm}
 
 \begin{tcolorbox}[title=Interactive ZK-STARK protocol,
     colback=blue!5!white,
@@ -349,6 +355,8 @@ the trace), the attacker either can't construct such a polynomial or can't
 construct a low-degree polynomial, so a valid low-degree composition polynomial
 can only be obtained using a valid trace.
 
+\vspace{-2mm}
+
 \begin{example}
     Finally, let's overview the first steps of the ZK-STARK protocol applied to our Fibonacci example:
     
@@ -390,12 +398,10 @@ More precisely, let's assume that the desired security level of the protocol is
 $\lambda$. First of all, we obviously have to use a proper collision-resistant
 hash function with $2\lambda$ bits output. Then, according to the StarkWare's
 definition of the STARK protocol, the resulting security is defined as follows:
-\begin{equation*}
+\begin{xequation*}
     \lambda \geq \min\{ \delta + \log_2(\rho) \cdot s, \log_2(|\mathbb{F}|) \} - 1
-\end{equation*}
+\end{xequation*}
 where $\delta$ -- number of the proof-of-work bits, $s$ -- number of the FRI queries.
-
-\newpage
 
 \begin{example}
 If the protocol is deployed over $256$-bit field and the domain ratio is $\rho =
