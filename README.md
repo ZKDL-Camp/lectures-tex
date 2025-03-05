@@ -41,20 +41,13 @@ welcome! The repository is structured as follows:
 
 | Folder/File | Description |
 | --- | --- |
-| [`lectures`](lectures) | Contains the written material for the lectures in `.tex`
-format. If you want to add your lecture or make corrections to existing ones, you need to navigate to this folder. |
+| [`lectures`](lectures) | Contains the written material for the lectures in `.tex` format. If you want to add your lecture or make corrections to existing ones, you need to navigate to this folder. |
 | [`lectures/images`](lectures/images) | Contains images used in the lectures. |
-| [`presentations`](presentations) | Contains the beamer presentations for the lectures being conducted at Distributed Lab. Typically, they contain the same
-material as the corresponding section in the book. However, you might find it 
-easier to grasp the material from them. |
+| [`presentations`](presentations) | Contains the beamer presentations for the lectures being conducted at Distributed Lab. Typically, they contain the same material as the corresponding section in the book. However, you might find it  easier to grasp the material from them. |
 | [`zkdl-template.cls`](zkdl-template.cls) | The style file for the book. |
 | [`lecture-notes-148x210.tex`](lecture-notes-148x210.tex) | The compilation of all lectures in the single file. Uses lecture files from [`lectures`](lectures) and compiles them into a single file. The latest version is then manually renamed to [`lts-notes-148x210.pdf`](lts-notes-148x210.pdf) |
-| [`lecture-notes-105x135.tex`](lecture-notes-105x135.tex) | Same as above, but 
-the book is of different size. You may ignore this format since the main format
-is 148x210. |
-| [`sage`](sage) | Contains the SageMath code used in some lectures. For the most 
-part, if the code is present, the separate repository is used, such as for
-[Sigma Proofs](https://github.com/ZKDL-Camp/lecture-7-sigma) |
+| [`lecture-notes-105x135.tex`](lecture-notes-105x135.tex) | Same as above, but  the book is of different size. You may ignore this format since the main format is 148x210. |
+| [`sage`](sage) | Contains the SageMath code used in some lectures. For the most  part, if the code is present, the separate repository is used, such as for [Sigma Proofs](https://github.com/ZKDL-Camp/lecture-7-sigma) |
 
 ## :running_man: Setup to run locally
 
