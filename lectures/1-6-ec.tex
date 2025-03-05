@@ -387,6 +387,9 @@ Finally, let us summarize what we have observed so far.
 
 \begin{example}
     Consider the BN254 curve $y^2 = x^3 + 3$ over reals $\mathbb{R}$. Its projective form is given by the equation $Y^2Z = X^3 + 3Z^3$, which gives a surface, depicted below.
+    
+    \vspace{-5mm}
+
     \begin{center}
         \includegraphics[trim={275 100 225 100}, width=0.35\linewidth, clip]{images/lecture_4/projective_ec.pdf}
         
@@ -405,9 +408,11 @@ Hold on, but why did we use the term \textit{homogenous}? The reason why is beca
 In this case, to come back to the affine form, we need to use the map $\phi: (X:Y:Z) \mapsto (X/Z^n, Y/Z^m)$. 
 \begin{example}
     The case $n=2,m=3$ is called the \textbf{Jacobian Projective Coordinates}. An Elliptic Curve equation might be then rewritten as: 
+    
     \begin{xequation*}
         Y^2 = X^3 + aXZ^4 + bZ^6
     \end{xequation*}
+    
     The reason why we might want to use such coordinates is that they can be more efficient in some operations, such as point addition. However, we will not delve into this topic much further.
 \end{example}
 
@@ -628,9 +633,9 @@ Suppose we have pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ (
 \end{definition}
         
 Let us check the correctness:
-\begin{equation*}
+\begin{xequation*}
     e(\sigma,G_2) = e(\textcolor{blue}{[\mathsf{sk}]}\mathsf{H}(m),G_2) = e(\mathsf{H}(m), \textcolor{blue}{[\mathsf{sk}]}G_2) = e(\mathsf{H}(m), \mathsf{pk})
-\end{equation*}
+\end{xequation*}
 
 As we see, the verification equation holds. 
     
@@ -668,144 +673,178 @@ This scheme is also quite famous for its aggregation properties, which we are no
 \begin{example}
     Finally, let us prove something more interesting. For instance, based on
     $(x_1,x_2)$, whether
-    \begin{equation*}
+    \begin{xequation*}
         x_1^2 + x_1x_2 = x_2
-    \end{equation*}
+    \end{xequation*}
 
     Suppose pairing $e: \mathbb{G} \times \mathbb{G} \to \mathbb{G}_T$ is
     symmetric. Alice can then calculate $P \gets [x_1]G, Q \gets [x_2]G \in
     \mathbb{G}$. Then, the condition can be verified by checking whether
-    \begin{equation*}
+    \begin{xequation*}
         e(P,P \oplus Q)e(G,\ominus Q) = 1
-    \end{equation*}
+    \end{xequation*}
+    
     Let us see the correctness of this equation:
-    \begin{gather*}
-        e(P,P\oplus Q)e(G,\ominus Q) = e([x_1]G,[x_1+x_2]G)e(G,[x_2]G)^{-1} \nonumber \\= e(G,G)^{x_1(x_1+x_2)}e(G,G)^{-x_2} = e(G,G)^{x_1^2+x_1x_2-x_2}
-    \end{gather*}
+    \begin{xequation*}
+        \begin{aligned}
+            e(P, P\oplus Q)e(G, \ominus Q) &= e([x_1]G,[x_1+x_2]G)e(G,[x_2]G)^{-1} \\ 
+                                         &= e(G,G)^{x_1(x_1+x_2)}e(G,G)^{-x_2} \\
+                                         &= e(G,G)^{x_1^2+x_1x_2-x_2}
+        \end{aligned}        
+    \end{xequation*}
     Now, if this is $1$, then $x_1^2+x_1x_2=x_2$, which was exactly what we wanted to prove.
 \end{example}
 
 \subsection{Exercises}
 
-\textbf{Exercise 1.} Suppose that elliptic curve is defined as $E/\mathbb{F}_{7}: y^2=x^3+b$. Suppose $(2,3)$ lies on the curve. What is the value of $b$?
+\exerciseTitle{Exercise 1.}{Suppose that elliptic curve is defined as $E/\mathbb{F}_{7}: y^2=x^3+b$. Suppose $(2,3)$ lies on the curve. What is the value of $b$?}
 
-\textbf{Exercise 2.} Sum of which of the following pairs of points on the elliptic curve $E/\mathbb{F}_{11}$ is equal to the point at infinity $\mathcal{O}$ for any valid curve equation?
-\begin{multicols}{2}    
-    \begin{enumerate}[a)]
+\begin{xexercise}
+    {Exercise 2.}
+    {Sum of which of the following pairs of points on the elliptic curve $E/\mathbb{F}_{11}$ is equal to the point at infinity $\mathcal{O}$ for any valid curve equation?}
+    {2}
+    {
         \item $P=(2,3),Q=(2,8)$.
         \item $P=(9,2),Q=(2,8)$.
         \item $P=(9,9),Q=(5,7)$.
         \item $P=\mathcal{O},Q=(2,3)$.
         \item $P=[10]G,Q=G$ where $G$ is a generator.
-    \end{enumerate}
-\end{multicols}
+    }
+\end{xexercise}
 
-% \newpage
-\textbf{Exercise 3.} Consider an elliptic curve $E$ over $\mathbb{F}_{167^2}$. Denote by $r$ the order of the group of points on $E$ (that is, $r=|E|$). Which of the following \textbf{can} be the value of $r$?
-\begin{multicols}{3}    
-    \begin{enumerate}[a)]
+\begin{xexercise}
+    {Exercise 3.}
+    {Consider an elliptic curve $E$ over $\mathbb{F}_{167^2}$. Denote by $r$ the order of the group of points on $E$ (that is, $r=|E|$). Which of the following \textbf{can} be the value of $r$?}
+    {3}
+    {
         \item $167^2 - 5$
         \item $167^2-1000$
         \item $167^2+5 \cdot 167$
         \item $170^2$
         \item $160^2$
-    \end{enumerate}
-\end{multicols}
+    }
+\end{xexercise}
 
-\textbf{Exercise 4.} Suppose that for some elliptic curve $E$ the order is $|E| = qr$ where both $q$ and $r$ are prime numbers. Among listed, what is the most optimal complexity of algorithm to solve the discrete logarithm problem on $E$?
-\begin{multicols}{3}    
-    \begin{enumerate}[a)]
+\begin{xexercise}
+    {Exercise 4.}
+    {Suppose that for some elliptic curve $E$ the order is $|E| = qr$ where both $q$ and $r$ are prime numbers. Among listed, what is the most optimal complexity of algorithm to solve the discrete logarithm problem on $E$?}
+    {3}
+    {
         \item $O(qr)$
         \item $O(\sqrt{qr})$
         \item $O(\sqrt{\max\{q,r\}})$
         \item $O(\sqrt{\min\{q,r\}})$
         \item $O(\max\{q,r\})$
-    \end{enumerate}
-\end{multicols}
+    }
+\end{xexercise}
 
-\textbf{Exercise 5.} What is \textbf{not} a valid equivalence relation $\sim$ over a set $\mathcal{X}$?
-\begin{enumerate}[(A)]
-    \item $a \sim b$ iff $a+b < 0$, $\mathcal{X} = \mathbb{Q}$.
-    \item $a\sim b$ iff $a=b$, $\mathcal{X} = \mathbb{R}$.
-    \item $a\sim b$ iff $a \equiv b \pmod{5}$, $\mathcal{X} = \mathbb{Z}$.
-    \item $a\sim b$ iff the length of $a$ = the length of $b$, $\mathcal{X} = \mathbb{R}^2$.
-    \item $(a_1,a_2,a_3)\sim (b_1,b_2,b_3)$ iff $a_3=b_3$, $\mathcal{X} = \mathbb{R}^3$.
-\end{enumerate}
+\begin{xexercise}
+    {Exercise 5.}
+    {What is \textbf{not} a valid equivalence relation $\sim$ over a set $\mathcal{X}$?}
+    {1}
+    {
+        \item $a \sim b$ iff $a+b < 0$, $\mathcal{X} = \mathbb{Q}$.
+        % \item $a\sim b$ iff $a=b$, $\mathcal{X} = \mathbb{R}$.
+        \item $a\sim b$ iff $a \equiv b \pmod{5}$, $\mathcal{X} = \mathbb{Z}$.
+        \item $a\sim b$ iff the length of $a$ = the length of $b$, $\mathcal{X} = \mathbb{R}^2$.
+        \item $(a_1,a_2,a_3)\sim (b_1,b_2,b_3)$ iff $a_3=b_3$, $\mathcal{X} = \mathbb{R}^3$.
+    }
+\end{xexercise}
 
-\textbf{Exercise 6.} Suppose that over $\mathbb{R}$ we define the following equivalence relation: $a \sim b$ iff $a-b \in \mathbb{Z}$ ($a,b \in \mathbb{R}$). What is the equivalence class of $1.4$ (that is, $[1.4]_{\sim}$)?
-\begin{enumerate}[(A)]
-    \item A set of all real numbers.
-    \item A set of all integers.
-    \item A set of reals $x \in \mathbb{R}$ with the fractional part of $x$ equal to $0.4$.
-    \item A set of reals $x \in \mathbb{R}$ with the integer part of $x$ equal to $1$.
-    \item A set of reals $x \in \mathbb{R}$ with the fractional part of $x$ equal to $0.6$.
-\end{enumerate}
+\begin{xexercise}
+    {Exercise 6.}
+    {Suppose that over $\mathbb{R}$ we define the following equivalence relation: $a \sim b$ iff $a-b \in \mathbb{Z}$ ($a,b \in \mathbb{R}$). What is the equivalence class of $1.4$ (that is, $[1.4]_{\sim}$)?}
+    {1}
+    {
+        \item A set of all real numbers.
+        \item A set of all integers.
+        \item A set of reals $x \in \mathbb{R}$ with the fractional part of $x$ equal to $0.4$.
+        \item A set of reals $x \in \mathbb{R}$ with the integer part of $x$ equal to $1$.
+        \item A set of reals $x \in \mathbb{R}$ with the fractional part of $x$ equal to $0.6$.
+    }
+\end{xexercise}
 
-\textbf{Exercise 7.} Which of the following pairs of points in homogeneous projective space $\mathbb{P}^2(\mathbb{R})$ are \textbf{not} equivalent?
-\begin{multicols}{2}
-    \begin{enumerate}[(A)]
+\begin{xexercise}
+    {Exercise 7.}
+    {Which of the following pairs of points in homogeneous projective space $\mathbb{P}^2(\mathbb{R})$ are \textbf{not} equivalent?}
+    {2}
+    {
         \item $(1:2:3)$ and $(2:4:6)$.
         \item $(2:3:1)$ and $(6:9:3)$.
         \item $(5:5:5)$ and $(2:2:2)$.
         \item $(4:3:2)$ and $(16:8:4)$.
-    \end{enumerate}
-\end{multicols}
+    }
+\end{xexercise}
 
-\textbf{Exercise 8.} The main reason for using projective coordinates in elliptic curve cryptography is:
-\begin{enumerate}[(A)]
-    \item To reduce the number of point additions in algorithms involving elliptic curves.
-    \item To make the curve more secure against attacks.
-    \item To make the curve more efficient in terms of memory usage.
-    \item To reduce the number of field multiplications when performing scalar multiplication.
-    \item To avoid making too many field inversions in complicated algorithms involving elliptic curves.
-\end{enumerate}
+\begin{xexercise}
+    {Exercise 8.}
+    {The main reason for using projective coordinates in elliptic curve cryptography is:}
+    {1}
+    {
+        \item To reduce the number of point additions in algorithms involving elliptic curves.
+        \item To make the curve more secure against attacks.
+        \item To make the curve more efficient in terms of memory usage.
+        \item To reduce the number of field multiplications when performing scalar multiplication.
+        \item To avoid making too many field inversions in complicated algorithms involving elliptic curves.
+    }
+\end{xexercise}
 
-\newpage
-
-\textbf{Exercise 9.} Suppose $k=19$ is a scalar and we are calculating $[k]P$ using the double-and-add algorithm. How many elliptic curve point addition operations will be performed?
-\begin{multicols}{5}
-    \begin{enumerate}[(A)]
+\begin{xexercise}
+    {Exercise 9.}
+    {Suppose $k=19$ is a scalar and we are calculating $[k]P$ using the double-and-add algorithm. How many elliptic curve point addition operations will be performed?}
+    {5}
+    {
         \item $0$.
         \item $1$.
         \item $2$.
         \item $3$.
         \item $4$.
-    \end{enumerate}
-\end{multicols}
+    }
+\end{xexercise}
 
-\textbf{Exercise 10.} What is the minimal number of inversions needed to calculate the value of expression (over $\mathbb{F}_p$)
-\begin{equation*}
-    \frac{a-b}{(a+b)^4} + \frac{c}{a+b} + \frac{d}{a^2+c^2},
-\end{equation*}
-for the given scalars $a,b,c,d \in \mathbb{F}_p$?
-\begin{multicols}{5}
-    \begin{enumerate}[(A)]
+\begin{xexercise}
+    {Exercise 10.}
+    {What is the minimal number of inversions needed to calculate the value of expression (over $\mathbb{F}_p$)
+    \begin{equation*}
+        \frac{a-b}{(a+b)^4} + \frac{c}{a+b} + \frac{d}{a^2+c^2},
+    \end{equation*}
+    for the given scalars $a,b,c,d \in \mathbb{F}_p$?}
+    {5}
+    {
         \item $1$.
         \item $2$.
         \item $3$.
         \item $4$.
         \item $5$.
-    \end{enumerate}
-\end{multicols}
+    }
+\end{xexercise}
 
-\textbf{Exercise 11.} Given pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ with $G_1$ --- generator of $\mathbb{G}_1$ and $G_2 \in \mathbb{G}_2$ --- generator of $\mathbb{G}_2$, which of the following is \textbf{not} equal to $e([3]G_1, [5]G_2)$?
-\begin{multicols}{2}
-    \begin{enumerate}[(A)]
+\newpage
+
+\begin{xexercise}
+    {Exercise 11.}
+    {Given pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ with $G_1$ --- generator of $\mathbb{G}_1$ and $G_2 \in \mathbb{G}_2$ --- generator of $\mathbb{G}_2$, which of the following is \textbf{not} equal to $e([3]G_1, [5]G_2)$?}
+    {2}
+    {
         \item $e([5]G_1, [3]G_2)$.
         \item $e([4]G_1, [4]G_2)$.
         \item $e([15]G_1, G_2)$.
         \item $e([3]G_1,G_2)e(G_1,[12]G_2)$.
         \item $e(G_1, G_2)^{15}$.
-    \end{enumerate} 
-\end{multicols}
+    }
+\end{xexercise}
 
-\textbf{Exercise 12.} \textit{Unit Circle Proof.} Suppose Alice wants to convince Bob that she knows a point on the unit circle $x^2+y^2=1$. Suppose we are given a symmetric pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ for $\mathbb{G}_1=\mathbb{G}_2=\langle G \rangle$ and Alice computes $P \gets [x]G, Q \gets [y]G$. She then proceeds to sending $(P,Q)$ to Bob. Which of the following checks should Bob perform to verify that Alice indeed knows a point on the unit circle?
-\begin{enumerate}[(A)]
-    \item Check if $e(P,Q)e(Q,P)=1$.
-    \item Check if $e([2]P,[2]Q) = e(G,G)$.
-    \item Check if $e([2]P,Q)e(Q,[2]P) = 1$.
-    \item Check if $e(P,P)+e(Q,Q) = 1$.
-    \item Check if $e(P,P)e(Q,Q)=e(G,G)$.
-\end{enumerate}
+\begin{xexercise}
+    {Exercise 12.}
+    {\textit{Unit Circle Proof.} Suppose Alice wants to convince Bob that she knows a point on the unit circle $x^2+y^2=1$. Suppose we are given a symmetric pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ for $\mathbb{G}_1=\mathbb{G}_2=\langle G \rangle$ and Alice computes $P \gets [x]G, Q \gets [y]G$. She then proceeds to sending $(P,Q)$ to Bob. Which of the following checks should Bob perform to verify that Alice indeed knows a point on the unit circle?}
+    {1}
+    {
+        \item Check if $e(P,Q)e(Q,P)=1$.
+        \item Check if $e([2]P,[2]Q) = e(G,G)$.
+        \item Check if $e([2]P,Q)e(Q,[2]P) = 1$.
+        \item Check if $e(P,P)+e(Q,Q) = 1$.
+        \item Check if $e(P,P)e(Q,Q)=e(G,G)$.
+    }
+\end{xexercise}
 
 \end{document}
