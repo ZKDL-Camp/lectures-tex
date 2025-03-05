@@ -9,9 +9,9 @@ statements we will need to prove. That being said, let us define what polynomial
 
 \begin{definition}
     A \textbf{polynomial} $f(x)$ is a function of the form
-    \begin{equation*}
+    \begin{xequation*}
         p(x) = c_0 + c_1 x + c_2 x^2 + \cdots + c_n x^n = \sum_{k=0}^{n} c_k x^k,
-    \end{equation*}
+    \end{xequation*}
     where $c_0, c_1, \dots, c_n$ are coefficients of the polynomial.
 \end{definition}
 
@@ -19,14 +19,18 @@ Notice that for now we did not specify what are $c_i$'s. We are interested in th
 
 \begin{definition}
     A set of polynomials depending on $x$ with coefficients in a field $\mathbb{F}$ is denoted as $\mathbb{F}[x]$, that is
-    \begin{equation*}
+    \begin{xequation}
         \mathbb{F}[x] = \left\{p(x) = \sum_{k=0}^{n} c_k x^k: c_k \in \mathbb{F}, \; k = 0,\dots,n\right\}.
-    \end{equation*}
+    \end{xequation}
 \end{definition}
+
+\vspace{-4mm}
 
 \begin{definition}
     Evaluation of a polynomial $p(x) \in \mathbb{F}[x]$ at point $x_0 \in \mathbb{F}$ is simply finding the value of $p(x_0) \in \mathbb{F}$.
 \end{definition}
+
+\vspace{-4mm}
 
 \begin{example}
     Consider the finite field $\mathbb{F}_3$. Then, some examples of polynomials from $\mathbb{F}_3[x]$ are listed below:
@@ -43,6 +47,8 @@ Notice that for now we did not specify what are $c_i$'s. We are interested in th
         \item $r(1) = 2 \cdot 1 = 2$.
     \end{enumerate}
 \end{example}
+
+\vspace{-4mm}
 
 \begin{definition}
     The \textbf{degree} of a polynomial $p(x) = c_0+c_1x+c_2x^2+\dots$ is the largest $k \in \mathbb{Z}_{\geq 0}$ such that $c_k \neq 0$. We denote the degree of a polynomial as $\deg p$. We also denote by $\mathbb{F}^{(\leq m)}[x]$ a set of polynomials of degree at most $m$.
@@ -67,6 +73,8 @@ Notice that for now we did not specify what are $c_i$'s. We are interested in th
     Let $p(x) \in \mathbb{F}[x]$ be a polynomial of degree $\deg p \geq 1$. A field element $x_0 \in \mathbb{F}$ is called a root of $p(x)$ if $p(x_0) = 0$.
 \end{definition}
 
+\vspace{-4mm}
+
 \begin{example}
     Consider the polynomial $p(x) = 1 + x + x^2 \in \mathbb{F}_3[x]$. Then, $x_0=1$ is a root of $p(x)$ since $p(x_0) = 1 + 1 + 1 \; \text{mod} \; 3 = 0$.
 \end{example}
@@ -75,9 +83,9 @@ One of the fundamental theorems of polynomials is following.
 
 \begin{theorem}
     Let $p(x) \in \mathbb{F}[x], \deg p \geq 1$. Then, $x_0 \in \mathbb{F}$ is a root of $p(x)$ if and only if there exists a polynomial $q(x)$ (with $\deg q = n-1$) such that
-    \begin{equation*}
+    \begin{xequation}
         p(x) = (x-x_0)q(x)
-    \end{equation*}
+    \end{xequation}
 \end{theorem}
 
 \begin{example}
@@ -88,16 +96,16 @@ Also, this might not be obvious, but we can also divide polynomials in the same 
 
 \begin{theorem}
     Given $f,g \in \mathbb{F}[x]$ with $g \neq 0$, there are unique polynomials $p,q \in \mathbb{F}[x]$ such that 
-    \begin{equation*}
+    \begin{xequation}
         f = q \cdot g + r, \; 0 \leq \deg r < \deg g
-    \end{equation*}
+    \end{xequation}
 \end{theorem}
 
 \begin{example}
     Consider $f(x) = x^3+2$ and $g(x) = x+1$ over $\mathbb{R}$. Then, we can write $f(x) = (x^2-x+1)g(x) + 1$, so the remainder of the division is $1$. Typically, we denote this as:
-    \begin{equation*}
+    \begin{xequation*}
         f \, \text{div} \, g = x^2-x+1, \quad f \, \text{mod} \, g = 1.
-    \end{equation*}
+    \end{xequation*}
 
     The notation is pretty similar to one used in integer division.
 \end{example}
@@ -149,22 +157,22 @@ in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the po
     $n$ such that $L(x_i) = y_i$ for all $i=0,\dots,n$. This polynomial is
     called the \textbf{Lagrange interpolation polynomial} \cite{Saniee_2007_LagrangeInterpolation} and can be found
     through the following formula:
-    \begin{equation*}
+    \begin{xequation}
         L(x) = \sum_{i=0}^{n} y_i \ell_i(x), \quad \ell_i(x) = \prod_{j=0, j \neq i}^{n} \frac{x-x_j}{x_i-x_j}.
-    \end{equation*}  
+    \end{xequation}
 \end{theorem}
 
 \begin{lemma}
     The polynomials $\{\ell_i\}_{i=1}^n$, in fact, have quite an interesting property:
-    \begin{equation*}
+    \begin{xequation*}
         \ell_i(x_j) = \delta_{ij} = \begin{cases}
             1, & i = j \\ 0, & i \neq j
         \end{cases},
-    \end{equation*}
+    \end{xequation*}
     where $\delta_{ij}$ is the Kronecker delta. Moreover, $\{\ell_i\}_{i=1}^n$ form a basis of $\mathbb{F}^{(\leq n)}[x]$: for any polynomial $p(x) \in \mathbb{F}^{(\leq n)}[x]$ there exist unique coefficients $\alpha_0,\dots,\alpha_n \in \mathbb{F}$ such that
-    \begin{equation*}
+    \begin{xequation}
         p(x) = \sum_{i=0}^{n} \alpha_i \ell_i(x).
-    \end{equation*}
+    \end{xequation}
 \end{lemma}
 
 \begin{example}
@@ -184,14 +192,18 @@ random point is very low for sufficiently large finite fields $\mathbb{F}$.
 However, let us formulate the lemma more rigorously. Let us start with the
 single-variable case, which is easiest to understand.
 
+\vspace{-0.6mm}
+
 \begin{lemma}[Single Variable Schwartz-Zippel Lemma]\label{lemma:one-sz} Let
     $\mathbb{F}$ be a finite field and let $f \in \mathbb{F}[x]$ be a
     polynomial. Then,
-    \begin{equation*}
+    \begin{xequation}
         \underset{x \xleftarrow{R} \mathbb{F}}{\text{Pr}}
         [f(x) = 0] \leq \frac{\deg f}{\left|\mathbb{F}\right|}.
-    \end{equation*}
+    \end{xequation}
 \end{lemma}
+
+\vspace{-0.6mm}
 
 \textbf{Proof Idea.} The proof is quite simple. The polynomial of degree up to
 $n:=\deg f$ can have up to $n$ roots. Therefore, when we pick the point $x$
@@ -201,15 +213,21 @@ chance to pick the root of the polynomial.
 However, the lemma can be generalized to the multi-variable case, which is more
 difficult to prove. The generalization is as follows.
 
-\begin{lemma}[Multivariable Schwartz-Zippel \cite{Oveis_Gharan_2017_Lecture7}] \label{lemma:sz}
-Let $\mathbb{F}$ be a finite field and $\mathbb{S} \subseteq \mathbb{F}^n$ be a finite $n$-dimensional subspace.
-Let $f: \mathbb{S} \to \mathbb{F}$ be a polynomial in $n$ variables. Then,
-\begin{equation*}
-    \underset{\mathbf{x} \xleftarrow{R} \mathbb{S}}{\text{Pr}}
-    [f(\mathbf{x}) = 0] \leq \frac{\deg f}{\left|\mathbb{S}\right|}.
-\end{equation*}
+\vspace{-0.6mm}
 
+\begin{lemma}[Multivariable Schwartz-Zippel \cite{Oveis_Gharan_2017_Lecture7}] \label{lemma:sz}
+    Let $\mathbb{F}$ be a finite field and $\mathbb{S} \subseteq \mathbb{F}^n$ be a finite $n$-dimensional subspace.
+    Let $f: \mathbb{S} \to \mathbb{F}$ be a polynomial in $n$ variables. Then,
+    
+    \vspace{-1.1mm}
+    
+    \begin{xequation}
+        \underset{\mathbf{x} \xleftarrow{R} \mathbb{S}}{\text{Pr}}
+        [f(\mathbf{x}) = 0] \leq \frac{\deg f}{\left|\mathbb{S}\right|}.
+    \end{xequation}
 \end{lemma}
+
+\vspace{-4.1mm}
 
 \begin{example}
 Suppose we are working over the Mersenne prime field of order $p=2^{31}-1$ with
@@ -247,7 +265,9 @@ Now, Shamir's protocol is one of the most famous secret sharing schemes. It work
 \begin{itemize}
     \item $\mathsf{Gen}(\alpha, k, n)$: choose random $k_1,\dots,k_{t-1} \xleftarrow[]{R} \mathbb{F}_q$ and define the polynomial
     \begin{xequation}
+        \vspace{-1mm}
         \omega(x) := \alpha + k_1x + k_2x^2 + \cdots + k_{t-1}x^{t-1} \in \mathbb{F}_q^{\leq (t-1)}[x],     
+        \vspace{-0.5mm}
     \end{xequation}
     and then compute $\alpha_i \gets \omega(i) \in \mathbb{F}_q, \; i = 1,\dots,n$. Return $(\alpha_1,\dots,\alpha_n)$.
     \item $\mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}})$: reconstruct the polynomial $\omega(x)$ using Lagrange interpolation and return $\omega(0) = \alpha$.
@@ -256,19 +276,23 @@ Now, Shamir's protocol is one of the most famous secret sharing schemes. It work
 The combination function is possible since, having $t$ points $\{i,\alpha_i\}_{i \in \mathcal{I}}$ with $\omega(i) = \alpha_i$, we can fully reconstruct the polynomial $\omega(x)$ and then evaluate it at $0$ to get $\alpha$.
 
 Instead, suppose we have only $t-1$ (or less) pairs $\{i,\alpha_i\}_{i \in \mathcal{I}}$. Then, there are many polynomials $\omega(x)$ that pass through these points (in fact, if we were in the field of real numbers, this number would be infinite), and thus the secret $\alpha$ is not uniquely determined.
+The intuition behind Shamir's Secret Sharing protocol is illustrated in Figure~\ref{fig:shamir}.
 
-% The intuition behind the Shamir's protocol is illustrated in Figure~\ref{fig:shamir}.
+\vspace{-2mm}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.65\textwidth]{images/lecture_1/shamir_demo.pdf}
-    \caption{Suppose we have $t=3$. Having only 2 points means knowing two \textcolor{blue}{blue} points without 
-    knowing the \textcolor{red}{red} one. There are infinitely many quadratic polynomials passing through these 
-    two points (\textcolor{gray}{gray dashed} lines). However, knowing the third \textcolor{red}{red} point 
-    allows us to uniquely determine the polynomial and thus get its value at $0$. Note that this is illustrated 
-    over $\mathbb{R}$, but for $\mathbb{F}_q$ the logic is similar.}
+    \includegraphics[width=0.5\textwidth]{images/lecture_1/shamir_demo.pdf}
+    \caption{Illustration of Shamir's Secret Sharing}
     \label{fig:shamir}
 \end{figure}
+
+Consider the case where $t = 3$. Having only 2 points means knowing two \textcolor{blue}{blue} 
+points without knowing the \textcolor{red}{red} one. There are infinitely many quadratic 
+polynomials passing through these two points (\textcolor{gray}{gray dashed} lines). 
+However, knowing the third \textcolor{red}{red} point allows us to uniquely determine 
+the polynomial and thus get its value at $0$. Note that this is illustrated over 
+$\mathbb{R}$, but for $\mathbb{F}_q$ the logic is similar.
 
 \subsection{Exercises}
 
@@ -343,7 +367,7 @@ Instead, suppose we have only $t-1$ (or less) pairs $\{i,\alpha_i\}_{i \in \math
     consists of $n$ rounds, where on each round Bob samples the random scalar
     $\tau \xleftarrow{R} \mathbb{F}_p$ and checks the value of $f(\tau)$. What
     is the probability that Alice successfully fools Bob during the protocol?}
-    {1} {
+    {2} {
         \item Exactly $(d/p)^n$
         \item Strictly less than $(d/p)^n$
         \item Exactly $nd/p$.
