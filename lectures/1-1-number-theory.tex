@@ -337,8 +337,13 @@ GCD, thus sequentially derive this sequence. Also note that we can find Bezout
 coefficients on each Euclidean algorithm step.
 
 Now we introduce the \textbf{extended Euclidean algorithm.} The extended
-Euclidean algorithm finds the Bezout coefficients together with the GCD
-efficiently (in the polylogarithmic time).
+Euclidean algorithm, besides calculating the GCD itself, finds the Bezout
+coefficients efficiently (in the polylogarithmic time). For example, as we will
+see, for calculating the modular inverse element, one would rather use the
+extended Euclidean algorithm than the naive approach, which shows whether
+inverse exists at all. The time complexity of the Extended Euclidean algorithm
+is $O(\log\max\{a,b\})$ --- the same as for the classic Euclidean
+algorithm.
 
 \begin{algorithm}[H]
     \caption{Extended Euclidean algorithm} \label{alg:extended_euclidean}
@@ -359,10 +364,9 @@ efficiently (in the polylogarithmic time).
     \textbf{return} $(r_i, u_i, v_i)$
 \end{algorithm}
 
-The time complexity of the Extended Euclidean algorithm is $O(\log{a} \log{b})$.
-Although we already know how the Extended Euclidean Algorithm works, this method
-is still not very intuitive. Let us consider an example to better understand how
-it works.
+Although we already know how the Extended Euclidean Algorithm
+works, this method is still not very intuitive. Let us consider an example to
+better understand how it works.
 
 \begin{example} [Extended Euclidean algorithm example]
     \hfill
@@ -786,14 +790,12 @@ def extended_gcd(a: int, b: int) -> Tuple[int, int]:
         q, a, b = a // b, b, a % b
         x0, x1 = x1, x0 - q * x1
         y0, y1 = y1, y0 - q * y1
-        
     return a, x0, y0
 
 def inverse(a: int, n: int) -> int:
     d, u, v = extended_gcd(a, n)
     if d != 1:
         raise ValueError('Inverse does not exist')
-    
     return u
 
 # Example usage
@@ -869,7 +871,8 @@ elements of $\mathbb{Z}_n^{\times}$ has the special name, which we define below.
     $\varphi(n)$ counts all coprime integers with $n$ in range $[1, n]$. 
 \end{remark}
 
-Remarkably, the Euler's totient function has a lot of interesting properties, which we specify below.
+Remarkably, $\varphi(n)$ has a lot of curious properties, which we specify
+below.
 
 \begin{lemma}[Euler's totient function properties]
     \hfill
@@ -881,7 +884,8 @@ Remarkably, the Euler's totient function has a lot of interesting properties, wh
     \end{enumerate}    
 \end{lemma}
 
-With these properties, we can derive a general formula for Euler's totient function. 
+With these properties, we can derive a general formula for Euler's totient
+function, knowing the prime factorization of $n$.
 
 \begin{corollary}
     For any number $n = p_{1}^{\alpha_1}p_{2}^{\alpha_2} \dots p_{t}^{\alpha_t}$ general formula for Euler's totient function is: 
@@ -1096,8 +1100,6 @@ print(inverse(8, 17)) # Output: 15
     }
 \end{xexercise}
 
-\newpage
-
 \begin{xexercise}
     {Exercise 3.}
     {What the inverse element $5^{-1} \pmod{11}$?}
@@ -1121,6 +1123,8 @@ print(inverse(8, 17)) # Output: 15
         \item 16
     }
 \end{xexercise}
+
+\newpage
 
 \begin{xexercise}
     {Exercise 5.}
