@@ -576,7 +576,7 @@ protocols''.
     \end{center}
 \end{tcolorbox}
 
-\vspace{10mm}
+ \newpage
 
 \begin{tcolorbox}[breakable, colback=gray!10!white,fonttitle=\bfseries,colframe=purple!80!black,title=Exercises 6-10. Non-Interactive Chaum-Pedersen Protocol.]
     \textit{This section explores how to make the previously considered Chaum-Pedersen protocol non-interactive. Fill in the gaps in the following text with the correct statements.}
@@ -589,8 +589,6 @@ protocols''.
 
     Now, we apply the \textit{Fiat-Shamir Transformation}. Recall that prover, instead of getting the random challenge $c \xleftarrow{R} \mathcal{C} \subset \mathbb{Z}_q$ from the verifier interactively, calculates it as the hash function from the public statement $(u,v,w)$ and the prover's commitment. For that reason, define the non-interactive proof system $\Phi = (\mathsf{Gen}, \mathsf{Verify})$ as follows:
     
-    \newpage
-
     \begin{itemize}
         \item $\mathsf{Gen}$: On input $(u,v,w) \in \mathbb{G}^3$, 
         \begin{enumerate}
