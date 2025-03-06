@@ -1,22 +1,8 @@
 \documentclass{zkdl-template}
 
-\usepackage{opencolor}
-
 \makeatletter
 \def\maketitle{
-    \begin{center}
-        {\Large\sffamily \emph{Distributed Lab}} \\ \vspace{30mm}
-        {\huge\sffamily\bfseries ZKDL Lecture Notes} \\ \vspace{5mm}
-        {Version 0.2} \\ \vspace{10mm}
-    \end{center}
-    
-    \vfill
-
-    \begin{center}
-        {Ukraine} \\ \vspace{2mm}
-        {\sffamily \the\year}
-    \end{center}
-
+    \input{preface/book-cover.tex}
     \thispagestyle{empty}
     \pagebreak
 }
@@ -25,13 +11,17 @@
 \begin{document}
     \maketitle
 
-%  Inverse title page
+    % --- Inverse Title ---
+
     \pagecolor{white}
 
     \vspace*{\fill}
     
     \begin{abstract}
         \fontsize{10}{12}\selectfont
+
+        \vspace{5mm}
+
         \input{preface/abstract.tex}
     \end{abstract}
 
@@ -39,6 +29,7 @@
 
     \thispagestyle{empty}
     \newpage
+
 % --- Table of Contents ---
 
     \pagestyle{fancy}
@@ -46,85 +37,107 @@
 
     \tableofcontents
 
-\pagebreak
+    \pagebreak
 
-% --- Content ---
+% --- Intro ---
 
-\section*{Preface}
+    \section{Preface}
+    \subfile{preface/preface.tex}
 
-\subfile{preface/preface.tex}
+    \section{Notation}\label{section:notation}
+    \subfile{lectures/0-notation}
 
-\section{Group Theory and Polynomials}\label{section:math-crypto-1}
+% --- Mathematical Preliminaries ---
 
-\subfile{lectures/1-math}
+    \part{Mathematics Crash Course}
+    \subfile{preface/intro_words/part1}
 
-\section{Basics of Security Analysis}\label{section:math-crypto-2}
+    \section{Introduction to Number Theory}\label{section:number-theory}
+    \subfile{lectures/1-1-number-theory}
 
-\subfile{lectures/2-math-and-crypto}
+    \section{Introduction to Abstract Algebra}\label{section:abstract-algebra}
+    \subfile{lectures/1-2-abstract-algebra.tex}
 
-\section{Basics of Linear Algebra}\label{section:linear-algebra}
+    \section{Polynomials}\label{section:polynomial-rings}
+    \subfile{lectures/1-3-polynomials.tex}
 
-\subfile{lectures/3-linear-algebra-basics.tex}
+    \section{Linear Algebra Basics}\label{section:linear-algebra}
+    \subfile{lectures/1-4-linear-algebra-basics.tex}
 
-\section{Field Extensions ands Elliptic Curves}\label{section:field_extensions}
+    \section{Fields Extension}\label{section:finite-fields}
+    \subfile{lectures/1-5-field-extension.tex}
 
-\subfile{lectures/3-ec}
+    % --- Cryptography Preliminaries ---
 
-\section{Projective Coordinates and Pairing}
+    \part{Cryptography Tools}
+    \subfile{preface/intro_words/part2.tex}
 
-\subfile{lectures/4-pairing}
+    \section{Basics of Security Analysis}\label{section:security-analysis}
+    \subfile{lectures/1-6-security-basics.tex}
 
-\section{Commitment Schemes}\label{section:commitments}
+    \section{Elliptic Curves and Pairing}\label{section:elliptic-curves}
+    \subfile{lectures/1-7-ec.tex}
 
-\subfile{lectures/5-commitments}
+    \section{Commitment Schemes}\label{section:commitment-schemes}
+    \subfile{lectures/1-8-commitments.tex}
 
-\section{Introduction to Zero-Knowledge Proofs}\label{section:intro-zk}
+    % --- Zero-Knowledge ---
 
-\subfile{lectures/6-intro-zk}
+    \part{Zero-Knowledge Protocols}
+    \subfile{preface/intro_words/part3.tex}
 
-\section{Sigma Protocols}\label{section:sigma}
+    \section{Introduction to Zero-Knowledge Proofs}\label{section:intro-zk}
+    \subfile{lectures/2-1-intro-zk}
 
-\subfile{lectures/7-sigma}
+    \section{Sigma Protocols}\label{section:sigma}
+    \subfile{lectures/2-2-sigma}
 
-\section[Arithmetic Circuits. R1CS]{Introduction to SNARKs. Arithmetic Circuits. R1CS} \label{section:r1cs}
+    \section[Arithmetic Circuits. R1CS]{Introduction to SNARKs. Arithmetic Circuits. R1CS} \label{section:r1cs}
+    \subfile{lectures/2-3-circuits}\label{section:circuits}
 
-\subfile{lectures/8-circuits}\label{section:circuits}
+    \section[Quadratic Arithmetic Program]{Quadratic Arithmetic Program. Probabilistically Checkable Proofs}\label{section:qap-pcp}
+    \subfile{lectures/2-4-qap-pcp}
 
-\section[Quadratic Arithmetic Program]{Quadratic Arithmetic Program. Probabilistically Checkable Proofs}
+    \section[Pairing-based SNARKs]{Pairing-based SNARKs. Pinocchio. Groth16}\label{section:groth}
+    \subfile{lectures/2-5-groth}
 
-\subfile{lectures/9-qap-pcp}
+    \section{Circom}\label{section:circom}
+    \subfile{lectures/2-6-circom}
 
-\section[Pairing-based SNARKs]{Pairing-based SNARKs. Pinocchio and Groth16}
+    \section{PlonK}\label{section:plonk}
+    \subfile{lectures/2-7-plonk}
 
-\subfile{lectures/10-groth}
+    \section{Basics of STARKs}\label{section:stark}
+    \subfile{lectures/2-8-stark}
 
-\section{Circom}\label{section:circom}
+    % --- Solutions ---
+    \part{Concluding Remarks}\label{section:solutions}
+    \subsection*{Solutions to Exercises}
+    \subfile{lectures/3-solutions}
 
-\subfile{lectures/11-circom}
+    \section{Acknowledgements}
+    \subfile{preface/acknowledgements}
 
-\section{PlonK}\label{section:plonk}
+    % --- References ---
 
-\subfile{lectures/12-plonk}
+    \bibliographystyle{ieeetr} 
+    \bibliography{bibliography}
 
-\section{Basics of STARKs}
-
-\subfile{lectures/13-stark}
-
-% --- Contact  ---
+    % --- Contact Page ---
 
     \newpage
     \pagestyle{empty}
-    
+
     \ifodd\value{page}
         \newpage
     \fi
-    
+
     \vspace*{\fill}
-    
+
     \begin{center}
         contact@distributedlab.com
     \end{center}
-    
+
     \vspace*{\fill}
 
 \end{document}

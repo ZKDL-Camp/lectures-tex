@@ -1,0 +1,38 @@
+\documentclass[../../lecture-notes-148x210.tex]{subfiles}
+
+\begin{document}
+
+With all Mathematics preliminaries covered, we can now move to the next part of
+the book. This part is dedicated to the mathematical background required for
+Cryptography. Namely, we will cover essentials specified in \Cref{tab:essentialls-2}.
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{ccX}
+        \Xhline{3\arrayrulewidth}
+        \rowcolor{green!30}\textbf{Section} & \textbf{Topic} & \textbf{Key Concepts} \\
+        \Xhline{3\arrayrulewidth}
+        \rowcolor{green!10}\ref{section:security-analysis} & Security Analysis & Advantage, negligible function, DL/CDH/DDH Assumptions \\
+        \hdashline
+        \rowcolor{green!10}\ref{section:elliptic-curves} & Elliptic Curves, $\mathsf{ecpairing}$ & Group of points on Elliptic Curve, Projective Coordinates, elliptic curve pairing \\
+        \hdashline
+        \rowcolor{green!20}\ref{section:commitment-schemes} & Commitment Schemes &
+        Hash-based Commitments, Pedersen Commitments, KZG Commitments \\
+        \Xhline{3\arrayrulewidth}
+    \end{tabularx}
+    \caption{Topics covered in Part II}
+    \label{tab:essentialls-2}
+\end{table}
+
+In the \Cref{section:elliptic-curves}, we consider the core object in the
+majority of modern zk-SNARK systems, the Elliptic Curves. Besides considering
+the definition and basics, we also describe the projective coordinates and the
+elliptic curve pairing operation. In the \Cref{section:commitment-schemes}, we
+consider the commitment schemes: hash-based, Pedersen, and KZG commitments. In
+the \Cref{section:security-analysis}, we consider the basics of security
+analysis, which, from the practical standpoint, is needed to read 
+cryptographic papers and understand which security assumptions are used in the
+protocols and how authors typically describe them.
+
+
+\end{document}

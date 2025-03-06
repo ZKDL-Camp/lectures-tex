@@ -1,5 +1,5 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{zkdl-template}[2024/07/09 ZKDL Template]
+\ProvidesClass{zkdl-template}[2025/02/024 ZKDL Template]
 
 % --- Defining the basic article style ---
 \providecommand\mtfntsize{10pt}
@@ -14,6 +14,8 @@
 \RequirePackage{cmbright}
 \RequirePackage{blkarray}
 \RequirePackage{graphicx}
+\RequirePackage{etoc}
+\RequirePackage{blindtext}
 \RequirePackage{framed}
 \RequirePackage{dsfont}
 \RequirePackage{extarrows}
@@ -27,10 +29,15 @@
 \RequirePackage[inline,shortlabels]{enumitem}
 \setlist{topsep=2pt,itemsep=2pt,parsep=0pt,partopsep=0pt}
 \RequirePackage[dvipsnames,table]{xcolor}
+\RequirePackage{opencolor}
+\RequirePackage{tabularx}
+\usepackage{arydshln}
+\usepackage{makecell}
+
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[
-    paperwidth=148mm,
-    paperheight=210mm,
+    paperwidth=145mm,
+    paperheight=215mm,
     top=5mm,
     bottom=12mm, 
     left=15mm, 
@@ -39,7 +46,7 @@
     headheight=5mm,
     headsep=2mm,
     includefoot,
-    footskip=8mm
+    footskip=4mm
 ]{geometry}
 \RequirePackage[most]{tcolorbox}
 \RequirePackage{multicol}
@@ -214,10 +221,13 @@
 \theoremstyle{mystyle}{\newtheorem{corollary}[definition]{Corollary}}
 \theoremstyle{mystyle}{\newtheorem*{remark}{Remark}}
 \theoremstyle{mystyle}{\newtheorem*{remarks}{Remarks}}
-\theoremstyle{mystyle}{\newtheorem*{example}{Example}}
-\theoremstyle{mystyle}{\newtheorem*{examples}{Examples}}
+\theoremstyle{mystyle}{\newtheorem{example}{Example}[section]}
+\theoremstyle{mystyle}{\newtheorem{examples}{Examples}[section]}
 \theoremstyle{definition}{\newtheorem*{exercise}{Exercise}}
 \theoremstyle{cstyle}{\newtheorem*{cthm}{}}
+
+% Load custom environment 
+\input{x_environments.cls}
 
 % --Warning environment--
 \newtheoremstyle{warn}{}{}{}{}{\normalfont}{}{ }{}
@@ -259,6 +269,10 @@
 \crefname{algocf}{alg.}{algs.}
 \Crefname{algocf}{Algorithm}{Algorithms}
 
+% For cleverref to display examples properly
+\crefname{example}{ex.}{exs.}
+\Crefname{example}{Example}{Examples}
+
 % align and align* environments with inline size
 \newenvironment{talign}{\let\displaystyle\textstyle\align}{\endalign}
 \newenvironment{talign*}{\let\displaystyle\textstyle\csname align*\endcsname}{\endalign}
@@ -284,8 +298,12 @@
 \titlespacing*{\subsection}{0pt}{5pt}{5pt}
 \titlespacing*{\subsubsection}{0pt}{5pt}{5pt}
 
-\newcommand{\sectionbreak}{\clearpage} % Start every section on a new page
-% \newcommand{\subsectionbreak}{\clearpage} % Start every subsection on a new page
+\let\oldsection\section
+\renewcommand{\section}{\clearpage\oldsection}
+
+% Redefine \part to start on a new page
+\let\oldpart\part
+\renewcommand{\part}[1]{\clearpage\oldpart{#1}}
 
 \newcommand{\Disp}{\displaystyle}
 \newcommand{\qe}{\hfill\(\bigtriangledown\)}

@@ -1,4 +1,4 @@
-\documentclass[../lecture-notes.tex]{subfiles}
+\documentclass[../lecture-notes-148x210.tex]{subfiles}
 
 \begin{document}
 
@@ -509,7 +509,10 @@ Now, suppose that the circuit is defined over $n$ inputs. We can always split th
 \begin{definition}
     The \textbf{Circuit Satisfiability Problem} is defined as follows: given an arithmetic circuit $\Circ$ and a public input $\mathbf{x} \in \mathbb{F}^{\ell}$, determine if there exists a private input $\mathbf{w} \in \mathbb{F}^{n-\ell}$ such that $\Circ(\mathbf{x},\mathbf{w}) = 0$. More formally, the problem is determined by relation $\mathcal{R}_{\Circ}$ and corresponding language $\mathcal{L}_{\Circ}$ as follows:
     \begin{equation*}
-        \mathcal{R}_{\Circ} = \{(\mathbf{x},\mathbf{w}) \in \mathbb{F}^{\ell} \times \mathbb{F}^{n-\ell}: \mathtt{C}(\mathbf{x},\mathbf{w}) = 0\}, \; \mathcal{L}_{\Circ} = \{\mathbf{x} \in \mathbb{F}^{\ell}: \exists \mathbf{w} \in \mathbb{F}^{n-\ell},\; \Circ(\mathbf{x},\mathbf{w}) = 0\}
+        \begin{aligned}
+            &\mathcal{R}_{\Circ} = \{(\mathbf{x},\mathbf{w}) \in \mathbb{F}^{\ell} \times \mathbb{F}^{n-\ell}: \mathtt{C}(\mathbf{x},\mathbf{w}) = 0\} \\
+            &\mathcal{L}_{\Circ} = \{\mathbf{x} \in \mathbb{F}^{\ell}: \exists \mathbf{w} \in \mathbb{F}^{n-\ell},\; \Circ(\mathbf{x},\mathbf{w}) = 0\}            
+        \end{aligned}
     \end{equation*}
 \end{definition}
 

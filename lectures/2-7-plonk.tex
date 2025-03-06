@@ -1,11 +1,11 @@
-\documentclass[../lecture-notes.tex]{subfiles}
+\documentclass[../lecture-notes-148x210.tex]{subfiles}
 \usepackage[T1]{fontenc}
 
 \pgfplotsset{compat=1.18}
 
 \begin{document}
 
-\subsection{Number Theoretical Trasnform: Universal Polynomial Accelerator}\label{section:ntt}
+\subsection[Number Theoretical Trasnform]{Number Theoretical Trasnform: Universal Polynomial Accelerator}\label{section:ntt}
 
 In the previous sections, when considering Groth16, we have seen the idea that
 polynomials are powerful encoders of data. To encode a set of $N$ values
@@ -1182,5 +1182,13 @@ necessary values to proceed with the checks.
 
 If all checks pass, output $\textcolor{green!60!black}{\mathsf{accept}}$.
 Otherwise, output $\textcolor{red!60!black}{\mathsf{reject}}$.
+
+\subsection*{Acknowledgements}
+
+This section was greatly inspired by
+\href{https://blog.lambdaclass.com/all-you-wanted-to-know-about-plonk/}{``All
+you wanted to know about PlonK''} blog by LambdaClass and
+\href{https://vitalik.eth.limo/general/2019/09/22/plonk.html}{``Understanding
+PlonK''} article by Vitalik Buterin.
 
 \end{document}

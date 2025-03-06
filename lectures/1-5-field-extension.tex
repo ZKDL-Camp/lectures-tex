@@ -1,0 +1,369 @@
+\documentclass[../lecture-notes-148x210.tex]{subfiles}
+
+\begin{document}
+
+\subsection{General Definition}
+
+Previously, our discussion resolved around the finite field $\mathbb{F}_p$ for a prime $p$. However, many protocols
+need more than just a prime field. For example, elliptic curve pairings and certain STARK constructions require
+extending $\mathbb{F}_p$ to, in a sense, the analogous of complex numbers. 
+
+From school and, possibly, university, you might remember how complex numbers $\mathbb{C}$ are constructed. You take two real numbers, say, $x,y \in \mathbb{R}$, introduce a new
+symbol $i$ satisfying $i^2 = -1$, and define the complex number as $z = x + iy$. In certain cases, one might encounter a bit more rigorous and abstract definition of complex numbers as
+the set of pairs $(x,y) \in \mathbb{R}^2$ where addition in naturally defined as $(x_1,y_1)+(x_2,y_2)=(x_1+x_2,y_1+y_2)$, and the multiplication is:
+\begin{xequation*}
+    (x_1,y_1) \cdot (x_2,y_2) = (x_1x_2-y_1y_2,x_1y_2+x_2y_1)\footnote{Notice that $(x_1+iy_1)(x_2+iy_2) = x_1x_2+iy_2x_1+iy_1x_2+i^2y_1y_2 = (x_1x_2-y_1y_2) + (x_1y_2+x_2y_1)i$.}.
+\end{xequation*}
+
+In spite of what interpretation you have seen, the complex number is just a tuple of two real numbers that satisfy a bit different rules of multiplication (since addition is typically defined in the same way). What is even more important to us, is that $\mathbb{C}$ is our first example of the so-called \textbf{field extension} of $\mathbb{R}$.
+
+Formally, definition of the field extension \cite[section 21]{Judson_2012} is straightforward:
+\begin{definition}
+    Let $\mathbb{F}$ be a field and $\mathbb{K}$ be another field. We say that $\mathbb{K}$ is an \textbf{extension} of $\mathbb{F}$ if $\mathbb{F} \subset \mathbb{K}$ and we denote it as $\mathbb{K}/\mathbb{F}$.
+\end{definition}
+
+Despite just a simplicity of the definition, the field extensions are a very powerful tool in mathematics. But first, let us consider a few non-trivial examples of field extensions.
+
+\begin{example}
+    Denote by $\mathbb{Q}(\sqrt{2}) = \{x + y\sqrt{2}: x,y \in \mathbb{Q}\}$. This is a field extension of $\mathbb{Q}$. It is obvious that $\mathbb{Q} \subset \mathbb{Q}(\sqrt{2})$, but why is $\mathbb{Q}(\sqrt{2})$ a field? Addition and multiplication operations are obviously closed:
+    \begin{xequation*}
+        \begin{aligned}
+            (x_1+y_1\sqrt{2}) + (x_2+y_2\sqrt{2}) = (x_1+x_2) + (y_1+y_2)\sqrt{2},\\
+            (x_1+y_1\sqrt{2}) \cdot (x_2+y_2\sqrt{2}) = (x_1x_2+2y_1y_2) + (x_1y_2+x_2y_1)\sqrt{2}.
+        \end{aligned}
+    \end{xequation*}
+    But what about the inverse element? Well, here is the trick:
+    \begin{xequation*}
+        \begin{aligned}
+            &\frac{1}{x+y\sqrt{2}} = \frac{x-y\sqrt{2}}{(x+y\sqrt{2})(x-y\sqrt{2})} = \frac{x-y\sqrt{2}}{x^2-2y^2} = \\
+            & = \frac{x}{x^2-2y^2} - \frac{y}{x^2-2y^2}\sqrt{2} \in \mathbb{Q}(\sqrt{2}).            
+        \end{aligned}
+    \end{xequation*}
+\end{example}
+
+\begin{example}
+    Consider $\mathbb{Q}(\sqrt{2}, i) = \{a+bi: a,b \in \mathbb{Q}(\sqrt{2})\}$ where $i^2=-1$. This is a field extension of $\mathbb{Q}(\sqrt{2})$ and, consequently, of $\mathbb{Q}$. The representation of the element is:
+    \begin{xequation*}
+        (a+b\sqrt{2}) + (c+d\sqrt{2})i = a + b\sqrt{2} + ci + d\sqrt{2}i
+    \end{xequation*}
+
+    Showing that this is a field is a bit more tedious, but still straightforward. Suppose we take $\alpha+\beta i \in \mathbb{Q}(\sqrt{2}, i)$ with $\alpha,\beta \in \mathbb{Q}(\sqrt{2})$. Then:
+    \begin{xequation*}
+        \frac{1}{\alpha+\beta i} = \frac{\alpha-\beta i}{\alpha^2+\beta^2} = \frac{\alpha}{\alpha^2+\beta^2} - \frac{\beta}{\alpha^2+\beta^2}i
+    \end{xequation*}
+
+    Since $\mathbb{Q}(\sqrt{2})$ is a field, both $\frac{\alpha}{\alpha^2+\beta^2}$ and $\frac{\beta}{\alpha^2+\beta^2}$ are in $\mathbb{Q}(\sqrt{2})$, and, consequently, $\mathbb{Q}(\sqrt{2}, i)$ is a field as well.
+\end{example}
+
+\begin{remark}
+    Notice that basically, $\mathbb{Q}(\sqrt{2}, i)$ is just a linear combination of $\{1,\sqrt{2},i,\sqrt{2}i\}$. This has a very important implication: $\mathbb{Q}(\sqrt{2}, i)$ is a four-dimensional vector space over $\mathbb{Q}$, where elements $\{1,\sqrt{2},i,\sqrt{2}i\}$ naturally form \textbf{basis}. We are not going to use it implicitly, but this observation might make further discussion a bit more intuitive.
+\end{remark}
+
+\begin{remark}
+    One might have defined $\mathbb{Q}(\sqrt{2}, i) = \{x+\sqrt{2}y: x,y \in \mathbb{Q}(i)\}$ instead. Indeed, $\mathbb{Q}(\sqrt{2})(i) = \mathbb{Q}(i)(\sqrt{2}) = \mathbb{Q}(\sqrt{2}, i)$.
+\end{remark}
+
+\subsection{Polynomial Quotient Ring}
+
+Now, we present a more general way to construct field extensions. Notice that when constructing $\mathbb{C}$, we used the magical element $i$ that satisfies $i^2=-1$. But here is another way how to think of it.
+
+Consider the set of polynomials $\mathbb{R}[x]$, then I pick $p(x):=x^2+1 \in \mathbb{R}[x]$ and ask you to find roots of $p(x)$. Of course, you would claim ``hey, this equation has no solutions over $\mathbb{R}$'' and that is totally true. That is why mathematicians introduced a new element $i$ that we formally called the root of $x^2+1$. Note however, that $i$ is not a number in the traditional sense, but rather a fictional symbol that we artifically introduced to satisfy the equation.
+
+Now, could we have picked another polynomial, say, $q(x) = x^2+4$? Sure! As long as its roots cannot be found in $\mathbb{R}$, we are good to go.
+
+\begin{example}
+    Suppose $\beta$ is the root of $q(x):=x^2+4$. Then we could have defined complex numbers as a set of $x+y\beta$ for $x,y \in \mathbb{R}$. In this case, multiplication, for example, would be defined a bit differently than in the case of $\mathbb{C}$:
+    \begin{xequation}
+        (x_1+y_1\beta) \cdot (x_2+y_2\beta) = (x_1x_2-4y_1y_2) + (x_1y_2+x_2y_1)\beta.
+    \end{xequation}
+\end{example}
+
+We shifted to the polynomial consideration for a reason: now, instead of considering the complex number $\mathbb{C}$ as ``some'' tuple of real numbers $(c_0,c_1)$, now let us view it as a polynomial\footnote{Here, we use $X$ to represent the polynomial variable to avoid confusion with the notation $x+yi$.} $c_0+c_1X$ modulo polynomial $X^2+1$. 
+
+\begin{example}
+    Indeed, take, for example, $p_1(X) := 1+2X$ and $p_2(X) := 2+3X$. Addition is performed as we are used to:
+    \begin{xequation*}
+        p_1 + p_2 = (1+2X) + (2+3X) = 3+5X,
+    \end{xequation*}
+
+    but multiplication is a bit different:
+    \begin{xequation*}
+        p_1p_2 = (1+2X) \cdot (2+3X) = 2 + 3X + 4X + 6X^2 = 6X^2 +7X + 2.
+    \end{xequation*}
+
+    Well, and what next? Recall that we are doing arithmetic modulo $X^2+1$ and for that reason, we divide the polynomial by $X^2+1$:
+    \begin{xequation*}
+        6X^2+7X+2 = 6(X^2+1) + 7X - 4 \implies (6X^2+7X+2) \,\text{mod}\, (X^2+1) = 7X-4,
+    \end{xequation*}
+
+    meaning that $p_1p_2 = 7X-4$. Oh wow, hold on! Let us come back to our regular complex number representation and multiply $(1+2i)(2+3i)$. We get $2+3i+4i+6i^2=-4+7i$. That is exactly the same result if we change $X$ to $i$ above! In fact, what we have observed is the fact that our polynomial quotient ring $\mathbb{R}[X]/(X^2+1)$ is isomorphic to $\mathbb{C}$.
+\end{example}
+
+So, let us generalize this observation to any field $\mathbb{F}$ and any irreducible polynomial $\mu(x) \in \mathbb{F}[x]$.
+
+\begin{theorem}
+    Let $\mathbb{F}$ be a field and $\mu(x)$ --- irreducible polynomial over $\mathbb{F}$ (sometimes called a \textbf{reduction polynomial}). Consider a set of polynomials over $\mathbb{F}[x]$ modulo $\mu(x)$, formally denoted as $\mathbb{F}[x]/(\mu(x))$. Then, $\mathbb{F}[x]/(\mu(x))$ is a field.
+\end{theorem}
+
+\begin{example}
+    As we considered above, let $\mathbb{F}=\mathbb{R}$, $\mu(x)=x^2+1$, then $\mathbb{R}[X]/(X^2+1)$ (a set of polynomials modulo $X^2+1$) is a field.
+\end{example}
+\begin{example}
+    Suppose $\mathbb{F}=\mathbb{Q}$ and $\mu(x) := x^2-2$. Then, $\mathbb{Q}[X]/(X^2-2)$ is a field isomorphic to $\mathbb{Q}(\sqrt{2})$, considered above.
+\end{example}
+\begin{example}
+    Suppose $\mathbb{F}=\mathbb{Q}$ and $\mu(x) := (x^2+1)(x^2-2)=x^4-x^2-2$. Then, $\mathbb{Q}[X]/(x^4-x^2-2)$ is a field isomorphic to $\mathbb{Q}(\sqrt{2},i)$.
+\end{example}
+
+\begin{remark}
+    Although we have not defined the isomorphism between two rings/fields, it is defined similarly to group isomorphism. Suppose we have fields $(\mathbb{F},+,\times)$ and $(\mathbb{K}, \oplus, \otimes)$. Bijective function $\phi: \mathbb{F} \to \mathbb{K}$ is called an isomorphism if it preserves additive and multiplicative structures, that is for all $a,b \in \mathbb{F}$:
+    \begin{xequation}
+        \begin{aligned}
+            \phi(a+b) = \phi(a) \oplus \phi(b),\\
+            \phi(a\times b) = \phi(a) \otimes \phi(b).
+        \end{aligned}
+    \end{xequation}
+\end{remark}
+
+This theorem (aka definition) corresponds to viewing complex numbers as a polynomial quotient ring $\mathbb{R}[X]/(X^2+1)$. But, we can give a theorem (aka definition) for our classical representation via magical root $i$ of $x^2+1$.
+
+\begin{theorem}
+    Let $\mathbb{F}$ be a field and $\mu \in \mathbb{F}[X]$ is an irreducible polynomial of degree $n$ and let $\mathbb{K} := \mathbb{F}[X]/(\mu(X))$. Let $\theta \in \mathbb{K}$ be the root of $\mu$ over $\mathbb{K}$. Then,
+    \begin{xequation}
+        \mathbb{K} = \{c_0+c_1\theta+\cdots+c_{n-1}\theta^{n-1}: c_0,\dots,c_{n-1} \in \mathbb{F}\}
+    \end{xequation}
+\end{theorem}
+
+Although this definition is quite useful, we will mostly rely on the polynomial quotient ring definition. Let us define the \textbf{prime field extension}.
+
+\begin{definition}
+    Suppose $p$ is prime and $m \geq 2$. Let $\mu \in \mathbb{F}_p[X]$ be an irreducible polynomial of degree $m$. Then, elements of $\mathbb{F}_{p^m}$ are polynomials in $\mathbb{F}_p^{(\leq m)}[X]$. In other words,
+    \begin{xequation*}
+        \mathbb{F}_{p^m} = \{c_0+c_1X+\cdots+c_{m-1}X^{m-1}: c_0,\dots,c_{m-1} \in \mathbb{F}_p\},
+    \end{xequation*}
+    where all operations are performed modulo $\mu(X)$.
+\end{definition}
+
+Again, let us consider a few examples.
+
+\begin{example}
+    Consider the $\mathbb{F}_{2^4}$. Then, there are $16$ elements in this set:
+    \begin{xequation*}
+        \begin{aligned}
+            &0, 1, X, X+1,\\ &X^2, X^2+1, X^2+X, X^2+X+1,\\
+            &X^3, X^3+1, X^3+X, X^3+X+1,\\ &X^3+X^2, X^3+X^2+1, X^3+X^2+X, X^3+X^2+X+1.
+        \end{aligned}
+    \end{xequation*}
+
+    One might choose the following reduction polynomial: $\mu(X)=X^4+X+1$ (of degree $4$). Then, operations are performed in the following manner:
+    \begin{itemize}
+        \item Addition: $(X^3+X^2+1)+(X^2+X+1) = X^3+X$.
+        \item Subtraction: $(X^3+X^2+1)-(X^2+X+1) = X^3+X$.
+        \item Multiplication: $(X^3+X^2+1)\cdot(X^2+X+1)=X^2+1$ since:
+        \begin{xequation*}
+            (X^3+X^2+1)\cdot(X^2+X+1) = X^5+X+1 \; \text{mod} \; (X^4+X+1) = X^2+1
+        \end{xequation*}
+        \item Inversion: $(X^3+X^2+1)^{-1}=X^2$ since $(X^3+X^2+1)\cdot X^2 \; \text{mod} \; (X^4+X+1) = 1$.
+    \end{itemize}
+\end{example}
+
+Now, in the subsequent sections, we would need to extend $\mathbb{F}_p$ at least to $\mathbb{F}_{p^2}$. A convenient choice, similarly to the complex numbers, is to take $\mu(X)=X^2+1$. However, in contrast to $\mathbb{R}$, equation $X^2=-1 \pmod{p}$ might have solutions over certain prime numbers $p$. Thus, we consider proposition below.
+
+\begin{proposition}
+    Let $p$ be an odd prime. Then $X^2+1$ is irreducible in $\mathbb{F}_p[X]$ if and only if $p \equiv 3 \pmod{4}$.
+\end{proposition}
+
+\begin{corollary}
+    $\mathbb{F}_{p^2} = \mathbb{F}_p[u]/(u^2+1)$ is a valid prime field extension for odd primes $p$ satisfying $p \equiv 3 \pmod{4}$. In this case, extended elements are of the form $c_0+c_1u$ where $c_0,c_1 \in \mathbb{F}_p$ and $u^2=-1$.
+\end{corollary}
+
+\subsection{Multiplicative Group of a Finite Field}\label{section:multiplicative_subgroup}
+
+The non-zero elements of $\mathbb{F}_p$, denoted as $\mathbb{F}_p^{\times}$, form a multiplicative cyclic group. In other words, there exist elements $g \in \mathbb{F}_p^{\times}$, called \textit{generators}, such that
+\begin{equation*}
+    \mathbb{F}_p^{\times} = \{g^k: 0 \leq k \leq p-2\}
+\end{equation*}
+
+The order of $x \in \mathbb{F}_p^{\times}$ is the smallest positive integer $r$ such that $x^r=1$. It is also not difficult to show that $r \mid (p-1)$.
+
+\begin{definition}
+    $\omega \in \mathbb{F}$ is the \textit{primitive root} in the finite field $\mathbb{F}$ if $\langle\omega\rangle = \mathbb{F}^{\times}$.
+\end{definition}
+
+\begin{example}
+    $\omega=3$ is the primitive root of $\mathbb{F}_7$. Indeed,
+    \begin{xequation*}
+        \begin{aligned}
+            3^1=3, 3^2=2, 3^3=6, 3^4=4, 3^5=5, 3^6=1.
+        \end{aligned}
+    \end{xequation*}
+
+    So clearly $\langle \omega \rangle = 7$.
+\end{example}
+
+In STARKs (and in optimizing operations) for DFT (Discrete Fourier Transform) we would need the so-called $n$th primitive roots of unity.
+
+\begin{example}
+    For those who studied complex numbers a bit (it is totally OK if you did not, so you might skip this example), recall an equation $\zeta^n=1$ over $\mathbb{C}$. The solutions are $\zeta_k = \cos\left(\frac{2\pi k}{n}\right) + i\sin\left(\frac{2\pi k}{n}\right)$ for $k\in\{0,1,\dots,n-1\}$, so one has exactly $n$ solutions (in contrast to $x^n=1$ over $\mathbb{R}$ where there are at most $2$ solutions\footnote{Think why.}). For any solution $\zeta_k$, it is true that $\zeta_k^n=1$, but if one were to consider the subgroup generated by $\zeta_k$ (that is, $\{1,\zeta_k, \zeta_k^2,\dots\}$), then not neccecerily $\langle \zeta_k \rangle$ would enumerate all the roots of unity $\{\zeta_j\}_{j=0}^{n-1}$. For that reason, we call $\zeta_k$ the $n$th primitive root of unity if $\langle \zeta_k \rangle$ enumerates all roots of unity. One can show that this is the case if and only if $\gcd(k,n)=1$. This is always the case for $k=1$, so commonly mathematicians use $\zeta_n$ to denote an expression $\cos \frac{2\pi}{n} + i\sin\frac{2\pi}{n} = e^{2\pi i/n}$.
+\end{example}
+
+Yet, let us give the broader definition, including the finite fields case.
+
+\begin{definition}
+    $\omega$ is the $n$th primitive root of unity if $\omega^n=1$ and $\omega^k \neq 1$ for all $1 \leq k < n$.
+\end{definition}
+
+Note that such $\omega$ exists if and only if $n \mid (p-1)$. 
+
+\subsection{Algebraic Closure}
+
+Consider the following interesting question: suppose we have a field $\mathbb{F}$. Is there an extension $\mathbb{K}/\mathbb{F}$ such that $\mathbb{K}$ contains all roots of any polynomial in $\mathbb{F}[X]$? The answer is yes, and such a field is called the \textbf{algebraic closure} of $\mathbb{F}$, although not always this algebraic closure has a nice form. But first, let us define what it means for field $\mathbb{F}$ to be algebraically closed.
+
+\vspace{-0.75em}
+
+\begin{definition}
+    A field $\mathbb{F}$ is called \textbf{algebraically closed} if every non-constant polynomial $p(x) \in \mathbb{F}[X]$ has a root in $\mathbb{F}$.
+\end{definition}
+
+\begin{example}
+    $\mathbb{R}$ is not algebraically closed since $X^2+1$ has no roots in $\mathbb{R}$. However, $\mathbb{C}$ is algebraically closed, which follows from the fundamental theorem of algebra. Since $\mathbb{C}$ is a field extension of $\mathbb{R}$, it is also an algebraic closure of $\mathbb{R}$. This is commonly denoted as $\overline{\mathbb{R}} = \mathbb{C}$.
+\end{example}
+
+\begin{definition}
+    A field $\mathbb{K}$ is called an \textbf{algebraic closure} of $\mathbb{F}$ if $\mathbb{K}/\mathbb{F}$ is algebraically closed. This is denoted as $\overline{\mathbb{F}} = \mathbb{K}$.
+\end{definition}
+
+Since we are doing cryptography and not mathematics, we are interested in the algebraic closure of $\mathbb{F}_p$. Well, I have two news for you (as always, one is good and one is bad). The good news is that any finite field $\mathbb{F}_{p^m}$ has an algebraic closure. The bad news is that it does not have a form $\mathbb{F}_{p^k}$ for $k>m$ and there are infinitely many elements in it (so in other words, the algebraic closure of a finite field is not finite). This is due to the following theorem.
+
+\begin{theorem}
+    No finite field $\mathbb{F}$ is algebraically closed.
+\end{theorem}
+
+\textbf{Proof.} Suppose $f_1,f_2,\dots,f_n \in \mathbb{F}$ are all elements of $\mathbb{F}$. Consider the following polynomial:
+\begin{xequation*}
+    p(x) = \prod_{i=1}^n (x-f_i)+1 = (x-f_1)(x-f_2)\cdots(x-f_n)+1.
+\end{xequation*}
+
+Clearly, $p(x)$ is a non-constant polynomial and has no roots in $\mathbb{F}$, since for any $f \in \mathbb{F}$, one has $p(f)=1$. $\blacksquare$
+
+But what form does the $\overline{\mathbb{F}}_{p}$ have? Well, it is a union of all $\mathbb{F}_{p^k}$ for $k \geq 1$. This is formally written as:
+\begin{equation*}
+    \overline{\mathbb{F}}_{p} = \bigcup_{k \in \mathbb{N}} \mathbb{F}_{p^k}.
+\end{equation*} 
+
+\vspace{-4mm}
+
+\begin{remark}
+    But this definition is super counter-intuitive! So here how we usually interpret it. Suppose I tell you that polynomial $q(x)$ has a root in $\overline{\mathbb{F}}_p$. What that means is that there exists some extension $\mathbb{F}_{p^m}$ such that for some $\alpha \in \mathbb{F}_{p^m}$, $q(\alpha)=0$. We do not know how large this $m$ is, but we know that it exists. For that reason, $\overline{\mathbb{F}}_p$ is defined as an infinite union of all possible field extensions.
+\end{remark}
+
+\subsection{Exercises}
+
+% \subsection*{Warmup (Oleksandr in search of perfect field extension)}
+\begin{xexercise}
+    {Exercise 1.}
+    {Oleksandr decided to build $\mathbb{F}_{49}$ as $\mathbb{F}_7[i]/(i^2+1)$. Compute $(3+i)(4+i)$. }
+    {5}
+    {
+        \item $6+i$.
+        \item $6$.
+        \item $4+i$.
+        \item $4$.
+        \item $2+4i$.
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 2.}
+    {Oleksandr came up with yet another extension $\mathbb{F}_{p^2} = \mathbb{F}_p[i]/(i^2+2)$. He asked interns to calculate $2/i$. Based on five answers given below, help Oleksandr to find the correct one.}
+    {3}
+    {
+        \item $1$.
+        \item $p-2$.
+        \item $(p-3)i$.
+        \item $(p-1)i$.
+        \item $p-1$.
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 3*.}
+    {After endless tries, Oleksandr has finally found the perfect field extension: $\mathbb{F}_{p^2} := \mathbb{F}_p[v] / (v^2+v+1)$. However, Oleksandr became very frustrated since not for any $p$ this would be a valid field extension. For which of the following values $p$ such construction would \textbf{not} be a valid field extension? Use the fact that equation $\omega^3=1$ over $\mathbb{F}_p$ has non-trivial solutions (meaning, two others except for $\omega=1$) if $p \equiv 1 \pmod{3}$. You can assume that listed numbers are primes.}
+    {4}
+    {
+        \item $8431$.
+        \item $9173$.
+        \item $9419$.
+        \item $6947$.
+    }
+\end{xexercise}
+
+\begin{tcolorbox}[breakable, colback=blue!5!white,fonttitle=\bfseries,colframe=blue!80!white,title=Exercises 4-9. Tower of Extensions]
+    \textit{You are given the passage explaining the topic of tower of extensions. The text has gaps that you need to fill in with the correct statement among the provided choices.}
+    \vspace{5px}
+    
+    This question demonstrates the concept of the so-called \textbf{tower of extensions}. Suppose we want to build an extension field $\mathbb{F}_{p^4}$. Of course, we can find some irreducible polynomial $p(X)$ of degree $4$ over $\mathbb{F}_p$ and build $\mathbb{F}_{p^4}$ as $\mathbb{F}_p[X]/(p(X))$. However, this method is very inconvenient since implementing the full $4$-degree polynomial arithmetic is inconvenient. Moreover, if we were to implement arithmetic over, say, $\mathbb{F}_{p^{24}}$, that would make the matters worse. For this reason, we will build $\mathbb{F}_{p^4}$ as $\mathbb{F}_{p^2}[j]/(q(j))$ where $q(j)$ is an irreducible polynomial of degree $2$ over $\mathbb{F}_{p^2}$, which itself is represented as $\mathbb{F}_p[i]/(r(i))$ for some suitable irreducible quadratic polynomial $r(i)$. This way, we can first implement $\mathbb{F}_{p^2}$, then $\mathbb{F}_{p^4}$, relying on the implementation of $\mathbb{F}_{p^2}$.
+    \vspace{5px}
+
+    For illustration purposes, let us pick $p:=5$. As noted above, we want to build $\mathbb{F}_{5^2}$ first. A valid way to represent $\mathbb{F}_{5^2}$ would be to set $\mathbb{F}_{5^2} := \boxed{\textcolor{blue}{\textbf{4}}}$. Given this representation, the zero of a linear polynomial $f(x) = ix - (i+3)$, defined over $\mathbb{F}_{5^2}$, is $\boxed{\textcolor{blue}{\textbf{5}}}$.
+    \vspace{5px}
+
+    Now, assume that we represent $\mathbb{F}_{5^4}$ as $\mathbb{F}_{5^2}[j]/(j^2-\xi)$ for $\xi = i+1$. Given such representation, the value of $j^4$ is $\boxed{\textcolor{blue}{\textbf{6}}}$. Finally, given $c_0+c_1j \in \mathbb{F}_{5^4}$ we call $c_0 \in \mathbb{F}_{5^2}$ a \textbf{real part}, while $c_1 \in \mathbb{F}_{5^2}$ an \textbf{imaginary part}. For example, the imaginary part of number $j^3+2i^2\xi$ is $\boxed{\textcolor{blue}{\textbf{7}}}$, while the real part of $(a_0+a_1j)b_1j$ is $\boxed{\textcolor{blue}{\textbf{8}}}$. Similarly to complex numbers, it motivates us to define the number's \textbf{conjugate}: for $z = c_0+c_1j$, define the conjugate as $\overline{z} := c_0-c_1j$. The expression $z\overline{z}$ is then $\boxed{\textcolor{blue}{\textbf{9}}}$.
+\end{tcolorbox}
+
+\begin{center}
+    \begin{tabular}{p{4.5cm}p{3cm}p{4cm}}
+        \textbf{Exercise 4.}
+        \begin{enumerate}[a)]
+            \item $\mathbb{F}_5[i]/(i^2+1)$
+            \item $\mathbb{F}_5[i]/(i^2+2)$
+            \item $\mathbb{F}_5[i]/(i^2+4)$
+            \item $\mathbb{F}_5[i]/(i^2+2i+1)$
+            \item $\mathbb{F}_5[i]/(i^2+4i+4)$
+        \end{enumerate} &   
+        \textbf{Exercise 5.}
+        \begin{enumerate}[a)]
+            \item $1+i$
+            \item $1+2i$
+            \item $1+4i$
+            \item $2+3i$
+            \item $3+i$
+        \end{enumerate} &
+        \textbf{Exercise 6.}
+        \begin{enumerate}[a)]
+            \item $4+2i$
+            \item $4i$
+            \item $1$
+            \item $1+2i$
+            \item $2+4i$
+        \end{enumerate}
+        \\
+        \textbf{Exercise 7.}
+        \begin{enumerate}[a)]
+            \item equal to zero.
+            \item equal to one.
+            \item equal to the real part.
+            \item $2(1+i)$
+            \item $-4$
+        \end{enumerate} & 
+        % Set A but not B
+        \textbf{Exercise 8.}
+        \begin{enumerate}[a)]
+            \item $a_1b_1$
+            \item $a_1b_1\xi$
+            \item $a_0b_1$
+            \item $a_0b_1\xi$
+            \item $a_0a_1$
+        \end{enumerate} & 
+        \textbf{Exercise 9.}
+        \begin{enumerate}[a)]
+            \item $c_0^2+c_1^2$
+            \item $c_0^2-c_1^2\xi$
+            \item $c_0^2+c_1^2\xi^2$
+            \item $(c_0^2+c_1^2\xi)j$
+            \item $(c_0^2-c_1^2)j$
+        \end{enumerate} 
+    \end{tabular}
+\end{center}
+
+\end{document}
