@@ -263,20 +263,25 @@ Now, let us define the sharing scheme.
 
 Now, Shamir's protocol is one of the most famous secret sharing schemes. It works as follows: our finite set is $\mathbb{F}_q$ for some large prime $q$. Then, algorithms in the protocol are defined as follows:
 \begin{itemize}
-    \item $\mathsf{Gen}(\alpha, k, n)$: choose random $k_1,\dots,k_{t-1} \xleftarrow[]{R} \mathbb{F}_q$ and define the polynomial
-    \begin{xequation}
-        \vspace{-1mm}
-        \omega(x) := \alpha + k_1x + k_2x^2 + \cdots + k_{t-1}x^{t-1} \in \mathbb{F}_q^{\leq (t-1)}[x],     
-        \vspace{-0.5mm}
-    \end{xequation}
-    and then compute $\alpha_i \gets \omega(i) \in \mathbb{F}_q, \; i = 1,\dots,n$. Return $(\alpha_1,\dots,\alpha_n)$.
+    \item $\mathsf{Gen}(\alpha, k, n)$: choose random $k_1,\dots,k_{t-1}
+    \xleftarrow[]{R} \mathbb{F}_q$ and define polynomial $\omega(x) := \alpha +
+    \sum_{j=1}^{t-1}k_jx^j \in \mathbb{F}_q^{\leq (t-1)}[x]$. Then, compute
+    $\alpha_i \gets \omega(i) \in \mathbb{F}_q$ for each $i$ and return
+    $(\alpha_1,\dots,\alpha_n)$.
     \item $\mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}})$: reconstruct the polynomial $\omega(x)$ using Lagrange interpolation and return $\omega(0) = \alpha$.
 \end{itemize}
 
-The combination function is possible since, having $t$ points $\{i,\alpha_i\}_{i \in \mathcal{I}}$ with $\omega(i) = \alpha_i$, we can fully reconstruct the polynomial $\omega(x)$ and then evaluate it at $0$ to get $\alpha$.
-
-Instead, suppose we have only $t-1$ (or less) pairs $\{i,\alpha_i\}_{i \in \mathcal{I}}$. Then, there are many polynomials $\omega(x)$ that pass through these points (in fact, if we were in the field of real numbers, this number would be infinite), and thus the secret $\alpha$ is not uniquely determined.
-The intuition behind Shamir's Secret Sharing protocol is illustrated in Figure~\ref{fig:shamir}.
+The combination function is possible since, having $t$ points $\{i,\alpha_i\}_{i
+\in \mathcal{I}}$ with $\omega(i) = \alpha_i$, we can fully reconstruct the
+polynomial $\omega(x)$ and then evaluate it at $0$ to get $\alpha$. Instead,
+suppose we have only $t-1$ (or less) pairs $\{i,\alpha_i\}_{i \in \mathcal{I}}$.
+Then, there are many polynomials $\omega(x)$ that pass through these points (in
+fact, if we were in the field of real numbers, this number would be infinite),
+and thus the secret $\alpha$ is not uniquely determined. The intuition behind
+Shamir's Secret Sharing protocol is illustrated in Figure~\ref{fig:shamir}: for
+$t=3$, having only two \textcolor{blue}{blue} points, we cannot reconstruct the
+polynomial, while knowing the third \textcolor{red}{red} point allows us to
+uniquely determine the polynomial and thus get value at $0$.
 
 \vspace{-2mm}
 
@@ -286,13 +291,6 @@ The intuition behind Shamir's Secret Sharing protocol is illustrated in Figure~\
     \caption{Illustration of Shamir's Secret Sharing}
     \label{fig:shamir}
 \end{figure}
-
-Consider the case where $t = 3$. Having only 2 points means knowing two \textcolor{blue}{blue} 
-points without knowing the \textcolor{red}{red} one. There are infinitely many quadratic 
-polynomials passing through these two points (\textcolor{gray}{gray dashed} lines). 
-However, knowing the third \textcolor{red}{red} point allows us to uniquely determine 
-the polynomial and thus get its value at $0$. Note that this is illustrated over 
-$\mathbb{R}$, but for $\mathbb{F}_q$ the logic is similar.
 
 \subsection{Exercises}
 

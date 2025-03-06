@@ -6,7 +6,7 @@
 
 To better illustrate the Fiat-Shamir Transformation in practice, let us consider one of the most basic Sigma protocols: non-interactive Schnorr Identification Protocol. It is a simple and elegant protocol that allows one party to prove to another party that it knows a discrete logarithm of a given element. It is also quite straightforward to generalize it to a signature scheme.
 
-Let us formalize it using theory from \Cref{section:relations_and_languages}. Suppose $\mathbb{G}$ is a cyclic group of order $q$ with a generator $g$. Then, the relation and language being considered are:
+Let us formalize it using theory from \Cref{section:relations_and_languages}. Suppose $\mathbb{G}$ is a cyclic group of order $q$ with a generator $g$. Then, the relation and language being considered:
 \begin{equation*}
     \mathcal{R} = \{(u, \alpha) \in \mathbb{G} \times \mathbb{Z}_q: u = g^{\alpha}\}, \; \mathcal{L}_{\mathcal{R}} = \{u \in \mathbb{G}: \exists \alpha \in \mathbb{Z}_q: u = g^{\alpha}\}
 \end{equation*}
@@ -121,11 +121,11 @@ Now, notice that $e$ might not be included in the proof since the verifier can c
 Now, turning the Schnorr's Identification Protocol into a signature scheme is quite straightforward. The only modification to the non-interactive proof described in the previous section is that we include the message $m \in \mathcal{M}$ instead of our statement $u \in \mathbb{G}$ in the computation of the challenge $e$. Additionally, suppose we use the hash function $H$ as a random oracle from the previous section. Now, let us give a formal definition.
 
 \begin{definition}
-    The Schnorr Signature Scheme is $\Sigma_{\text{Sch}} = (\mathsf{Gen}, \mathsf{Sign}, \mathsf{Verify})$, where:
+    The \textbf{Schnorr Signature Scheme} $\Sigma_{\text{Sch}}$ is a tuple of algorithms $(\mathsf{Gen}, \mathsf{Sign}, \mathsf{Verify})$, where:
     \begin{itemize}
         \item $\mathsf{Gen}(1^{\lambda})$: We take $\alpha \xleftarrow{R} \mathbb{Z}_q$ and $u \gets g^{\alpha}$. The \textit{public key} is $\mathsf{pk} := u$, while the \textit{secret key} as $\mathsf{sk} := \alpha$.
         \item $\mathsf{Sign}(m,\mathsf{sk})$: The signer computes $r \gets \mathbb{Z}_q^{\times}, a \gets g^{r}, e \gets H(m, a), \sigma \gets r + \alpha e$ and outputs the signature $(a,\sigma)$.
-        \item $\mathsf{Verify}((a, \sigma), m,\mathsf{pk})$: The verifier checks if $g^{\sigma} = a \cdot u^e$ for $e \gets H(m, a)$.
+        \item $\mathsf{Verify}((a, \sigma), m,\mathsf{pk})$: Verifier checks $g^{\sigma} = a \cdot u^e$ for $e \gets H(m, a)$.
     \end{itemize}
 \end{definition}
 

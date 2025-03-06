@@ -31,6 +31,8 @@
 \RequirePackage[dvipsnames,table]{xcolor}
 \RequirePackage{opencolor}
 \RequirePackage{tabularx}
+\usepackage{arydshln}
+\usepackage{makecell}
 
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[

@@ -88,7 +88,14 @@ As mentioned above, we will bring two more ingredients to the table: \textbf{ran
     For those who have already worked with SNARKs, the above introduction might seem very confusing. After all, what we are aiming for is to build \textbf{non-interactive} zero-knowledge proofs. However, as it turns out, there are a plenty of ways to make \textit{some} interactive proofs non-interactive. We will discuss this in more detail later.
 \end{remark}
 
-Now, one of the drastic changes is the following: if $x \not\in \mathcal{L}_{\mathcal{R}}$, then the verifier $\mathcal{V}$ should reject the claim with overwhelming\footnote{Some technicality: as you know from the Lecture 2, the value $\varepsilon = \mathsf{negl}(\lambda)$ is called negligible since it is very close to $0$. In turn, the value $1-\varepsilon$ is called \textit{overwhelming} since it is close to $1$.} probability (in contrast to strict probability of $1$). Let us consider the concrete example.
+Now, one of the drastic changes is the following: if $x \not\in
+\mathcal{L}_{\mathcal{R}}$, then the verifier $\mathcal{V}$ should reject the
+claim with overwhelming\footnote{Some technicality: as you know from the
+\Cref{section:security-analysis}, the value $\varepsilon =
+\mathsf{negl}(\lambda)$ is called negligible since it is, in practice, very
+close to $0$. In turn, the value $1-\varepsilon$ is called \textit{overwhelming}
+since it is, intuitively, close to $1$.} probability (in contrast to strict
+probability of $1$). Let us consider the concrete example.
 
 \subsubsection{Example: Quadratic Residue Test}\label{section:quadratic_residue_test}
 
