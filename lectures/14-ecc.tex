@@ -24,11 +24,14 @@ they rely on.
 
 First of all let's define the main property of each ECC that directly determines its structure:
 \begin{definition}
-For the arbitrary binary strings of fixed length $x, y \in \{0, 1\}^n$ we define \textbf{Hamming distance} as the 
-number of elements where our binary strings do not match, divided by the length of the string: 
+For the arbitrary binary strings of fixed length $x, y \in \{0, 1\}^n$ we define an \textbf{absolute Hamming distance} 
+as the number of elements where our binary strings do not match: $\Delta(x,y) = |\{i: x_i \neq y_i\}|$. We also define 
+the \textbf{normalized Hamming distance} as the absolute Hamming distance divided by the length of the string: 
 $\Delta(x,y) = \frac{1}{n}|\{i: x_i \neq y_i\}|$.
 \end{definition}
-Then, we can define what exactly a block ECC is. Basically, it operates over some field ($GF(2)$ for example) encoding 
+In the theorems below we will use the normalized Hamming distance because of the independence from codeword length. 
+
+Next, we can define what exactly a block ECC is. Basically, it operates over some field ($\mathbb{GF}(2)$ for example) encoding 
 information using some algorithm that differs for each code.
 \begin{definition}
 For each $\delta \in [0, 1]$ we call a function $E: \{0, 1\}^n \rightarrow \{0, 1\}^m$ an 
@@ -113,11 +116,12 @@ impractical for modern applications due to the exponential growth in the size of
 
 
 \subsection{Reed-Solomon code}
-In information and coding theory, Reed–Solomon code is a block error-correcting code 
-developed by Irving S. Reed and Gustave Solomon in 1960. It (and it's variations) is widely used across various 
-applications, including consumer technologies like MiniDiscs, CDs, DVDs, Blu-ray discs, QR codes, and Data Matrix. It 
+In information and coding theory, Reed–Solomon ECCs are a group of block error-correcting codes
+developed by Irving S. Reed and Gustave Solomon in 1960. They are widely used across various 
+applications, including consumer technologies like MiniDiscs, CDs, DVDs, Blu-ray discs, QR codes, and Data Matrix. They 
 also play a crucial role in data transmission systems such as DSL and WiMAX, broadcast technologies like satellite 
-communications, DVB, and ATSC, as well as storage solutions such as RAID6.
+communications, DVB, and ATSC, as well as storage solutions such as RAID6. Essentially, the difference between the variants 
+Reed-Solomon code lies in the assumptions on the basis of which their encoding and decoding algorithms are determined. 
 
 Firstly, let's start from the definition of the input data that differs from binary:
 \begin{definition}
@@ -227,6 +231,78 @@ while it has degree $n + t - 1$. It is easy to prove that the polynomial degree 
 so $C(x) - G(x)\cdot E(x)$ is zero for each $x$. That is why from $C(x) = E(x)G(x)$ follows that $C(x)$ is divisible 
 on $E(x)$.
 \end{proof}
+
+\subsubsection{Reed-Solomon(255,223) implementation}
+The example implementation aims to help reader to understand how the encoding and decoding looks like. The 
+Reed-Solomon code with $m=255, n=223$ is widely used in communication and storage systems, including QR codes, CDs, 
+DVDs, and deep-space communication. It operates over $\mathbb{GF}(256)$ (the finite field of $256$ elements) 
+and encodes data as polynomials evaluated at different field elements. Following our theorem, the number of errors 
+is constrained as $t < \frac{m}{2} - \frac{n}{2}$ which means that $t < 16$. For our implementation we take $t = 15$.
+
+Let's start from the basic parameters definition:
+\begin{lstlisting}[language=Python,numbers=none]
+F = GF(256)
+R.<x> = PolynomialRing(F) # define x as a GF(256) element
+m = 255 # A codeword size
+n = 223 # A word size
+t = 15 # The number of possible errors
+distance = (m - n + 1)/m
+\end{lstlisting}
+The \verb|distance| then is equal to $\frac{11}{85}$. Let's sample a random message that will be an information 
+polynomial of degree $n=223$ (this messsage can be obtained by the interpolation of some useful data):
+\begin{lstlisting}[language=Python,numbers=none]
+word = sum(F.random_element() * x^i for i in range(n))
+\end{lstlisting}
+We start encoding from defining the evaluation elements that will be all non-zero elements of $\mathbb{GF}(256)$. 
+Then, our codeword will be the $m = 255$ evaluations of our information polynomial.
+\begin{lstlisting}[language=Python,numbers=none]
+# All non zero elements in F. Order(F) - 1 = 255
+f = [f_i for f_i in F if f_i != 0]
+assert len(f) == m
+codeword = [word(f_i) for f_i in f]
+assert len(codeword) == m
+\end{lstlisting}
+To decode the codeword we should solve the system of $m$ equations $C(x_i) - b_i \cdot E(x_i) = 0$. Note, that this system
+is homogeneous, so the trivial solution (all zeros) is always a solution. To find a non-zero solution we impose a 
+normalization condition, such as setting the leading coefficient of $E(x)$ to $1$. This turns our original equation 
+into the $C(x_i) - b_i \cdot E(x_i) = b_i \cdot x_i^deg_E$.
+\begin{lstlisting}[language=Python,numbers=none]
+deg_C = 237 # deg = n - 1 + t
+deg_E = 15 # deg = t
+
+M = Matrix(F, m, deg_C + deg_E + 1)
+for i, (f_i, b_i) in enumerate(zip(f, codeword)):
+    # Fill in coefficients for C(x)
+    for j in range(deg_C + 1):
+        M[i, j] = f_i^j
+    # Fill in coefficients for E(x), multiplied by -b_i
+    for j in range(deg_E):
+        M[i, deg_C + 1 + j] = -b_i * (f_i^j)
+
+
+rhs = vector(F, [b_i * (f_i^deg_E) for f_i, b_i in zip(f, codeword)])
+# Solve the linear system over F
+solution = M.solve_right(rhs)
+assert len(solution) == deg_C + deg_E + 1
+\end{lstlisting}
+Finally, we can recover the original information polynomial $G(x) = \frac{C(x)}{E(x)}$. We also should not forget to 
+add the normalized leading coefficient of $E(x)$.
+\begin{lstlisting}[language=Python,numbers=none]
+C = sum(solution[i] * x^i for i in range(deg_C + 1))
+E = sum(solution[deg_C + 1 + i] * x^i for i in range(deg_E))
+E += x ^ deg_E
+G = C/E
+assert G.numerator() == word
+\end{lstlisting}
+
+To discrover the error correcting properties of the presented code you can add the following snippet after the 
+codeword calculation. It changes first $t$ elements of codeword to the random $\mathbb{GF}(256)$ elements. If you try 
+to change more elements then the linear system solving procedure will fail. 
+\begin{lstlisting}[language=Python,numbers=none]
+for i in range(t):
+    codeword[i] = F.random_element()
+\end{lstlisting}
+
 
 \subsection{Convolutional codes}
 A convolutional code is an ECC that utilizes the following properties:
