@@ -234,7 +234,7 @@ distance using this approach as well.
 Now, we shift our focus towards one of the core zk-STARK components: the
 Reed-Solomon code. This code is a linear error-correcting code that operates
 over the certain finite field $\mathbb{F}$ and polynomials $\mathbb{F}[X]$. The
-definition is following.
+definition is following:
 
 \begin{definition}[Reed-Solomon code]
 Let $\Omega \subseteq \mathbb{F}$ be some \emph{evaluation domain} with a rate
@@ -250,10 +250,8 @@ evaluation domain $\Omega$:
 
 where we abuse the notation to denote $f(x)\big|_{x \in \Omega} = \left(f(\omega)\right)_{\omega \in \Omega}$.
 \end{definition}
-
 The definition is very hard to grasp on its own, so we help you with 
 an example.
-
 \begin{example}
     Suppose $\mathbb{F} = \mathbb{F}_7$ and let evaluation domain be $\Omega =
     \{1,2,5,6\}$. Then, the Reed-Solomon code $\mathsf{RS}[\mathbb{F}_7, \Omega,
@@ -269,43 +267,67 @@ an example.
     operations in the following discussion.
 \end{remark}
 
+Additionally, the presented original definition can be simplified as follows:
+\begin{definition}[Reed-Solomon code]
+For a field $\mathbb{F}$ and numbers $0 < n \leq m < |\mathbb{F}|$ the 
+\textbf{Reed-Solomon Code} is a function $\mathsf{RS}: \mathbb{F}^n \rightarrow \mathbb{F}^m$ that for each 
+$n-1$ degree polynomial $A(x) \in \mathbb{F}[x]$ outputs its evaluation over $m$ points $f_0,...,f_{m-1} \in \mathbb{F}$.
+
+We can show the equality to the original definition if we put $\rho = \frac{n - 1}{m}$ and $\Omega = \mathbb{F}^m$: 
+
+\begin{equation*}
+    \mathsf{RS}\Big[\mathbb{F},\Omega = \mathbb{F}^m,\rho = \frac{n - 1}{m}\Big] = \left\{A(x)\big|_{x \in \Omega }: A \in \mathbb{F}^{(\leq n -1)}[x]\right\},
+\end{equation*}
+\end{definition}
+
+\begin{remark}
+For the future definitions and theorems we will use the simplified definition. All used notations can be 
+redefined by replacing $m = |\Omega|$, $F^m = \Omega$ and $n - 1 = \rho |\Omega|$.
+\end{remark}
+
 Let us now estimate some parameters of the Reed-Solomon code.
     
 \begin{lemma}
-The Reed-Solomon code has a distance of $1 - \rho$.
+The Reed-Solomon code has a distance of $1 - \frac{n-1}{m}$.
 \end{lemma}
 \begin{proof}
-Let $N = |\Omega|$. The word is a polynomial of degree up to $\rho N$ so it can
-have at most $\rho N$ roots. The codeword is the evaluation of this polynomial
-at $N$ distinct points, meaning it must contain at least $N-\rho N=(1-\rho)N$
-non-zero values (otherwise, the polynomial would have more than $\rho N$ roots
-and thus the higher degree than $\rho N$). Since the Reed-Solomon code is a
-linear code, we conclude that the distance is $(1-\rho)N/N = 1-\rho$.
+The word is a polynomial of degree less then $n$ so it can have no more then $n-1$ roots. 
+The codeword is the evaluation of this polynomial at $m > n$ distinct points, meaning it 
+must contain at least $m-(n-1)$ non-zero values (since at most $n-1$ points in $f$ can be 
+roots of our word polynomial). Since the Reed-Solomon code is a linear code, we can use its 
+property to define its distance as 
+$\delta =\frac{m - n + 1}{n} = 1 - \frac{n-1}{m}$. $\triangle$
 \end{proof}
 
-By following the ``Unisolvence theorem'', we know that recovering $\rho N$
-degree polynomial requires at least $\rho N+1$ points for interpolation. Because
-the Reed-Solomon code performs polynomial evaluation over $N > \rho N$ points,
-we can still interpolate (or decode) the polynomial even if some points are
-corrupted during the data transmission.
+By following the ``Unisolvence theorem'' we know that to recover $n-1$ degree polynomial
+we need at least $n$ points for interpolation. Because the Reed-Solomon code performs polynomial 
+evaluation over $m > n$ points we can still interpolate (or decode) the polynomial even if some 
+points are corrupted during data transmission.
 
 \begin{theorem}
-Suppose for a given list of pairs $\mathcal{D} = \{x_j, y_j\}_{j \in [N]}$ there
-exists a unique polynomial $f(x) \in \mathbb{F}^{(\leq \rho N)}[x]$ such that
-$f(x_j) = y_j$ for at least $\frac{1+\rho}{2}N$ of them. Then, there exists a
+Suppose for a given list of pairs $\mathcal{D} = (a_i, b_i)\big|^{m-1}_0$ of elements 
+in $\mathbb{F}$ there exists a unique polynomial $G(x) \in \mathbb{F}^{(\leq n-1)}[x]$ such that
+$G(a_j) = b_j$ for at least $\hat{t} > \frac{m}{2} + \frac{n}{2}$ of them. Then, there exists a
 \textit{polynomial-time algorithm} $\mathsf{Dec}$ (in $O(N^{\gamma})$ for some
 constant $\gamma>1$), extracting the polynomial: $\mathsf{Dec}(\mathcal{D}) =
-f$.
+G$.
 \end{theorem}
 
 \begin{proof}
-The assumption that at least $\frac{1+\rho}{2}N$ points must be
-``interpolatable'' for some $f(x) \in \mathbb{F}^{(\leq \rho N)}[x]$ can be
-transformed into the corresponding constraint on the number of possible errors
-$t$: indeed, if $m$ is the number of such points, then $t = N - m <
-\frac{1-\rho}{2}N$. Alternatively, this implies $N > 2t+N\rho$, which will be
-useful later. That being said, we know the lower bound of the codeword size
-depending on the word and number of errors: $N \geq 2t+\rho N+1$.
+The assumption that at least $\hat{t} > \frac{m}{2} + \frac{n}{2}$ points must be
+``interpolatable'' for some $G(x) \in \mathbb{F}^{(\leq n-1)}[x]$ can be transformed into the 
+corresponding constraint on the number of possible errors $t$: 
+\begin{equation*}
+    t = m - \hat{t} < m - \frac{m}{2} - \frac{n}{2} = \frac{m}{2} - \frac{n}{2}
+\end{equation*}
+Alternatively, this defines a necessary constraint that will be useful later:
+\begin{gather*}
+     t < \frac{m}{2} - \frac{n}{2}\\
+     2t < m - n\\
+     m > 2t+n
+\end{gather*}
+hat being said, we know the lower bound of the codeword size
+depending on the word and number of errors: $m \geq 2t+n+1$.
 
 \begin{tcolorbox}[title=Berlekamp-Welch decoding,
     breakable,
@@ -319,50 +341,47 @@ depending on the word and number of errors: $N \geq 2t+\rho N+1$.
     colback=blue!20!white,
     colupper=blue!75!gray} ]
 
-    \textbf{Assume:} $f(x_j) = y_j$ for at least $\frac{1+\rho}{2}N$ of $N$
-    pairs with $f \in \mathbb{F}^{(\leq \rho N)}[x]$.
-    
-    \textit{Comment:} Since $t/N < 1-\rho$, recovering polynomial $f$ is
-    possible, but we need to somehow know which points are corrupted.
+    So, $G(a_i) = b_i$ for at least $\hat{t}$ of $m$ pairs in $\mathcal{D}$. We also know that 
+    $\deg G(x) = n-1$ and $n < t < m$. It means that we already can recover polynomial 
+    but we firstly have to deal with an errors.
 
-    \tcbsubtitle{$\mathsf{Dec}(\mathsf{RS}[\mathbb{F},\Omega,\rho], \{x_j,
-    y_j\}_{j \in [N]})$}
-    
+    \tcbsubtitle{$\mathsf{Dec}(\mathcal{D})$}
+
     \begin{itemize}[label=\ding{51}]
-        \item Let's put an \textbf{error polynomial} $e(X)$ a polynomial which
-        has roots at the error points. This implies $\deg e(x) = t <
-        \frac{1-\rho}{2}N$.
+        \item Let's put an \textbf{error polynomial} $E(X)$ a polynomial which has 
+        roots at the error points.
+        \item So, $\deg E(x) = t < \frac{m}{2} - \frac{n}{2}$.
         \item Our algorithm is based on the following equation: 
-        \begin{equation*}
-            g(x_j) = f(x_j)\cdot e(x_j), \; j \in [m],
-        \end{equation*}
-        where $g(x)$ is an arbitrary polynomial that we are going to find.
-        \item Note, that $\deg g = \deg f + \deg e = \rho N + t - 1$.
-        \item By solving the equation $g(x_j) = y_j\cdot e(x_j)$, $j \in [m]$,
-        we can find $g(x)$ and $e(x)$. Indeed, this can be considered as a set
-        of $N$ linear equations where we have unknown $\rho N+t$ coefficients of
-        $g(x)$ and $t+1$ coefficients of $e(x)$. This, it can be solved via
-        linear algebra methods as long as $N \geq 2t+\rho N+1$.
-        \item Finally, we set $f(x) = g(x)/e(x)$.
+            $$C(a_i) = G(a_i)\cdot E(a_i), i \in 0..m-1$$
+        where $C(x)$ is an arbitrary polynomial that we are going to find.
+        \item Note, that $\deg C(x) = \deg G(x) + \deg E(x) = n - 1 + t$
+        \item Then, by solving the equation $C(a_i) = b_i\cdot E(a_i), i \in 0..m-1$ 
+        we can find $C(x)$ and $E(x)$.
+        \item This can be considered as a set of $m$ linear equations where we have 
+        unknown $n+t$ coefficients
+        of $C(x)$ and $t+1$ coefficient of $E(x)$, so it can be solved via linear 
+        algebra while $m \geq 2t+n+1$.
+        \item Finally, we put $G(x) = \frac{C(x)}{E(x)}$
     \end{itemize}
-    
+
 \end{tcolorbox}
-The last equation follows from the observation that polynomial $g(x) - f(x)e(x)$
-is zero in $m \leq \frac{1+\rho}{2}N$ points while it has degree $\rho N + t -
-1$. It is easy to prove that the polynomial degree less then the number of its
-roots, so $g(x) - f(x)e(x)$ is zero for each $x$. That is why from $g(x) =
-e(x)f(x)$ it follows that $g(x)$ is divisible by $e(x)$.
+The last equation follows from the observation that polynomial 
+$C(x) - G(x)\cdot E(x)$ is zero in $\hat{t}$ points 
+while it has degree $n + t - 1$. It is easy to prove that the polynomial degree 
+less then the number of it's roots, so $C(x) - G(x)\cdot E(x)$ is zero for 
+each $x$. That is why from $C(x) = E(x)G(x)$ follows that $C(x)$ is divisible 
+on $E(x)$.
 \end{proof}
 
 \subsubsection{Reed-Solomon(255,223) implementation}
 The example implementation aims to help reader to understand how the encoding
-and decoding looks like in practice. The Reed-Solomon code with $m=255, n=223$
+and decoding look like in practice. The Reed-Solomon code with $m=255, n=223$
 is widely used in communication and storage systems, including QR codes, CDs,
 DVDs, and deep-space communication. It operates over $\mathbb{F}_{256}$ (the
 finite field of $256$ elements) and encodes data as polynomials evaluated at
-different field elements. Following our theorem, the number of errors is
-constrained as $t < \frac{1-\rho}{2}N$ which means that $t < 16$. For our
-implementation we take $t = 15$.
+different field elements. Following our theorem, the number of errors 
+is constrained as $t < \frac{m}{2} - \frac{n}{2}$ which means that $t < 16$. 
+For our implementation we take $t = 15$.
 
 Let's start from the basic parameters definition:
 \begin{lstlisting}[language=Python,numbers=none]
@@ -373,15 +392,13 @@ n = 223 # A word size
 t = 15 # The number of possible errors
 distance = (m - n + 1)/m
 \end{lstlisting}
-The \verb|distance| then is equal to $\frac{11}{85}$. Let's sample a random
-message that will be an information polynomial of degree $\rho N=223$ (this
-messsage can be obtained by the interpolation of some useful data):
+The \verb|distance| then is equal to $\frac{11}{85}$. Let's sample a random message that will be an information 
+polynomial of degree $n=223$ (this messsage can be obtained by the interpolation of some useful data):
 \begin{lstlisting}[language=Python,numbers=none]
 word = sum(F.random_element() * x^i for i in range(n))
 \end{lstlisting}
-We start encoding from defining the evaluation elements that will be all
-non-zero elements of $\mathbb{F}_{256}$. Then, our codeword will be the $N =
-255$ evaluations of our information polynomial.
+We start encoding from defining the evaluation elements that will be all non-zero elements of $\mathbb{GF}(256)$. 
+Then, our codeword will be the $m = 255$ evaluations of our information polynomial.
 \begin{lstlisting}[language=Python,numbers=none]
 # All non zero elements in F. Order(F) - 1 = 255
 f = [f_i for f_i in F if f_i != 0]
@@ -389,12 +406,10 @@ assert len(f) == m
 codeword = [word(f_i) for f_i in f]
 assert len(codeword) == m
 \end{lstlisting}
-To decode the codeword we should solve the system of $N$ equations $g(x_j) - b_j
-\cdot e(x_j) = 0$. Note, that this system is homogeneous, so the trivial
-solution (all zeros) is always a solution. To find a non-zero solution we impose
-a normalization condition, such as setting the leading coefficient of $e(x)$ to
-$1$. This turns our original equation into the $g(x_j) - b_j \cdot e(x_j) = b_j
-\cdot x_j^{\deg e}$.
+To decode the codeword we should solve the system of $m$ equations $C(x_i) - b_i \cdot E(x_i) = 0$. Note, that this system
+is homogeneous, so the trivial solution (all zeros) is always a solution. To find a non-zero solution we impose a 
+normalization condition, such as setting the leading coefficient of $E(x)$ to $1$. This turns our original equation 
+into the $C(x_i) - b_i \cdot E(x_i) = b_i \cdot x_i^{\deg(E)}$.
 \begin{lstlisting}[language=Python,numbers=none]
 deg_C = 237 # deg = n - 1 + t
 deg_E = 15 # deg = t
@@ -414,9 +429,8 @@ rhs = vector(F, [b_i * (f_i^deg_E) for f_i, b_i in zip(f, codeword)])
 solution = M.solve_right(rhs)
 assert len(solution) == deg_C + deg_E + 1
 \end{lstlisting}
-
-Finally, we can recover the original information polynomial $f \gets g/e$. We
-also should not forget to add the normalized leading coefficient of $e(x)$.
+Finally, we can recover the original information polynomial $G(x) = \frac{C(x)}{E(x)}$. We also should not forget to 
+add the normalized leading coefficient of $E(x)$.
 \begin{lstlisting}[language=Python,numbers=none]
 C = sum(solution[i] * x^i for i in range(deg_C + 1))
 E = sum(solution[deg_C + 1 + i] * x^i for i in range(deg_E))
@@ -426,13 +440,12 @@ assert G.numerator() == word
 \end{lstlisting}
 
 To discrover the error correcting properties of the presented code you can add the following snippet after the 
-codeword calculation. It changes first $t$ elements of codeword to the random $\mathbb{F}_{256}$ elements. If you try 
+codeword calculation. It changes first $t$ elements of codeword to the random $\mathbb{GF}(256)$ elements. If you try 
 to change more elements then the linear system solving procedure will fail. 
 \begin{lstlisting}[language=Python,numbers=none]
 for i in range(t):
     codeword[i] = F.random_element()
 \end{lstlisting}
-
 
 \subsection{Convolutional codes}
 A convolutional code is an ECC that utilizes the following properties:
