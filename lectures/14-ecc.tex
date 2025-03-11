@@ -281,8 +281,9 @@ We can show the equality to the original definition if we put $\rho = \frac{n - 
 \end{definition}
 
 \begin{remark}
-For the future definitions and theorems we will use the simplified definition. All used notations can be 
-redefined by replacing $m = |\Omega|$, $F^m = \Omega$ and $n - 1 = \rho |\Omega|$.
+For the future definitions and theorems we will use the original definition. However, a simplified 
+nonation can be obtained by replacing the 
+$\Omega = F^m$, $|\Omega| = m$,  and $\rho |\Omega| = n - 1$.
 \end{remark}
 
 Let us now estimate some parameters of the Reed-Solomon code.
@@ -291,43 +292,43 @@ Let us now estimate some parameters of the Reed-Solomon code.
 The Reed-Solomon code has a distance of $1 - \frac{n-1}{m}$.
 \end{lemma}
 \begin{proof}
-The word is a polynomial of degree less then $n$ so it can have no more then $n-1$ roots. 
-The codeword is the evaluation of this polynomial at $m > n$ distinct points, meaning it 
-must contain at least $m-(n-1)$ non-zero values (since at most $n-1$ points in $f$ can be 
-roots of our word polynomial). Since the Reed-Solomon code is a linear code, we can use its 
-property to define its distance as 
-$\delta =\frac{m - n + 1}{n} = 1 - \frac{n-1}{m}$. $\triangle$
+Let $m = |\Omega|$. The word is a polynomial of degree up to $\rho \cdot m$ so it can have no more then
+$\rho \cdot m$ roots. The codeword is the evaluation of this polynomial at $m > \rho \cdot m$ distinct points, 
+meaning it must contain at least $m-\rho \cdot m =(1-\rho)m$ non-zero values (since at most 
+$\rho \cdot m$ points can be the roots of our word polynomial). Since the Reed-Solomon code is a 
+linear code, we can use its property to define its distance as 
+$\frac{(1-\rho)m}{m} = 1-\rho$.
 \end{proof}
 
-By following the ``Unisolvence theorem'' we know that to recover $n-1$ degree polynomial
-we need at least $n$ points for interpolation. Because the Reed-Solomon code performs polynomial 
-evaluation over $m > n$ points we can still interpolate (or decode) the polynomial even if some 
-points are corrupted during data transmission.
+By following the ``Unisolvence theorem'' we know that to recover $\rho \cdot m$ degree polynomial
+we need at least $\rho \cdot m + 1$ points for interpolation. Because the Reed-Solomon code 
+performs polynomial evaluation over $m > \rho \cdot m$ points we can still interpolate (or decode) 
+the polynomial even if some points are corrupted during data transmission.
 
 \begin{theorem}
-Suppose for a given list of pairs $\mathcal{D} = (a_i, b_i)\big|^{m-1}_0$ of elements 
-in $\mathbb{F}$ there exists a unique polynomial $G(x) \in \mathbb{F}^{(\leq n-1)}[x]$ such that
-$G(a_j) = b_j$ for at least $\hat{t} > \frac{m}{2} + \frac{n}{2}$ of them. Then, there exists a
+Suppose for a given list of pairs $\mathcal{D} = \{(x_i, y_i)\}_{i \in [m]}$ of elements 
+in $\mathbb{F}$ there exists a unique polynomial $G(x) \in \mathbb{F}^{(\leq \rho\cdot m)}[x]$ such that
+$G(x_j) = y_j$ for at least $\hat{t} > \frac{m}{2} + \frac{\rho\cdot m + 1}{2}$ of them. Then, there exists a
 \textit{polynomial-time algorithm} $\mathsf{Dec}$ (in $O(N^{\gamma})$ for some
 constant $\gamma>1$), extracting the polynomial: $\mathsf{Dec}(\mathcal{D}) =
 G$.
 \end{theorem}
 
 \begin{proof}
-The assumption that at least $\hat{t} > \frac{m}{2} + \frac{n}{2}$ points must be
-``interpolatable'' for some $G(x) \in \mathbb{F}^{(\leq n-1)}[x]$ can be transformed into the 
+The assumption that at least $\hat{t} > \frac{m}{2} + \frac{\rho\cdot m + 1}{2}$ points must be
+``interpolatable'' for some $G(x) \in \mathbb{F}^{(\leq \rho\cdot m)}[x]$ can be transformed into the 
 corresponding constraint on the number of possible errors $t$: 
 \begin{equation*}
-    t = m - \hat{t} < m - \frac{m}{2} - \frac{n}{2} = \frac{m}{2} - \frac{n}{2}
+    t = m - \hat{t} < m - \frac{m}{2} - \frac{\rho\cdot m + 1}{2} = \frac{m}{2} - \frac{\rho\cdot m + 1}{2}
 \end{equation*}
 Alternatively, this defines a necessary constraint that will be useful later:
 \begin{gather*}
-     t < \frac{m}{2} - \frac{n}{2}\\
-     2t < m - n\\
-     m > 2t+n
+     t < \frac{m}{2} - \frac{\rho\cdot m + 1}{2}\\
+     2t < m - \rho\cdot m + 1\\
+     m > 2t + \rho\cdot m + 1
 \end{gather*}
-hat being said, we know the lower bound of the codeword size
-depending on the word and number of errors: $m \geq 2t+n+1$.
+That being said, we know the lower bound of the codeword size
+depending on the word and number of errors: $m > 2t + \rho\cdot m + 1$.
 
 \begin{tcolorbox}[title=Berlekamp-Welch decoding,
     breakable,
@@ -341,33 +342,36 @@ depending on the word and number of errors: $m \geq 2t+n+1$.
     colback=blue!20!white,
     colupper=blue!75!gray} ]
 
-    So, $G(a_i) = b_i$ for at least $\hat{t}$ of $m$ pairs in $\mathcal{D}$. We also know that 
-    $\deg G(x) = n-1$ and $n < t < m$. It means that we already can recover polynomial 
-    but we firstly have to deal with an errors.
+    \textbf{Assume:} $G(x_j) = y_j$ for at least $\hat{t}$ of $m$ pairs in 
+    $\mathcal{D}$ with $G \in \mathbb{F}^{(\leq \rho\cdot m)}[x]$.
 
-    \tcbsubtitle{$\mathsf{Dec}(\mathcal{D})$}
+    \textit{Comment:} Since $t/m < 1-\rho$, recovering polynomial $G$ is
+    possible, but we need to somehow know which points are corrupted.
+
+    \tcbsubtitle{$\mathsf{Dec}(\mathsf{RS}[\mathbb{F},\Omega,\rho], \{x_j,
+    y_j\}_{j \in [m]})$}
 
     \begin{itemize}[label=\ding{51}]
         \item Let's put an \textbf{error polynomial} $E(X)$ a polynomial which has 
         roots at the error points.
-        \item So, $\deg E(x) = t < \frac{m}{2} - \frac{n}{2}$.
+        \item So, $\deg E(x) = t < \frac{m}{2} - \frac{\rho\cdot m + 1}{2}$.
         \item Our algorithm is based on the following equation: 
-            $$C(a_i) = G(a_i)\cdot E(a_i), i \in 0..m-1$$
+            $$C(x_j) = G(x_j)\cdot E(x_j), j \in [m]$$
         where $C(x)$ is an arbitrary polynomial that we are going to find.
-        \item Note, that $\deg C(x) = \deg G(x) + \deg E(x) = n - 1 + t$
-        \item Then, by solving the equation $C(a_i) = b_i\cdot E(a_i), i \in 0..m-1$ 
+        \item Note, that $\deg C(x) = \deg G(x) + \deg E(x) = \rho\cdot m + t$
+        \item Then, by solving the equation $C(x_j) = y_j\cdot E(x_j), j \in [m]$ 
         we can find $C(x)$ and $E(x)$.
         \item This can be considered as a set of $m$ linear equations where we have 
-        unknown $n+t$ coefficients
+        unknown $\rho \cdot m + t + 1$ coefficients
         of $C(x)$ and $t+1$ coefficient of $E(x)$, so it can be solved via linear 
-        algebra while $m \geq 2t+n+1$.
+        algebra while $m > 2t + \rho\cdot m + 1$.
         \item Finally, we put $G(x) = \frac{C(x)}{E(x)}$
     \end{itemize}
 
 \end{tcolorbox}
 The last equation follows from the observation that polynomial 
 $C(x) - G(x)\cdot E(x)$ is zero in $\hat{t}$ points 
-while it has degree $n + t - 1$. It is easy to prove that the polynomial degree 
+while it has degree $\rho\cdot m + t$. It is easy to prove that the polynomial degree 
 less then the number of it's roots, so $C(x) - G(x)\cdot E(x)$ is zero for 
 each $x$. That is why from $C(x) = E(x)G(x)$ follows that $C(x)$ is divisible 
 on $E(x)$.
@@ -380,8 +384,8 @@ is widely used in communication and storage systems, including QR codes, CDs,
 DVDs, and deep-space communication. It operates over $\mathbb{F}_{256}$ (the
 finite field of $256$ elements) and encodes data as polynomials evaluated at
 different field elements. Following our theorem, the number of errors 
-is constrained as $t < \frac{m}{2} - \frac{n}{2}$ which means that $t < 16$. 
-For our implementation we take $t = 15$.
+is constrained as $t < \frac{m}{2} - \frac{\rho \cdot m + 1}{2} = \frac{m}{2} - \frac{n}{2}$ 
+which means that $t < 16$. For our implementation we take $t = 15$.
 
 Let's start from the basic parameters definition:
 \begin{lstlisting}[language=Python,numbers=none]
