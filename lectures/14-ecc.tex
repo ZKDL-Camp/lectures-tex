@@ -273,17 +273,16 @@ For a field $\mathbb{F}$ and numbers $0 < n \leq m < |\mathbb{F}|$ the
 \textbf{Reed-Solomon Code} is a function $\mathsf{RS}: \mathbb{F}^n \rightarrow \mathbb{F}^m$ that for each 
 $n-1$ degree polynomial $A(x) \in \mathbb{F}[x]$ outputs its evaluation over $m$ points $f_0,...,f_{m-1} \in \mathbb{F}$.
 
-We can show the equality to the original definition if we put $\rho = \frac{n - 1}{m}$ and $\Omega = \mathbb{F}^m$: 
+We can show the equality to the original definition if we put $\rho = \frac{n - 1}{m}$ and $\Omega \in \mathbb{F}^m$: 
 
 \begin{equation*}
-    \mathsf{RS}\Big[\mathbb{F},\Omega = \mathbb{F}^m,\rho = \frac{n - 1}{m}\Big] = \left\{A(x)\big|_{x \in \Omega }: A \in \mathbb{F}^{(\leq n -1)}[x]\right\},
+    \mathsf{RS}\Big[\mathbb{F},\Omega \in \mathbb{F}^m,\rho = \frac{n - 1}{m}\Big] = \left\{A(x)\big|_{x \in \Omega }: A \in \mathbb{F}^{(\leq n -1)}[x]\right\},
 \end{equation*}
 \end{definition}
 
 \begin{remark}
 For the future definitions and theorems we will use the original definition. However, a simplified 
-nonation can be obtained by replacing the 
-$\Omega = F^m$, $|\Omega| = m$,  and $\rho |\Omega| = n - 1$.
+nonation can be obtained by replacing the $|\Omega| = m$, and $\rho |\Omega| = n - 1$.
 \end{remark}
 
 Let us now estimate some parameters of the Reed-Solomon code.
