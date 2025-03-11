@@ -70,12 +70,12 @@ the set of \textbf{codewords} of the corresponding code.
 Therefore, each block ECC that takes an input word of size $n$ and outputs a
 codeword of size $m>n$ can theoretically deal with $t=m-n$ errors. A block ECC
 also utilizes a relation between its distance and its theoretical correcting
-capability: $t < \lfloor \frac{d-1}{2} \rfloor$. This relation exists because
+capability: $t < \left\lfloor \frac{\delta-1}{2} \right\rfloor$. This relation exists because
 two arbitrary codewords can be decoded if they contain at most $t$ errors.
 Therefore, the distance between these codewords must be at least $2t$ to enable
 unique decoding (if it is less then two different codewords with errors can be
 represented as the same message, so the pre-image cannot be found correctly).
-While the ECC distance is $d$, it leads to the relation above (check Figure
+While the ECC distance is $\delta$, it leads to the relation above (check Figure
 \ref{fig:distance}).
 \begin{figure}[H]
     \centering
