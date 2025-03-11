@@ -1,51 +1,82 @@
-\documentclass[../lecture-notes.tex]{subfiles}
+\documentclass[../lecture-notes-148x210.tex]{subfiles}
 
 \begin{document}
 
 \subsection{Introduction}
-\textbf{Error-correcting codes (ECC)} are a group of protocols that wrap the input data extending it with an excessive 
-information that allows recovery of the original data even if the received message contains errors. Such methods are 
-widely used in the network protocols and data storage approaches. Moreover, they found many applications in the modern 
-cryptographic protocols (for example, Reed-Solomon ECC has been applied in the FRI protocol, which is widely used in 
-ZK-STARKs). Additionally, each code allows the determination of what errors exactly appeared in the received message 
-(sometimes, even if the message can not be decoded).
+\textbf{Error-correcting codes (ECC)} are a group of protocols that wrap the
+input data extending it with an excessive information that allows recovery of
+the original data even if the received message contains errors. Such methods are
+widely used in the network protocols and data storage approaches. Moreover, they
+found many applications in the modern cryptographic protocols (for example,
+Reed-Solomon ECC has been applied in the FRI protocol, which is widely used in
+ZK-STARKs). Additionally, each code allows the determination of what errors
+exactly appeared in the received message (sometimes, even if the message can not
+be decoded).
 
-ECC protocols can be divided in two groups: \textbf{block codes} and \textbf{convolutional codes}. The block codes 
-split information into the blocks of fixed pre-defined size and apply encoding to each block separately, while the 
-convolutional codes work over the input data stream of an arbitrary size. Modern practical block codes allow encoding 
-by polynomial complexity algorithms depending on the block size. Also, most of classic block codes leverage the 
+ECC protocols can be divided in two groups: \textbf{block codes} and
+\textbf{convolutional codes}. The block codes split information into the blocks
+of fixed pre-defined size and apply encoding to each block separately, while the
+convolutional codes work over the input data stream of an arbitrary size. Modern
+practical block codes allow encoding by polynomial complexity algorithms
+depending on the block size. Also, most of classic block codes leverage the
 properties of the finite fields.
 
-In this article we primarily describe the structure of some classic block ECCs, including Walsh-Hadamard code and 
-Reed-Solomon code. Its aim is to give the  reader an understanding of how they work and the mathematical primitives 
-they rely on.
+In this section we primarily describe the structure of some classic block ECCs,
+including Walsh-Hadamard code and Reed-Solomon code. Its aim is to give the
+reader an understanding of how they work and the mathematical primitives they
+rely on.
 
 \subsection{Preliminaries}
 
 First of all let's define the main property of each ECC that directly determines its structure:
 \begin{definition}
-For the arbitrary binary strings of fixed length $x, y \in \{0, 1\}^n$ we define an \textbf{absolute Hamming distance} 
-as the number of elements where our binary strings do not match: $\Delta(x,y) = |\{i: x_i \neq y_i\}|$. We also define 
-the \textbf{normalized Hamming distance} as the absolute Hamming distance divided by the length of the string: 
-$\Delta(x,y) = \frac{1}{n}|\{i: x_i \neq y_i\}|$.
+For the arbitrary binary strings of fixed length $x, y \in \{0, 1\}^n$ we define
+an \textbf{absolute Hamming distance} as the number of elements where our binary
+strings do not match: $\Delta_H(x,y) = \left|\{i \in [n]: x_i \neq y_i\}\right|$. We also
+define the \textbf{normalized Hamming distance} as the absolute Hamming distance
+divided by the length of the string: $\Delta(x,y) = \frac{1}{n}\left|\{i \in [n]: x_i
+\neq y_i\}\right|$.
 \end{definition}
-In the theorems below we will use the normalized Hamming distance because of the independence from codeword length. 
 
-Next, we can define what exactly a block ECC is. Basically, it operates over some field ($\mathbb{GF}(2)$ for example) encoding 
-information using some algorithm that differs for each code.
+In the theorems below we will use the normalized Hamming distance
+$\Delta(\cdot,\cdot)$ because of the independence from codeword length. 
+
+Next, we can define what exactly a block ECC is. In its essence, this is a
+function, operating over some field (over binary field $\mathbb{F}_2$, for
+example), encoding information using some algorithm $E$ that differs for each
+code. Typically, the input to this encoder function is called a \textbf{word} or
+\textbf{message}, while the image of such function $\mathsf{im}(E)$ is what we
+call a \textbf{codeword}. Let us define that more formally.
 \begin{definition}
-For each $\delta \in [0, 1]$ we call a function $E: \{0, 1\}^n \rightarrow \{0, 1\}^m$ an 
-\textbf{error-correcting code} with distance $\delta$ if for each two input strings $x \neq y \in \{0, 1\}^n$ the 
-distance between their images is more or equal $\delta$: $\Delta(E(x), E(y)) \geq \delta$. We call $Im(E)$  the set 
-of \textbf{codewords} of the corresponding code.
+For each $\delta \in [0, 1]$ we call a function $E: \{0, 1\}^n \rightarrow \{0,
+1\}^m$ an \textbf{error-correcting code} with distance $\delta$ if for each two
+\emph{different} input strings $x \neq y \in \{0, 1\}^n$ the distance between
+their images is more or equal $\delta$: that is, $\Delta(E(x), E(y)) \geq
+\delta$. We call the image of the function $E$
+\begin{equation*}
+    \mathsf{im}(E) \equiv \{y \in \{0,1\}^m \; \text{such that} \; y=E(x) \; \text{for some} \; x \in \{0,1\}^n \}
+\end{equation*}
+the set of \textbf{codewords} of the corresponding code.
 \end{definition}
-Thus, each block ECC that takes an input word of size $n$ and outputs a codeword of size $m$ can theoretically deal 
-with $t = m-n$ errors. A block ECC also utilizes a relation between its distance and its theoretical correcting 
-capability: $t < \lfloor \frac{d-1}{2} \rfloor$. This relation exists because two arbitrary codewords can be decoded 
-if they contain at most $t$ errors. Therefore, the distance between these codewords must be at least $2t$ to enable 
-unique decoding (if it is less then two different codewords with errors can be represented as the same message, so the 
-pre-image cannot be found correctly). While the ECC distance is $d$, it leads to the relation above 
-(check Figure \ref{fig:distance}).
+
+\begin{remark}
+    In fact, the distance $\delta$ in the definition above is a lower bound of the
+    distance between the codewords. This can be formally written as:
+    \begin{equation*}
+        \delta = \min_{x \neq y \in \mathsf{im}(E)} \Delta(x, y)
+    \end{equation*}
+\end{remark}
+
+Therefore, each block ECC that takes an input word of size $n$ and outputs a
+codeword of size $m>n$ can theoretically deal with $t=m-n$ errors. A block ECC
+also utilizes a relation between its distance and its theoretical correcting
+capability: $t < \lfloor \frac{d-1}{2} \rfloor$. This relation exists because
+two arbitrary codewords can be decoded if they contain at most $t$ errors.
+Therefore, the distance between these codewords must be at least $2t$ to enable
+unique decoding (if it is less then two different codewords with errors can be
+represented as the same message, so the pre-image cannot be found correctly).
+While the ECC distance is $d$, it leads to the relation above (check Figure
+\ref{fig:distance}).
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.5\linewidth]{images/lecture_14/circles.png}
@@ -54,66 +85,103 @@ pre-image cannot be found correctly). While the ECC distance is $d$, it leads to
 \end{figure}
 
 \subsection{Walsh-Hadamard code}
-The Hadamard code, named after French mathematician Jacques Hadamard, is an error-correcting block code designed for 
-detecting and correcting errors in message transmissions over highly noisy or unreliable channels. In 1971, NASA 
-utilized this code to send images of Mars from the Mariner 9 space probe back to Earth. This code is also referred to 
-as the Walsh code, Walsh family, or Walsh–Hadamard code, in honor of American mathematician Joseph Leonard Walsh.
+The Hadamard code, named after French mathematician Jacques Hadamard, is an
+error-correcting block code designed for detecting and correcting errors in
+message transmissions over highly noisy or unreliable channels. In 1971, NASA
+utilized this code to send images of Mars from the Mariner 9 space probe back to
+Earth. This code is also referred to as the Walsh code, Walsh family, or
+Walsh–Hadamard code, in honor of American mathematician Joseph Leonard Walsh.
+
+But first, let us define the inner product over binary string.
+
+\begin{definition}[Inner product]
+For two binary strings $x, y \in \{0, 1\}^n$ the \textbf{inner product} $\langle
+\cdot, \cdot \rangle: \{0,1\}^n \times \{0,1\}^n \to \mathbb{F}_2$ is defined
+as:
+\begin{equation*}
+    \langle x, y \rangle = \sum_{i \in [n]} x_iy_i \; \text{over} \; \mathbb{F}_2 
+\end{equation*}
+\end{definition}
+
+Now, we are ready to define the Walsh-Hadamard code.
 
 \begin{definition}[Walsh-Hadamard code]
-For the binary strings $x, y \in \{0, 1\}^n$ let's define $\langle x, y \rangle = \sum_{i = 0}^{n-1} x_iy_i\mod 2$. 
-The Walsh-Hadamard code is a function $E: \{0, 1\}^n \rightarrow \{0, 1\}^{2^n}$ that maps each input of size $n$ into 
-the string $z \in \{0, 1\}^{2^n}$ where $z_y = \langle x, y \rangle$ for $\forall y \in \{0, 1\}^n$.
+The \textbf{Walsh-Hadamard code} is a function $\mathsf{Had}: \{0, 1\}^n
+\rightarrow \{0, 1\}^{2^n}$ that maps each $x \in \{0,1\}^n$ into the string $z
+\in \{0, 1\}^{2^n}$ of size $2^n$ where $z_y = \langle x, y\rangle$ for every $y
+\in \{0, 1\}^n$. More concisely, this is written as:
+\begin{equation*}
+    \mathsf{Had}(x) = \left(\langle x, y \rangle\right)_{y \in \{0, 1\}^n}
+\end{equation*}
 \end{definition}
 
 \begin{example}[Encoding and Decoding]
-For example, for the input size $n = 2$ we have the following set of the possible codewords:
+For example, for the input size $n=2$, the message space consists of $4$
+elements: $\{0,1\}^2 = \{(0, 0), (0, 1), (1, 0), (1, 1)\}$. Then, for each input codeword
+the Walsh-Hadamard code will be:
 \begin{equation*}
-    \{(0, 0), (0, 1), (1, 0), (1, 1)\}
-\end{equation*}
-Then, for each input codeword the Walsh-Hadamard code will be:
-\begin{equation*}
-    E(x) = \{\langle x, (0, 0) \rangle, \langle x, (0, 1) \rangle, \langle x, (1, 0) \rangle, \langle x,  (1, 1) \rangle\}
+    \mathsf{Had}(x) = (\langle x, y \rangle)_{y \in \{0,1\}^2} = (\langle x, (0, 0) \rangle, \langle x, (0, 1) \rangle, \langle x, (1, 0) \rangle, \langle x,  (1, 1) \rangle)
 \end{equation*}
 For example, taking $x = (0, 1)$ we have:
 \begin{gather*}
-    E(\{0, 1\}) = \{\\
-    \langle (0, 1), (0, 0) \rangle,\\
-    \langle (0, 1), (0, 1) \rangle,\\
-    \langle (0, 1), (1, 0) \rangle,\\
+    \mathsf{Had}(\{0, 1\}) = \begin{bmatrix}
+    \langle (0, 1), (0, 0) \rangle\\
+    \langle (0, 1), (0, 1) \rangle\\
+    \langle (0, 1), (1, 0) \rangle\\
     \langle (0, 1), (1, 1) \rangle\\
-    \}=(1, 0, 0, 1)
+    \end{bmatrix}= \begin{bmatrix}
+        0 \cdot 0 + 1 \cdot 0 \\
+        0 \cdot 0 + 1 \cdot 1 \\
+        0 \cdot 1 + 1 \cdot 0 \\
+        0 \cdot 1 + 1 \cdot 1 \\
+    \end{bmatrix} = (0, 1, 0, 1)
 \end{gather*}
-\textbf{Decoding.} To decode a received codeword, we use the following technique: for each possible input word 
-$x \in \{0, 1\}^n$ we calculate the list of $C_x(y) = (-1)^{\langle x, y \rangle}$ for each $y \in \{0, 1\}^n$. We 
-also represent our received codeword $Y$ as list of $(-1)^{Y_i}$. For each possible word $u \in \{0, 1\}^n$ we 
-calculate $S(u) = \sum_{i=0}^{2^n - 1} (-1)^{Y_i} \cdot C_u(i)$. This sum represents the similarity between the word 
-$u$ and the encoded word. If both words have the same sign at position  $i$, the sum increases; otherwise, it 
-decreases. The decoded word is the one with the highest sum.
+\textbf{Decoding.} To decode a received codeword, we use the following
+technique: for each possible input word $x \in \{0, 1\}^n$, we calculate $C(x,y)
+= (-1)^{\langle x, y \rangle}$ for each $y \in \{0, 1\}^n$. We also represent
+our received codeword $\widetilde{y}$ as $\{(-1)^{\widetilde{y}_i}\}_{i \in
+[2^n]}$. For each possible word $\widetilde{x} \in \{0, 1\}^n$ we calculate the
+sum $S(u) = \sum_{s \in [2^n]} (-1)^{\widetilde{y}_i} \cdot C(\widetilde{x},s)$.
+This sum represents the similarity between the word $\widetilde{x}$ and the
+encoded word. If both words have the same sign at position $s$, the sum
+increases; otherwise, it decreases. The decoded word is the one with the highest
+sum.
 \end{example}
 To define the distance for the Walsh-Hadamard ECC we first need to prove an additional lemma:
 \begin{lemma}[Random subsum principle]
-For two binary strings $u \neq v \in \{0, 1\}^n$ the $\Pr[\langle u, x \rangle \neq \langle v, x \rangle] = \frac{1}{2}$
- for the random binary string $x \in \{0, 1\}^n$.
+The following statement holds:
+\begin{equation*}
+    \Pr\left[\langle u, x \rangle \neq \langle v, x \rangle \;\middle| \;
+    \begin{matrix}
+        u \neq v \in \{0,1\}^n, \\
+        x \xleftarrow{R} \{0,1\}^n
+    \end{matrix} \right] = \frac{1}{2}
+\end{equation*}
 \end{lemma}
+
 \begin{proof}
-Note, that $\langle u, x \rangle \neq \langle v, x \rangle$ works if and only if 
-$1 = \langle u, x \rangle + \langle v, x \rangle = \langle (u + v), x \rangle$, where $+$ is an addition by modulo 
-$2$ (aka \verb|XOR|). Then, we can rewrite this as $\langle (u + v), x \rangle = \sum_{(u + v)_i \neq 0} x_i \mod 2$. 
-While $u + v \neq 0^n$ from the initial assumption and $x$ is a uniformly random string, the 
-$\sum_{(u + v)_i \neq 0} x_i \mod 2 = 1$ with probability $\frac{1}{2}$. So, finally, 
-$\langle u, x \rangle \neq \langle v, x \rangle$ with probability $\frac{1}{2}$.
+Note, that $\langle u, x \rangle \neq \langle v, x \rangle$ holds if and only if
+$1 = \langle u, x \rangle + \langle v, x \rangle = \langle (u + v), x \rangle$,
+where $+$ is a binary addition over $\mathbb{F}_2$. Then, we can rewrite this as
+$\langle (u + v), x \rangle = \sum_{(u + v)_i \neq 0} x_i$. Since $u + v \neq
+0^n$ from the initial assumption and $x$ is a uniformly random string, the
+$\sum_{(u + v)_i \neq 0} x_i = 1$ holds with probability $\frac{1}{2}$. So,
+finally, we conclude that $\langle u, x \rangle \neq \langle v, x \rangle$ with
+probability $\frac{1}{2}$.
 \end{proof}
 \begin{lemma}
-The Walsh-Hadamard code is an error-correcting code with distance $\frac{1}{2}$.
+The Walsh-Hadamard code $\mathsf{Had}$ is an error-correcting code with distance $\delta = \frac{1}{2}$.
 \end{lemma}
 \begin{proof}
-Taking two codewords $f(x_1)$ and $f(x_2)$ the distance between them is equal to the number of $y \in \{0, 1\}^n$ where 
-$\langle x_1, y \rangle \neq \langle x_1, y \rangle$. We know that this happens in the half of the cases, so for a 
-codeword of size $2^n$ the distance will be $\Delta(f(x_1), f(x_2)) = \frac{2^{n-1}}{2^n} = \frac{1}{2}$.
+Taking two codewords $\mathsf{Had}(x_1)$ and $\mathsf{Had}(x_2)$, the distance
+between them is equal to the number of such $y \in \{0, 1\}^n$ that $\langle
+x_1, y \rangle \neq \langle x_1, y \rangle$. We know that this happens in the
+half of the cases, so for a codeword of size $2^n$ the distance will be
+$\Delta(\mathsf{Had}(x_1), \mathsf{Had}(x_2)) = \frac{2^{n-1}}{2^n} =
+\frac{1}{2}$.
 \end{proof}    
 This code made a significant impact on the coding theory, mathematics, and theoretical computer science. However, it is 
 impractical for modern applications due to the exponential growth in the size of the codewords.
-
 
 \subsection{Reed-Solomon code}
 In information and coding theory, Reed–Solomon ECCs are a group of block error-correcting codes
@@ -125,7 +193,8 @@ Reed-Solomon code lies in the assumptions on the basis of which their encoding a
 
 Firstly, let's start from the definition of the input data that differs from binary:
 \begin{definition}
-For some alphabet $\Sigma$ elements $x,y \in \Sigma^n$ we define $\Delta(x, y) = \frac{1}{n}|\{i: x_i \neq y_i\}|$.
+For some alphabet $\Sigma$ and elements $x,y \in \Sigma^n$, we define the
+relative distance $\Delta(x, y) = \frac{1}{n}\left|\{i \in [n]: x_i \neq y_i\}\right|$.
 \end{definition}
 Now we can describe error-correcting codes for the alphabets that differ from binary. Also, let's describe one 
 subclass of the block ECCs to which the Reed-Solomon code belong:
@@ -136,65 +205,107 @@ Linear code is a code where the set of codewords forms a linear space:
     \item[--] For the codeword $c$ and constant $\alpha$ the $\alpha c$ is also a codeword.
 \end{itemize}
 \end{definition}
+
+In the subsequent discussion, we will be interested in the special class of
+alphabet: $\Sigma = \mathbb{F}_q$. This way, the considered
+\emph{linear error correcting code} $\mathcal{C} \subseteq \mathbb{F}_q^n$ is a
+linear subspace of the vector space $\mathbb{F}_q^n$.
+
 \begin{theorem}
-Let the \textbf{weight} of a codeword be the number of positions where its value is non-zero. Then, the distance of 
-the linear error-correcting code is equal to the minimum possible weight of non-zero codeword.
+Let the \textbf{weight} $\|c\|_H$ of a codeword $c \in \mathcal{C} \subseteq
+\Sigma^n$ be the number of positions where its value is non-zero: $\|c\|_H =
+\left|\{i \in [n]: c_i \neq 0\}\right|$.
+
+Then, the distance $\delta$ of the linear error-correcting code is equal to the
+minimum possible weight of non-zero codeword: $\delta = \min_{c \in
+\mathcal{C}}\|c\|_H$.
 \end{theorem}
 \begin{proof}
-For two codewords $c_1, c_2$, the $c_1 - c_2$ is also a codeword. Note, that $\Delta(c_1, c_2) = w(c_1-c_2)$, 
-where $w(x) = |\{i: x_i \neq 0\}|$ is a weight function and subtraction is done by modulo 2 over binary elements. 
-Thus, the distance of the linear error-correcting code will be equal to the minimum possible distance between two 
-non-equal codewords that is also equal to the minimum possible weight of the non-zero codeword:
+Note that for two codewords $c_1, c_2 \in \mathcal{C}$, the $c_1 - c_2$ is also
+a codeword from $\mathcal{C}$. Then,
 \begin{equation*}
-    \delta = \min_{c_1 \neq c_2} \Delta(c_1, c_2) = \min_{c_1 \neq c_2} w(c_1 - c_2) = \min_{c \neq 0} w(c)
+    \delta = \min_{c_1 \neq c_2 \in \mathcal{C}} \Delta(c_1, c_2) = \min_{c_1 \neq c_2} \|c_1 - c_2\|_H = \min_{c \neq 0} \|c\|_H
 \end{equation*} 
-\end{proof}
-Note, that the Walsh-Hadamard code is also a linear code, so we can prove its distance using this approach as well.
 
+Note, that the Walsh-Hadamard code is also a linear code, so we can prove its
+distance using this approach as well.
+\end{proof}
+
+Now, we shift our focus towards one of the core zk-STARK components: the
+Reed-Solomon code. This code is a linear error-correcting code that operates
+over the certain finite field $\mathbb{F}$ and polynomials $\mathbb{F}[X]$. The
+definition is following.
 
 \begin{definition}[Reed-Solomon code]
-For a field $\mathbb{F}$ and numbers $0 < n \leq m < |\mathbb{F}|$ the \textbf{Reed-Solomon code} from 
-$\mathbb{F}^n \rightarrow \mathbb{F}^m$ is a function that takes $n-1$ degree polynomial $A(x) \in \mathbb{F}[x]$ 
-and outputs its evaluation over $m$ points $f_0,...,f_{m-1} \in \mathbb{F}$.
+Let $\Omega \subseteq \mathbb{F}$ be some \emph{evaluation domain} with a rate
+parameter $\rho \in (0,1]$. Formally, the \textbf{Reed-Solomon Code}
+$\mathsf{RS}[\mathbb{F},\Omega,\rho]$ is defined as the space of functions $f:
+\Omega \to \mathbb{F}$ that are evaluations of polynomials of degree up to
+$\rho|\Omega|$. Put much more simply, the codeword of the Reed-Solomon code is an
+evaluation of a polynomial of degree less than $\rho|\Omega|$ over the points of the
+evaluation domain $\Omega$:
+\begin{equation*}
+    \mathsf{RS}[\mathbb{F},\Omega,\rho] = \left\{f(x)\big|_{x \in \Omega}: f \in \mathbb{F}^{(\leq \rho |\Omega|)}[x]\right\},
+\end{equation*}
+
+where we abuse the notation to denote $f(x)\big|_{x \in \Omega} = \left(f(\omega)\right)_{\omega \in \Omega}$.
 \end{definition}
+
+The definition is very hard to grasp on its own, so we help you with 
+an example.
+
+\begin{example}
+    Suppose $\mathbb{F} = \mathbb{F}_7$ and let evaluation domain be $\Omega =
+    \{1,2,5,6\}$. Then, the Reed-Solomon code $\mathsf{RS}[\mathbb{F}_7, \Omega,
+    \frac{1}{2}]$ is a set of all evaluations of polynomials of degree not
+    exceeding $4 \cdot \frac{1}{2}=2$ (that is, quadratic) over the points
+    $\{1,2,5,6\}$. For example, for $f(x) = (x+1)^2 \in \mathbb{F}^{(\leq 2)}_7$
+    the codeword is $(f(1),f(2),f(5),f(6)) = (4, 2, 1, 0) \in
+    \mathsf{RS}[\mathbb{F}_7, \Omega, \frac{1}{2}]$. 
+\end{example}
+
+\begin{remark}
+    Typically, we assume that $\rho|\Omega|$ is an integer, so we omit rounding
+    operations in the following discussion.
+\end{remark}
+
+Let us now estimate some parameters of the Reed-Solomon code.
     
 \begin{lemma}
-The Reed-Solomon code has distance of $1 - \frac{n-1}{m}$
+The Reed-Solomon code has a distance of $1 - \rho$.
 \end{lemma}
 \begin{proof}
-The word is a polynomial of degree less then $n$ so it can have no more then $n-1$ roots. The codeword is the 
-evaluation of this polynomial at $m > n$ distinct points, meaning it must contain at least $m-(n-1)$ non-zero 
-values (since at most $n-1$ points in $f$ can be roots of our word polynomial). Since the Reed-Solomon code is a 
-linear code, we can use its property to define its distance as $\delta =\frac{m - n + 1}{n} = 1 - \frac{n-1}{m}$.
+Let $N = |\Omega|$. The word is a polynomial of degree up to $\rho N$ so it can
+have at most $\rho N$ roots. The codeword is the evaluation of this polynomial
+at $N$ distinct points, meaning it must contain at least $N-\rho N=(1-\rho)N$
+non-zero values (otherwise, the polynomial would have more than $\rho N$ roots
+and thus the higher degree than $\rho N$). Since the Reed-Solomon code is a
+linear code, we conclude that the distance is $(1-\rho)N/N = 1-\rho$.
 \end{proof}
 
-By following the ``Unisolvence theorem'' we know that to recover $n-1$ degree polynomial we need at least $n$ points 
-for interpolation. Because the Reed-Solomon code performs polynomial evaluation over $m > n$ points we can still 
-interpolate (or decode) the polynomial even if some points are corrupted during data transmission.
-
+By following the ``Unisolvence theorem'', we know that recovering $\rho N$
+degree polynomial requires at least $\rho N+1$ points for interpolation. Because
+the Reed-Solomon code performs polynomial evaluation over $N > \rho N$ points,
+we can still interpolate (or decode) the polynomial even if some points are
+corrupted during the data transmission.
 
 \begin{theorem}
-There exists a polynomial-time (depending on the codeword size) algorithm with the following properties:
-\begin{itemize}
-    \item[--] \verb|Input|: a list of pairs $(a_i, b_i)|^{m-1}_0$ of elements in $\mathbb{F}$ such that for 
-    $\hat{t} > \frac{m}{2} + \frac{n}{2}$ of them $G(a_i) = b_i$ for some unique polynomial $G(x)$ with $\deg G(x) = n-1$.
-    \item[--] \verb|Output|: a polynomial $G(x)$ with $\deg G(x) = n-1$. 
-\end{itemize}
+Suppose for a given list of pairs $\mathcal{D} = \{x_j, y_j\}_{j \in [N]}$ there
+exists a unique polynomial $f(x) \in \mathbb{F}^{(\leq \rho N)}[x]$ such that
+$f(x_j) = y_j$ for at least $\frac{1+\rho}{2}N$ of them. Then, there exists a
+\textit{polynomial-time algorithm} $\mathsf{Dec}$ (in $O(N^{\gamma})$ for some
+constant $\gamma>1$), extracting the polynomial: $\mathsf{Dec}(\mathcal{D}) =
+f$.
 \end{theorem}
 
 \begin{proof}
-The assumption $\hat{t} > \frac{m}{2} + \frac{n}{2}$ can be transformed into the corresponding constraint on the number 
-of possible errors $t$: 
-\begin{equation*}
-    t = m - \hat{t} < m - \frac{m}{2} - \frac{n}{2} = \frac{m}{2} - \frac{n}{2}
-\end{equation*}
-Let's also evaluate a necessary constraint that will be useful in the algorithm below:
-\begin{gather*}
-        t < \frac{m}{2} - \frac{n}{2}\\
-        2t < m - n\\
-        m > 2t+n
-\end{gather*}
-So, we know the lower bound of the codeword size depending on the word and number of errors: $m \geq 2t+n+1$.
+The assumption that at least $\frac{1+\rho}{2}N$ points must be
+``interpolatable'' for some $f(x) \in \mathbb{F}^{(\leq \rho N)}[x]$ can be
+transformed into the corresponding constraint on the number of possible errors
+$t$: indeed, if $m$ is the number of such points, then $t = N - m <
+\frac{1-\rho}{2}N$. Alternatively, this implies $N > 2t+N\rho$, which will be
+useful later. That being said, we know the lower bound of the codeword size
+depending on the word and number of errors: $N \geq 2t+\rho N+1$.
 
 \begin{tcolorbox}[title=Berlekamp-Welch decoding,
     breakable,
@@ -208,36 +319,50 @@ So, we know the lower bound of the codeword size depending on the word and numbe
     colback=blue!20!white,
     colupper=blue!75!gray} ]
 
-    So, $G(a_i) = b_i$ for at least $\hat{t}$ of $m$ pairs. We also know that $\deg G(x) = n-1$ and $n < t < m$.
-    It means that we already can recover polynomial but we firstly have to deal with an errors.
+    \textbf{Assume:} $f(x_j) = y_j$ for at least $\frac{1+\rho}{2}N$ of $N$
+    pairs with $f \in \mathbb{F}^{(\leq \rho N)}[x]$.
+    
+    \textit{Comment:} Since $t/N < 1-\rho$, recovering polynomial $f$ is
+    possible, but we need to somehow know which points are corrupted.
 
-    \tcbsubtitle{$\mathsf{Decoding}(\mathbb{F}, n, m, (a_i, b_i)|^{m-1}_0)$}
+    \tcbsubtitle{$\mathsf{Dec}(\mathsf{RS}[\mathbb{F},\Omega,\rho], \{x_j,
+    y_j\}_{j \in [N]})$}
     
     \begin{itemize}[label=\ding{51}]
-        \item Let's put an \textbf{error polynomial} $E(X)$ a polynomial which has roots at the error points.
-        \item So, $\deg E(x) = t < \frac{m}{2} - \frac{n}{2}$.
-        \item Our algorithm is based on the following equation: $$C(a_i) = G(a_i)\cdot E(a_i), i \in 0..m-1$$
-        where $C(x)$ is an arbitrary polynomial that we are going to find.
-        \item Note, that $\deg C(x) = \deg G(x) + \deg E(x) = n - 1 + t$
-        \item Then, by solving the equation $C(a_i) = b_i\cdot E(a_i), i \in 0..m-1$ we can find $C(x)$ and $E(x)$.
-        \item This can be considered as a set of $m$ linear equations where we have unknown $n+t$ coefficients
-        of $C(x)$ and $t+1$ coefficient of $E(x)$, so it can be solved via linear algebra while $m \geq 2t+n+1$.
-        \item Finally, we put $G(x) = \frac{C(x)}{E(x)}$
+        \item Let's put an \textbf{error polynomial} $e(X)$ a polynomial which
+        has roots at the error points. This implies $\deg e(x) = t <
+        \frac{1-\rho}{2}N$.
+        \item Our algorithm is based on the following equation: 
+        \begin{equation*}
+            g(x_j) = f(x_j)\cdot e(x_j), \; j \in [m],
+        \end{equation*}
+        where $g(x)$ is an arbitrary polynomial that we are going to find.
+        \item Note, that $\deg g = \deg f + \deg e = \rho N + t - 1$.
+        \item By solving the equation $g(x_j) = y_j\cdot e(x_j)$, $j \in [m]$,
+        we can find $g(x)$ and $e(x)$. Indeed, this can be considered as a set
+        of $N$ linear equations where we have unknown $\rho N+t$ coefficients of
+        $g(x)$ and $t+1$ coefficients of $e(x)$. This, it can be solved via
+        linear algebra methods as long as $N \geq 2t+\rho N+1$.
+        \item Finally, we set $f(x) = g(x)/e(x)$.
     \end{itemize}
     
 \end{tcolorbox}
-The last equation follows from the observation that polynomial $C(x) - G(x)\cdot E(x)$ is zero in $\hat{t}$ points 
-while it has degree $n + t - 1$. It is easy to prove that the polynomial degree less then the number of it's roots, 
-so $C(x) - G(x)\cdot E(x)$ is zero for each $x$. That is why from $C(x) = E(x)G(x)$ follows that $C(x)$ is divisible 
-on $E(x)$.
+The last equation follows from the observation that polynomial $g(x) - f(x)e(x)$
+is zero in $m \leq \frac{1+\rho}{2}N$ points while it has degree $\rho N + t -
+1$. It is easy to prove that the polynomial degree less then the number of its
+roots, so $g(x) - f(x)e(x)$ is zero for each $x$. That is why from $g(x) =
+e(x)f(x)$ it follows that $g(x)$ is divisible by $e(x)$.
 \end{proof}
 
 \subsubsection{Reed-Solomon(255,223) implementation}
-The example implementation aims to help reader to understand how the encoding and decoding looks like. The 
-Reed-Solomon code with $m=255, n=223$ is widely used in communication and storage systems, including QR codes, CDs, 
-DVDs, and deep-space communication. It operates over $\mathbb{GF}(256)$ (the finite field of $256$ elements) 
-and encodes data as polynomials evaluated at different field elements. Following our theorem, the number of errors 
-is constrained as $t < \frac{m}{2} - \frac{n}{2}$ which means that $t < 16$. For our implementation we take $t = 15$.
+The example implementation aims to help reader to understand how the encoding
+and decoding looks like in practice. The Reed-Solomon code with $m=255, n=223$
+is widely used in communication and storage systems, including QR codes, CDs,
+DVDs, and deep-space communication. It operates over $\mathbb{F}_{256}$ (the
+finite field of $256$ elements) and encodes data as polynomials evaluated at
+different field elements. Following our theorem, the number of errors is
+constrained as $t < \frac{1-\rho}{2}N$ which means that $t < 16$. For our
+implementation we take $t = 15$.
 
 Let's start from the basic parameters definition:
 \begin{lstlisting}[language=Python,numbers=none]
@@ -248,13 +373,15 @@ n = 223 # A word size
 t = 15 # The number of possible errors
 distance = (m - n + 1)/m
 \end{lstlisting}
-The \verb|distance| then is equal to $\frac{11}{85}$. Let's sample a random message that will be an information 
-polynomial of degree $n=223$ (this messsage can be obtained by the interpolation of some useful data):
+The \verb|distance| then is equal to $\frac{11}{85}$. Let's sample a random
+message that will be an information polynomial of degree $\rho N=223$ (this
+messsage can be obtained by the interpolation of some useful data):
 \begin{lstlisting}[language=Python,numbers=none]
 word = sum(F.random_element() * x^i for i in range(n))
 \end{lstlisting}
-We start encoding from defining the evaluation elements that will be all non-zero elements of $\mathbb{GF}(256)$. 
-Then, our codeword will be the $m = 255$ evaluations of our information polynomial.
+We start encoding from defining the evaluation elements that will be all
+non-zero elements of $\mathbb{F}_{256}$. Then, our codeword will be the $N =
+255$ evaluations of our information polynomial.
 \begin{lstlisting}[language=Python,numbers=none]
 # All non zero elements in F. Order(F) - 1 = 255
 f = [f_i for f_i in F if f_i != 0]
@@ -262,10 +389,12 @@ assert len(f) == m
 codeword = [word(f_i) for f_i in f]
 assert len(codeword) == m
 \end{lstlisting}
-To decode the codeword we should solve the system of $m$ equations $C(x_i) - b_i \cdot E(x_i) = 0$. Note, that this system
-is homogeneous, so the trivial solution (all zeros) is always a solution. To find a non-zero solution we impose a 
-normalization condition, such as setting the leading coefficient of $E(x)$ to $1$. This turns our original equation 
-into the $C(x_i) - b_i \cdot E(x_i) = b_i \cdot x_i^deg_E$.
+To decode the codeword we should solve the system of $N$ equations $g(x_j) - b_j
+\cdot e(x_j) = 0$. Note, that this system is homogeneous, so the trivial
+solution (all zeros) is always a solution. To find a non-zero solution we impose
+a normalization condition, such as setting the leading coefficient of $e(x)$ to
+$1$. This turns our original equation into the $g(x_j) - b_j \cdot e(x_j) = b_j
+\cdot x_j^{\deg e}$.
 \begin{lstlisting}[language=Python,numbers=none]
 deg_C = 237 # deg = n - 1 + t
 deg_E = 15 # deg = t
@@ -285,8 +414,9 @@ rhs = vector(F, [b_i * (f_i^deg_E) for f_i, b_i in zip(f, codeword)])
 solution = M.solve_right(rhs)
 assert len(solution) == deg_C + deg_E + 1
 \end{lstlisting}
-Finally, we can recover the original information polynomial $G(x) = \frac{C(x)}{E(x)}$. We also should not forget to 
-add the normalized leading coefficient of $E(x)$.
+
+Finally, we can recover the original information polynomial $f \gets g/e$. We
+also should not forget to add the normalized leading coefficient of $e(x)$.
 \begin{lstlisting}[language=Python,numbers=none]
 C = sum(solution[i] * x^i for i in range(deg_C + 1))
 E = sum(solution[deg_C + 1 + i] * x^i for i in range(deg_E))
@@ -296,7 +426,7 @@ assert G.numerator() == word
 \end{lstlisting}
 
 To discrover the error correcting properties of the presented code you can add the following snippet after the 
-codeword calculation. It changes first $t$ elements of codeword to the random $\mathbb{GF}(256)$ elements. If you try 
+codeword calculation. It changes first $t$ elements of codeword to the random $\mathbb{F}_{256}$ elements. If you try 
 to change more elements then the linear system solving procedure will fail. 
 \begin{lstlisting}[language=Python,numbers=none]
 for i in range(t):
