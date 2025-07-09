@@ -4,13 +4,13 @@
 % --- Beamer settings ---
 \DeclareOption*{\PassOptionsToClass{\CurrentOption}{beamer}}
 \ProcessOptions\relax
-\LoadClass[compress, final, xcolor={dvipsnames}]{beamer}
+\LoadClass[compress, final, xcolor={dvipsnames}, mathserif]{beamer}
 
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 
 % --- Listing settings ---
-\RequirePackage{listings, ../listings-circom}
+\RequirePackage{listings}
 
 % --- Algorithm packages ---
 \RequirePackage[
