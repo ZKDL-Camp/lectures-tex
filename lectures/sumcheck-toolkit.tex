@@ -1,0 +1,176 @@
+\documentclass[../lecture-notes-148x210.tex]{subfiles}
+
+
+\begin{document}
+\subsection*{Sum-Check Toolkit}
+
+\subsection{Sum-Check-based Protocol for Grand Products}
+\label{sec:grand-products}
+
+This subsection describes a transparent SNARK, which may be used for proving grand product relations of the following form:
+\begin{equation}
+\mathcal{R}_{GP} = \big\{ (p \in \mathbb{F}, \mathbf{v} \in \mathbb{F}^m)\colon p = \prod_{i=0}^m v_i \big\} \label{grand-product-relation}
+\end{equation}
+Let $m = |\mathbf{v}|$. WLOG, assume that $m$ is a power of $2$.
+We can think of $\mathbf{v}$ as a vector of evaluations of a $\log m$-variate multilinear polynomial $v(x)$ over 
+$\{0, 1\}^{\log m}$ in a natural fashion. We assume the prover first opens $p$ and then commits to $v(x)$; the 
+ensuing protocol then verifies both the polynomial’s validity and the corresponding grand-product equality derived
+ from that commitment.
+
+\begin{lemma}
+A scalar $p$ and a vector $\mathbf{v}$ satisfies the relation $\mathcal{R}_{GP}$ if and only if there exists a 
+multilinear polynomial $f$ in $\log m + 1$ variables such that $f(1,\dots,1, 0) = p$ and $\forall x \in \{0,1\}^{\log m}$
+ the following hold:
+\begin{gather*}
+f(0, x) = v(x)\\
+f(1,x) = f(x, 0) \cdot f(x, 1)
+\end{gather*}
+Such polynomial $f$ has the following construction: \begin{itemize}
+    \item $f(1,\dots,1) = 0$
+    \item For all $\ell \in [\log m]$ and $x \in \{0,1\}^{\log m - \ell}$: \\ 
+    \vspace{-0.8em}
+    \begin{equation*}
+        f(1^\ell, 0, x) = \prod_{y \in \{0,1\}^\ell}v(x,y)
+    \end{equation*}
+\end{itemize}
+\end{lemma}
+
+One can simply visualize the structure of $f$ as a binary tree.
+
+\begin{example}
+    Let $m=4$ ($\log m=2$), $v(x_1, x_2) = 1 + 2x_1 + x_2$, then:
+    \begin{equation*}
+    v(x_1,x_2): \quad v(0,0)=1,\; v(0,1)=2,\; v(1,0)=3,\; v(1,1)=4.
+    \end{equation*}
+    Now, we
+    \begin{equation*}
+    f(0,0,0)=1,\; f(0,0,1)=2,\; f(0,1,0)=3,\; f(0,1,1)=4.
+    \end{equation*}
+    and:
+    \begin{equation*}
+    f(1,0,0)=2,\; f(1,0,1)=12,\; f(1,1,0)=24,\; f(1,1,1)=0.
+    \end{equation*}
+
+    \begin{center}
+        \scalebox{1.0}{
+        \begin{tikzpicture}[
+            level 1/.style={level distance=2cm, sibling distance=4cm},
+            level 2/.style={level distance=2cm, sibling distance=2cm},
+            level 3/.style={level distance=1.1cm, sibling distance=2cm, edge from parent/.style={draw=none},},
+            edge from parent/.style={draw, -latex},
+            every node/.style={circle,draw,inner sep=1pt}
+        ]
+        \node {$f(1,1,0)=24$}
+            child {
+                node {$f(1,0,0)=2$}
+                child { node {$f(0,0,0)$}
+                    child { node[draw=none] {$\displaystyle v(0,0)=1$} }
+                }
+                child { node {$f(0,0,1)$}
+                    child { node[draw=none] {$\displaystyle v(0,1)=2$} }
+                }
+            }
+            child {
+                node {$f(1,0,1)=12$}
+                child { node {$f(0,1,0)$}
+                    child { node[draw=none] {$\displaystyle v(1,0)=3$} }
+                }
+                child { node {$f(0,1,1)$}
+                    child { node[draw=none] {$\displaystyle v(1,1)=4$} }
+                }
+            };
+        \end{tikzpicture}
+        }
+
+        \vspace{-1em}
+        \textit{\textbf{Illustration:} Binary tree of the Grand Product constraints for $v(x_1, x_2) = 1 + 2x_1 + x_2$.}
+    \end{center}
+\end{example}
+
+Then, to check that $\forall x \in \{0,1\}^{\log m}$ the equation $f(1,x) = f(x, 0) \cdot f(x, 1)$ holds, we can use 
+a sum-check protocol to prove the evaluation of $g$ that is referred to a MLE of $f(1,x) - f(x, 0) \cdot f(x, 1)$:
+\begin{equation*}
+    g(t) = \sum_{x \in \{0,1\}^{\log m}} \widetilde{\text{eq}}(t,x) \cdot (f(1,x) - f(x, 0) \cdot f(x, 1))
+\end{equation*}
+By the Schwartz–Zippel lemma, except for a soundness error of $\frac{\log m}{|\mathbb{F}|}$ (which should be negligible),
+ $g(\tau) = 0$ for $\tau$ uniformly random in $\mathbb{F}^{\log m}$ if and only if $g = 0$, which implies that 
+ $f(1, x) - f(x, 0) \cdot f(x, 1) = 0$ for all $x \in \{0, 1\}^{\log m}$.
+
+Similarly, to prove that $v(x) = f(0, x)$ for all $x \in \{0, 1\}^{\log m}$ it suffices to prove that $v(\gamma) = f(0, \gamma)$
+ for a public coin $\gamma \in \mathbb{F}^{\log m}$.
+
+Thus, to prove the existence of $f$ and hence the grand product relationship, it suffices
+to prove, for some verifier selected random $\tau, \gamma \in \mathbb{F}^\ell$, that:
+\begin{gather}
+\label{eq:grands0}
+    0 = \sum_{x \in \{0,1\}^{\log m}} \widetilde{\text{eq}}(x, \tau) \cdot (f(1,x) - f(x, 0) \cdot f(x, 1))\\
+\label{eq:grands1}
+    f(0, \gamma) = v(\gamma)\\
+\label{eq:grands2}
+    f(1,\dots,1, 0) = p
+\end{gather}
+This can be achieved by running the sum-check protocol between $\mathcal{P}$ and $\mathcal{V}$, where $\mathcal{V}$ 
+has oracle access to $v$ and $f$. Additionally, $\mathcal{V}$ evaluates the $f, v$ at the random point $\gamma$ to 
+verify that $f(0, x) = v(x)$. So, the sum-check-based protocol for the grand products looks as follows:
+\newline
+\begin{algorithm}[H]
+\caption{Sum-Check-based Protocol for Grand Products}\label{alg:sum_check_grand_product}
+\DontPrintSemicolon
+\SetAlgoLined
+
+\textbf{$\mathcal P$:}
+Compute polynomials 
+$v\in\mathbb{F}^{\log m}[x]$, 
+$f\in\mathbb{F}^{\log m+1}[x]$ 
+such that
+\vspace{-0.8em}
+\begin{equation*}
+    \vspace{-1.6em}
+    p = \prod_{x\in\{0,1\}^{\log m}} v(x)
+    \quad\text{and}\quad
+    f, v \text{ satisfy }(\ref{eq:grands0}),\,(\ref{eq:grands1}),\,(\ref{eq:grands2}).
+\end{equation*}\;
+
+\textbf{$\mathcal P$:}
+$C_f \leftarrow \textsc{Commit}(f)$;
+$C_v \leftarrow \textsc{Commit}(v)$;
+send $C_f, C_v$ to $\mathcal V$.\;
+
+\textbf{$\mathcal V$:}
+Choose random $\tau,\gamma\in\mathbb{F}^{\log m}$ and send them to $\mathcal P$.\;
+
+\textbf{$\mathcal P$:}
+Compute
+\vspace{-0.8em}
+\begin{equation*}
+    \vspace{-1.6em}
+    g(x)\;=\;\widetilde{\mathrm{eq}}(x,\tau)\,\bigl(f(1,x)-f(x,0)\,f(x,1)\bigr).
+\end{equation*}\;
+
+\textbf{$\mathcal P$ \& $\mathcal V$:}
+Run \textsc{SumCheckProtocol}($0,\;g,\;C_f$)
+
+\Comment{we assume this sum‐check runs over the commitment to $f$, not directly on $g$.}
+
+\textbf{$\mathcal V$:}
+$r \leftarrow \textsc{Query}(C_f,(1,\dots,1,0))$.\;
+\If{$r \neq p$}{
+    \textbf{$\mathcal V$ rejects}.\;
+}
+
+\textbf{$\mathcal V$:}
+$a \leftarrow \textsc{Query}(C_f,(0,\gamma)), \;$ $v(\gamma)\leftarrow \textsc{Query}(C_v,\gamma)$.\;
+\If{$a \neq v(\gamma)$}{
+    \textbf{$\mathcal V$ rejects}.\;
+}
+\end{algorithm}
+
+\begin{remark}
+    Note, that during the call to the sum-check protocol, we pass the polynomial $g$ in a couple with the 
+    commitment to $f$. Here we assume that each invocation of the \textsc{Query} method to $g$ inside the 
+    sum-check instance will be more complex: \textbf{instead of evaluating a single function and returning result, we evaluate $f$ at three different points, check the proofs and return results according to the construction of $g$}.
+\end{remark}
+
+\end{document}
+
+
