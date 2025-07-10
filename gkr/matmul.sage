@@ -61,7 +61,6 @@ def mle_from_matrix(matrix: Matrix) -> R:
         for j in range(n):
             # Convert i and j to binary representation of length v
             point = [(i >> k) & 1 for k in range(v)] + [(j >> k) & 1 for k in range(v)]
-            print(f"Point: {point}, Value: {matrix[i, j]}")
             hypercube.append((tuple(point), matrix[i, j]))
 
     return mle_from_hypercube(hypercube)

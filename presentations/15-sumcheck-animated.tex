@@ -54,22 +54,22 @@
 
     \begin{frame}{Recap on Poly-IOPs and NILPs}
         Almost all protocols we have seen so far work over \textbf{univariate
-        $\mathbb{F}[X]$ polynomials}. \textit{Typical idea:} we aggregate
+        $\mathbb{F}[X]$ polynomials}. \pause \textit{Typical idea:} we aggregate
         information into some polynomial: say, $p(X)$ (which is typically a
         combination of other polynomials), and then check whether $p(u)=0$
-        for every $u \in \Omega$:
+        for every $u \in \Omega$:\pause
         \begin{equation*}
             p(u) = 0 \; \text{for all} \; u \in \Omega \iff 
-            p(X) = q(X)\prod_{u \in \Omega}(X-u)
+            p(X) = q(X)\prod_{u \in \Omega}(X-u)\pause
         \end{equation*}
 
         We check this inequality at a random point $r \leftarrowS \mathbb{F}$
         and achieve soundness of $1-\deg p/|\mathbb{F}|$: see
-        \textbf{Schwartz-Zippel Lemma}.
+        \textbf{Schwartz-Zippel Lemma}.\pause
 
         For appropriate domains (typically $\Omega = \{\omega^j\}_{j \in
         [2^t]}$) we reduce all polynomials computations to $\mathcal{O}(n\log
-        n)$ complexity.
+        n)$ complexity.\pause
 
         \begin{block}{Motivation}
             But what if we could work with much smaller degrees?
@@ -81,17 +81,17 @@
             \item Instead of $n$-variate univariate polynomials $\mathbb{F}[X]$
             we reduce the problem to $\log n$-variate multivariate polynomials
             $\mathbb{F}[X_1,\dots,X_v]$.
-            \item The Schwartz-Zippel Lemma still holds for multivariate case:
+            \item \pause The Schwartz-Zippel Lemma still holds for multivariate case:
             \begin{equation*}
                 \mathop{\text{Pr}}_{(r_1,\dots,r_v) \leftarrowS \mathbb{S}}[f(r_1,\dots,r_v) = 0] \leq \frac{\deg f}{|\mathbb{S}|}, \quad \mathbb{S} \subseteq \mathbb{F}^v
             \end{equation*}
-            \item \textbf{Bad news:} divisibility theorems do not hold:
+            \item \pause \textcolor{red!80!black}{\textbf{Bad news:}} divisibility theorems do not hold:
             \begin{equation*}
                 f(s_1,\dots,s_v) = 0 \centernot\iff (X-s_1)\dots (X-s_v) \mid f(X_1,\dots,X_v)
             \end{equation*}
         \end{itemize}
 
-        \begin{alertblock}{Sum-Check meaning}
+        \pause\begin{alertblock}{Sum-Check meaning}
             Instead of divisibility checks, we use the \textbf{Sum-Check}:
             \begin{equation*}
                 \sum_{b_1 \in \{0,1\}}\sum_{b_2 \in \{0,1\}}\dots \sum_{b_v \in \{0,1\}} f(b_1,\dots,b_v) = H
@@ -122,7 +122,7 @@
 
         \vspace{-10px}
         
-        \textbf{Succinct Arguments:} Ligero (2022), Spartan (2020), Libra
+        \pause \textbf{Succinct Arguments:} Ligero (2022), Spartan (2020), Libra
         (2019), Hyrax(2017), GKR (2008), \dots
 
         \textbf{Applications:} zkGPT (2025), deep-prove (using \textit{Ceno})
@@ -137,7 +137,7 @@
             $\mu(\mathbf{X})=X_1^{\alpha_1}\dots X_v^{\alpha_v}$ where
             $\alpha_1,\dots,\alpha_v$ are non-negative integers. The
             \textbf{degree} of a monomial is naturally defined as $\deg \mu \triangleq
-            \alpha_1+\dots+\alpha_v$.
+            \alpha_1+\dots+\alpha_v$.\pause
         \end{definition}
 
         \begin{definition}[Multivariate Polynomial]
@@ -147,7 +147,7 @@
             combination of $v$-variate monomials
             $\{\mu_1(\mathbf{X}),\dots,\mu_n(\mathbf{X})\}$. The \textbf{degree}
             of $f$ is defined as $\deg f \triangleq \max_{i \in \{1,\dots,n\}}
-            \deg \mu_i$. 
+            \deg \mu_i$.\pause
         \end{definition}
 
         \begin{example}
@@ -161,12 +161,12 @@
     \begin{frame}{Multilinear Polynomials}
         \begin{definition}[Multilinear Polynomial]
             Multivariate polynomial $f \in \mathbb{F}[X_1,\dots,X_v]$ is called
-            \textbf{multilinear} if it is linear in each of the variables.
+            \textbf{multilinear} if it is linear in each of the variables.\pause
             Formally we have:
             \begin{equation*}
                 f(X_1,\dots,X_v) = \textcolor{red}{\alpha_j} X_j + \textcolor{blue}{\beta_j}, \quad j \in \{1,\dots,n\},
             \end{equation*}
-            where $\alpha_j,\beta_j$ do not depend on $X_j$.
+            where $\alpha_j,\beta_j$ do not depend on $X_j$.\pause
         \end{definition}
 
         \begin{example}
@@ -176,7 +176,7 @@
                 f(X_1,X_2,X_3) = \textcolor{red}{(X_2+3X_3)}X_1 + \textcolor{blue}{X_2X_3}.
             \end{equation*}
 
-            Similarly, $f(X_1,\dots,X_v)=\prod_{i=1}^v X_i$ is a multilinear
+            \pause Similarly, $f(X_1,\dots,X_v)=\prod_{i=1}^v X_i$ is a multilinear
             polynomial.
         \end{example}
     \end{frame}
@@ -184,7 +184,7 @@
     \begin{frame}{Boolean Hypercube}
         \begin{definition}[Boolean Hypercube]
             By \textbf{$v$-dimensional boolean hypercube} we simply denote the
-            set $\{0,1\}^v$ (which is a set of binary strings of length $v$). 
+            set $\{0,1\}^v$ (which is a set of binary strings of length $v$).\pause
         \end{definition}
 
         \begin{figure}
@@ -199,7 +199,7 @@
             Suppose we are given the values on the boolean cybercube $f:
             \{0,1\}^v \to \mathbb{F}$. We call $\widetilde{f}: \mathbb{F}^v \to
             \mathbb{F}$ an \textbf{extension} if $\widetilde{f}(\mathbf{b}) =
-            f(\mathbf{b})$ for every $\mathbf{b} \in \{0,1\}^v$.
+            f(\mathbf{b})$ for every $\mathbf{b} \in \{0,1\}^v$.\pause
         \end{definition}
 
         \begin{center}
@@ -213,10 +213,10 @@
             \node[grid_label, below=0.75cm of {(-0.6, -0.5)}] (title_f) {Function $f: \{0,1\}^2 \to \mathbb{F}_5$};
             
             % --- Draw the grid nodes ---
-            \node[grid_cell] (f11) at (0,0) {2};
-            \node[grid_cell] (f10) at (0,-0.75) {3};
-            \node[grid_cell] (f01) at (-0.75,0) {1};
-            \node[grid_cell] (f00) at (-0.75,-0.75) {2};
+            \node[grid_cell, hypercube_highlight] (f11) at (0,0) {2};
+            \node[grid_cell, hypercube_highlight] (f10) at (0,-0.75) {3};
+            \node[grid_cell, hypercube_highlight] (f01) at (-0.75,0) {1};
+            \node[grid_cell, hypercube_highlight] (f00) at (-0.75,-0.75) {2};
             
             % --- Draw the labels for the grid ---
             % X-axis labels
@@ -230,7 +230,7 @@
             %===========================================================
             % Arrow in the middle
             %===========================================================
-            \draw[-stealth, ultra thick] (1.2, -0.6) -- node[above, font=\large] {Extend} (2.8, -0.6);
+            \pause\draw[-stealth, ultra thick] (1.2, -0.6) -- node[above, font=\large] {Extend} (2.8, -0.6);
             
             
             %===========================================================
@@ -275,13 +275,13 @@
             An extension $\widetilde{f}: \mathbb{F}^v \to \mathbb{F}$ of $f:
             \{0,1\}^V \to \mathbb{F}$ is called \textbf{multilinear} if
             $\widetilde{f} \in \mathbb{F}[X_1,\dots,X_v]$ is a multilinear
-            polynomial.
+            polynomial.\pause
         \end{definition}
 
         \begin{example}
             For the previous example $f(0,0)=1, f(1,0)=f(0,1)=2, f(1,1)=3$
             (over $\mathbb{F}_5$) the multilinear extension is given by
-            $\widetilde{f}(X_1,X_2) = X_1 + X_2 + 1$.
+            $\widetilde{f}(X_1,X_2) = X_1 + X_2 + 1$.\pause
         \end{example}
 
         The question though is how many extensions $\widetilde{f}$ we can 
@@ -289,9 +289,9 @@
         \begin{itemize}
             \item If $\widetilde{f}$ is a multivariate polynomial, there might
             be infinite number of choices: for example above, take
-            $\widetilde{f}_n(X_1,X_2) = X_1^n + X_2^n + 1$.
+            $\widetilde{f}_n(X_1,X_2) = X_1^n + X_2^n + 1$.\pause
             \item However, if $\widetilde{f}$ is multilinear, it is
-            \textbf{unique}.
+            \textbf{unique}.\pause
             \item Additionally, is there an analogy to the \textit{Lagrange
             Interpolation} for such case: how to build $\widetilde{f}$
             practically?
@@ -306,11 +306,15 @@
             interpolation of multilinear polynomials}:
             \begin{equation*}
                 \widetilde{f}(\mathbf{X}) = \sum_{\boldsymbol{b} \in \{0,1\}^v} f(\boldsymbol{b}) \cdot \mathsf{eq}(\mathbf{X};\boldsymbol{b}),
+                \quad \mathsf{eq}(\mathbf{X}; \boldsymbol{b}) \triangleq \begin{cases}
+                    1, & \mathbf{X} = \boldsymbol{b} \\
+                    0, & \text{otherwise}
+                \end{cases},
             \end{equation*}
             where the set $\{\mathsf{eq}(\mathbf{X};
             \boldsymbol{b})\}_{\boldsymbol{b} \in \{0,1\}^v}$ is referred to as
             \textbf{the set of multilinear Lagrange basis polynomials} over
-            $\{0,1\}^v$. Each basis polynomial (among $2^v$)
+            $\{0,1\}^v$. \pause Each basis polynomial (among $2^v$)
             $\mathsf{eq}(\mathbf{X};\boldsymbol{b})$ is defined as:
             \begin{equation*}
                 \mathsf{eq}(\mathbf{X};\boldsymbol{b}) \triangleq \prod_{i=1}^v \{X_ib_i + (1-X_i)(1-b_i) \}.
@@ -326,7 +330,7 @@
         
         \vspace{-10px}
 
-        \textcolor{green!50!black}{\textbf{Step 1.}} Define multilinear Lagrange basis polynomials:
+        \pause\textcolor{green!50!black}{\textbf{Step 1.}} Define multilinear Lagrange basis polynomials:
         \begin{gather*}
             \mathsf{eq}(X_1,X_2;(0,0)) = (1-X_1)(1-X_2), \quad \mathsf{eq}(X_1,X_2;(0,1)) = (1-X_1)X_2, \\
             \mathsf{eq}(X_1,X_2;(1,0)) = X_1(1-X_2), \quad \mathsf{eq}(X_1,X_2;(1,1)) = X_1X_2
@@ -334,13 +338,13 @@
 
         \vspace{-10px}
 
-        \textcolor{blue!70!black}{\textbf{Step 2.}} Find the appropriate linear combination:
+        \pause\textcolor{blue!70!black}{\textbf{Step 2.}} Find the appropriate linear combination:
         \begin{align*}
             \widetilde{f}(X_1,X_2) &= \sum_{\boldsymbol{b} \in \{0,1\}^2} f(\boldsymbol{b}) \cdot \mathsf{eq}(\mathbf{X};\boldsymbol{b}) \\
             &= 3(1-X_1)(1-X_2) + 4(1-X_1)X_2 + X_1(1-X_2) + 2X_1X_2 \\
             &= \boxed{-2X_1 + X_2 + 3}
         \end{align*}
-        \textbf{Fact:} Generally, $\widetilde{f}(\boldsymbol{r})$ for
+        \pause\textbf{Fact:} Generally, $\widetilde{f}(\boldsymbol{r})$ for
         $\boldsymbol{r} \leftarrowS \mathbb{F}^v$ can be computed in
         $\mathcal{O}(2^v)$ time.
     \end{frame}
@@ -350,28 +354,28 @@
     \begin{frame}{MatMul Sum-Check Protocol}
         \begin{block}{MatMul Protocol}
             \textbf{Goal:} Verify that $C=AB$ for matrices $A,B,C \in
-            \mathbb{F}^{n \times n}$.
+            \mathbb{F}^{n \times n}$.\pause
         \end{block}
 
         \textcolor{blue!70!black}{\textbf{Naïve approach:}} Send $A,B$ to 
-        the verifier $\mathcal{V}$, then $\mathcal{V}$ computes $AB$. 
+        the verifier $\mathcal{V}$, then $\mathcal{V}$ computes $AB$. \pause
 
         \textcolor{gray!80!black}{\textit{Time Complexity:} $\mathcal{O}(n^3)$, \textit{Space Complexity:}
-        $\mathcal{O}(n^2)$.}
+        $\mathcal{O}(n^2)$.}\pause
 
         \textcolor{green!70!black}{\textbf{Freiveld's Protocol:}} Send $A,B,C$
         to the verifier $\mathcal{V}$. Sample $\boldsymbol{r} \leftarrowS
         \mathbb{F}^n$ and verify that $A(B\boldsymbol{r}) =
-        C\boldsymbol{r}$.
+        C\boldsymbol{r}$.\pause
 
         \textcolor{gray!80!black}{\textit{Time Complexity:} $\mathcal{O}(\textcolor{green!70!black}{n^2})$, \textit{Space Complexity:}
-        $\mathcal{O}(n^2)$.}
+        $\mathcal{O}(n^2)$.}\pause
 
         \textcolor{magenta}{\textbf{Sum-Check Protocol.}} Apply the sum-check to 
-        some particular equation formed by multilinear extensions of matrices.
+        some particular equation formed by multilinear extensions of matrices.\pause
 
         \textcolor{gray!80!black}{\textit{Time Complexity:} $\mathcal{O}(\textcolor{green!70!black}{n^2})$, \textit{Space Complexity:}
-        $\mathcal{O}(\textcolor{magenta}{\log n})$.}
+        $\mathcal{O}(\textcolor{magenta}{\log n})$.}\pause
 
         \begin{alertblock}{Question}
             Where the hell should the Sum-Check be applied here?
@@ -379,7 +383,7 @@
     \end{frame}
 
     \begin{frame}{Matrices Multilinear Extensions}
-        For simplicity assume $n = 2^k$ for some $k$.
+        For simplicity assume $n = 2^k$ for some $k$.\pause
 
         \textbf{Idea:} Instead of perceiving $A,B,C$ as the collection of $n^2$
         field elements, perceive them as functions $f_A,f_B,f_C: \{0,1\}^{\log
@@ -389,14 +393,14 @@
             f_A(\boldsymbol{i}, \boldsymbol{j}) = A_{i,j}, \quad \text{where} \quad \boldsymbol{i} = (i_1,\dots,i_{\log n}), \; \boldsymbol{j} = (j_1,\dots,j_{\log n}).
         \end{equation*}
         \vspace{-20px}
-        \begin{example}
+        \pause\begin{example}
             Suppose $A = \begin{bmatrix} 0 & 1 \\ 2 & 0 \end{bmatrix} \in
             \mathbb{F}_{13}^{2 \times 2}$. Then, $f_A$ is defined as:
             \begin{equation*}
                 f_A(0,0) = f_A(1,1) = 0, \quad f_A(0,1) = 1, \quad f_A(1,0) = 2
             \end{equation*}
 
-            Its MLE is given by $\widetilde{f}_A(X, Y) = (1-X)Y + 2X(1-Y) = 2X+Y-3XY$.
+            \pause Its MLE is given by $\widetilde{f}_A(X, Y) = (1-X)Y + 2X(1-Y) = 2X+Y-3XY$.
         \end{example}
     \end{frame}
 
@@ -404,7 +408,7 @@
         Given functions $f_A,f_B,f_C: \{0,1\}^{\log n} \times \{0,1\}^{\log n}
         \to \mathbb{F}$, we build the corresponding MLEs $\widetilde{f}_A,
         \widetilde{f}_B, \widetilde{f}_C: \mathbb{F}^{\log n} \times
-        \mathbb{F}^{\log n} \to \mathbb{F}$. Now what?
+        \mathbb{F}^{\log n} \to \mathbb{F}$. Now what? \pause
 
         \begin{lemma}
             \begin{equation*}
@@ -414,19 +418,19 @@
             \end{equation*}
         \end{lemma}
 
-        \textcolor{gray!90!black}{\textbf{Reasoning.} Both sides are multilinear polynomials in
+        \pause\textcolor{gray!90!black}{\textbf{Reasoning.} Both sides are multilinear polynomials in
         $\mathbf{x}$ and $\mathbf{y}$. Since MLE over $\{0,1\}^{2\log n}$ is
         unique, it suffices to check the equality only over
-        $\boldsymbol{i},\boldsymbol{j} \in \{0,1\}^{\log n}$. Then,
+        $\boldsymbol{i},\boldsymbol{j} \in \{0,1\}^{\log n}$.\pause Then,
         \begin{equation*}
             \widetilde{f}_C(\boldsymbol{i}, \boldsymbol{j}) = \sum_{\boldsymbol{b} \in
             \{0,1\}^{\log
             n}}\widetilde{f}_A(\boldsymbol{i},\boldsymbol{b})\cdot\widetilde{f}_B(\boldsymbol{b},\boldsymbol{j})
         \end{equation*}
         %\vspace{-20px}
-        Note that this is exactly the check $C_{i,j} = \sum_{b=1}^n A_{i,b}B_{b,j}$!}
+        \pause Note that this is exactly the check $C_{i,j} = \sum_{b=1}^n A_{i,b}B_{b,j}$!}
 
-        Now, apply Sum-Check on $h(\mathbf{z}) =
+        \pause Now, apply Sum-Check on $h(\mathbf{z}) =
         \widetilde{f}_A(\boldsymbol{r}_1,\mathbf{z})\widetilde{f}_B(\mathbf{z},\boldsymbol{r}_2)$
         for $\boldsymbol{r}_1,\boldsymbol{r}_2 \leftarrowS \mathbb{F}^{\log n}$.
     \end{frame}
@@ -440,16 +444,16 @@
 
         \vspace{-12.5px}
 
-        \textcolor{magenta}{\underline{\textbf{Spartan General Idea:}}}
+        \pause\textcolor{magenta}{\underline{\textbf{Spartan General Idea:}}}
         \begin{enumerate}
             \item Commit to the MLE extension $\widetilde{f}_Z(\mathbf{Y})$ of the
-            solution-witness $\mathbf{z}$.
-            \item In universal setup, find MLEs $\widetilde{f}_L$, $\widetilde{f}_R$, $\widetilde{f}_O$.
+            solution-witness $\mathbf{z}$.\pause
+            \item In universal setup, find MLEs $\widetilde{f}_L$, $\widetilde{f}_R$, $\widetilde{f}_O$.\pause
             \item Reduce R1CS satisfability to \textbf{zero-check} on
             \begin{equation*}
                 \textcolor{blue!70!black}{\zeta(\mathbf{X}) = \sum_{\boldsymbol{b}}\widetilde{f}_L(\mathbf{X},\boldsymbol{b})\widetilde{f}_Z(\boldsymbol{b}) \cdot \sum_{\boldsymbol{b}}\widetilde{f}_R(\mathbf{X},\boldsymbol{b})\widetilde{f}_Z(\boldsymbol{b}) - \sum_{\boldsymbol{b}}\widetilde{f}_O(\mathbf{X},\boldsymbol{b})\widetilde{f}_Z(\boldsymbol{b})}
             \end{equation*}
-            \item Apply some dark magic to make above work.
+            \item \pause Apply some dark magic to make above work.
         \end{enumerate}
     \end{frame}
 
@@ -462,23 +466,23 @@
                 \sum_{b_1 \in \{0,1\}}\sum_{b_2 \in \{0,1\}}\dots \sum_{b_v \in \{0,1\}} f(b_1,\dots,b_v) = H
             \end{equation*}
 
-            \textbf{Note:} $f \in \mathbb{F}[X_1,\dots,X_v]$ is not necessarily
-            a multilinear polynomial.
+            \pause\textbf{Note:} $f \in \mathbb{F}[X_1,\dots,X_v]$ is not necessarily
+            a multilinear polynomial.\pause
         \end{alertblock}
 
         \textbf{Naïve IP:} $\mathcal{V}$ takes $f$ and computes the sum. It
         requires the time and space $\mathcal{O}(2^v)$ --- not gud for
-        \textit{succinct} argument systems.
+        \textit{succinct} argument systems.\pause
 
         \underline{\textbf{Round 1.}} The prover $\mathcal{P}$ sends the value
-        $C_1 \in \mathbb{F}$ which is the claimed value of $H$. Then, the prover computes:
+        $C_1 \in \mathbb{F}$ which is the claimed value of $H$. \pause Then, the prover computes:
         \begin{equation*}
             f_1(X_1) := \sum_{(b_2,\dots,b_v) \in \{0,1\}^{v-1}}f(X_1,b_2,\dots,b_v)
         \end{equation*}
         
         \vspace{-12.5px}
 
-        \textcolor{magenta}{\textbf{Question:} If $f$ is multilinear, then what
+        \pause\textcolor{magenta}{\textbf{Question:} If $f$ is multilinear, then what
         form does $f_1$ have?}
     \end{frame}
 
@@ -490,21 +494,21 @@
             claimed $C_1$.
         \end{enumerate}
 
-        Second is easy: check $s_1(0) + s_1(1) = H$. Indeed:
+        \pause Second is easy: check $s_1(0) + s_1(1) = H$. Indeed:
         \begin{align*}
             s_1(0) + s_1(1) \\
             =&\sum_{(b_2,\dots,b_v) \in \{0,1\}^{v-1}}f(0,b_2,\dots,b_v) + \sum_{(b_2,\dots,b_v) \in \{0,1\}^{v-1}}f(1,b_2,\dots,b_v) \\
             =&\sum_{(b_1,\dots,b_v) \in \{0,1\}^v} f(b_1,\dots,b_v) = H
         \end{align*}
 
-        For the second, apply the Schwartz-Zippel Lemma: pick $r_1 \leftarrowS
+        \pause For the second, apply the Schwartz-Zippel Lemma: pick $r_1 \leftarrowS
         \mathbb{F}$ and check whether $s_1(r_1) = f_1(r_1)$. Computing
         $s_1(r_1)$ is trivial, but \textit{how to compute $f_1(r_1)$
         effectively}?
     \end{frame}
 
     \begin{frame}{Sum-Check, Subsequent Rounds}
-        \textbf{Idea:} Apply the same procedure again!
+        \textbf{Idea:} Apply the same procedure again!\pause
 
         \underline{\textbf{Round 2.}} The prover $\mathcal{P}$ computes
         $s_2(X_2)$ claimed to equal:
@@ -512,9 +516,9 @@
             f_2(X_2) = \sum_{(b_3,\dots,b_v) \in \{0,1\}^{v-2}}f(r_1,X_2,b_3,\dots,b_v).
         \end{equation*}
 
-        For the consistency check, $\mathcal{V}$ verifies that $s_2(0) + s_2(1)
+        \pause For the consistency check, $\mathcal{V}$ verifies that $s_2(0) + s_2(1)
         = s_1(r_1)$. Then, the verification boils down to checking whether
-        $s_2(r_2) = f_2(r_2)$.
+        $s_2(r_2) = f_2(r_2)$. \pause
 
         \underline{\textbf{Round $j$.}} The prover $\mathcal{P}$ computes
         $s_j(X_j)$ claimed to equal:
@@ -522,7 +526,7 @@
             f_j(X_j) = \sum_{(b_{j+1},\dots,b_v) \in \{0,1\}^{v-j}}f(r_1,\dots,r_{j-1},X_j,b_{j+1},\dots,b_v).
         \end{equation*}
 
-        For the consistency check, $\mathcal{V}$ verifies that $s_j(0) + s_j(1)
+        \pause For the consistency check, $\mathcal{V}$ verifies that $s_j(0) + s_j(1)
         = s_{j-1}(r_{j-1})$. Then, the verification boils down to checking whether
         $s_j(r_j) = f_j(r_j)$.
     \end{frame}
@@ -531,7 +535,7 @@
         \underline{\textbf{Last Round.}} The verifier $\mathcal{V}$ picks a
         random $r_v \leftarrowS \mathbb{F}$ and verifies whether $s_v(r_v) =
         \mathcal{O}^{\; f}(r_1,\dots,r_v)$ where $\mathcal{O}^{\; f}(\cdot)$ is
-        an oracle access to the function $f$ (e.g., commitment + opening).
+        an oracle access to the function $f$ (e.g., commitment + opening).\pause
 
         \begin{lemma}[Sum-Check Soundness Lemma]
             Let $f \in \mathbb{F}[X_1,\dots,X_v]$ be a multivariate polynomial of degree
@@ -550,7 +554,7 @@
         \begin{lemma}[Sum-Check Performance]
             Assume the average cost of calling $\mathcal{O}^{\; f}(\cdot)$ is
             $T$, $d = \deg f$, and $n=2^v$. Then, the following is true about
-            the performance of Sum-Check:
+            the performance of Sum-Check:\pause
             \begin{itemize}
                 \item \textbf{Proof Size:} $\mathcal{O}(d\log n)$.
                 \item \textbf{Verifier Time:} $\mathcal{O}(d\log n) + T$.
@@ -558,13 +562,13 @@
             \end{itemize}
         \end{lemma}
 
-        However, this is an IP. How to turn it to the \textit{non-interactive}
+        \pause However, this is an IP. How to turn it to the \textit{non-interactive}
         protocol? 
 
-        Simply apply the \textbf{Fiat-Shamir heuristic}! At round $j$, the
+        \pause Simply apply the \textbf{Fiat-Shamir heuristic}! At round $j$, the
         transcript is $\tau=(H,s_1,r_1,\dots,s_{j-1},r_{j-1},s_j)$, thus the
         randomness can be sampled simply as $r_j \gets \mathcal{O}^R(\tau)$ for
-        a random oracle $\mathcal{O}^R(\cdot)$.
+        a random oracle $\mathcal{O}^R(\cdot)$.\pause
 
         \begin{center}
             \textcolor{green!70!black}{\textbf{Now the coding time!}}
