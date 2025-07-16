@@ -408,8 +408,8 @@ After the three steps
 \end{equation*}
 The verifier checks $\mathbf{read} \cup \mathbf{final} = \mathbf{write} \cup \mathbf{init}$:
 \begin{align*}
-    \{(1,a,0)\} &\cup \{(0,2,0), (1,6,1), (2,7,0), (3,9,0)\} = \\
-    = \{(1,6,1)\} &\cup \{(0,2,0), (1,5,0), (2,7,0), (3,9,0)\}
+    \{(1,a,0)\} &\cup \{(0,2,0), (1,6,1), (2,7,0), (3,9,0)\} \neq \\
+    \neq \{(1,6,1)\} &\cup \{(0,2,0), (1,5,0), (2,7,0), (3,9,0)\}
 \end{align*}
 and \emph{rejects}.\\
 
