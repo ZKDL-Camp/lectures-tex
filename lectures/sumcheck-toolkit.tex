@@ -253,7 +253,7 @@ to collide on distinct sets.
     In this way a single choice of $(\gamma,\tau)$ distinguishes permutations from non-permutations.
 \end{example}
 
-\subsection{Offline Read-Only Memory Checking}
+\subsection{Offline Memory Checking}
 \label{sec:offline-memory-checking}
 
 This protocol lets you, after doing a bunch of reads from an untrusted read-only memory, verify in one quick
@@ -262,48 +262,76 @@ algebraic step that every answer really came from the same original contents -- 
 For the first time it's not so obvious, why we may need need such a protocol, so let's start with a simple 
 example.
 \begin{example}
-    TODO
+    Consider Alice, who stores two values on Bob’s dedicated server at addresses $0$ and $1$.  Initially, 
+    Bob’s memory contains
+    \vspace{-5px}
+    \begin{equation*}
+      M \;=\;\{(0,100),\;(1,200)\}.
+      \vspace{-5px}
+    \end{equation*}
+    Alice then performs the following operations in sequence:
+    \begin{enumerate}
+        \item Alice writes a new value $150$ at address $0$.  Bob updates his memory to $\{(0,150),(1,200)\}$.
+        \item Alice reads from address $0$ and obtains the reply $150$.
+        \item Alice reads from address $1$ and (honestly) obtains $200$.
+    \end{enumerate}
+    At this point, both replies individually look correct.  However, Bob can cheat on the very last step by 
+    returning, say, $300$ instead of $200$:
+    \vspace{-5px}
+    \begin{equation*}
+      (1,200)\;\longrightarrow\;(1,300).
+      \vspace{-5px}
+    \end{equation*}
+    Alice only sees the single read result ``$300$ at address $1$,'' which could simply be the true value 
+    after some write she missed—and she has no immediate way to detect the inconsistency.\\ \\
+    In other words, without keeping an auditable record of all reads, Alice cannot later prove that all 
+    replies came from a single, immutable memory state.  This gap is exactly what an \emph{offline memory check}
+    fills: after all reads are done, Alice runs one fast verification that guarantees “every read you saw really
+    did come from one fixed initial memory + your writes,” and thus catches any cheating by Bob.
 \end{example}
 
-\begin{remark}
-    As we are talking about a read-only memory, we assume that the write operations happen only once,
-    during the initialization phase, and the memory is immutable afterwards.
-\end{remark}
+Each memory cell can be described as a tuple $\mathsf{(addr, val, counter)}$, where $\mathsf{addr}$ is the
+address of the memory cell, $\mathsf{val}$ is the value stored at that address, and $\mathsf{counter}$ is the
+number of times the memory cell has been accessed. You can think of a counter as a timestamp. The memory is
+a vector of memory cels.
 
-In the present version of this protocol, each operation is followed by an increment of the corresponding memory
-cell counter (unlike the original version, where the counter was global), it also utilizes only reads, pairing
-them with ``synthetic'' writes, and requires only three sets of tuples to work with:
+The protocol utilizes four sets of tuples:
 \begin{itemize}
-    \item $\mathsf{WS}$ -- contains tuples that represent write operations: $\mathsf{(addr, val, counter_{addr})}$,
-    where $\mathsf{val}$ is the value stored at the memory address $\mathsf{addr}$ after the specified counter;
-    \item $\mathsf{RS}$ -- contains tuples that represent read operations: $\mathsf{(addr, val, counter_{addr})}$,
-    where $\mathsf{val}$ is the value read from the memory address $\mathsf{addr}$ at the specified counter;
-    \item $\mathsf{S}$ -- contains tuples such that $\mathsf{WS} = \mathsf{RS} \cup \mathsf{S}$ if and only if 
-    all operations were executed correctly; otherwise, no such $\mathsf{S}$ exists that satisfies this equality.
+    \item $\mathbf{init}$ -- contains the initial memory state, where all counters are set to $0$;
+    \item $\mathbf{write}$ -- contains memory cels that represent write operations, where $\mathsf{val}$
+    is the value stored at the memory address $\mathsf{addr}$ after the specified counter;
+    \item $\mathbf{read}$ -- contains memory cels that represent read operations, where $\mathsf{val}$
+    is the value read from the memory address $\mathsf{addr}$ at the specified counter;
+    \item $\mathbf{final}$ -- contains the final memory state, where all counters are set to the last value
+    after the last read/write operation.
 \end{itemize}
 
-You can think of a memory as a vector of values, and a counter as a memory cell timestamp, separately for read
-and write operations. At the beginning, $\mathsf{WS}$ is populated with the initial memory state, where all 
+At the beginning, $\mathbf{init}$ is populated with the initial memory state, where all 
 counters are set to $0$, indicating that the values were first accessed during the initialization phase, while
-the $\mathsf{RS}, \mathsf{S}$ are empty. Then, for each read operation, the untrusted memory is queried at 
-$\mathsf{addr}$, returning a pair $\mathsf{(val, counter)}$. The tuple $\mathsf{(addr, val, counter)}$ is 
-written in $\mathsf{RS}$, and a corresponding write operation $\mathsf{(addr, val, counter + 1)}$ is added to
-$\mathsf{WS}$. After all the read operations are done, one can notice that $\mathsf{S}$ equals the final memory
-state. The equality of multisets $\mathsf{WS}$ and $\mathsf{RS} \cup \mathsf{S}$ can be verified by a single 
-grand-product check.
+the $\mathbf{read}, \mathbf{write}$ are empty. Then, for each read operation, the untrusted memory is queried at 
+$\mathsf{addr}$, returning a pair $\mathsf{(val, counter)}$, and writing a tuple $\mathsf{(addr, val, counter)}$ to the 
+$\mathbf{read}$ set. For each write operation a corresponding tuple $\mathsf{(addr, val, counter + 1)}$ is added, with
+counter incremented by one, to the $\mathbf{write}$ set.
 
-Thus, $\mathsf{WS} = \mathsf{RS} \cup \mathsf{S}$ can be written as:
+We assume that before each write operation, the read operation is performed. And the read operation is always followed 
+by a write operation to the same address. Thus, to make a plain read operation, the prover first reads the value from 
+the memory, then writes it back to the memory.
+
+After all reads and writes are done, the $\mathbf{final}$ set is populated with the final memory state. Now, the
+verifier can check the consistency of all the operations by verifying the following equation:
+\begin{equation*}
+    \mathbf{read} \cup \mathbf{final} = \mathbf{write} \cup \mathbf{init}.
+\end{equation*}
+
+Thus, using randomized permutation check, one can rewrite the equation as follows:
 \begin{small}
 \begin{align*}
-    \mathcal{H}_{\tau,\gamma}(\mathsf{WS})
-    &= \mathcal{H}_{\tau,\gamma}(\mathsf{RS})
-    \;\cdot\; \mathcal{H}_{\tau,\gamma}(\mathsf{S}),\\
-    \prod_{(a,v,t)\in \mathsf{WS}}\bigl(h_{\gamma}(a,v,t)-\tau\bigr)
-    &= \prod_{(a,v,t)\in \mathsf{RS}}\bigl(h_{\gamma}(a,v,t)-\tau\bigr)\\
-    &\quad\;\cdot\;\prod_{(a,v,t)\in \mathsf{S}}\bigl(h_{\gamma}(a,v,t)-\tau\bigr),\\
-    \prod_{(a,v,t)\in \mathsf{WS}}\bigl((a\gamma^2+v\gamma+t)-\tau\bigr)
-    &= \prod_{(a,v,t)\in \mathsf{RS}}\bigl((a\gamma^2+v\gamma+t)-\tau\bigr)\\
-    &\quad\;\cdot\;\prod_{(a,v,t)\in \mathsf{S}}\bigl((a\gamma^2+v\gamma+t)-\tau\bigr).
+    \mathcal{H}_{\tau,\gamma}(\mathbf{read}) \cdot \mathcal{H}_{\tau,\gamma}(\mathbf{final})& = 
+    \mathcal{H}_{\tau,\gamma}(\mathbf{write}) \cdot \mathcal{H}_{\tau,\gamma}(\mathbf{init}),\\
+    \prod_{(a,v,t)\in \mathbf{read}}\bigl(h_{\gamma}(a,v,t)-\tau\bigr) &\prod_{(a,v,t)\in \mathbf{final}}\bigl(h_{\gamma}(a,v,t)-\tau\bigr) = \\
+    = \prod_{(a,v,t)\in \mathbf{write}}\bigl(h_{\gamma}(a,v,t)-\tau\bigr)& \prod_{(a,v,t)\in \mathbf{init}}\bigl(h_{\gamma}(a,v,t)-\tau\bigr), \\
+    \prod_{(a,v,t)\in \mathbf{read}}\bigl((a\gamma^2+v\gamma+t)-\tau\bigr) &\prod_{(a,v,t)\in \mathbf{final}}\bigl((a\gamma^2+v\gamma+t)-\tau\bigr) = \\
+    = \prod_{(a,v,t)\in \mathbf{write}}\bigl((a\gamma^2+v\gamma+t)-\tau\bigr)& \prod_{(a,v,t)\in \mathbf{init}}\bigl((a\gamma^2+v\gamma+t)-\tau\bigr).
 \end{align*}
 \end{small}
 
@@ -313,7 +341,7 @@ Thus, $\mathsf{WS} = \mathsf{RS} \cup \mathsf{S}$ can be written as:
 \noindent\textbf{$N^{1/c}=4,\;m=3$}
 }
 
-\noindent We track a single \emph{row‑memory}. The algorithm performs three reads.
+\noindent We track a single \emph{row‑memory}. The algorithm performs three reads and two writes.
 \begin{center}
     \centering
     \begin{tabular}{|c|c|c|c|c|}
@@ -326,75 +354,67 @@ Thus, $\mathsf{WS} = \mathsf{RS} \cup \mathsf{S}$ can be written as:
 \medskip
 \noindent\textbf{Initial memory (counter $0$):}
 \begin{equation*}
-\mathsf{WS}_{\text{init}} =\{(0,2,0), \; (1,5,0), \; (2,7,0), \; (3,9,0)\},
+\mathbf{init} =\{(0,2,0), \; (1,5,0), \; (2,7,0), \; (3,9,0)\},
 \end{equation*}
 while 
 \begin{equation*}
-    \mathsf{RS} = \varnothing \quad \text{and} \quad \mathsf{S} = \varnothing.
+    \mathbf{read} = \varnothing \quad \text{and} \quad \mathbf{write} = \varnothing.
 \end{equation*}
 
 \medskip
 \noindent\textbf{Trace 1 – consistent execution}
 \begin{center}
     \begin{tabular}{c|c|c|c}
-    \textbf{step} & \textbf{operation} & $\Delta\mathsf{RS}_{\text{step}}$ & $\Delta\mathsf{WS}_{\text{step}}$\\\hline
-    1 & read(1)$ \; \to \; (5, 0)$ & $(1,5,0)$ & $(1,5,1)$\\
-    2 & read(0)$ \; \to \; (2, 0)$ & $(0,2,0)$ & $(0,2,1)$\\
-    3 & read(2)$ \; \to \; (7, 0)$ & $(2,7,0)$ & $(2,7,1)$
+    \textbf{step} & \textbf{operation} & $\Delta\mathbf{read}_{\text{step}}$ & $\Delta\mathbf{write}_{\text{step}}$\\\hline
+    1 & read(1)$  \; \to \; (5, 0)$ & $(1,5,0)$ & -        \\
+    2 & write((1,6))                & -         & $(1,6,1)$\\
+    3 & read(2)$  \; \to \; (7, 0)$ & $(2,7,0)$ & -        \\
+    4 & write((2,7))                & -         & $(2,7,1)$\\
     \end{tabular}
 \end{center}
 After the three steps
 \begin{equation*}
     \begin{aligned}
-        \mathsf{RS} &= \{(1,5,0), \; (0,2,0), \; (2,7,0)\},\\
-        \mathsf{WS} &= \mathsf{WS}_{\text{init}} \cup \{(1,5,1), \; (0,2,1), \; (2,7,1)\}.
+        \mathbf{read} &= \{(1,5,0), \; (2,7,0)\},\\
+        \mathbf{write} &= \{(1,6,1), \; (2,7,1)\}.
     \end{aligned}
 \end{equation*}
-And we can fill $\mathsf{S}$ with
+And we can fill $\mathbf{final}$ as:
 \begin{equation*}
-        \mathsf{S} = \{(0,2,1), \; (1,5,1), \; (2,7,1), \; (3,9,0)\}
+    \mathbf{final} = \{(0,2,0), \; (1,6,1), \; (2,7,1), \; (3,9,0)\}
 \end{equation*}
-One can clearly see that $\mathsf{WS} = \mathsf{RS} \cup \mathsf{S}$.
-\begin{alignat*}{2}
-\mathcal H_{\tau,\gamma}(\mathsf{WS})
-  &\;=\; \mathcal H_{\tau,\gamma}(\mathsf{RS})
-  &\;\times\;
-  &\mathcal H_{\tau,\gamma}(\mathsf{S})
-\\
-  &\;=\;
-    \substack{
-      (1\gamma^2+5\gamma+0-\tau)\,(0\gamma^2+2\gamma+0-\tau)\\
-      (2\gamma^2+7\gamma+0-\tau)
-    }
-  &\;\times\;&
-    \substack{
-      (0\gamma^2+2\gamma+1-\tau)\,(1\gamma^2+5\gamma+1-\tau)\\
-      (2\gamma^2+7\gamma+1-\tau)\,(3\gamma^2+9\gamma+0-\tau)
-    }.
-\end{alignat*}
+One can clearly see that $\mathbf{read} \cup \mathbf{final} = \mathbf{write} \cup \mathbf{init}$.
+\begin{align*}
+    \{(1,5,0), (2,7,0)\} &\cup \{(0,2,0), (1,6,1), (2,7,1), (3,9,0)\} = \\
+    = \{(1,6,1), (2,7,1)\} &\cup \{(0,2,0), (1,5,0), (2,7,0), (3,9,0)\}
+\end{align*}
 
 \medskip
 \noindent\textbf{Trace 2 – inconsistent execution}\\
-Let the second reading return a wrong value -- $a$, instead of $2$. So, the new trace would look like:
+Let the second reading return a wrong value -- $a$, instead of $5$. So, the new trace would look like:
 \begin{center}
     \begin{tabular}{c|c|c|c}
-    \textbf{step} & \textbf{operation} & $\Delta\mathsf{RS}_{\text{step}}$ & $\Delta\mathsf{WS}_{\text{step}}$\\\hline
-    1 & read(1)$ \; \to \; (5, 0)$ & $(1,5,0)$ & $(1,5,1)$\\
-    2 & read(0)$ \; \to \; (a, 0)$ & $(0,a,0)$ & $(0,a,1)$\\
-    3 & read(2)$ \; \to \; (7, 0)$ & $(2,7,0)$ & $(2,7,1)$
+    \textbf{step} & \textbf{operation} & $\Delta\mathbf{read}_{\text{step}}$ & $\Delta\mathbf{write}_{\text{step}}$\\\hline
+    1 & read(1)$  \; \to \; (a, 0)$ & $(1,a,0)$ & -        \\
+    2 & write((1,6))                & -         & $(1,6,1)$\\
     \end{tabular}
 \end{center}
 After the three steps
 \begin{equation*}
     \begin{aligned}
-        \mathsf{RS} &= \{(1,5,0), \; (0,a,0), \; (2,7,0)\},\\
-        \mathsf{WS} &= \mathsf{WS}_{\text{init}} \cup \{(1,5,1), \; (0,a,1), \; (2,7,1)\},\\
-        \mathsf{S} &\rightarrow\text{ does not exist} 
+        \mathbf{read} &= \{(1,a,0)\},\\
+        \mathbf{write} &= \{(1,6,1)\},
     \end{aligned}
 \end{equation*}
-Now, $\mathsf{RS}$ contains $(0, \; a, \; 0)$ while $\mathsf{WS}$ still contains the untouched initial 
-tuple $(0, \; 2, \; 0)$. No multiset $\mathsf{S}$ that depends on the valid values and addresses can 
-reconcile them, and the verifier \emph{rejects}.
+The verifier checks $\mathbf{read} \cup \mathbf{final} = \mathbf{write} \cup \mathbf{init}$:
+\begin{align*}
+    \{(1,a,0)\} &\cup \{(0,2,0), (1,6,1), (2,7,0), (3,9,0)\} = \\
+    = \{(1,6,1)\} &\cup \{(0,2,0), (1,5,0), (2,7,0), (3,9,0)\}
+\end{align*}
+and \emph{rejects}.\\
+
+Actually, no multiset $\mathsf{final}$ that depends on the valid values and addresses can 
+reconcile them.
 \end{example}
 
 \end{document}
