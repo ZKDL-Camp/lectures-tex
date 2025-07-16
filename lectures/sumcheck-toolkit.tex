@@ -11,11 +11,11 @@ This subsection describes a transparent SNARK, which may be used for proving gra
 \begin{equation}
 \mathcal{R}_{GP} = \big\{ (p \in \mathbb{F}, \mathbf{v} \in \mathbb{F}^m)\colon p = \prod_{i=0}^m v_i \big\} \label{grand-product-relation}
 \end{equation}
-Let $m = |\mathbf{v}|$. WLOG, assume that $m$ is a power of $2$.
+Without loss of generality, assume that $m$ is a power of $2$.
 We can think of $\mathbf{v}$ as a vector of evaluations of a $\log m$-variate multilinear polynomial $v(x)$ over 
 $\{0, 1\}^{\log m}$ in a natural fashion. We assume the prover first opens $p$ and then commits to $v(x)$; the 
-ensuing protocol then verifies both the polynomial’s validity and the corresponding grand-product equality derived
- from that commitment.
+following protocol then verifies both the polynomial’s validity and the corresponding grand-product equality derived
+from that commitment.
 
 \begin{lemma}
 A scalar $p$ and a vector $\mathbf{v}$ satisfies the relation $\mathcal{R}_{GP}$ if and only if there exists a 
@@ -38,18 +38,22 @@ Such polynomial $f$ has the following construction: \begin{itemize}
 One can simply visualize the structure of $f$ as a binary tree.
 
 \begin{example}
-    Let $m=4$ ($\log m=2$), $v(x_1, x_2) = 1 + 2x_1 + x_2$, then:
+    Let $m=4$ ($\log m=2$), $\mathbf{v} = \{1, 2, 3, 4\}$, consequently $p = 1\times2\times3\times4=24$, then:
+    \begin{align*}
+    v(x_1, x_2)& = 1 + 2x_1 + x_2\\
+    v(x_1,x_2)&: \quad v(0,0)=1,\; v(0,1)=2,\; v(1,0)=3,\; v(1,1)=4.
+    \end{align*}
+    Now, we define $f$ as follows:
     \begin{equation*}
-    v(x_1,x_2): \quad v(0,0)=1,\; v(0,1)=2,\; v(1,0)=3,\; v(1,1)=4.
-    \end{equation*}
-    Now, we
-    \begin{equation*}
-    f(0,0,0)=1,\; f(0,0,1)=2,\; f(0,1,0)=3,\; f(0,1,1)=4.
+        f(0,0,0)= 1,\; f(0,0,1)=2,\; f(0,1,0)=3,\; f(0,1,1)=4,
     \end{equation*}
     and:
-    \begin{equation*}
-    f(1,0,0)=2,\; f(1,0,1)=12,\; f(1,1,0)=24,\; f(1,1,1)=0.
-    \end{equation*}
+    \begin{align*}
+    f(1,0,0)&= f(0,0,0) \times f(0,0,1) = 1 \times 2 = 2,\\ 
+    f(1,0,1)&= f(0,1,1) \times f(0,1,1) = 3 \times 4 = 12,\\ 
+    f(1,1,0)&= f(1,0,0) \times f(1,0,1) = 2 \times 12 = 24 = p,\\ 
+    f(1,1,1)&= 0.
+    \end{align*}
 
     \begin{center}
         \scalebox{1.0}{
@@ -184,7 +188,7 @@ other), without performing a full sort or pairwise comparison.
     Let $\mathbf{a} \in \mathbb{F}^{n}$, then for a random $\gamma \in \mathbb{F}$, the Reed-Solomon 
     fingerprinting of $\mathbf{a}$ is defined as:
     \begin{equation*}
-        h_{\gamma}(\mathbf{a}) = \sum_{i=0}^{n-1} a_i \cdot \gamma^i.
+        h_{\gamma}(\mathbf{a}) = \sum_{i \in n} a_i \cdot \gamma^i.
     \end{equation*}
 
     $h_{\gamma}(\mathbf{a})$ uniquely identifies the sequence $\mathbf{a}$ with high probability,
