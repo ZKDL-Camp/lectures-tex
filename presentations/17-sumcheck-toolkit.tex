@@ -140,6 +140,7 @@
         \begin{equation*}
             g(t) = \sum_{x \in \{0,1\}^{\log m}} \widetilde{\text{eq}}(t,x) \cdot (f(1,x) - f(x, 0) \cdot f(x, 1))
         \end{equation*}
+        \pause
         By the Schwartz–Zippel lemma, for random $\tau \in \mathbb{F}^{\log m}$,
         $g(\tau) = 0$ if and only if $g = 0$, except for a soundness error of $\frac{\log m}{|\mathbb{F}|}$.
     \end{frame}
@@ -376,18 +377,18 @@
 
     \begin{frame}{Memory Operations}
         \begin{itemize}
-            \item \textbf{Init:} load initial state; all counters = 0  
+            \item \textbf{Init:} load initial state; all counters = 0;  \pause
             \item \textbf{Read:}  
             \begin{itemize}
-                \item Query untrusted memory at \textsf{addr} → \textsf{(val,counter)}  
-                \item Append \textsf{(addr,val,counter)} to \textbf{reads}
-                \item Append \textsf{(addr,val,counter+1)} to \textbf{writes}
-            \end{itemize}
-            \item \textbf{Write:}  
+                \item Query untrusted memory at \textsf{addr} → \textsf{(val,counter)};  
+                \item Append \textsf{(addr,val,counter)} to \textbf{reads};
+                \item Append \textsf{(addr,val,counter+1)} to \textbf{writes}.
+            \end{itemize}\pause
+            \item \textbf{Write:} 
             \begin{itemize}
-                \item Query untrusted memory at \textsf{addr} → \textsf{(val,counter)}  
-                \item Append \textsf{(addr,val,counter)} to \textbf{reads}
-                \item Append \textsf{(addr,\textbf{newval},counter+1)} to \textbf{writes}
+                \item Query untrusted memory at \textsf{addr} → \textsf{(val,counter)};  
+                \item Append \textsf{(addr,val,counter)} to \textbf{reads};
+                \item Append \textsf{(addr,\textbf{newval},counter+1)} to \textbf{writes}.
             \end{itemize}
         \end{itemize}
     \end{frame}
