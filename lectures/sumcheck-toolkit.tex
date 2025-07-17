@@ -200,19 +200,21 @@ of tuples are permutations of each other, without performing a full sort or pair
 \begin{definition}[Randomized Permutation Check]
     Let $A$ and $B$ be two multisets of tuples in $\mathbb{F}^n$. Define
     \begin{equation*}
-    \mathcal{H}_{\tau,\gamma}(X)\;=\;\prod_{x \in X}\bigl(h_{\gamma}(x)-\tau\bigr).
+        \mathcal{H}_{\tau,\gamma}(X)\;=\;\prod_{x \in X}\bigl(h_{\gamma}(x)-\tau\bigr).
     \end{equation*}
     Then comparing $\mathcal{H}_{\tau,\gamma}(A)$ and $\mathcal{H}_{\tau,\gamma}(B)$ yields a
     randomized test for whether $A$ and $B$ are permutations of one another. Concretely:
-    1. If $A=B$ (as multisets), then  
-    \begin{equation*}
-        \mathcal{H}_{\tau,\gamma}(A)=\mathcal{H}_{\tau,\gamma}(B)
-    \end{equation*}
-    with probability 1 over uniform $\tau,\gamma\in\mathbb{F}$.
-    2. If $A\neq B$, then
-    \begin{equation*}
-    \Pr\left[\,\mathcal{H}_{\tau,\gamma}(A)=\mathcal{H}_{\tau,\gamma}(B)\right]\;\le\; \frac{\max(|A|,|B|)}{|\mathbb{F}|}.
-    \end{equation*}
+    \begin{itemize}
+        \item (Completeness) If $A=B$ (as multisets), then  
+            \begin{equation*}
+                \mathcal{H}_{\tau,\gamma}(A)=\mathcal{H}_{\tau,\gamma}(B)
+            \end{equation*}
+            with probability 1 over uniform $\tau,\gamma\in\mathbb{F}$.
+        \item (Soundness) If $A\neq B$, then
+            \begin{equation*}
+                \Pr\left[\,\mathcal{H}_{\tau,\gamma}(A)=\mathcal{H}_{\tau,\gamma}(B)\right]\;\le\; \frac{\max(|A|,|B|)}{|\mathbb{F}|}.
+            \end{equation*}
+    \end{itemize}
 \end{definition}
 
 In other words, by first “hashing” each tuple via the map function $h_{\gamma}$ and then taking the 
@@ -227,19 +229,16 @@ to collide on distinct sets.
       B = \{(4,0,6),\,(1,2,3)\},
     \end{equation*}
     First compute the Reed–Solomon fingerprints modulo 7:
-    \begin{equation*}
-      h_{\gamma}(1,2,3) =1\cdot3^0 + 2\cdot3^1 + 3\cdot3^2 =1 + 6 + 6 =13 \equiv 6,
-    \end{equation*}
-    \begin{equation*}
-      h_{\gamma}(4,0,6) =4\cdot1 + 0\cdot3 + 6\cdot2 =4 + 0 + 12 =16 \equiv 2,
-    \end{equation*}
+    \begin{align*}
+        h_{\gamma}(1,2,3) &=1\cdot3^0 + 2\cdot3^1 + 3\cdot3^2 =1 + 6 + 6 =13 \equiv 6,\\
+        h_{\gamma}(4,0,6) &=4\cdot1 + 0\cdot3 + 6\cdot2 =4 + 0 + 12 =16 \equiv 2.
+        \vspace{-5px}
+    \end{align*}
     Now form the shifted products:
-    \begin{equation*}
-      \mathcal{H}_{\tau,\gamma}(A) =(6-\tau)\,(2-\tau) =(6-5)\,(2-5) =1\cdot(-3)\equiv4,
-    \end{equation*}
-    \begin{equation*}
-      \mathcal{H}_{\tau,\gamma}(B) =(2-5)\,(6-5) =(-3)\cdot1\equiv4,
-    \end{equation*}
+    \begin{align*}
+        \mathcal{H}_{\tau,\gamma}(A) &=(6-5)\,(2-5) =1\cdot(-3)\equiv4,\\
+        \mathcal{H}_{\tau,\gamma}(B) &=(2-5)\,(6-5) =(-3)\cdot1\equiv4,
+    \end{align*}
     so the test \emph{accepts} $A$ vs.\ $B$ (they are indeed permutations). \\
 
     Now consider a non-permutation $B'$:
