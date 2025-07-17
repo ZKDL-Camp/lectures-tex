@@ -312,8 +312,8 @@ At the beginning, $\mathbf{init}$ is populated with the initial memory state, wh
 counters are set to $0$, indicating that the values were first accessed during the initialization phase, while
 the $\mathbf{read}, \mathbf{write}$ are empty. Then, for each read operation, the untrusted memory is queried at 
 $\mathsf{addr}$, returning a pair $\mathsf{(val, counter)}$, and writing a tuple $\mathsf{(addr, val, counter)}$ to the 
-$\mathbf{read}$ set. For each write operation a corresponding tuple $\mathsf{(addr, val, counter + 1)}$ is added, with
-counter incremented by one, to the $\mathbf{write}$ set.
+$\mathbf{read}$ set. For each write operation a corresponding tuple $\mathsf{(addr, newval, counter + 1)}$, where 
+$\mathsf{newval}$ is a value being written, is added, with counter incremented by one, to the $\mathbf{write}$ set.
 
 We assume that before each write operation, the read operation is performed. And the read operation is always followed 
 by a write operation to the same address. Thus, to make a plain read operation, the prover first reads the value from 
@@ -343,7 +343,7 @@ Thus, using randomized permutation check, one can rewrite the equation as follow
 \noindent\textbf{$N^{1/c}=4,\;m=3$}
 }
 
-\noindent We track a single \emph{row‑memory}. The algorithm performs three reads and two writes.
+\noindent We track a single \emph{row-memory}. The algorithm performs three reads and two writes.
 \begin{center}
     \centering
     \begin{tabular}{|c|c|c|c|c|}
@@ -364,7 +364,7 @@ while
 \end{equation*}
 
 \medskip
-\noindent\textbf{Trace 1 – consistent execution}
+\noindent\textbf{Trace 1 - consistent execution}
 \begin{center}
     \begin{tabular}{c|c|c|c}
     \textbf{step} & \textbf{operation} & $\Delta\mathbf{read}_{\text{step}}$ & $\Delta\mathbf{write}_{\text{step}}$\\\hline
@@ -374,7 +374,7 @@ while
     4 & write((2,7))                & -         & $(2,7,1)$\\
     \end{tabular}
 \end{center}
-After the three steps
+After the four steps
 \begin{equation*}
     \begin{aligned}
         \mathbf{read} &= \{(1,5,0), \; (2,7,0)\},\\
@@ -392,7 +392,7 @@ One can clearly see that $\mathbf{read} \cup \mathbf{final} = \mathbf{write} \cu
 \end{align*}
 
 \medskip
-\noindent\textbf{Trace 2 – inconsistent execution}\\
+\noindent\textbf{Trace 2 - inconsistent execution}\\
 Let the second reading return a wrong value -- $a$, instead of $5$. So, the new trace would look like:
 \begin{center}
     \begin{tabular}{c|c|c|c}
@@ -401,7 +401,7 @@ Let the second reading return a wrong value -- $a$, instead of $5$. So, the new 
     2 & write((1,6))                & -         & $(1,6,1)$\\
     \end{tabular}
 \end{center}
-After the three steps
+After the two steps
 \begin{equation*}
     \begin{aligned}
         \mathbf{read} &= \{(1,a,0)\},\\
