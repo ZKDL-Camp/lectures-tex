@@ -258,14 +258,14 @@ to collide on distinct sets.
 \subsection{Offline Memory Checking}
 \label{sec:offline-memory-checking}
 
-This protocol lets you, after doing a bunch of reads from an untrusted read-only memory, verify in one quick
+This protocol lets you, after doing a bunch of read/writes from an untrusted memory, verify in one quick
 algebraic step that every answer really came from the same original contents -- without re-running any reads.
 
 For the first time it's not so obvious, why we may need need such a protocol, so let's start with a simple 
 example.
 \begin{example}
-    Consider Alice, who stores two values on Bob’s dedicated server at addresses $0$ and $1$.  Initially, 
-    Bob’s memory contains
+    Consider Alice, who stores two values on Bob's dedicated server at addresses $0$ and $1$.  Initially, 
+    Bob's memory contains
     \vspace{-5px}
     \begin{equation*}
       M \;=\;\{(0,100),\;(1,200)\}.
@@ -277,7 +277,7 @@ example.
         \item Alice reads from address $0$ and obtains the reply $150$.
         \item Alice reads from address $1$ and (honestly) obtains $200$.
     \end{enumerate}
-    At this point, both replies individually look correct.  However, Bob can cheat on the very last step by 
+    At this point, both replies individually look correct. However, Bob can cheat on the very last step by 
     returning, say, $300$ instead of $200$:
     \vspace{-5px}
     \begin{equation*}
