@@ -1,0 +1,1292 @@
+\documentclass[../lecture-notes-148x210.tex]{subfiles}
+
+\begin{document}
+
+% --- Annotation: Snark Poem ---
+\begin{quote}
+    \small "Just the place for a Snark!" the Bellman cried,\\
+    As he landed his crew with care;\\
+ Supporting each man on the top of the tide\\
+    By a finger entwined in his hair.
+\end{quote}
+\begin{flushright}
+\small \textit{-- Lewis Carroll, "The Hunting of the Snark"}
+\end{flushright}
+
+\subsection{Introduction}
+
+\textbf{Bulletproofs} is a zero-knowledge proof protocol with logarithmically sized proofs without a trusted setup. Originally, \textbf{bulletproofs} was developed to provide efficient range proofs in application to confidential transactions, but it applies also to arbitrary arithmetic circuit (possibly encoded in R1CS). In the heart of protocol lays \textbf{inner-product argument} which we describe in details. Technically, the protocol is built in an interactive fashion (like $\Sigma$-protocols from \Cref{section:sigma}), but one could make it non-interactive with a Fiat-Shamir transform. One key feature that differs it from $\Sigma$-protocols is the number of challenges from a verifier $\mathcal{V}$ -- in $\Sigma$-protocols there is only one challenge, while \textbf{bulletproofs} implies a logarithmic in circuit size number of queries. 
+
+Also, \textbf{bulletproofs}' \textbf{inner-product argument} could be used to build various polynomial commitment schemes -- crucial building block of proving systems built with \textit{IOP} framework (\textit{Halo, Nova, etc}).
+
+The main advantages of \textbf{bulletproofs} are an absence of a trusted setup and security against eavesdropping that relies on the \textit{discrete-logarithm} assumption without any other auxiliary structures like bilinear pairings. Also it has quite fast prover for small circuits making it practically useful for client-side proving. However, the main disadvantage of \textbf{bulletproofs} is that it isn't a classic \textit{SNARK} due to linear in circuit size verification time, however still very efficient for small circuits.
+
+\subsection{Notation}
+Let $\mathbb{G}$ - cyclic group of prime order $p$ written additively, $\mathbf{G} = (G_1, \dots, G_n), \mathbf{H} = (H_1, \dots, H_n) \in \mathbb{G}^n$ - vectors of independent generators. We denote by $\langle \mathbf{a,b} \rangle$ - inner product of vectors $\mathbf{a} = (a_1, \dots, a_n), \mathbf{b} = (b_1, \dots, b_n) \in \mathbb{F}_p^n$ and $\langle \mathbf{a,G} \rangle = \sum_{i=1}^n [a_i] G_i \in \mathbb{G}$ - inner product of vector $\mathbf{a}$ with vector of generators $\mathbf{G}$. Denote by $\mathbf{k}^n$ vector of $k$'s first $n$ powers: $\mathbf{k}^n = (1, k, k^2, \dots, k^{n-1})$, for example $\mathbf{0}^n, \mathbf{1}^n$ represents vectors of zeros and ones respectively, while $\mathbf{2}^{n} = (1, 2, 4, \dots, 2^{n-1})$
+
+\subsection{Zero-knowledge multiplication}
+Let $a,b,c \in \mathbb{F}_p$. Here we build a zero-knowledge protocol for relation $\mathcal{R}_{abc} = \{ (\bot;c,a,b) \vert c=ab \}$. We use well-known $\Sigma$-protocol framework for that, but firstly we make very useful generalization that could allow us to prove much larger class of relations.
+
+Consider the first-degree polynomials $l(x) = a + s_L x, r(x) = b + s_R x \in \mathbb{F}_p[x]$. Let $t(x) = l(x)r(x)$ and relation 
+$$\mathcal{R}_{mul} = \{ (\bot;l(x),r(x),t(x)) \vert t(x) = l(x)r(x)\}$$
+Firstly, observe that proving $t(x) = l(x)r(x)$ may be reduced to evaluation check at some challenge point $u \in \mathbb{F}_p$: $t(u) = l(u)r(u)$, due to the \textit{Schwartz-Zippel lemma}(\Cref{lemma:one-sz}): 
+$$\mathsf{Pr}[l(u)r(u) = t(u) \vert l(x)r(x) \neq t(x)] \le \frac{max(\deg(l(x)r(x)), \deg(t(x)))}{p} = \frac{2}{p}$$
+is typically negligible function from security level which makes this check \textit{sound}.
+
+\subsubsection{Naїve polynomial multiplication protocol}
+Let's describe naїve unoptimized version of \textbf{polynomial multiplication} protocol $\Pi'_{mul} = (\mathsf{Setup},\mathcal{P,V})$ for relation $\mathcal{R}_{mul}$. 
+During $\mathsf{Setup}$ parties agree on group elements $G,B \in \mathbb{G}$. After that parties involve in the following protocol:
+\begin{itemize}
+    \item Prover $\mathcal{P}$ computes:
+        $$t(x) = l(x)r(x) = (a+s_L x)(b+s_R x) = ab + (as_R + bs_L) + s_L s_R x^2$$
+    \item Prover $\mathcal{P}$ draws blinding factors $\alpha_0, \alpha_1, \beta_0, \beta_1, \tau_0, \tau_1, \tau_2 \leftarrowS \mathbb{F}_p$ forming blinding polynomials 
+    $$\alpha(x) = \alpha_0 + \alpha_1 x, \beta(x) = \beta_0 + \beta_1 x, \tau(x) = \tau_0 + \tau_1 x + \tau_2 x^2$$
+    and sends to $\mathcal{V}$ Pedersen commitments (\Cref{section:commitment-schemes}) for each coefficient of $l(x), r(x), t(x)$:
+        \begin{equation}
+            \begin{aligned}
+                L_0 &= [a]G + [\alpha_0]B & R_0 &= [b]G + [\beta_0]B\\
+                L_1 &= [s_L]G + [\alpha_1]B &  R_1 &= [s_R]G + [\beta_1]B\\
+                &&&\\ % todo: centering
+                && T_0 &= [ab]G + [\tau_0]B \\
+                && T_1 &= [as_R + bs_L]G + [\tau_1]B \\
+                && T_2 &= [s_L s_R]G + [\tau_2]B
+            \end{aligned}
+        \end{equation}
+        \begin{remark}
+            Each commitment could be also seen as a Pedersen commitment to a reciprocal blinding polynomial coefficient as well.
+        \end{remark}
+    \item Verifier $\mathcal{V}$ samples and sends to $\mathcal{P}$ random evaluation point $u \leftarrowS \mathbb{F}_p$
+    \item Prover $\mathcal{P}$ evaluates $l(x),r(x),t(x)$ and $\alpha(x), \beta(x), \tau(x)$ at $u$:
+        \begin{equation}
+            \begin{aligned}
+                l_u & = a + s_L u & \alpha_u &= \alpha_0 + \alpha_1 u\\
+                r_u &= b + s_R u & \beta_u &= \beta_0 + \beta_1 u\\
+                t_u &= l_u r_u & \tau_u &= \tau_0 + \tau_1 u + \tau_2 u^2
+            \end{aligned}
+        \end{equation}
+        and sends $(l_u, r_u, t_u, \alpha_u, \beta_u, \tau_u)$ to $\mathcal{V}$.
+    \item Verifier $\mathcal{V}$ performs checks: 
+        \begin{equation}
+            \begin{aligned}
+                [l_u]G + [\alpha_u]B &\stackrel{\text{?}}{=} L_0 + [u]L_1 \\
+                [r_u]G + [\beta_u]B &\stackrel{\text{?}}{=} R_0 + [u]R_1 \\
+                [t_u]G + [\tau_u]B &\stackrel{\text{?}}{=} T_0 + [u]T_1 + [u^2]T_2 \\
+                t_u &\stackrel{\text{?}}{=} l_u r_u
+            \end{aligned}
+        \end{equation}
+\end{itemize}
+\begin{theorem}
+    Naїve \textbf{polynomial multiplication} protocol $\Pi'_{mul}$ has \textit{perfect completeness, 3-special soundness, perfect honest-verifier zero-knowledge}
+    \label{th:poly_mul_naive}
+\end{theorem}
+\textbf{Proof idea.} \textit{Perfect completeness} holds due to:
+\begin{equation*}
+    \begin{aligned} % todo: fix overflow
+        [l_u]G + [\alpha_u]B &= \textcolor{RoyalBlue}{[a + s_L u]G + [\alpha_0 + \alpha_1 u]B} \\
+        L_0 + [u]L_1 &= [a]G + [\alpha_0]B + [s_L u]G + [\alpha_1 u]B = \\
+        &= \textcolor{RoyalBlue}{[a + s_L u]G + [\alpha_0 + \alpha_1 u]B} \\
+        [r_u]G + [\beta_u]B &= \textcolor{OliveGreen}{[b + s_R u]G + [\beta_0 + \beta_1 u]B} \\
+        R_0 + [u]R_1 &= [b]G + [\beta_0]B + [s_R u]G + [\beta_1 u]B = \\ 
+        &= \textcolor{RoyalBlue}{[b + s_R u]G + [\beta_0 + \beta_1 u]B}\\
+        [t_u]G + [\tau_u]B &= \textcolor{Plum}{[l_u r_u]G + [\tau_0 + \tau_1 u + \tau_2 u^2]B} \\
+        T_0 + [u]T_1 + [u^2]T_2 &= [ab]G + [\tau_0]B + [u(as_R + bs_L)]G + \\
+        &+[u]\tau_1 B + [u^2]s_L s_R G + [u^2]\tau_2 B \\
+            &= [ab + (as_R + bs_L)u + s_L s_R u^2]G + [\tau_0 + \tau_1 u + \tau_2 u^2]B \\
+            &= \textcolor{Plum}{[l_u r_u]G + [\tau_0 + \tau_1 u + \tau_2 u^2]B}
+    \end{aligned}
+\end{equation*}
+
+Proving \textit{honest-verifier zero-knowledge} is a bit complicated due to proper building of a simulator and proving indistinguishability of distributions, so we briefly describe the idea behind it: each commitment sent in the first phase by $\mathcal{P}$ is a Pedersen commitment which is hiding by design, every second phase response of $\mathcal{P}$ is an evaluation of some first or second degree polynomial at chosen point so there's not enough information for interpolation and polynomial reconstruction, moreover it could be easily simulated.
+
+To prove \textit{3-special soundness} we need to build a knowledge extractor $\mathcal{E}$ which extracts knowledge of witness polynomials $l(x), r(x), t(x)$ such that $l(x)r(x) = t(x)$ using 3 accepting transcripts: 
+\begin{enumerate}
+    \item $\mathcal{E}$ runs $\mathcal{P}$ to the end and rewinds back the second phase of $\mathcal{P}$, getting three non-equal challenges $u_1, u_2, u_3 \in \mathbb{F}_p$ and three prover responses $(l_{u_i}, r_{u_i}, t_{u_i})_{i=1}^3$
+    \item $\mathcal{E}$ solves the following systems of linear equations:
+    \begin{equation*}
+        \begin{cases}
+            l_{u_1} = a + s_L u_1 \\
+            l_{u_2} = a + s_L u_2
+        \end{cases}
+        \qquad
+        \begin{cases}
+            r_{u_1} = b + s_R u_1 \\
+            r_{u_2} = b + s_R u_2
+        \end{cases}
+        \qquad
+        \begin{cases}
+            t_{u_1} = t_0 + t_1 u_1 + t_2 u_1^2 \\
+            t_{u_2} = t_0 + t_1 u_2 + t_2 u_2^2 \\
+            t_{u_3} = t_0 + t_1 u_3 + t_2 u_3^2
+        \end{cases}
+    \end{equation*}
+    and gets the coefficients of witness polynomials: $(a, s_L, b, s_R, t_0, t_1, t_2)$
+    \item To prove that $l(x)r(x) = t(x)$ we apply Schwartz-Zippel lemma which asserts polynomial equality with high probability since for random challenges $u_i$ for honest prover we have $l(u_i)r(u_i) = t(u_i) \quad \square$.
+\end{enumerate}
+
+\subsubsection{Optimized polynomial multiplication protocol}
+We could optimize our \textbf{polynomial multiplication protocol} furthermore. Note that we could simply apply vector Pedersen commitment for constant and linear terms using one more group element $H \in \mathbb{G}$.
+
+\begin{definition}
+    The \textbf{polynomial multiplication protocol} $\Pi_{mul} = (\mathsf{Setup}, \mathcal{P,V})$ for the relation $$\mathcal{R}_{mul} = \{ (\bot;l(x),r(x),t(x)) \vert t(x) = l(x)r(x)\}$$ with prover $\mathcal{P}$ and verifier $\mathcal{V}$ is defined as follows:
+    \begin{itemize}
+        \item $\mathsf{Setup}$ returns triple of group generators with unknown discrete log relations $G, H, B \in \mathbb{G}$
+        \item Parties $\mathcal{P, V}$ run the following protocol:
+            \begin{itemize}
+                \item Prover $\mathcal{P}$ computes:
+                    $$t(x) = l(x)r(x) = (a+s_L x)(b+s_R x) = ab + (as_R + bs_L) + s_L s_R x^2$$
+                \item Prover $\mathcal{P}$ draws blinding factors $\alpha, \beta, \tau_0, \tau_1, \tau_2 \leftarrowS \mathbb{F}_p$ and sends to $\mathcal{V}$ the following commitments for coefficients of $l(x), r(x), t(x)$:
+                    \begin{equation}
+                        \begin{aligned}
+                            A &= [a]G + [b]H + [\alpha]B\\
+                            S &= [s_L]G + [s_R]H + [\beta]B\\
+                            &\\ % todo: centering
+                            T_0 &= [ab]G + [\tau_0]B \\
+                            T_1 &= [as_R + bs_L]G + [\tau_1]B \\
+                            T_2 &= [s_L s_R]G + [\tau_2]B
+                        \end{aligned}
+                    \end{equation}
+                \item Verifier $\mathcal{V}$ samples and sends to $\mathcal{P}$ random evaluation point $u \leftarrowS \mathbb{F}_p$
+                \item Prover $\mathcal{P}$ evaluates polynomials at $u$:
+                    \begin{equation}
+                        \begin{aligned}
+                            l_u & = a + s_L u & \alpha_u &= \alpha + \beta u\\
+                            r_u &= b + s_R u & \tau_u &= \tau_0 + \tau_1 u + \tau_2 u^2\\
+                            t_u &= l_u r_u & 
+                        \end{aligned}
+                    \end{equation}
+                    and sends $(l_u, r_u, t_u, \alpha_u, \tau_u)$ to $\mathcal{V}$.
+                \item Verifier $\mathcal{V}$ performs checks: 
+                    \begin{equation}
+                        \begin{aligned}
+                            A + [u]S &\stackrel{\text{?}}{=} [l_u]G + [r_u]H + [\alpha_u]B \\
+                            [t_u]G + [\tau_u]B &\stackrel{\text{?}}{=} T_0 + [u]T_1 + [u^2]T_2 \\
+                            t_u &\stackrel{\text{?}}{=} l_u r_u
+                        \end{aligned}
+                    \end{equation}
+            \end{itemize}
+    \end{itemize}
+\end{definition}
+
+\begin{theorem}
+    The \textbf{polynomial multiplication} protocol $\Pi_{mul}$ has \textit{perfect completeness, special soundness, perfect honest-verifier zero-knowledge}
+    \label{th:poly_mul}
+\end{theorem}
+\textbf{Proof}. We left to a reader proof of the theorem in the sake of brevity because it's very similar to the proof of \Cref{th:poly_mul_naive} $\quad \square$
+
+\subsubsection{Zero-knowledge multiplication protocol}
+
+Finally, we could easily build the protocol for the zk-multiplication relation where each witness element presented in statement as a Pedersen commitment: 
+$$\mathcal{R}_{abc} = \left\{\begin{array}{l}
+    (G,H,B,A,T_0;a,b, \alpha, \tau_0) \vert \\
+    A = [a]G + [b]H + [\alpha]B \wedge \\
+    T_0 = [ab]G + [\tau_0]B 
+\end{array}\right\}$$
+Where $G,H,B \in \mathbb{G}$ are generators with unknown discrete log relations, $A \in \mathbb{G}$ is a Pedersen commitment to $a,b$ and $T_0 \in \mathbb{G}$ is a Pedersen commitment to their product $ab$.
+
+\begin{definition}
+    The \textbf{multiplication protocol} $\Pi_{abc} = (\mathcal{P,V})$ for the relation $\mathcal{R}_{abc}$ with prover $\mathcal{P}$ and verifier $\mathcal{V}$ is defined as follows:
+    \begin{itemize}
+        \item Prover $\mathcal{P}$ draws random $s_L, s_R \leftarrowS \mathbb{F}_p$ and defines polynomials: $$l(x)=a+s_L x,\quad r(x)=b+s_R x,\quad t(x)=l(x)r(x)$$
+        \item Parties run $\Pi_{mul}$ on inputs $(l(x),r(x),t(x))$ along with provided a-priori setup $G,H,B \in \mathbb{G}$ and commitments $A, T_0$
+    \end{itemize}
+\end{definition}
+The protocol obviously has \textit{perfect completeness, special soundness, perfect honest-verifier zero-knowledge} due to the \Cref{th:poly_mul}.
+
+\begin{remark} %todo: add reference for Chaum-Pedersen
+    Now curious reader may wonder why build so overwhelmingly complicated protocol for simple multiplication and not just use classic \textit{Chaum-Pedersen protocol} for DH-triplets? Indeed, it definitely could establish that for given group elements $[a]G, [b]G, [c]G$ equality $c=ab$ holds, but unfortunately commitments $[a]G, [b]G, [c]G$ do not have a \textit{perfect hiding} property (though preserving \textit{computational binding} property) so an adversary could potentially learn $a,b,c$ values especially if they are small or have non-uniform distribution.
+\end{remark}
+
+Also, there's a folklore version of very similar protocol for establishing product relationship between Pedersen committed values described in \cite[section 12]{thaler}.
+
+\subsubsection{Zero-knowledge inner-product protocol}
+
+We could extend our $\Pi_{mul}$ protocol even further to provide zero-knowledge proof for the inner-product of vectors: $\langle \mathbf{a, b} \rangle = v$. The main trick is to substitute polynomials $l(x), r(x) \in \mathbb{F}_p[x]$ by vector polynomials $\mathbf{l}(x), \mathbf{r}(x) \in \mathbb{F}_p^n[x]$ where constant terms are equal to $\mathbf{a}$ and $\mathbf{b}$ respectively, taking inner-product $\langle \mathbf{l}(x), \mathbf{r}(x) \rangle$ results in polynomial with scalar coefficients where constant term is equal to $\langle \mathbf{a, b} \rangle$.
+
+\begin{example}
+Let $\mathbf{a} = (a_1, a_2)$ and $\mathbf{b} = (b_1, b_2)$ be vectors in $\mathbb{F}_p^2$. Consider vector polynomials with vector coefficients:
+\[
+\mathbf{l}(x) = \mathbf{a} + \mathbf{s}_L x = (a_1, a_2) + (s_{L,1}, s_{L,2}) x
+\]
+\[
+\mathbf{r}(x) = \mathbf{b} + \mathbf{s}_R x = (b_1, b_2) + (s_{R,1}, s_{R,2}) x
+\]
+where $\mathbf{s}_L = (s_{L,1}, s_{L,2})$, $\mathbf{s}_R = (s_{R,1}, s_{R,2})$.
+
+Their inner-product is a degree two scalar polynomial:
+\begin{align*}
+t(x) &= \langle \mathbf{l}(x), \mathbf{r}(x) \rangle \\
+    &= \langle \mathbf{a} + \mathbf{s}_L x,\; \mathbf{b} + \mathbf{s}_R x \rangle \\
+    &= \langle \mathbf{a}, \mathbf{b} \rangle + \langle \mathbf{a}, \mathbf{s}_R \rangle x + \langle \mathbf{s}_L, \mathbf{b} \rangle x + \langle \mathbf{s}_L, \mathbf{s}_R \rangle x^2
+\end{align*}
+So the constant term is the inner-product $\langle \mathbf{a}, \mathbf{b} \rangle$.
+\end{example}
+
+\begin{definition}
+    The \textbf{zero-knowledge inner-product protocol} $\Pi_{zkip} = (\mathcal{P,V})$ for the relation 
+    \begin{align*}
+        \mathcal{R}_{zkip} = \left\{ \begin{aligned} (\mathbf{G,H},G,B,A,V;\mathbf{a,b},\alpha, \gamma) \vert & A = \langle \mathbf{a,G} \rangle + \langle \mathbf{b,H} \rangle + [\alpha] B, \\ & V = [\langle \mathbf{a,b} \rangle]G + [\gamma]B \end{aligned} \right\}
+    \end{align*} 
+    where $\mathbf{G,H} \in \mathbb{G}^n, G,B \in \mathbb{G}$ -- independent group generators with prover $\mathcal{P}$ and verifier $\mathcal{V}$ is defined as follows:
+
+    \begin{itemize}
+        \item Prover $\mathcal{P}$ choses blinding vectors $\mathbf{s}_L, \mathbf{s}_R \in \mathbb{F}_p^n$ and computes polynomials:
+            \begin{align*}
+                \mathbf{l}(x) &= \mathbf{a} + \mathbf{s}_L x \\
+                \mathbf{r}(x) &= \mathbf{b} + \mathbf{s}_R x \\
+                t(x) &= \langle \mathbf{l}(x), \mathbf{r}(x) \rangle = \langle \mathbf{a}, \mathbf{b} \rangle + (\langle \mathbf{a}, \mathbf{s}_R \rangle + \langle \mathbf{s}_L, \mathbf{b} \rangle) x + \langle \mathbf{s}_L, \mathbf{s}_R \rangle x^2
+            \end{align*}
+        \item Prover $\mathcal{P}$ draws blinding factors $\beta, \tau_1, \tau_2 \leftarrowS \mathbb{F}_p$ and sends to $\mathcal{V}$ the following commitments for coefficients of $\mathbf{l}(x), \mathbf{r}(x), \mathbf{t}(x)$:
+            \begin{equation}
+                \begin{aligned}
+                    S &= \langle \mathbf{s}_L, \mathbf{G} \rangle + \langle \mathbf{s}_R, \mathbf{H} \rangle + [\beta]B\\
+                    T_1 &= [\langle \mathbf{a}, \mathbf{s}_R \rangle + \langle \mathbf{s}_L, \mathbf{b} \rangle]G + [\tau_1]B \\
+                    T_2 &= [\langle \mathbf{s}_L \mathbf{s}_R \rangle]G + [\tau_2]B
+                \end{aligned}
+            \end{equation}
+        \item Verifier $\mathcal{V}$ samples and sends to $\mathcal{P}$ random evaluation point $u \leftarrowS \mathbb{F}_p$
+        \item Prover $\mathcal{P}$ evaluates polynomials at $u$:
+            \begin{equation}
+                \begin{aligned}
+                    \mathbf{l}_u & = \mathbf{a} + \mathbf{s}_L u & \alpha_u &= \alpha + \beta u\\
+                    \mathbf{r}_u &= \mathbf{b} + \mathbf{s}_R u & \tau_u &= \tau_0 + \tau_1 u + \tau_2 u^2\\
+                    t_u &= \langle \mathbf{l}_u \mathbf{r}_u \rangle & 
+                \end{aligned}
+            \end{equation}
+            and sends $(\mathbf{l}_u, \mathbf{r}_u, t_u, \alpha_u, \tau_u)$ to $\mathcal{V}$.
+        \item Verifier $\mathcal{V}$ performs checks: 
+            \begin{equation}
+                \begin{aligned}
+                    A + [u]S &\stackrel{\text{?}}{=} \langle \mathbf{l}_u, \mathbf{G} \rangle + \langle \mathbf{r}_u, \mathbf{H} \rangle + [\alpha_u]B \\
+                    [t_u]G + [\tau_u]B &\stackrel{\text{?}}{=} V + [u]T_1 + [u^2]T_2 \\
+                    t_u &\stackrel{\text{?}}{=} \langle \mathbf{l}_u \mathbf{r}_u \rangle
+                \end{aligned}
+            \end{equation}
+    \end{itemize}
+\end{definition}
+
+The protocol also has \textit{perfect completeness, special soundness, perfect honest-verifier zero-knowledge} due to the \Cref{th:poly_mul}, however building the extractor needs some vector equations we omit for the sake of brevity. Also note that transcript size is linear in size of vectors $\mathbf{l}_u, \mathbf{r}_u$ which is extremely inefficient when vectors are large. So in the next section we present so called \textbf{inner-product argument} which is summoned to reduce conversational complexity to logarithmic in vector length making the last check $t_u \stackrel{\text{?}}{=} \langle \mathbf{l}_u \mathbf{r}_u \rangle$ quite efficient.
+
+\subsection{Inner-product argument}
+
+Here we describe the further generalization of $\Pi_{mul}$ -- efficient protocol for the \textbf{inner-product argument} - core component of the \textbf{bulletproofs} protocol. After that we will apply it to range proofs and arithmetic circuits. We have already seen that inner-products are the main ingredients for R1CS language because any R1CS relation could be seen as a batch of inner-products though it's not the most efficient representation and we'll see how to amortize all the constraints into inner-products more efficiently.
+
+The \textbf{inner-product argument} allows to prove that two vectors $\mathbf{a,b} \in \mathbb{F}_p^n$ satisfy the relation:
+$$\mathcal{R}_{ip} = \{ (\mathbf{G,H}, P, c; \mathbf{a,b}) \vert P = \langle \mathbf{a,G} \rangle + \langle \mathbf{b,H} \rangle \wedge \langle \mathbf{a,b} \rangle = c \}$$
+We refer to $P \in \mathbb{G}$ as a binding Pedersen vector commitment to $\mathbf{a,b}$.
+
+One way to prove the relation is to use $\Pi_{zkip}$, but as we've seen it's not efficient due to linear in $n$ size of the proof. We want to build an argument system for the relation $\mathcal{R}_{ip}$ with logarithmic in $n$ size of the proof.
+
+Firtsly, let's combine statements $P = \langle \mathbf{a,G} \rangle + \langle \mathbf{b,H} \rangle \wedge \langle \mathbf{a,b} \rangle = c$ into a single statement by multiplying the second one by a random $r \in \mathbb{F}_p$ and some orthogonal generator $B \in \mathbb{G}$, summing up:
+$$
+\mathcal{R}'_{ip} = \{ (\mathbf{G,H}, Q, P'; \mathbf{a,b}) \vert P' = \langle \mathbf{a,G} \rangle + \langle \mathbf{b,H} \rangle + [\langle \mathbf{a,b} \rangle]Q \}
+$$
+Where $P' = P + [cr]B, Q=[r]B$. Intuitively, if prover $\mathcal{P}$ can prove $\mathcal{R}'_{ip}$ for all $r \in \mathbb{F}_p$, then it can prove $\mathcal{R}_{ip}$ for any valid witness. We use such transformation to compress each vector in half and arrive to the same form of commitment
+$$P' = \langle \mathbf{a,G} \rangle + \langle \mathbf{b,H} \rangle + [\langle \mathbf{a,b} \rangle]Q$$
+
+\begin{definition}
+    The \textbf{inner-product} protocol $\Pi_{ip} = (\mathcal{P}, \mathcal{V})$ for relation $\mathcal{R}_{ip} = \{ (\mathbf{G,H}, P, c; \mathbf{a,b}) \vert P = \langle \mathbf{a,G} \rangle + \langle \mathbf{b,H} \rangle \wedge \langle \mathbf{a,b} \rangle = c \}$ with prover $\mathcal{P}$, verifier $\mathcal{V}$ is defined as follows:
+    \begin{itemize}
+        \item Parties $\mathcal{P, V}$ agree on some group element $B \in \mathbb{G}$ with unknown discrete log
+        \item Verifier $\mathcal{V}$ samples random $r \leftarrowS \mathbb{F}_p$ and sends it to prover $\mathcal{P}$
+        \item Parties $\mathcal{P, V}$ compute $Q \gets [r]B$ and $P' = P + [c]Q$
+        \item Parties run protocol $\Pi'_{ip}$ for relation $\mathcal{R}'_{ip}$ on input $(\mathbf{G,H}, Q, P'; \mathbf{a,b})$
+    \end{itemize}
+\end{definition}
+
+\subsubsection{Inner-product compression}
+
+Here we describe \textbf{inner-product compression} algorithm -- main building block of the interactive \textbf{inner-product} protocol.
+Firstly, assuming that $n = 2^d$ define by $\mathbf{G_{lo}} = (G_1, \dots, G_{n/2}), \mathbf{G_{hi}} = (G_{n/2+1},\dots, G_n) \in \mathbb{G}^{n/2}$ -- lower and higher halves of vector $\mathbf{G}$ and $\mathbf{a_{lo}} = (a_1, \dots, a_{n/2}), \mathbf{a_{hi}} = (a_{n/2+1},\dots,a_n) \in \mathbb{F}_p^{n/2}$ -- lower and higher halves of $\mathbf{a} \in \mathbb{F}_p^{n}$.
+
+Let $u_k \in \mathbb{F}_p$ - be some scalar, define compressed vectors:
+\begin{align*}
+    \mathbf{a}^{(k-1)} &= \mathbf{a_{lo}} \cdot u_k + u_k^{-1} \cdot \mathbf{a_{hi}} \\
+    \mathbf{b}^{(k-1)} &= \mathbf{b_{lo}} \cdot u_k^{-1} + u_k \cdot \mathbf{b_{hi}} \\
+    \mathbf{G}^{(k-1)} &= \mathbf{G_{lo}} \cdot u_k^{-1} + u_k \cdot \mathbf{G_{hi}} \\
+    \mathbf{H}^{(k-1)} &= \mathbf{H_{lo}} \cdot u_k + u_k^{-1} \cdot \mathbf{H_{hi}}
+\end{align*}
+
+Define $P_k \gets P' =  \langle \mathbf{a,G} \rangle + \langle \mathbf{b,H} \rangle + [\langle \mathbf{a,b} \rangle]Q$ -- current commitment to vectors $\mathbf{a,b}$ and define $P_{k-1}$ using compressed vectors to have the same form as $P_k$, but in new basis $(\mathbf{G}^{(k-1)}, \mathbf{H}^{(k-1)})$:
+
+\begin{equation}
+    P_{k-1} = \langle \mathbf{a}^{(k-1)}, \mathbf{G}^{(k-1)} \rangle + \langle \mathbf{b}^{(k-1)}, \mathbf{H}^{(k-1)} \rangle + [\langle \mathbf{a}^{(k-1)}, \mathbf{b}^{(k-1)} \rangle]Q
+    \label{eq:p_k_1_from_new_basis}
+\end{equation}
+
+Or alternatively, expressing $P_{k-1}$ in old basis $(\mathbf{G}^{(k)}, \mathbf{H}^{(k)})$ we get:
+\begin{equation}
+    \begin{aligned}
+    P_{k-1} &= \langle u_k^{-1} \cdot \mathbf{a}^{(k-1)}, \mathbf{G_{lo}}^{(k)} \rangle + \langle u_k \cdot \mathbf{a}^{(k-1)}, \mathbf{G_{hi}}^{(k)} \rangle + \langle u_k \cdot \mathbf{b}^{(k-1)}, \mathbf{H_{lo}}^{(k)} \rangle \\
+    &+ \langle u_k^{-1} \cdot \mathbf{b}^{(k-1)}, \mathbf{H_{hi}}^{(k)} \rangle + [\langle \mathbf{a}^{(k-1)}, \mathbf{b}^{(k-1)} \rangle]Q
+    \label{eq:p_k_1_from_old_basis}
+    \end{aligned}
+\end{equation}
+
+Substituting compressed vectors and applying bilinearity property of inner product we get:
+\begin{align*}
+    P_{k-1} = & \langle \mathbf{a_{lo}}, \mathbf{G_{lo}}\rangle + \langle \mathbf{a_{hi}}, \mathbf{G_{hi}}\rangle &+ u_k^2\langle \mathbf{a_{lo}}, \mathbf{G_{hi}}\rangle + u_k^{-2}\langle \mathbf{a_{hi}}, \mathbf{G_{lo}}\rangle + \\
+    & \langle \mathbf{b_{lo}}, \mathbf{H_{lo}}\rangle + \langle \mathbf{b_{hi}}, \mathbf{H_{hi}}\rangle &+ u_k^2\langle \mathbf{b_{hi}}, \mathbf{H_{lo}}\rangle + u_k^{-2}\langle \mathbf{b_{lo}}, \mathbf{H_{hi}}\rangle + \\
+    & [\langle \mathbf{a_{lo}}, \mathbf{b_{lo}}\rangle + \langle \mathbf{a_{hi}}, \mathbf{b_{hi}}\rangle]Q &+ [u_k^2\langle \mathbf{a_{lo}}, \mathbf{b_{hi}}\rangle + u_k^{-2}\langle \mathbf{a_{hi}}, \mathbf{b_{lo}}\rangle]Q
+\end{align*}
+
+Note that $\langle \mathbf{a_{lo}}, \mathbf{G_{lo}}\rangle + \langle \mathbf{a_{hi}}, \mathbf{G_{hi}}\rangle = \langle \mathbf{a,G}\rangle$ so that the first two columns of $P_{k-1}$ definition precisecly contains $P_{k} = P'$:
+$$P_{k} = \langle \mathbf{a_{lo}}, \mathbf{G_{lo}}\rangle + \langle \mathbf{a_{hi}}, \mathbf{G_{hi}}\rangle + \langle \mathbf{b_{lo}}, \mathbf{H_{lo}}\rangle + \langle \mathbf{b_{hi}}, \mathbf{H_{hi}}\rangle + [\langle \mathbf{a_{lo}}, \mathbf{b_{lo}}\rangle + \langle \mathbf{a_{hi}}, \mathbf{b_{hi}}\rangle]Q$$
+
+Define cross-terms $L_k, R_k$ of $P_{k-1}$ such that:
+\begin{align*}
+    P_{k-1} &= P_k + [u_k^2] L_k + [u_k^{-2}] R_k \\
+    L_{k} &= \langle \mathbf{a_{lo}}, \mathbf{G_{hi}}\rangle + \langle \mathbf{b_{hi}}, \mathbf{H_{lo}}\rangle + [\langle \mathbf{a_{lo}}, \mathbf{b_{hi}}\rangle]Q \\
+    R_{k} &= \langle \mathbf{a_{hi}}, \mathbf{G_{lo}}\rangle + \langle \mathbf{b_{lo}}, \mathbf{H_{hi}}\rangle + [\langle \mathbf{a_{hi}}, \mathbf{b_{lo}}\rangle]Q
+\end{align*}
+
+The first equation $P_{k-1} = P_k + [u_k^2] L_k + [u_k^{-2}] R_k$ could be used as a check for asserting correctness of next commitment $P_{k-1}$ given cross-terms $L_k, R_k$, half-sized vectors $\mathbf{a}^{(k-1)}, \mathbf{b}^{(k-1)}$ from which $P_{k-1}$ was computed (\ref{eq:p_k_1_from_new_basis}) using updated basis $\mathbf{G}^{(k-1)}, \mathbf{H}^{(k-1)}$ and current commitment value $P_k$.
+
+But we wish not send $\mathbf{a}^{(k-1)}, \mathbf{b}^{(k-1)}$ directly as this's inefficient due to still linear sizes, instead we apply recursion to compress this vectors to just one element. Here we come up with some kind of statement compression algorithm reducing size of all vectors in half per compression step. Repeating compression algorithm $k$ times we end up with sending vectors $\mathbf{a}^{(0)}, \mathbf{b}^{(0)}$ each of length one and $P_0$ containing all accumulated cross-terms:
+\begin{align*}
+    P_0 &= [a_1^{(0)}]G_1^{(0)} + [b_1^{(0)}]H_1^{(0)} + [a_1^{(0)}b_1^{(0)}]Q \\
+    P_0 &= P_k + \sum_{i=1}^k ([u_i^2]L_i + [u_i^{-2}]R_i)
+\end{align*}
+
+Recalling that $P_k = P'$, the final compressed statement asserting inner-product value will have the following form:
+\begin{equation}
+    P' + \sum_{i=1}^k ([u_i^2]L_i + [u_i^{-2}]R_i) = [a_1^{(0)}]G_1^{(0)} + [b_1^{(0)}]H_1^{(0)} + [a_1^{(0)}b_1^{(0)}]Q
+    \label{eq:ip-final-compressed}
+\end{equation}
+
+\begin{remark}
+    We take $n=2^d$ without loss of generality, since one could always pad the vectors with zeroes to make their length a power of two and inner-product compression would shrink the size of the vectors by a factor of two per compression step down to one element.
+\end{remark}
+
+\subsubsection{Proving $\mathcal{R}'_{ip}$}
+
+Let's describe the \textbf{inner-product} protocol $\Pi'_{ip}$ for relation $\mathcal{R}'_{ip}$. 
+\begin{definition}
+    The \textbf{inner-product} protocol $\Pi'_{ip} = (\mathcal{P}, \mathcal{V})$ for relation $\mathcal{R}'_{ip} = \{ (\mathbf{G,H}, Q, P'; \mathbf{a,b}) \vert P' = \langle \mathbf{a,G} \rangle + \langle \mathbf{b,H} \rangle + [\langle \mathbf{a,b} \rangle]Q \}$, where all vectors have length $n=2^d$ with prover $\mathcal{P}$, verifier $\mathcal{V}$ is defined as follows:
+    \begin{itemize}
+        \item Prover $\mathcal{P}$ sets $$(k, \mathbf{a}^{(k)}, \mathbf{b}^{(k)}, \mathbf{G}^{(k)}, \mathbf{H}^{(k)}, P_k) \gets (d, \mathbf{a,b,G,H},P')$$
+        \item Verifier $\mathcal{V}$ sets $$(k, \mathbf{G}^{(k)}, \mathbf{H}^{(k)}, P_k) \gets (d, \mathbf{G,H},P')$$
+        \item While $k > 0$ then:
+            \begin{itemize}
+                \item Prover $\mathcal{P}$ computes 
+                    \begin{align*}
+                        L_{k} &= \langle \mathbf{a_{lo}}^{(k)}, \mathbf{G_{hi}}^{(k)}\rangle + \langle \mathbf{b_{hi}}^{(k)}, \mathbf{H_{lo}}^{(k)}\rangle + [\langle \mathbf{a_{lo}}^{(k)}, \mathbf{b_{hi}}^{(k)}\rangle]Q \\
+                        R_{k} &= \langle \mathbf{a_{hi}}^{(k)}, \mathbf{G_{lo}}^{(k)}\rangle + \langle \mathbf{b_{lo}}^{(k)}, \mathbf{H_{hi}}^{(k)}\rangle + [\langle \mathbf{a_{hi}}^{(k)}, \mathbf{b_{lo}}^{(k)}\rangle]Q
+                    \end{align*}
+                \item $\mathcal{P}$ sends $(L_k, R_k)$ to $\mathcal{V}$
+                \item $\mathcal{V}$ draws challenge $u_k \leftarrowS \mathbb{F}_p$ and sends it to $\mathcal{P}$
+                \item Both $\mathcal{P}$ and $\mathcal{V}$ compute:
+                    \begin{align*}
+                        \mathbf{G}^{(k-1)} &= \mathbf{G_{lo}}^{(k)} \cdot u_k^{-1} + u_k \cdot \mathbf{G_{hi}}^{(k)} \\
+                        \mathbf{H}^{(k-1)} &= \mathbf{H_{lo}}^{(k)} \cdot u_k + u_k^{-1} \cdot \mathbf{H_{hi}}^{(k)}
+                    \end{align*}
+                \item $\mathcal{P}$ computes:
+                    \begin{align*}
+                        \mathbf{a}^{(k-1)} &= \mathbf{a_{lo}}^{(k)} \cdot u_k + u_k^{-1} \cdot \mathbf{a_{hi}}^{(k)} \\
+                        \mathbf{b}^{(k-1)} &= \mathbf{b_{lo}}^{(k)} \cdot u_k^{-1} + u_k \cdot \mathbf{b_{hi}}^{(k)} \\
+                    \end{align*}
+            \end{itemize}
+        \item Prover $\mathcal{P}$ sends $(a,b) \gets (\mathbf{a}_1^{(0)}, \mathbf{b}_1^{(0)})$ to verifier $\mathcal{V}$
+        \item Verifier performs final check: 
+            $$P' + \sum_{i=1}^d ([u_i^2]L_i + [u_i^{-2}]R_i) = [a]G_1^{(0)} + [b]H_1^{(0)} + [ab]Q$$
+        outputs \textbf{accept} if equality holds and \textbf{reject} otherwise.
+    \end{itemize}
+
+    This protocol is illustrated in \Cref{fig:interactive_ip}. 
+\end{definition}
+
+\begin{figure}[h!]
+    \centering
+    % TikZ inner-product protocol diagram with highlighted loop
+    \begin{tikzpicture}[>=Stealth,thick,node distance=5cm,auto]
+        \usetikzlibrary{fit,backgrounds,positioning}
+        % Prover and Verifier nodes
+        \node[inner sep=0pt] (P) {\begin{tabular}{c}\includegraphics[width=1.2cm]{lectures/images/common/prover.png}\\Prover $\mathcal{P}$\end{tabular}};
+        \node[inner sep=0pt,right=of P] (V) {\begin{tabular}{c}\includegraphics[width=1.2cm]{lectures/images/common/verifier.png}\\Verifier $\mathcal{V}$\end{tabular}};
+        % Dashed lifelines extended
+        \draw[dashed,line width=0.3mm] ([yshift=-0cm]P.south) -- ++(0,-12cm);
+        \draw[dashed,line width=0.3mm] ([yshift=-0cm]V.south) -- ++(0,-12cm);
+
+        % Step 1: Begin loop
+        \node[coordinate] (Ploopstart) at ([yshift=-1cm]P.south) {};
+        \node[coordinate] (Vloopstart) at ([yshift=-1cm]V.south) {};
+        
+        \node[draw,rounded corners,fill=white,below=1cm of P,align=left] (LR) {%
+            \small $L_{k} \gets \langle \mathbf{a_{lo}}^{(k)}, \mathbf{G_{hi}}^{(k)}\rangle +  $\\
+            \small $\langle \mathbf{b_{hi}}^{(k)}, \mathbf{H_{lo}}^{(k)}\rangle + [\langle \mathbf{a_{lo}}^{(k)}, \mathbf{b_{hi}}^{(k)}\rangle]Q $ \\
+            \small $R_{k} \gets \langle \mathbf{a_{hi}}^{(k)}, \mathbf{G_{lo}}^{(k)}\rangle +  $\\
+            \small $\langle \mathbf{b_{lo}}^{(k)}, \mathbf{H_{hi}}^{(k)}\rangle + [\langle \mathbf{a_{hi}}^{(k)}, \mathbf{b_{lo}}^{(k)}\rangle]Q$
+        };
+
+        % Step 2: Prover sends L_k, R_k
+        \node[coordinate] (Vloop1) at ([yshift=-3.5cm]V.south) {};
+        \node[coordinate] (Ploop1) at ([yshift=-3.5cm]P.south) {};
+        \draw[->] (Ploop1) -- node[above]{Send $(L_k,R_k)$} (Vloop1);
+
+        % Step 3: Challenge
+        \node[draw,rounded corners,fill=white,below=4cm of V,align=left] (pchelV) {%
+            \small $u_k \leftarrowS \mathbb{F}_p$
+        };
+
+
+        % Step 2: Verifier sends u_k
+        \node[coordinate] (Vloop2) at ([yshift=-5cm]V.south) {};
+        \node[coordinate] (Ploop2) at ([yshift=-5cm]P.south) {};
+        \draw[->] (Vloop2) -- node[above]{Send $u_k$} (Ploop2);
+
+        % Step 3: Updates
+        \node[draw,rounded corners,fill=white,below=5.5cm of P,align=left] (updatesP) {%
+            \small $\mathbf{G}^{(k-1)}\gets \mathbf{G}_{lo}^{(k)}u_k^{-1}+u_k\mathbf{G}_{hi}^{(k)}$\\
+            \small $\mathbf{H}^{(k-1)}\gets \mathbf{H}_{lo}^{(k)}u_k+u_k^{-1}\mathbf{H}_{hi}^{(k)}$\\
+            \small $\mathbf{a}^{(k-1)}\gets \mathbf{a}_{lo}^{(k)}u_k+u_k^{-1}\mathbf{a}_{hi}^{(k)}$\\
+            \small $\mathbf{b}^{(k-1)}\gets \mathbf{b}_{lo}^{(k)}u_k^{-1}+u_k\mathbf{b}_{hi}^{(k)}$
+        };
+
+        \node[draw,rounded corners,fill=white,below=5.5cm of V,align=left] (updatesV) {%
+            \small $\mathbf{G}^{(k-1)}\gets \mathbf{G}_{lo}^{(k)}u_k^{-1}+u_k\mathbf{G}_{hi}^{(k)}$\\
+            \small $\mathbf{H}^{(k-1)}\gets \mathbf{H}_{lo}^{(k)}u_k+u_k^{-1}\mathbf{H}_{hi}^{(k)}$
+        };
+
+        % Loop region (highlighted)
+        \begin{scope}[on background layer]
+        \node[draw,rounded corners,fill=blue!10,inner sep=6pt,fit=(Ploopstart)(Vloopstart)(updatesP)(updatesV)(LR)] (loopBlock) {};
+        \end{scope}
+        \node[above=0cm of loopBlock.north] {\small \textbf{Repeat for }$k \gets \overline{d..1}$};
+
+        % Final step: Prover sends (a,b)
+        \node[coordinate] (Pfinal) at ([yshift=-9cm]P.south) {};
+        \node[coordinate] (Vfinal) at ([yshift=-9cm]V.south) {};
+        \draw[->] (Pfinal) -- node[above]{Send $(a,b) = (\mathbf{a}^{(0)},\mathbf{b}^{(0)})$} (Vfinal);
+
+        % Verifier final check
+        \node[draw,rounded corners,fill=white,below=0.5cm of Vfinal,align=left] (checkV) {%
+            \small Verify:\\
+            $P'+\sum_{i=1}^d([u_i^2]L_i+[u_i^{-2}]R_i)=$\\
+            $[a]G_1^{(0)}+[b]H_1^{(0)}+[ab]Q$
+        };
+    \end{tikzpicture}
+    \caption{Interactive inner-product protocol $\Pi'_{ip}$ between prover $\mathcal{P}$ and verifier $\mathcal{V}$ for relation $\mathcal{R}'_{ip}$}
+    \label{fig:interactive_ip}
+\end{figure}
+
+As we can see, overall communication complexity of $\Pi_{ip}$ is $2\log_2 n$ group elements plus $2$ field elements so we come up with logarithmic proof size for our inner-product relation $\mathcal{R}_{ip}$. Now one might ask whether $\Pi_{ip}$ has any desired properties such as completeness, soundness and zero-knowledge. It appears that the first two holds under some generalizations needed for security proofs but not \textit{zero-knowledge} (indeed, if $n=1$ then $\mathcal{P}$ sends witness pair $a,b$ directly). We'll compile efficient \textbf{inner-product argument} $\Pi_{ip}$ with zero-knowledge $\Pi_{zkip}$ to achieve efficient zero-knowledge proofs for range proofs and arithmetic circuits.
+
+\begin{theorem}[Inner-Product Argument]
+    The argument system $\Pi_{ip}$ for relation $\mathcal{R}_{ip}$ has \textit{perfect completeness and statistical witness-extended emulation} for either extracting a non-trivial discrete logarithm relation between $\mathbf{G,H}, Q$ or extracting valid witness $\mathbf{a,b}$.
+\end{theorem}
+
+\textbf{Proof idea}. \textit{Perfect completeness} of $Pi_{ip}$ follows because $Pi_{ip}$ converts instance of $\mathcal{R}_{ip}$ to instance of $\mathcal{P}'_{ip}$ and $\Pi'_{ip}$ is trivially complete by construction due to \Cref{eq:ip-final-compressed}. Notation \textit{statistical witness-extended emulation} generalizes \textit{special soundness} in the way applicable for multi-stage complex argument systems where each step of the protocol could be rewound to extract part of the witness so that more accurate definition of protocol security is achieved despite \textit{special soundness} implies building the whole knowledge extractor which might has non-polynomial running time for multi-stage protocols.
+
+Here we briefly describe a knowledge extractor $\mathcal{E}'_{ip}$ for a witness $(\mathbf{a}, \mathbf{b})$ or non-trivial discrete logarithm relation for $(\mathbf{G, H}, Q)$ for $\Pi'_{ip}$. 
+\begin{enumerate}
+    \item $\mathcal{E}'_{ip}$ runs $\mathcal{P}$ to the last stage to obtain $(L, R) \gets (L_1, R_1)$.
+    \item $\mathcal{E}'_{ip}$ rewinds the $\Pi'_{ip}$ final stage four times to obtain four challenges $x_1, x_2, x_3, x_4$ and responses $(\mathbf{a}_1^{(0)}, \mathbf{b}_1^{(0)}), (\mathbf{a}_2^{(0)}, \mathbf{b}_2^{(0)}), (\mathbf{a}_3^{(0)}, \mathbf{b}_3^{(0)}), (\mathbf{a}_4^{(0)}, \mathbf{b}_4^{(0)})$ so that the following equation holds for $i \in \{ 1,2,3,4 \}$ (\ref{eq:p_k_1_from_old_basis}):
+    \begin{equation}
+        \begin{aligned}
+            & [x_i^2]L + P_1 + [x_i^{-2}]R = \langle x_i^{-1} \cdot \mathbf{a}_i^{(0)}, \mathbf{G_{lo}}^{(1)} \rangle + \langle x_i \cdot \mathbf{a}_i^{(0)}, \mathbf{G_{hi}}^{(1)} \rangle \\
+            &+ \langle x_i \cdot \mathbf{b}_i^{(0)}, \mathbf{H_{lo}}^{(1)} \rangle + \langle x_i^{-1} \cdot \mathbf{b}_i^{(0)}, \mathbf{H_{hi}}^{(1)} \rangle + [\langle \mathbf{a}_i^{(0)}, \mathbf{b}_i^{(0)} \rangle]Q
+        \end{aligned}
+        \label{eq:extractor_eq}
+    \end{equation}
+
+    \item $\mathcal{E}'_{ip}$ choses $(v_1, v_2, v_3) \in \mathbb{F}_p^3 $ as a solution for the system of linear equations:
+        \begin{equation}
+            \begin{cases}
+                x_1^2 v_1 + x_2^2 v_2 + x_3^2 v_3 = 0 \\
+                v_1 + v_2 + v_3 = 1 \\
+                x_1^{-2} v_1 + x_2^{-2} v_2 + x_3^{-2} v_3 = 0
+            \end{cases}
+            \label{eq:extractor_v}
+        \end{equation}
+    \item $\mathcal{E}'_{ip}$ takes linear combination of (\ref{eq:extractor_eq}) with coefficients $v_i$ for $i \in \{ 1,2,3 \}$:
+        \begin{equation*}
+            \begin{aligned}
+                & \sum_{i=1}^3 [v_i x_i^2]L + [v_i]P_1 + [v_i x_i^{-2}]R = \sum_{i=1}^3 \langle v_i x_i^{-1} \cdot \mathbf{a}_i^{(0)}, \mathbf{G_{lo}}^{(1)} \rangle + \langle v_i x_i \cdot \mathbf{a}_i^{(0)}, \mathbf{G_{hi}}^{(1)} \rangle \\
+                &+ \langle v_i x_i \cdot \mathbf{b}_i^{(0)}, \mathbf{H_{lo}}^{(1)} \rangle + \langle v_i x_i^{-1} \cdot \mathbf{b}_i^{(0)}, \mathbf{H_{hi}}^{(1)} \rangle + [v_i \langle \mathbf{a}_i^{(0)}, \mathbf{b}_i^{(0)} \rangle]Q
+            \end{aligned}
+        \end{equation*}
+        Simplifying equation above we get:
+        \begin{equation}
+            \begin{aligned}
+                & P_1 = \langle \sum_{i=1}^3 v_i x_i^{-1} \cdot \mathbf{a}_i^{(0)} + v_i x_i \cdot \mathbf{a}_i^{(0)}, \mathbf{G}^{(1)} \rangle +\\ 
+                & \langle \sum_{i=1}^3 v_i x_i \cdot \mathbf{b}_i^{(0)} + v_i x_i^{-1} \cdot \mathbf{b}_i^{(0)}, \mathbf{H}^{(1)} \rangle + [\sum_{i=1}^3 v_i \langle \mathbf{a}_i^{(0)}, \mathbf{b}_i^{(0)} \rangle]Q
+            \end{aligned}
+            \label{eq:extractor_p1}
+        \end{equation}
+        On the other hand we have an expression for $P_1$ from (\ref{eq:p_k_1_from_new_basis}):
+        \begin{equation}
+            P_{1} = \langle \mathbf{a}^{(1)}, \mathbf{G}^{(1)} \rangle + \langle \mathbf{b}^{(1)}, \mathbf{H}^{(1)} \rangle + [\langle \mathbf{a}^{(1)}, \mathbf{b}^{(1)} \rangle]Q
+            \label{eq:extractor_p1_alt}
+        \end{equation}
+    \item Asserting equality (\ref{eq:extractor_p1})$=$(\ref{eq:extractor_p1_alt}) the extractor $\mathcal{E}'_{ip}$ sets: 
+        \begin{align}
+            \mathbf{a}^{(1)} &= \sum_{i=1}^3 v_i x_i^{-1} \cdot \mathbf{a}_i^{(0)} + v_i x_i \cdot \mathbf{a}_i^{(0)} \\
+            \mathbf{b}^{(1)} &= \sum_{i=1}^3 v_i x_i \cdot \mathbf{b}_i^{(0)} + v_i x_i^{-1} \cdot \mathbf{b}_i^{(0)}
+        \end{align}    
+    
+        We need the fourth rewinding to assert equality of inner product: 
+        $$\langle \mathbf{a}^{(1)}, \mathbf{b}^{(1)} \rangle = \sum_{i=1}^3 v_i \langle \mathbf{a}_i^{(0)}, \mathbf{b}_i^{(0)} \rangle$$
+        We won't describe it fully since it takes some unwieldy technical details and refer a reader to the original \textit{bulletproofs} paper \cite{bulletproofs}, where the full proof of extraction is described in Theorem 1.
+    \item The extractor $\mathcal{E}'_{ip}$ recursively extracts $\mathbf{a}^{(k+1)}, \mathbf{b}^{(k+1)}$ from $ \mathbf{a}^{(k)}, \mathbf{b}^{(k)}$ using the method described in steps 2-5 until it reaches the final witness $\mathbf{a}^{(d)}, \mathbf{b}^{(d)} = \mathbf{a}, \mathbf{b}$ for which the relation $\mathcal{R}'_{ip}$ holds: 
+    $$P' =  \langle \mathbf{a,G} \rangle + \langle \mathbf{b,H} \rangle + [\langle \mathbf{a,b} \rangle]Q$$
+\end{enumerate}
+Building the extractor $\mathcal{E}_{ip}$ for $\Pi_{ip}$ is quite simple relatively to what we've done by now:
+\begin{enumerate}
+    \item $\mathcal{E}_{ip}$ runs $\Pi_{ip}$ to the end and applies the extractor $\mathcal{E}'_{ip}$ for $Pi'_{ip}$ to extract the witness $\mathbf{a,b}$ such that the following holds for $\mathcal{V}$'s challenge $r_1 \in \mathbb{F}_p$: 
+        \begin{equation}
+            P + [r_1c]B = \langle \mathbf{a,G} \rangle + \langle \mathbf{b,H} \rangle + [r_1 \cdot \langle \mathbf{a,b} \rangle]B
+            \label{eq:extractor_r1}
+        \end{equation}
+    \item $\mathcal{E}_{ip}$ rewinds the prover $\mathcal{P}$ to obtain another challenge from $\mathcal{V}$: $r_2 \in \mathbb{F}_p$ and yield another witness $\mathbf{a',b'}$ from $\mathcal{E}'_{ip}$:
+        \begin{equation}
+            P + [r_2c]B = \langle \mathbf{a',G} \rangle + \langle \mathbf{b',H} \rangle + [r_2 \cdot \langle \mathbf{a',b'} \rangle]B
+            \label{eq:extractor_r2}
+        \end{equation}
+        
+    \item $\mathcal{E}_{ip}$ substitute (\ref{eq:extractor_r1}) from (\ref{eq:extractor_r2}) to get:
+        \begin{equation}
+            [c(r_1 - r_2)]B = \langle \mathbf{a-a',G} \rangle + \langle \mathbf{b-b',H} \rangle + [r_1 \cdot \langle \mathbf{a,b} \rangle - r_2 \cdot \langle \mathbf{a',b'} \rangle]B
+        \end{equation}
+        Unless $a = a'$ and $b = b'$ we get a non-trivial discrete log relation between $\mathbf{G,H}$ and $B$, otherwise if equality of witnesses holds we get:
+        \begin{equation}
+            [(r_1 - r_2)c]B = [(r_1 - r_2) \langle \mathbf{a,b} \rangle]B
+        \end{equation}
+        Hence $c = \langle \mathbf{a,b} \rangle$.
+\end{enumerate}
+
+To formally finalize a proof of \textit{witness-extended emulation} we also need to apply so-called \textit{the forking lemma}, we again refer a reader to the original \textit{bulletproofs} paper \cite{bulletproofs} $\quad \square$.
+
+\subsubsection{Zero-knowledge extension of inner-product argument}\label{subsection:alternative-zk-ip}
+
+The main approach to make \textit{inner-product argument} \textit{zero-knowledge} is to use $\Pi_{zkip}$ protocol which original bulletproofs \cite{bulletproofs} does for \textit{range proofs}(\Cref{subsection:bulletproofs-range-proofs}) and \textit{arithmetic circuits satisfiability}(\Cref{subsection:bulletproofs-arithmetic-circuits}). However, there exists an alternative elegant construction based on tweaking \textit{inner-product argument} itself described in \cite[Appendix E.2]{pvss}. 
+
+The key idea is to bring a blinding factor $\delta \in \mathbb{F}_p$ with a verifier-provided random element $D \in \mathbb{G}$ to the commitment $P_k$:
+$$ P_k = \langle \mathbf{a}^{(k)}, \mathbf{G}^{(k)} \rangle + \langle \mathbf{b}^{(k)}, \mathbf{H}^{(k)} \rangle + [\langle \mathbf{a}^{(k)}, \mathbf{b}^{(k)} \rangle]Q + [\delta^{(k)}]D $$
+To get $L_k, R_k$ prover draws $\delta^{(k)}_L, \delta^{(k)}_R \leftarrowS \mathbb{F}_p$ and sets:
+\begin{align*}
+    P_{k-1} &= P_k + [u_k^2] L_k + [u_k^{-2}] R_k \\
+    L_{k} &= \langle \mathbf{a_{lo}}^{(k)}, \mathbf{G_{hi}}^{(k)}\rangle + \langle \mathbf{b_{hi}}^{(k)}, \mathbf{H_{lo}}^{(k)}\rangle + [\langle \mathbf{a_{lo}}^{(k)}, \mathbf{b_{hi}}^{(k)}\rangle]Q + [\delta^{(k)}_L]D \\
+    R_{k} &= \langle \mathbf{a_{hi}}^{(k)}, \mathbf{G_{lo}}^{(k)}\rangle + \langle \mathbf{b_{lo}}^{(k)}, \mathbf{H_{hi}}^{(k)}\rangle + [\langle \mathbf{a_{hi}}^{(k)}, \mathbf{b_{lo}}^{(k)}\rangle]Q + [\delta^{(k)}_R]D
+\end{align*}
+Then $\mathcal{P}$ updates next-round $\delta$ using verifier-provided challenge $u_k$: 
+$$\delta^{(k-1)} = \delta^{(k)} + u_k^2\delta^{(k)}_L + u_k^{-2}\delta^{(k)}_R$$
+
+On the last step prover must prove that he possesses $a = a^{(0)}, b = b^{(0)}, \delta = \delta^{(0)}$ such that for $G = G^{(0)}, H = H^{(0)}$ equality holds:
+\begin{equation*}
+    P_0 = P_k + \sum_{i=1}^k ([u_i^2]L_i + [u_i^{-2}]R_i) = [a]G + [b]H + [a\cdot b]Q + [\delta]D
+\end{equation*}
+
+$P_0 = P_k + \sum_{i=1}^k ([u_i^2]L_i + [u_i^{-2}]R_i)$ is a Pedersen commitment to $a, b, a \cdot b$ with blinding factor $\delta$ and could easily be computed by verifier. One could prove knowledge of an opening $(a,b,\delta)$ to that commitment using protocol similar to $\Pi_{zkip}$.
+\begin{enumerate}
+    \item $\mathcal{P}$ draws blinders $u,v,r,s \leftarrowS \mathbb{F}_p$ and sends to $\mathcal{V}$ commitments:
+    \begin{align*}
+        A &= [r]G + [s]H + [as + br]Q + [u]D \\
+        T &= [rs]Q + [v]D
+    \end{align*}
+    \item $\mathcal{V}$ draws challenge $c \leftarrowS \mathbb{F}_p$ and sends it to $\mathcal{P}$
+    \item $\mathcal{P}$ evaluates and sends to $\mathcal{V}$:
+    \begin{align*}
+        a' &= a + rc \\
+        b' &= b + sc \\
+        \delta' &= \delta + uc + vc^2
+    \end{align*}
+    \item $\mathcal{V}$ performs check:
+    $$[a']G + [b']H + [a'b']Q + [\delta']D \stackrel{\text{?}}{=} P_0 + [c]A + [c^2]T$$
+\end{enumerate}
+
+Protocol is \textit{knowledge-sound} as value $\delta$ could easily be extracted from three accepting transcripts. To argue \textit{zero-knowledge} we stress that an adversary couldn't learn anything from transcript and each prover's message $(L_k, R_k)$ could be easily simulated by random element, at the base of recursion simulator simulates zero-knowledge proof of opening $(a,b,\delta)$ to commitment $P_0$.
+\subsection{Inner-product based polynomial commitment scheme}
+
+Here we describe one of the main theoretical applications of the \textit{inner-product argument} -- \textbf{polynomial commitment scheme} that relies only on \textit{discrete logarithm} assumption, while studied before \textit{KZG} commitment scheme needs bilinear pairings. 
+
+\begin{definition}
+    The inner-product non-hiding polynomial commitment scheme $\mathcal{C}_{ip} = (\mathsf{Setup, Commit, Open, VerifyOpen})$ is defined as follows. Let $f(x) = \sum_{i=0}^{n-1} a_i x^i \in \mathbb{F}_p[x]$ be a polynomial of degree $n-1$.
+    \begin{itemize}
+        \item $\mathsf{Setup}$ returns a vector of independent generators $\mathbf{G} = (G_1, \dots, G_n)$.
+        \item $\mathsf{Commit}$ returns polynomial commitment $\mathsf{Com}(f) = \langle \mathbf{f}, \mathbf{G} \rangle$ where $\mathbf{f} = (a_0, \dots, a_{n-1})$
+        \item $\mathsf{Open}$ given evaluation point $u \in \mathbb{F}_p$ computes $\mathbf{u^n} = (1, u, u^2, \dots, u^{n-1})$,  obtains $f(u) = \langle \mathbf{f, u^n} \rangle$ and runs \textit{inner-product argument} $\Pi_{ip}$ non-interactively setting 
+        $$\mathbf{a} = \mathbf{f}, \mathbf{b} = \mathbf{u^n}, P = \mathsf{Com}(f), c = f(u)$$ 
+        to produce an evaluation proof $\pi_{ip}$
+        \item $\mathsf{VerifyOpen}$ given evaluation point $u \in \mathbb{F}_p$ and commitment $\mathsf{Com}(f)$ validates proof $\pi_{ip}$ running the non-interactive verifier $\mathcal{V}$ of \textit{inner-product} argument.
+    \end{itemize}
+\end{definition}
+
+\begin{remark}
+    As the second vector $\mathbf{b} = \mathbf{u^n}$ is known to the verifier, the prover don't have to commit to it using vector $\mathbf{H}$, so the parties might adjust all the steps eliminating vector $\mathbf{H}$ and $\mathbf{b}$ vector compression as well. The full scheme is described \href{https://www.zkdocs.com/docs/zkdocs/commitments/ipa-pcs/}{here}. Note that described scheme is not zero-knowledge as classic \textit{inner-product} argument is not zero-knowledge. But we could make it zero-knowledge using $\Pi_{zkip}$ protocol or using alternative construction from \Cref{subsection:alternative-zk-ip}.
+\end{remark}
+
+\subsection{Range proofs}\label{subsection:bulletproofs-range-proofs}
+
+Let $G,B\in \mathbb{G}$ -- independent group generators. Let's consider the relation: 
+$$\mathcal{R}_{rp} = \{ (G, B, V, n; v, \gamma) \vert V = [v]G + [\gamma]B, v \in [0, 2^n) \}$$ 
+This relation is often called the \textbf{range proof} relation. It asserts that committed value $v$ lays in the interval $[0, 2^n)$. Range proofs have very significant applications in various privacy \textit{blockchain} protocols since them usually imply proving that transaction inputs or outputs are valid, e.g. have positive value or satisfy other relations between them.
+
+For the first view it seems very inconspicuous why \textbf{inner-product argument} is useful for proving the range proof relation, but we'll show it ab initio.
+
+Firstly, write $v$ in base-2 representation: $v = \sum_{i=0}^{\lfloor \log_2 v \rfloor} 2^i v_i$ and $\mathbf{a}_L = (v_0, v_1, \dots, v_{n-1})$ be the vector of bits padded with zeroes to length $n$, so the range validation that $v$ lays in $[0, 2^n)$ implies two checks:
+\begin{itemize}
+    \item Each bit $v_i$ must be either $0$ or $1$
+    \item The following inner-product equality holds: $\langle \mathbf{a}_L, \mathbf{2}^n \rangle = v$
+\end{itemize}
+
+We already know how to prove the second one inner product equality -- simply by taking evaluation point $u \gets 2$ in \textit{inner-product based polynomial commitment scheme}.
+
+The first relation is a bit more tricky to check algebraically, but still we'll manage to do that, note that binary check for $v_i$ takes form $v_i(v_i - 1) = 0$, or in vector form:
+\begin{align*}
+    \mathbf{a}_R = \mathbf{a}_L - \mathbf{1}^n \Leftrightarrow  \mathbf{a}_L - \mathbf{a}_R - \mathbf{1}^n = \mathbf{0}^n \\
+    \mathbf{a}_L \circ \mathbf{a}_R = \mathbf{0}^n
+\end{align*}
+
+\begin{example}
+    Let $\mathbf{a}_L = (1, 0, 1, 0)$, $\mathbf{a}_R = (0, -1, 0, -1)$, then 
+    $\mathbf{a}_L \circ \mathbf{a}_R = (0, 0, 0, 0)$
+\end{example}
+
+This two checks imply verification that some vector is zero vector, for that we use some challenge $y \in \mathbb{F}_p$ and check inner-product equalities $$\langle \mathbf{a}_L \circ \mathbf{a}_R, \mathbf{y}^n \rangle = 0 \text{ and } \langle \mathbf{a}_L - \mathbf{a}_R - \mathbf{1}^n, \mathbf{y}^n \rangle = 0$$
+This checks are sound because the prover doesn't know challenge $y$ in advance.
+
+Note that $\langle \mathbf{a}_L \circ \mathbf{a}_R, \mathbf{y}^n \rangle = \langle \mathbf{a}_L, \mathbf{a}_R \circ \mathbf{y}^n \rangle$ so the prover could commit to $\mathbf{a_L, a_R}$ and verifier will adjust commitment for $\mathbf{a}_R$ using modified generators $\mathbf{H} \circ \mathbf{y}^{-n}$.
+
+Here we came up with three inner-product checks:
+\begin{enumerate}
+    \item $\langle \mathbf{a}_L, \mathbf{2}^n \rangle = v$
+    \item $\langle \mathbf{a}_L, \mathbf{a}_R \circ \mathbf{y}^n \rangle = 0$
+    \item $\langle \mathbf{a}_L - \mathbf{a}_R - \mathbf{1}^n, \mathbf{y}^n \rangle = 0$
+\end{enumerate}
+
+Here we could soundly combine all three checks into one using random linear combination with some verifier-provided challenge $z \in \mathbb{F}_p$:
+$$z^2 \cdot \langle \mathbf{a}_L, \mathbf{2}^n \rangle + z \cdot \langle \mathbf{a}_L - \mathbf{a}_R - \mathbf{1}^n, \mathbf{y}^n \rangle + \langle \mathbf{a}_L, \mathbf{a}_R \circ \mathbf{y}^n \rangle = z^2v$$
+
+\begin{remark}
+    Naїve check $\langle \mathbf{a}_L, \mathbf{2}^n \rangle + \langle \mathbf{a}_L, \mathbf{a}_R \circ \mathbf{y}^n \rangle + \langle \mathbf{a}_L - \mathbf{a}_R - \mathbf{1}^n, \mathbf{y}^n \rangle = v$ is not sound as Prover could adjust vectors to be non-zero but still satisfy the check.
+\end{remark}
+
+Now simplify this expression having only one inner-product check:
+\begin{equation*}
+    \begin{aligned}
+        & z^2 \cdot \langle \mathbf{a}_L, \mathbf{2}^n \rangle + z \cdot \langle \mathbf{a}_L - \mathbf{a}_R - \mathbf{1}^n, \mathbf{y}^n \rangle + \langle \mathbf{a}_L, \mathbf{a}_R \circ \mathbf{y}^n \rangle = z^2v \\
+        & z^2 \cdot \langle \mathbf{a}_L, \mathbf{2}^n \rangle + \boxed{z \cdot \langle \mathbf{a}_L, \mathbf{y}^n \rangle - z \cdot \langle \mathbf{a}_R, \mathbf{y}^n \rangle - z \cdot \langle \mathbf{1}^n, \mathbf{y}^n \rangle} + \langle \mathbf{a}_L, \mathbf{a}_R \circ \mathbf{y}^n \rangle = z^2v \\
+        & z^2 \cdot \langle \mathbf{a}_L, \mathbf{2}^n \rangle + \boxed{\langle \mathbf{a}_L, z \cdot \mathbf{y}^n \rangle + \langle - \mathbf{a}_R, z \cdot \mathbf{y}^n \rangle + \langle - z \cdot \mathbf{1}^n, \mathbf{y}^n \rangle} + \langle \mathbf{a}_L, \mathbf{a}_R \circ \mathbf{y}^n \rangle = z^2v \\
+        & z^2 \cdot \langle \mathbf{a}_L, \mathbf{2}^n \rangle + \langle \mathbf{a}_L, z \cdot \mathbf{y}^n \rangle + \boxed{\langle \mathbf{a}_R \circ \mathbf{y}^n, - z \cdot \mathbf{1}^n \rangle} + \langle \mathbf{a}_L, \mathbf{a}_R \circ \mathbf{y}^n \rangle = z^2v + \boxed{\langle z \cdot \mathbf{1}^n, \mathbf{y}^n \rangle} \\
+        & \boxed{\langle \mathbf{a}_L, z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n \rangle}  + \langle \mathbf{a}_R \circ \mathbf{y}^n, - z \cdot \mathbf{1}^n \rangle + \boxed{\langle\mathbf{a}_L, \mathbf{a}_R \circ \mathbf{y}^n \rangle} = z^2v + \langle z \cdot \mathbf{1}^n, \mathbf{y}^n \rangle \\
+        & \boxed{\langle \mathbf{a}_L, z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n + \mathbf{a}_R \circ \mathbf{y}^n\rangle}  + \langle \mathbf{a}_R \circ \mathbf{y}^n, - z \cdot \mathbf{1}^n \rangle = z^2v + \langle z \cdot \mathbf{1}^n, \mathbf{y}^n \rangle \\
+    \end{aligned}
+\end{equation*}
+
+Now adding to both sides $\langle z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n, - z \cdot \mathbf{1}^n \rangle$:
+\begin{equation*}
+    \begin{aligned}
+        & \langle \mathbf{a}_L, z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n + \mathbf{a}_R \circ \mathbf{y}^n\rangle + \langle \mathbf{a}_R \circ \mathbf{y}^n, - z \cdot \mathbf{1}^n \rangle + \boxed{\langle z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n, - z \cdot \mathbf{1}^n \rangle} = \\
+        & = z^2v + \langle z \cdot \mathbf{1}^n, \mathbf{y}^n \rangle + \boxed{\langle z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n, - z \cdot \mathbf{1}^n \rangle} \\
+        & \langle \mathbf{a}_L, z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n + \mathbf{a}_R \circ \mathbf{y}^n\rangle + \boxed{\langle z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n + \mathbf{a}_R \circ \mathbf{y}^n, - z \cdot \mathbf{1}^n \rangle} = \\
+        & = z^2v + \boxed{\langle z \cdot \mathbf{1}^n, \mathbf{y}^n \rangle + \langle z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n, - z \cdot \mathbf{1}^n \rangle} \\
+        & \langle \mathbf{a}_L - z \cdot \mathbf{1}^n, z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n + \mathbf{a}_R \circ \mathbf{y}^n\rangle = z^2v + \boxed{\delta(y,z)}
+    \end{aligned}
+\end{equation*}
+
+Where $\delta(y,z)$ could easily be computed by verifier:
+$$\delta(y,z) = \langle z \cdot \mathbf{1}^n, \mathbf{y}^n \rangle + \langle z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n, - z \cdot \mathbf{1}^n \rangle = (z-z^2)\langle \mathbf{1}^n, \mathbf{y}^n \rangle - z^3 \langle \mathbf{1}^n, \mathbf{2}^n \rangle $$
+Now we have only one inner-product check left:
+
+\begin{equation}
+    \langle \mathbf{a}_L - z \cdot \mathbf{1}^n, z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n + \mathbf{a}_R \circ \mathbf{y}^n\rangle = z^2v + \delta(y,z)
+    \label{eq:inner_product_check}
+\end{equation}
+
+We will use a technique presented in $\Pi_{zkip}$ to provide zero-knowledge and \textbf{inner-product argument} to achieve logarithmic size-proof. One key problem is that the verifier must adjust commitments to compensate auxiliary terms.
+
+Firstly, construct the blinding polynomials for $\mathbf{a}_L$ and $\mathbf{a}_R$ with substitution:
+$$\mathbf{a}_L' \gets \mathbf{a}_L + \mathbf{s}_L x \quad \mathbf{a}_R' \gets \mathbf{a}_R + \mathbf{s}_R x$$
+Compute polynomials $\mathbf{l}(x) = \mathbf{l}_0 + \mathbf{l}_1 x, \quad \mathbf{r}(x) = \mathbf{r}_0 + \mathbf{r}_1 x$:
+\begin{align*}
+    \mathbf{l}(x) &= \mathbf{a}_L' - z \cdot \mathbf{1}^n = (\mathbf{a}_L + \mathbf{s}_L x) - z \cdot \mathbf{1}^n = \mathbf{a}_L - z \cdot \mathbf{1}^n + \mathbf{s}_L x\\
+    \mathbf{r}(x) &= z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n + \mathbf{a}_R' \circ \mathbf{y}^n = z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n + (\mathbf{a}_R + \mathbf{s}_R x) \circ \mathbf{y}^n \\
+    & = z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n + \mathbf{a}_R \circ \mathbf{y}^n + \mathbf{s}_R \circ \mathbf{y}^n x
+\end{align*}
+So that $\langle \mathbf{l}_0, \mathbf{r}_0 \rangle = z^2v + \delta(y,z)$ -- inner product that we want to prove using a bit modified $\Pi_{zkip}$. 
+\begin{definition}
+    The \textbf{range proof protocol} $\Pi_{rp} = (\mathsf{Setup}, \mathcal{P,V})$ for the relation $\mathcal{R}_{rp} = \{ (G, B, V, n; v, \gamma) \vert V = [v]G + [\gamma]B, v \in [0, 2^n) \}$ with prover $\mathcal{P}$ and verifier $\mathcal{V}$ is defined as follows:
+    \begin{itemize}
+        \item $\mathsf{Setup}$ returns vectors of group generators with unknown discrete log relations $\mathbf{G, H} \in \mathbb{G}^n$
+        \item Prover does bit decomposition of $v$ to obtain vectors $\mathbf{a}_L \gets \mathbf{v}, \mathbf{b_L} \gets \mathbf{a}_L - \mathbf{1}^n$ and choses blinding terms $\mathbf{s}_L, \mathbf{s}_R \in \mathbb{F}_p^n, \alpha, \beta \in \mathbb{F}_p$ computing and sending commitments:
+            \begin{align*}
+                A = \langle \mathbf{a}_L, \mathbf{G} \rangle + \langle \mathbf{b_L}, \mathbf{H} \rangle + [\alpha]B\\
+                S = \langle \mathbf{s}_L, \mathbf{G} \rangle + \langle \mathbf{s}_R, \mathbf{H} \rangle + [\beta]B
+            \end{align*}
+        \item Verifier $\mathcal{V}$ samples challenges $y, z \leftarrowS \mathbb{F}_p$ and sends them to $\mathcal{P}$
+        \item Prover $\mathcal{P}$ combines the three inner products into one using provided challenges $y,z$ (\ref{eq:inner_product_check}) and reconstructs vector  polynomials $\mathbf{l}(x), \mathbf{r}(x), \mathbf{t}(x)$:
+            \begin{equation*}
+                \begin{aligned}
+                    \mathbf{l}(x) &= \mathbf{a}_L - z \cdot \mathbf{1}^n + \mathbf{s}_L x\\
+                    \mathbf{r}(x) &= z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n + \mathbf{a}_R \circ \mathbf{y}^n + \mathbf{s}_R \circ \mathbf{y}^n x\\
+                    t(x) &= \langle \mathbf{l}(x), \mathbf{r}(x) \rangle = t_0 + t_1 x + t_2 x^2
+                \end{aligned}
+            \end{equation*}
+            Where 
+            \begin{equation*}
+                \begin{aligned}
+                    t_0 &= \langle \mathbf{a}_L - z \cdot \mathbf{1}^n, z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n + \mathbf{a}_R \circ \mathbf{y}^n\rangle = z^2v + \delta(y,z)\\
+                    t_1 &= \langle \mathbf{a}_L - z \cdot \mathbf{1}^n, \mathbf{y}^n \circ \mathbf{s}_R \rangle + \langle \mathbf{y}^n \circ (\mathbf{a}_R + z\cdot \mathbf{1}^n ) + z^2 \cdot \mathbf{2}^n, \mathbf{s}_L\rangle \\
+                    t_2 & = \langle \mathbf{s}_L, \mathbf{y}^n \circ \mathbf{s}_R \rangle
+                \end{aligned}
+            \end{equation*}
+        \item Prover $\mathcal{P}$ draws blinding factors $\tau_1, \tau_2 \leftarrowS \mathbb{F}_p$ and sends to $\mathcal{V}$ the following commitments for coefficients of $\mathbf{t}(x)$:
+            \begin{equation}
+                \begin{aligned}
+                    T_1 &= [t_1]G + [\tau_1]B \\
+                    T_2 &= [t_2]G + [\tau_2]B
+                \end{aligned}
+            \end{equation}
+            \textbf{Note:} prover does not have to send commitment to $t_0$ as it's the inner-product we want to prove and it could be computed from high-level commitment $V$.
+        \item Verifier $\mathcal{V}$ samples and sends to $\mathcal{P}$ random evaluation point $u \leftarrowS \mathbb{F}_p$
+        \item Prover $\mathcal{P}$ evaluates polynomials at $u$:
+            \begin{equation}
+                \begin{aligned}
+                    \mathbf{l}_u & = \mathbf{l}(u) & \alpha_u &= \alpha + \beta u\\
+                    \mathbf{r}_u &= \mathbf{r}(u) & \tau_u &= z^2\gamma + \tau_1 u + \tau_2 u^2\\
+                    t_u &= t(u) = z^2v + \delta(y,z) + t_1u + t_2u^2 & 
+                \end{aligned}
+            \end{equation}
+            and sends $(\mathbf{l}_u, \mathbf{r}_u, t_u, \alpha_u, \tau_u)$ to $\mathcal{V}$.
+        \item Verifier $\mathcal{V}$ performs checks: 
+            \begin{equation}
+                \begin{aligned}
+                    A + [u]S + \langle -z \cdot \mathbf{1}^n, \mathbf{G} \rangle &+ \langle z \cdot \mathbf{y}^n + z^2 \cdot \mathbf{2}^n, \mathbf{y}^{-n} \circ \mathbf{H} \rangle \\
+                    &\stackrel{\text{?}}{=} \langle \mathbf{l}_u, \mathbf{G} \rangle + \langle \mathbf{r}_u, \mathbf{y}^{-n} \circ \mathbf{H} \rangle + [\alpha_u]B \\
+                    [t_u]G + [\tau_u]B &\stackrel{\text{?}}{=} [z^2]V + [\delta(y,z)]G + [u]T_1 + [u^2]T_2 \\
+                    t_u &\stackrel{\text{?}}{=} \langle \mathbf{l}_u \mathbf{r}_u \rangle
+                \end{aligned}
+            \end{equation}
+    \end{itemize}
+\end{definition}
+
+\begin{remark}
+    The last two steps of $\Pi_{rp}$ could be substituted with an inner-product argument $\Pi_{ip}$ to provide logarithmic size-proof with the following steps:
+    \begin{itemize}
+        \item After $\mathcal{P}$ evaluates polynomials at $u$ he sends $(t_u, \alpha_u, \tau_u$ to $\mathcal{V})$ and computes commitment: 
+        $$P = \langle \mathbf{l}_u, \mathbf{G} \rangle + \langle \mathbf{r}_u, \mathbf{y}^{-n} \circ \mathbf{H} \rangle$$
+        \item $\mathcal{V}$ performs check $[t_u]G + [\tau_u]B \stackrel{\text{?}}{=} [z^2]V + [\delta(y,z)]G + [u]T_1 + [u^2]T_2$, halts if it fails and reconstructs commitment $P$ otherwise:
+        $$P = A + [u]S + \langle -z \cdot \mathbf{1}^n, \mathbf{G} \rangle + \langle z \cdot \mathbf{y}^n + z^2 \cdot \mathbf{2}^n, \mathbf{y}^{-n} \circ \mathbf{H} \rangle - [\alpha_u]B$$
+        \item Parties run inner-product argument $\Pi_{ip}$ on $(\mathbf{G},\mathbf{y}^{-n} \circ \mathbf{H}, P, t_u; \mathbf{l}_u, \mathbf{r}_u)$
+    \end{itemize}
+\end{remark}
+
+\begin{theorem}
+    The \textbf{range proof protocol} $\Pi_{rp}$ has \textit{perfect completeness, computational extended witness emulation, perfect honest-verifier zero-knowledge}
+    \label{th:range_proof}
+\end{theorem}
+\textbf{Proof idea}. \textit{Perfect completeness} 
+
+Expand LHS of the polynomial correctness check:
+\begin{equation*}
+    \begin{aligned}
+        &\textcolor{teal}{A} + \textcolor{olive}{[u]S} + \langle -z \cdot \mathbf{1}^n, \mathbf{G} \rangle + \langle z \cdot \mathbf{y}^n + z^2 \cdot \mathbf{2}^n, \mathbf{y}^{-n} \circ \mathbf{H} \rangle = \\
+        &\textcolor{teal}{\langle \mathbf{a}_L, \mathbf{G} \rangle + \langle \mathbf{b_L}, \mathbf{H} \rangle + [\alpha]B} + \textcolor{olive}{u \cdot \langle \mathbf{s}_L, \mathbf{G} \rangle + u \cdot \langle \mathbf{s}_R, \mathbf{H} \rangle + [u\beta]B} + \\
+        & \langle -z \cdot \mathbf{1}^n, \mathbf{G} \rangle + \langle z \cdot \mathbf{y}^n + z^2 \cdot \mathbf{2}^n, \mathbf{y}^{-n} \circ \mathbf{H} \rangle = \\
+        &\langle \mathbf{a}_L, \mathbf{G} \rangle + \langle \mathbf{b_L}, \mathbf{H} \rangle + u \cdot \langle \mathbf{s}_L, \mathbf{G} \rangle + u \cdot \langle \mathbf{s}_R, \mathbf{H} \rangle + \\
+        &\langle -z \cdot \mathbf{1}^n, \mathbf{G} \rangle + \langle z \cdot \mathbf{1}^n, \mathbf{H} \rangle + \langle z^2 \cdot \mathbf{2}^n, \mathbf{y}^{-n} \circ \mathbf{H} \rangle + [\alpha + u\beta]B
+    \end{aligned}
+\end{equation*}
+
+Expand RHS of the polynomial correctness check:
+\begin{equation*}
+    \begin{aligned}
+        &\textcolor{Violet}{\langle \mathbf{l}_u, \mathbf{G} \rangle} + \textcolor{Sepia}{\langle \mathbf{r}_u, \mathbf{y}^{-n} \circ \mathbf{H} \rangle} + [\textcolor{Peach}{\alpha_u}]B = \\
+        &\textcolor{Violet}{\langle \mathbf{a}_L - z \cdot \mathbf{1}^n + \mathbf{s}_L \cdot u, \mathbf{G} \rangle} + \textcolor{Sepia}{\langle z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n + \mathbf{a}_R \circ \mathbf{y}^n + \mathbf{s}_R \circ \mathbf{y}^n \cdot u, \mathbf{y}^{-n} \circ \mathbf{H} \rangle} \\ 
+        &+ [\textcolor{Peach}{\alpha + u\beta}]B = \\
+        & \langle \mathbf{a}_L, \mathbf{G} \rangle + \langle -z \cdot \mathbf{1}^n, \mathbf{G} \rangle + u \cdot \langle \mathbf{s}_L, \mathbf{G} \rangle + \langle z^2 \cdot \mathbf{2}^n, \mathbf{y}^{-n} \circ \mathbf{H} \rangle + \langle z \cdot \mathbf{1}^n, \mathbf{H} \rangle + \\
+        & \langle \mathbf{a}_R, \mathbf{H} \rangle + u\cdot \langle \mathbf{s}_R, \mathbf{H} \rangle + [\alpha + u\beta]B
+    \end{aligned}
+\end{equation*}
+We could see that \textit{LHS} is equal to \textit{RHS} so the first check pass. 
+
+Taking the $t_0$ correctness check:
+\begin{equation*}
+    \begin{aligned}
+        [t_u]G + [\tau_u]B \stackrel{\text{?}}{=}& [z^2]V + \delta(y,z) + [u]T_1 + [u^2]T_2\\
+        [t_u]G + \cancel{[z^2\gamma + \tau_1 u + \tau_2 u^2]B} \stackrel{?}{=}& [z^2 v]G + \cancel{[z^2 \gamma]B} +[\delta(y,z)]G + \\
+        & [ut_1]G + \cancel{[u\tau_1]B} + [t_2 u^2] G + \cancel{[\tau_2 u^2]B} \\
+        [t_u]G \stackrel{?}{=}& [z^2v + \delta(y,z) + t_1u + t_2u^2]G
+    \end{aligned}
+\end{equation*}
+Which holds since $t_u = t(u) = z^2v + \delta(y,z) + t_1u + t_2u^2$. The third inner-product also holds as $t_u = \langle \mathbf{l}_u \mathbf{r}_u \rangle$.
+
+\textit{Perfect honest-verifier zero-knowledge} follows from the zero-knowledge construction of $\Pi_{zkip}$ protocol as Verifier learns no information about $\mathbf{a}_L, \mathbf{a}_R$.
+
+\textit{Computational extended witness emulation} implies building extractor that combines extractors for two subprotocols: $\mathcal{E}_{ip}$ extracts witness ($\mathbf{l}_u, \mathbf{r}_u$) from $\Pi_{ip}$ than the extractor $\mathcal{E}_{zkip}$ extracts high-level witness ($\mathbf{a}_L, \mathbf{a}_R$) from $\Pi_{zkip} \quad \square$
+
+The proof size of \textbf{range-proof} protocol is $2 \log_2n +4$ group $\mathbb{G}$ elements and $5$ field $\mathbb{F}_p$ elements.
+\begin{remark}
+    Range proofs could be efficiently aggregated: e.g. one could prove the relation using slightly modified range proof protocol $\Pi_{rp}$
+    $$\mathcal{R}_{rpm} = \{ (G, B, \vec{V}, n; \vec{v}, \vec{\gamma}) \vert \forall i \in 1..m: V_i = [v_i]G + [\gamma_i]B, v_i \in [0, 2^n) \}$$
+    Where $\vec{v} = (v_1, v_2, \dots, v_m)$ and $\vec{\gamma} = (\gamma_1, \gamma_2, \dots, \gamma_m)$ -- respectively secrets and blinding factors. Detail explanation of aggregation protocol could be found in original bulletproofs paper \cite{bulletproofs}
+\end{remark}
+
+\begin{example}
+    One of the most famous \textit{NP-complete} problems is the \textbf{subset-sum problem}: given a set of numbers presented as vector $\mathbf{s}$ and number $v \in \mathbb{N}$, does a some subset sums up to $v$. It turns out that we could use our \textbf{range-proof} protocol for this problem. One could simply replace first inner-product check $\langle \mathbf{a}_L, \mathbf{2}^n \rangle = v$ with $\langle \mathbf{a}_L, \mathbf{s} \rangle = v$ where $\mathbf{a}_L$ is the secret vector of bits that encode positions of $\mathbf{s}$ that sum up to $v$.
+
+    For example take $\mathbf{s} = (6,8,2,3)$ and $v = 14$. Then setting $\mathbf{a}_L = (1,1,0,0)$ we could use $\Pi_{rp}$ to prove that there exists a subset of $\mathbf{s}$ that sums up to $v=14$ without disclosing that subset.
+
+    Therefore, \textbf{bulletproofs range proof} protocol is capable to prove a knowledge of witness to any $NP$-problem as they all could be reduced to the $\textbf{subset-sum problem}$
+\end{example}
+\subsection{Arithmetic circuits proofs}\label{subsection:bulletproofs-arithmetic-circuits}
+
+\textbf{Bulletproofs} presents not only range proofs, but also efficient proofs for arithmetic circuits satisfiability. As we could see before, inner-product relation is quite powerful tool and could be used to prove a knowledge of witness to any $NP$-problem. But here we present a more convenient way to compile arithmetic circuits into inner-product relation.
+
+\subsubsection{Arithmetization}
+
+\textbf{Bulletproofs} arithmetization slightly differs from the classic R1CS we studied before at \Cref{section:r1cs}, however it could be transformed vice-versa easily. Also \textbf{bulletproofs} arithmetization is more convenient and human-friendly for encoding most of the arithmetic circuits than the R1CS.
+
+There are two types of variables in \textit{bulletproofs} constraint system: \textit{low-level} and \textit{high-level}. Typically \textit{high-level} variables are provided with Pedersen commitments $\mathbf{V} \in \mathbb{G}^m$ as the private witness inputs $\mathbf{v} \in \mathbb{F}_p^m$ to the circuit, while \textit{low-level} variables $\mathbf{a}_L, \mathbf{a}_R, \mathbf{a}_O \in \mathbb{F}_p^n$ are the intermediate witness values of computation. We will define circuit as a set of multiplication constraints operating with \textit{low-level} variables and set of linear constraints which links \textit{low-level} variables between each other and \textit{high-level} variables as well.
+
+Multiplication constraints are defined with one vector equation:
+$$ \mathbf{a}_L \circ \mathbf{a}_R = \mathbf{a}_O $$
+
+Linear constraints are defined via:
+$$ \mathbf{W}_L \cdot \mathbf{a}_L + \mathbf{W}_R \cdot \mathbf{a}_R + \mathbf{W}_O \cdot \mathbf{a}_O = \mathbf{W}_V \cdot \mathbf{v} + \mathbf{c} $$
+
+Where $\mathbf{a_L, a_R, a_O}$ -- vectors of left and right inputs for multiplication gates and output values (all of them are low-level variables). $\mathbf{W_L, W_R, W_O} \in \mathbb{F}_p^{q \times n}, \mathbf{W}_V \in \mathbb{F}_p^{q \times m}$ -- public matrices of weights for linear constraints(obviously known to verifier). $\mathbf{c} \in \mathbb{F}_p^q$ -- public vector of constants. Typically they encode wiring of the circuit and other linear relations between variables.
+
+\begin{example}
+    Consider the following elliptic curve membership circuit. Here witness $(v_1, v_2)$ should satisfy elliptic curve equation:
+    \begin{equation*}
+        y^2 = x^3 + ax + b
+    \end{equation*}
+    
+    The arithmetization for this circuit is as follows:
+    
+    \textbf{Low-level variables:}
+    \begin{equation*}
+        \mathbf{a}_L = \begin{bmatrix} x \\ x \\ y \end{bmatrix}, \quad 
+        \mathbf{a}_R = \begin{bmatrix} x \\ x^2 \\ y \end{bmatrix}, \quad 
+        \mathbf{a}_O = \begin{bmatrix} x^2\\x^3 \\ y^2 \end{bmatrix}
+    \end{equation*}
+    
+    \textbf{High-level variables:}
+    \begin{equation*}
+        \mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \end{bmatrix}
+    \end{equation*}
+    
+    \textbf{Multiplication constraints:}
+    \begin{equation*}
+        \mathbf{a}_L \circ \mathbf{a}_R = \mathbf{a}_O \Rightarrow \begin{bmatrix} 
+            x \cdot x = x^2 \\
+            x \cdot x^2 = x^3 \\ 
+            y \cdot y = y^2
+        \end{bmatrix}
+    \end{equation*}
+    
+    \textbf{Linear constraints:}
+
+    \begin{equation*}
+        \begin{aligned}
+            \mathbf{a}_L^{(1)} &= v_1 \\
+            \mathbf{a}_R^{(1)} &= v_1 \\
+            \mathbf{a}_L^{(2)} - \mathbf{a}_L^{(1)} &= 0 \\
+            \mathbf{a}_R^{(2)} - \mathbf{a}_O^{(1)} &= 0 \\
+            \mathbf{a}_L^{(3)} &= v_2 \\
+            \mathbf{a}_R^{(3)} &= v_2 \\
+            \mathbf{a}_O^{(3)} - \mathbf{a}_O^{(2)} - a \cdot \mathbf{a}_L^{(1)} &= b
+        \end{aligned}
+    \end{equation*}
+    
+    \begin{equation*}
+    \mathbf{W}_L \cdot \mathbf{a}_L + \mathbf{W}_R \cdot \mathbf{a}_R + \mathbf{W}_O \cdot \mathbf{a}_O = \mathbf{W}_V \cdot \mathbf{v} + \mathbf{c}
+    \end{equation*}
+    
+    Where:
+    \begin{align*}
+    \mathbf{W}_L = \begin{bmatrix}
+        1 & 0 & 0 \\
+        0 & 0 & 0 \\
+        -1 & 1 & 0 \\
+        0 & 0 & 0 \\
+        0 & 0 & 1 \\
+        0 & 0 & 0 \\
+        -a & 0 & 0
+    \end{bmatrix},\quad
+    \mathbf{W}_R = \begin{bmatrix}
+        0 & 0 & 0 \\
+        1 & 0 & 0 \\
+        0 & 0 & 0 \\
+        0 & 1 & 0 \\
+        0 & 0 & 0 \\
+        0 & 0 & 1 \\
+        0 & 0 & 0
+    \end{bmatrix},\quad
+    \mathbf{W}_O = \begin{bmatrix}
+        0 & 0 & 0 \\
+        0 & 0 & 0 \\
+        0 & 0 & 0 \\
+        -1 & 0 & 0 \\
+        0 & 0 & 0 \\
+        0 & 0 & 0 \\
+        0 & -1 & 1
+    \end{bmatrix},\\
+    \mathbf{W}_V = \begin{bmatrix}
+        1 & 0 \\
+        1 & 0 \\
+        0 & 0 \\
+        0 & 0 \\
+        0 & 1 \\
+        0 & 1 \\
+        0 & 0
+    \end{bmatrix},\quad
+    \mathbf{c} = \begin{bmatrix}
+        0 \\ 0 \\ 0 \\ 0 \\ 0 \\ 0 \\ b
+    \end{bmatrix}
+\end{align*}
+    
+
+
+
+\textbf{Classic R1CS arithmetization:}
+
+We can also represent the same circuit using the classic R1CS formalism:
+\[
+(A \cdot \mathbf{w}) \circ (B \cdot \mathbf{w}) = (C \cdot \mathbf{w})
+\]
+where $\mathbf{w}$ is extended witness vector $\mathbf{w} = (1, x, y, x^2, x^3, y^2)$
+
+The R1CS constraints for the circuit $y^2 = x^3 + a x + b$ are:
+\[
+\begin{array}{rl}
+\text{Constraint 1:} & x \times x = x^2 \\
+\text{Constraint 2:} & x^2 \times x = x^3 \\
+\text{Constraint 3:} & y \times y = y^2 \\
+\text{Constraint 4:} & x^3 + a x + b = y^2
+\end{array}
+\]
+
+Explicitly, the R1CS matrices are:
+\[
+A = \begin{bmatrix}
+0 & 1 & 0 & 0 & 0 & 0 \\
+0 & 0 & 0 & 1 & 0 & 0 \\
+0 & 0 & 1 & 0 & 0 & 0 \\
+0 & 0 & 0 & 0 & 1 & 0 \\
+\end{bmatrix}
+\]
+\[
+B = \begin{bmatrix}
+0 & 1 & 0 & 0 & 0 & 0 \\
+0 & 1 & 0 & 0 & 0 & 0 \\
+0 & 0 & 1 & 0 & 0 & 0 \\
+1 & a & 0 & 0 & 0 & 0 \\
+\end{bmatrix}
+\]
+\[
+C = \begin{bmatrix}
+0 & 0 & 0 & 1 & 0 & 0 \\
+0 & 0 & 0 & 0 & 1 & 0 \\
+0 & 0 & 0 & 0 & 0 & 1 \\
+0 & 0 & 0 & 0 & 0 & 1 \\
+\end{bmatrix}
+\]
+\end{example}
+
+\subsubsection{Proving a circuit satisfiability}
+In this section we build an argument system for the following arithmetic circuit satisfiability relation:
+\begin{equation}
+    \begin{aligned}
+        \mathcal{R}_{sat} = \left\{
+            \begin{array}{l} 
+                (G, B, \mathbf{V}, \mathbf{W}_L, \mathbf{W}_R, \mathbf{W}_O, \mathbf{W}_V, \mathbf{c}; \mathbf{a}_L, \mathbf{a}_R, \mathbf{a}_O, \mathbf{v}, \mathbf{r}) | \\ 
+                \forall i=1..m: V_i = [v_i]G + [r_i]B \wedge \\
+                \mathbf{a}_L \circ \mathbf{a}_R = \mathbf{a}_O \wedge \\
+                \mathbf{W}_L \cdot \mathbf{a}_L + \mathbf{W}_R \cdot \mathbf{a}_R + \mathbf{W}_O \cdot \mathbf{a}_O = \mathbf{W}_V \cdot \mathbf{v} + \mathbf{c}
+        \end{array}\right\}
+    \end{aligned}
+\end{equation}
+Where $\mathbf{a}_L, \mathbf{a}_R, \mathbf{a}_O \in \mathbb{F}_p^n$, $\mathbf{v}, \mathbf{r} \in \mathbb{F}_p^m$, $\mathbf{W}_L, \mathbf{W}_R, \mathbf{W}_O \in \mathbb{F}_p^{q \times n}$, $\mathbf{W}_V \in \mathbb{F}_p^{q \times m}$, $\mathbf{c} \in \mathbb{F}_p^q$.
+Informally this relation states that there exists a valid witness $\mathbf{v}$ that satisfies all constraints of the circuit. For the verifier witness is presented only as commitments vector $\mathbf{V}$.
+
+We could use similar to \textit{range-proofs} technique to compile constraints of the circuit into inner-product relation. For multiplicative constraints take random $y \in \mathbb{F}_p$ and apply zero check:
+$$ \langle \mathbf{a}_L \circ \mathbf{a}_R - \mathbf{a}_O, \mathbf{y}^n \rangle = 0$$
+
+Do the same for linear constraints, but for different randomness $z \in \mathbb{F}_p$:
+$$ \langle \mathbf{W}_L \cdot \mathbf{a}_L + \mathbf{W}_R \cdot \mathbf{a}_R + \mathbf{W}_O \cdot \mathbf{a}_O - \mathbf{W}_V \cdot \mathbf{v} - \mathbf{c}, \mathbf{z}^q \rangle = 0$$
+
+Combine this two checks to one using the same randomness $z$:
+\begin{equation*}
+    \begin{aligned}
+        \langle \mathbf{a}_L \circ \mathbf{a}_R - \mathbf{a}_O, \mathbf{y}^n \rangle + z \cdot \langle \mathbf{W}_L \cdot \mathbf{a}_L + \mathbf{W}_R \cdot \mathbf{a}_R + \mathbf{W}_O \cdot \mathbf{a}_O - \mathbf{W}_V \cdot \mathbf{v} - \mathbf{c}, \mathbf{z}^q \rangle = 0 \\
+        \langle \mathbf{a}_L \circ \mathbf{a}_R - \mathbf{a}_O, \mathbf{y}^n \rangle + \langle z \cdot \mathbf{z}^q,  \mathbf{W}_L \cdot \mathbf{a}_L + \mathbf{W}_R \cdot \mathbf{a}_R + \mathbf{W}_O \cdot \mathbf{a}_O - \mathbf{W}_V \cdot \mathbf{v} - \mathbf{c} \rangle = 0
+    \end{aligned}
+\end{equation*}
+
+This check is sound as typically a prover could not control values of $y,z$ before he commits to $\mathbf{a_L, a_R, a_O}$ and $\mathbf{v}$.
+
+Then split the second inner product and factor-out public terms to RHS:
+\begin{equation*}
+    \begin{aligned}
+        \langle \mathbf{a}_L \circ \mathbf{a}_R - \mathbf{a}_O, \mathbf{y}^n \rangle + \langle z \cdot \mathbf{z}^q, \mathbf{W}_L \cdot \mathbf{a}_L \rangle + \langle z \cdot \mathbf{z}^q, \mathbf{W}_R \cdot \mathbf{a}_R \rangle + \langle z \cdot \mathbf{z}^q, \mathbf{W}_O \cdot \mathbf{a}_O \rangle \\ 
+        - \langle z \cdot \mathbf{z}^q, \mathbf{W}_V \cdot \mathbf{v} \rangle - \langle z \cdot \mathbf{z}^q, \mathbf{c} \rangle = 0 \\
+        \langle \mathbf{a}_L \circ \mathbf{a}_R - \mathbf{a}_O, \mathbf{y}^n \rangle + \langle z \cdot \mathbf{z}^q, \mathbf{W}_L \cdot \mathbf{a}_L \rangle + \langle z \cdot \mathbf{z}^q, \mathbf{W}_R \cdot \mathbf{a}_R \rangle + \langle z \cdot \mathbf{z}^q, \mathbf{W}_O \cdot \mathbf{a}_O \rangle \\ 
+        - \langle z \cdot \mathbf{z}^q, \mathbf{W}_V \cdot \mathbf{v} \rangle = \langle z \cdot \mathbf{z}^q, \mathbf{c} \rangle
+    \end{aligned}
+\end{equation*}
+
+Applying conjugation rule(if $A$ -- linear operator and $A^T$ -- its transpose(conjugate) then $\langle \mathbf{a}, A \mathbf{b} \rangle = \langle A^T \mathbf{a}, \mathbf{b} \rangle$) to the second inner product we get:
+\begin{equation*}
+    \begin{aligned}
+        \langle \mathbf{a}_L \circ \mathbf{a}_R - \mathbf{a}_O, \mathbf{y}^n \rangle + \langle \mathbf{W}_L^T \cdot (z \cdot \mathbf{z}^q), \mathbf{a}_L \rangle + \langle \mathbf{W}_R^T \cdot (z \cdot \mathbf{z}^q), \mathbf{a}_R \rangle + \\
+        \langle \mathbf{W}_O^T \cdot (z \cdot \mathbf{z}^q), \mathbf{a}_O \rangle - \langle \mathbf{W}_V^T \cdot (z \cdot \mathbf{z}^q), \mathbf{v} \rangle = \langle z \cdot \mathbf{z}^q, \mathbf{c} \rangle
+    \end{aligned}
+\end{equation*}
+
+Denote $w_c = \langle z \cdot \mathbf{z}^q, \mathbf{c} \rangle$ and flattened linear constraints(still public and easily computed by verifier):
+\begin{equation*}
+    \begin{aligned}
+        \mathbf{w}_L = \mathbf{W}_L^T \cdot (z \cdot \mathbf{z}^q) \\
+        \mathbf{w}_R = \mathbf{W}_R^T \cdot (z \cdot \mathbf{z}^q) \\
+        \mathbf{w}_O = \mathbf{W}_O^T \cdot (z \cdot \mathbf{z}^q) \\
+        \mathbf{w}_V = \mathbf{W}_V^T \cdot (z \cdot \mathbf{z}^q) \\
+    \end{aligned}
+\end{equation*}
+
+Now we could finally rewrite the equation as:
+\begin{equation*}
+    \begin{aligned}
+        \langle \mathbf{a}_L \circ \mathbf{a}_R - \mathbf{a}_O, \mathbf{y}^n \rangle + \langle \mathbf{w}_L, \mathbf{a}_L \rangle + \langle \mathbf{w}_R, \mathbf{a}_R \rangle + \langle \mathbf{w}_O, \mathbf{a}_O \rangle - \langle \mathbf{w}_V, \mathbf{v} \rangle = w_c
+    \end{aligned}
+\end{equation*}
+
+Then rearrange and combine terms so that $\mathbf{a}_L$, $\mathbf{a}_O$ be on the left side and $\mathbf{a}_R$ on the right side:
+\begin{equation*}
+    \begin{aligned}
+        \langle \mathbf{a}_L \circ \mathbf{a}_R, \mathbf{y}^n \rangle - \langle \mathbf{a}_O, \mathbf{y}^n \rangle + \langle \mathbf{w}_L, \mathbf{a}_L \rangle + \langle \mathbf{w}_R, \mathbf{a}_R \rangle + \langle \mathbf{w}_O, \mathbf{a}_O \rangle = \langle \mathbf{w}_V, \mathbf{v} \rangle + w_c \\
+        \langle \mathbf{a}_L, \mathbf{y}^n \circ \mathbf{a}_R \rangle + \langle \mathbf{a}_O, - \mathbf{y}^n + \mathbf{w}_O \rangle + \langle \mathbf{w}_L, \mathbf{a}_L \rangle + \langle \mathbf{w}_R, \mathbf{a}_R \rangle = \langle \mathbf{w}_V, \mathbf{v} \rangle + w_c \\
+        \langle \mathbf{a}_L, \mathbf{y}^n \circ \mathbf{a}_R \rangle + \langle \mathbf{a}_O, - \mathbf{y}^n + \mathbf{w}_O \rangle + \langle \mathbf{w}_L, \mathbf{a}_L \rangle + \langle \mathbf{y}^n \circ \mathbf{a}_R, \mathbf{y}^{-n} \circ \mathbf{w_R} \rangle = \langle \mathbf{w}_V, \mathbf{v} \rangle + w_c \\
+        \langle \mathbf{a}_L + \mathbf{y}^{-n} \circ \mathbf{w_R}, \mathbf{y}^n \circ \mathbf{a}_R \rangle + \langle \mathbf{a}_O, - \mathbf{y}^n + \mathbf{w}_O \rangle + \langle \mathbf{w}_L, \mathbf{a}_L \rangle = \langle \mathbf{w}_V, \mathbf{v} \rangle + w_c \\
+    \end{aligned}
+\end{equation*}
+
+Add $\delta(y, z) = \langle \mathbf{y}^{-n} \circ \mathbf{w}_R, \mathbf{w}_L \rangle $ to both sides:
+$$
+\begin{aligned}
+w_c + \langle \mathbf{w}_V, \mathbf{v} \rangle +
+\delta(y, z) = \langle \mathbf{a}_L + \mathbf{y}^{-n} \circ \mathbf{w}_R, \mathbf{y}^n \circ \mathbf{a}_R \rangle + \langle \mathbf{a}_L, \mathbf{w}_L \rangle +\\
+\langle \mathbf{a}_O, -\mathbf{y}^n + \mathbf{w}_O \rangle + 
+\langle \mathbf{y}^{-n} \circ \mathbf{w}_R, \mathbf{w}_L \rangle\\
+w_c + \langle \mathbf{w}_V, \mathbf{v} \rangle + \delta(y, z)
+    = \langle \mathbf{a}_L + \mathbf{y}^{-n} \circ \mathbf{w}_R, 
+    \mathbf{y}^n \circ \mathbf{a}_R \rangle + 
+    \langle \mathbf{a}_L + \mathbf{y}^{-n} \circ \mathbf{w}_R,
+    \mathbf{w}_L \rangle + \\
+    \langle \mathbf{a}_O, 
+    -\mathbf{y}^n + \mathbf{w}_O \rangle \\
+    w_c + \langle \mathbf{w}_V, \mathbf{v} \rangle + \delta(y, z) =
+\langle \mathbf{a}_L + \mathbf{y}^{-n} \circ \mathbf{w}_R, \mathbf{y}^n \circ \mathbf{a}_R + \mathbf{w}_L \rangle + \langle \mathbf{a}_O, -\mathbf{y}^n + \mathbf{w}_O \rangle
+\end{aligned}
+$$
+Now it seems we are stuck as there is two separate inner products so one could not simply linearly blind witness parts, multiply corresponding polynomials and obtain desired inner product in constant term just as we did in the \textit{range-proof} case. But fortunately we could take polynomials of higher degree and obtain desired sum of inner-products as some coefficient of the product of polynomials:
+\begin{equation}
+    \langle \mathbf{a}x + \mathbf{c}x^2, \mathbf{d} + \mathbf{b}x \rangle = s_1x + s_2x^2 + s_3x^3 = x \cdot \langle \mathbf{a}, \mathbf{d} \rangle + x^2 \cdot (\langle \mathbf{a}, \mathbf{b} \rangle + \langle \mathbf{c}, \mathbf{d} \rangle) + x^3 \cdot \langle \mathbf{c}, \mathbf{b} \rangle
+    \label{eq:inner-product-circuit-1}
+\end{equation}
+So take:
+\begin{equation}
+    \begin{aligned}
+    &\mathbf{a} \gets \mathbf{a}_L + \mathbf{y}^{-n} \circ \mathbf{w}_R &&\mathbf{b} \gets \mathbf{y}^n \circ \mathbf{a}_R + \mathbf{w}_L \\
+    &\mathbf{c} \gets \mathbf{a}_O &&\mathbf{d} \gets -\mathbf{y}^n + \mathbf{w}_O
+    \end{aligned}
+    \label{eq:inner-product-circuit-assignment}
+\end{equation}
+So than we could get desired sum of inner products as the second-degree coefficient $s_2$:
+$$ w_c + \langle \mathbf{w}_V, \mathbf{v} \rangle + \delta(y, z) = s_2$$
+In order to obtain final polynomials $\mathbf{l}(x), \mathbf{r}(x)$ we must firstly blind $\mathbf{a}_L, \mathbf{a}_R$:
+\begin{equation}
+    \begin{aligned}
+    \mathbf{a}_L \gets \mathbf{a}_L + \mathbf{s}_Lx^2 && \mathbf{a}_R \gets \mathbf{a}_R + \mathbf{s}_Rx^2
+    \end{aligned}
+    \label{eq:inner-product-circuit-blinding}
+\end{equation}
+\begin{remark}
+    We multiplied blinders $\mathbf{s}_L, \mathbf{s}_R$ with the second power of challenge $x^2$ because we want the blinding terms to do not interfere with other parts of inner-product.
+
+    $\mathbf{a}_O$ does not need separate blinding as it's located on the left side of the inner-product (\ref{eq:inner-product-circuit-1}) along with $\mathbf{a}_L$, which is already blinded by $\mathbf{s}_L$.
+\end{remark}
+
+Now we could compute polynomials $\mathbf{l}(x), \mathbf{r}(x)$ from (\ref{eq:inner-product-circuit-1}) using assignments from (\ref{eq:inner-product-circuit-assignment}) and blinders from (\ref{eq:inner-product-circuit-blinding}):
+\begin{equation}
+    \begin{aligned}
+        {\mathbf{l}}(x) &= (\mathbf{a}_L + \mathbf{s}_L \cdot x^2) \cdot x + \mathbf{y}^{-n} \circ \mathbf{w}_R \cdot x + \mathbf{a}_O \cdot x^2 \\
+                  &= \mathbf{a}_L \cdot x + \mathbf{s}_L \cdot x^3 + \mathbf{y}^{-n} \circ \mathbf{w}_R \cdot x + \mathbf{a}_O \cdot x^2 \\
+                  &= \mathbf{s}_L \cdot x^3 + \mathbf{a}_O \cdot x^2 + (\mathbf{a}_L + \mathbf{y}^{-n} \circ \mathbf{w}_R) \cdot x \\
+        {\mathbf{r}}(x) &= \mathbf{y}^n \circ (\mathbf{a}_R + \mathbf{s}_R \cdot x^2) \cdot x + \mathbf{w}_L \cdot x - \mathbf{y}^n + \mathbf{w}_O \\
+                  &= \mathbf{y}^n \circ \mathbf{a}_R \cdot x + \mathbf{y}^n \circ \mathbf{s}_R \cdot x^3 + \mathbf{w}_L \cdot x - \mathbf{y}^n + \mathbf{w}_O \\
+                  &= \mathbf{y}^n \circ \mathbf{s}_R \cdot x^3 + (\mathbf{y}^n \circ \mathbf{a}_R +  \mathbf{w}_L) \cdot x - \mathbf{y}^n + \mathbf{w}_O
+    \end{aligned}
+    \label{eq:inner-product-circuit-polynomials}
+\end{equation}
+
+Now we could compute the polynomial $t(x) = \langle \mathbf{l}(x), \mathbf{r}(x) \rangle$:
+\begin{equation}
+    \begin{aligned}
+        t(x) &= \langle \mathbf{l}(x), \mathbf{r}(x) \rangle = t_1 x + t_2 x^2 + t_3 x^3 + t_4 x^4 + t_5 x^5 + t_6 x^6 = \sum_{i=1}^{6} t_i x^i \\
+        t_1 &= \langle \mathbf{a}_L + \mathbf{y}^{-n} \circ \mathbf{w}_R, - \mathbf{y}^n + \mathbf{w}_O \rangle \\
+        t_2 &= \langle \mathbf{a}_L + \mathbf{y}^{-n} \circ \mathbf{w}_R, \mathbf{y}^n \circ \mathbf{a}_R + \mathbf{w}_L \rangle + \langle \mathbf{a}_O, -\mathbf{y}^n + \mathbf{w}_O \rangle  \\
+        &= \langle \mathbf{a}_L \circ \mathbf{a}_R, \mathbf{y}^n \rangle - \langle \mathbf{a}_O, \mathbf{y}^n \rangle + \langle \mathbf{w}_L, \mathbf{a}_L \rangle + \langle \mathbf{w}_R, \mathbf{a}_R \rangle + \langle \mathbf{w}_O, \mathbf{a}_O \rangle + \delta(y, z) \\
+        &= w_c + \langle \mathbf{w}_V, \mathbf{v} \rangle + \delta(y, z) \\
+        t_3 &= \langle \mathbf{s}_L, - \mathbf{y}^n + \mathbf{w}_O \rangle + \langle \mathbf{a}_O, \mathbf{y}^n \circ \mathbf{a}_R + \mathbf{w}_L \rangle \\
+        t_4 &= \langle \mathbf{s}_L, \mathbf{y}^n \circ \mathbf{a}_R +  \mathbf{w}_L \rangle + \langle \mathbf{a}_L + \mathbf{y}^{-n} \circ \mathbf{w}_R, \mathbf{y}^n \circ \mathbf{s}_R \rangle \\
+        t_5 &= \langle \mathbf{a}_O, \mathbf{y}^n \circ \mathbf{s}_R \rangle \\
+        t_6 &= \langle \mathbf{s}_L, \mathbf{y}^n \circ \mathbf{s}_R \rangle
+    \end{aligned}
+    \label{eq:inner-product-circuit-polynomials-product}
+\end{equation}
+Our proving strategy is the same as in the \textit{range-proof} case: 
+\begin{itemize}
+    \item Prove that $\mathbf{l}(x), \mathbf{r}(x)$ are correct using binding commitments to their coefficients. 
+    \item Prove that $t_2$ is correct (as it's the inner-product we want to prove) using evaluation at challenge point $u$.
+    \item Apply inner-product argument to compress the proof of evaluation of $t(x)$ at challenge point $u$.
+\end{itemize}
+
+\begin{definition}
+    The \textbf{arithmetic circuit satisfiability} protocol $\Pi_{sat} = (\mathsf{Setup}, \mathcal{P}, \mathcal{V})$ for the relation $\mathcal{R}_{sat}$ with prover $\mathcal{P}$ and verifier $\mathcal{V}$ is defined as follows:
+    \begin{itemize}
+        \item $\mathsf{Setup}$: returns vector of group generators with unknown discrete log relations $\mathbf{G,H} \in \mathbb{G}^n$.
+        \item Prover $\mathcal{P}$ choses blinding factors $\alpha, \beta, \gamma \in \mathbb{F}_p, \mathbf{s}_L, \mathbf{s}_R \in \mathbb{F}_p^n$ and sends the following commitments to $\mathcal{V}$:
+        \begin{equation*}
+            \begin{aligned}
+                A_I &= \langle \mathbf{a}_L, \mathbf{G} \rangle + \langle \mathbf{a}_R, \mathbf{H} \rangle + [\alpha]B\\
+                A_O &= \langle \mathbf{a}_O, \mathbf{G} \rangle + [\gamma]B\\
+                S &= \langle \mathbf{s}_L, \mathbf{G} \rangle + \langle \mathbf{s}_R, \mathbf{H} \rangle + [\beta]B
+            \end{aligned}
+        \end{equation*}
+        \item Verifier samples challenges $y,z \leftarrowS \mathbb{F}_p$ and sends them to $\mathcal{P}$.
+        \item Using provided challenges $y,z$ prover forms polynomials $\mathbf{l}(x), \mathbf{r}(x)$:
+        \begin{equation*}
+            \begin{aligned}
+                \mathbf{l}(x) &= \mathbf{s}_L \cdot x^3 + \mathbf{a}_O \cdot x^2 + (\mathbf{a}_L + \mathbf{y}^{-n} \circ \mathbf{w}_R) \cdot x \\
+                \mathbf{r}(x) &= \mathbf{y}^n \circ \mathbf{s}_R \cdot x^3 + (\mathbf{y}^n \circ \mathbf{a}_R +  \mathbf{w}_L) \cdot x - \mathbf{y}^n + \mathbf{w}_O
+            \end{aligned}
+        \end{equation*}
+        computes $$t(x) = \langle \mathbf{l}(x), \mathbf{r}(x) \rangle = t_1 x + t_2 x^2 + t_3 x^3 + t_4 x^4 + t_5 x^5 + t_6 x^6$$
+        choses random blinding factors $\tau_1, \tau_3, \tau_4, \tau_5, \tau_6 \in \mathbb{F}_p$ and sends to $\mathcal{V}$ commitments to its coefficients:
+        \begin{equation*}
+            \begin{aligned}
+                T_1 &= [t_1]G + [\tau_1]B\\
+                T_3 &= [t_3]G + [\tau_3]B\\
+                T_4 &= [t_4]G + [\tau_4]B\\
+                T_5 &= [t_5]G + [\tau_5]B\\
+                T_6 &= [t_6]G + [\tau_6]B
+            \end{aligned}
+        \end{equation*}
+        \textbf{Note:} Prover does not send separate commitment to $t_2$ as the verifier could derive it from $\mathbf{V}$ and the circuit public parameters: 
+        \begin{align*}
+            t_2 &= w_c + \langle \mathbf{w}_V, \mathbf{v} \rangle + \delta(y, z) \\
+            T_2 &= \langle \mathbf{w}_V, \mathbf{V} \rangle + [\delta(y, z) + w_c]G
+        \end{align*}
+        \item Verifier samples and sends to $\mathcal{P}$ random evaluation point $u \leftarrowS \mathbb{F}_p$.
+        \item Prover evaluates polynomials at $u$:
+            \begin{equation*}
+                \begin{aligned}
+                    \mathbf{l}_u &= \mathbf{l}(u) \\
+                    \mathbf{r}_u &= \mathbf{r}(u) \\
+                    t_u &= \langle \mathbf{l}_u, \mathbf{r}_u \rangle = t(u) \\
+                    \tau_u &= \tau_1 \cdot u + \langle \mathbf{w}_V, \mathbf{r} \rangle u^2 + \tau_3 \cdot u^3 + \tau_4 \cdot u^4 + \tau_5 \cdot u^5 + \tau_6 \cdot u^6\\
+                    \alpha_u &= \alpha u + \gamma u^2 + \beta u^3
+                \end{aligned}
+            \end{equation*}
+            and sends $(\mathbf{l}_u, \mathbf{r}_u, t_u, \alpha_u, \tau_u)$ to $\mathcal{V}$.
+        \item Verifier performs checks:
+            \begin{equation*}
+                \begin{aligned}
+                    &[u]A_I + [u^2]A_O + [u^3]S - \langle \mathbf{1}, \mathbf{H} \rangle + \\
+                    &u \cdot (\langle \mathbf{y}^{-n} \circ \mathbf{w}_L, \mathbf{G} \rangle + \langle \mathbf{y}^{-n} \circ \mathbf{w}_R, \mathbf{H} \rangle) + \langle \mathbf{y}^{-n} \circ \mathbf{w}_O, \mathbf{H} \rangle \\
+                    &\stackrel{\text{?}}{=} \langle \mathbf{l}_u, \mathbf{G} \rangle + \langle \mathbf{r}_u, \mathbf{y}^{-n} \circ \mathbf{H} \rangle + [\alpha_u]B\\
+                    [t_u]G + [\tau_u]B &\stackrel{\text{?}}{=} [u]T_1 + u^2 \cdot (\langle \mathbf{w}_V, \mathbf{V} \rangle + [\delta(y,z) + w_c]G) +\\
+                    &[u^3]T_3 + [u^4]T_4 + [u^5]T_5 + [u^6]T_6\\
+                    t_u &\stackrel{\text{?}}{=} \langle \mathbf{l}_u, \mathbf{r}_u \rangle
+                \end{aligned}
+            \end{equation*}
+    \end{itemize}
+\end{definition}
+
+\begin{remark}
+    As in the \textit{range proof} protocol case the last two steps of $\Pi_{sat}$ could be substituted with an inner-product argument $\Pi_{ip}$ to provide logarithmic size-proof with the following steps:
+    \begin{itemize}
+        \item After $\mathcal{P}$ evaluates polynomials at $u$ he sends $(t_u, \alpha_u, \tau_u$ to $\mathcal{V})$ and computes commitment: 
+        $$P = \langle \mathbf{l}_u, \mathbf{G} \rangle + \langle \mathbf{r}_u, \mathbf{y}^{-n} \circ \mathbf{H} \rangle$$
+        \item $\mathcal{V}$ performs check: 
+        $$
+            [t_u]G + [\tau_u]B \stackrel{\text{?}}{=} \sum_{k=1, k\neq 2}^6 [u^k]T_k + u^2 \cdot (\langle \mathbf{w}_V, \mathbf{V} \rangle + [\delta(y,z) + w_c]G)
+        $$
+        halts if it fails and reconstructs commitment $P$ otherwise:
+        \begin{align*}
+            P =& [u]A_I + [u^2]A_O + [u^3]S - \langle \mathbf{1}, \mathbf{H} \rangle +\\
+                &u \cdot (\langle \mathbf{y}^{-n} \circ \mathbf{w}_L, \mathbf{G} \rangle + \langle \mathbf{y}^{-n} \circ \mathbf{w}_R, \mathbf{H} \rangle) + \langle \mathbf{y}^{-n} \circ \mathbf{w}_O, \mathbf{H} \rangle - [\alpha_u]B
+        \end{align*}
+        \item Parties run inner-product argument $\Pi_{ip}$ on $(\mathbf{G},\mathbf{y}^{-n} \circ \mathbf{H}, P, t_u; \mathbf{l}_u, \mathbf{r}_u)$
+    \end{itemize}
+\end{remark}
+
+\begin{theorem}
+    The \textbf{arithmetic circuit satisfiability protocol} $\Pi_{sat}$ has \textit{perfect completeness, computational extended witness emulation, perfect honest-verifier zero-knowledge}
+    \label{th:arithmetic_circuit_satisfiability}
+\end{theorem}
+\textbf{Proof idea}. \textit{Perfect completeness} 
+\begin{itemize}
+    \item \textbf{Polynomial correctness check}:
+    \begin{equation*}
+        \begin{aligned}
+            LHS &= [u]A_I + [u^2]A_O + [u^3]S - \langle \mathbf{1}, \mathbf{H} \rangle +\\
+            &u \cdot (\langle \mathbf{y}^{-n} \circ \mathbf{w}_L, \mathbf{G} \rangle + \langle \mathbf{y}^{-n} \circ \mathbf{w}_R, \mathbf{H} \rangle) + \langle \mathbf{y}^{-n} \circ \mathbf{w}_O, \mathbf{H} \rangle \\
+            &= \textcolor{Sepia}{u \cdot \langle \mathbf{a}_L, \mathbf{G} \rangle + u \cdot \langle \mathbf{a}_R, \mathbf{H} \rangle} + \textcolor{RubineRed}{[\alpha u]B} + \textcolor{teal}{u^2 \cdot \langle \mathbf{a}_O, \mathbf{G} \rangle} + \textcolor{RubineRed}{[\gamma u^2]B} + \\
+            &+ \textcolor{Violet}{u^3 \cdot \langle \mathbf{s}_L, \mathbf{G} \rangle + u^3 \cdot \langle \mathbf{s}_R, \mathbf{H} \rangle} + \textcolor{RubineRed}{[\beta u^3]B} \textcolor{gray}{- \langle \mathbf{1}, \mathbf{H} \rangle} + \\
+            &+ \textcolor{Sepia}{u \cdot \langle \mathbf{y}^{-n} \circ \mathbf{w}_L, \mathbf{G} \rangle + u\cdot \langle \mathbf{y}^{-n} \circ \mathbf{w}_R, \mathbf{H} \rangle} + \textcolor{gray}{\langle \mathbf{y}^{-n} \circ \mathbf{w}_O, \mathbf{H} \rangle} \\
+            RHS &= \langle \mathbf{l}_u, \mathbf{G} \rangle + \langle \mathbf{r}_u, \mathbf{y}^{-n} \circ \mathbf{H} \rangle + [\alpha_u]B \\
+            &= u^3 \cdot \langle \mathbf{s}_L, \mathbf{G} \rangle + u^2 \cdot \langle \mathbf{a}_O, \mathbf{G} \rangle + u \cdot \langle \mathbf{a}_L + \mathbf{y}^{-n} \circ \mathbf{w}_R, \mathbf{G} \rangle + \\
+            &+ u^3 \cdot \langle \mathbf{y}^n \circ \mathbf{s}_R, \mathbf{y}^{-n} \circ \mathbf{H} \rangle + u \cdot \langle \mathbf{y}^n \circ \mathbf{a}_R, \mathbf{y}^{-n} \circ \mathbf{H} \rangle + u \cdot \langle \mathbf{w}_L, \mathbf{y}^n \circ \mathbf{H} \rangle \\
+            &- \langle \mathbf{y}^n, \mathbf{y}^{-n} \circ \mathbf{H} \rangle + \langle \mathbf{w}_O, \mathbf{y}^{-n} \circ \mathbf{H} \rangle + [\alpha u + \gamma u^2 + \beta u^3]B \\
+            &= \textcolor{Violet}{u^3 \cdot \langle \mathbf{s}_L, \mathbf{G} \rangle} + \textcolor{teal}{u^2 \cdot \langle \mathbf{a}_O, \mathbf{G} \rangle} + \textcolor{Sepia}{u \cdot \langle \mathbf{a}_L, \mathbf{G}\rangle + u \cdot \langle \mathbf{y}^{-n} \circ \mathbf{w}_R, \mathbf{G} \rangle} + \\
+            &+\textcolor{Violet}{u^3 \cdot \langle \mathbf{s}_R, \mathbf{H} \rangle} + \textcolor{Sepia}{u \cdot \langle \mathbf{a}_R, \mathbf{H} \rangle + u \cdot \langle \mathbf{w}_L, \mathbf{y}^n \circ \mathbf{H} \rangle} \\
+            &\textcolor{gray}{- \langle \mathbf{1}^n, \mathbf{H} \rangle + \langle \mathbf{w}_O, \mathbf{y}^{-n} \circ \mathbf{H} \rangle} + \textcolor{RubineRed}{[\alpha u]B + [\gamma u^2]B + [\beta u^3]B}
+        \end{aligned}
+    \end{equation*}
+    As we see $LHS=RHS$ so the check holds.
+    \item \textbf{$t_2$ correctness check}:
+    \begin{equation*}
+        \begin{aligned}
+            [t_u]G + [\tau_u]B &\stackrel{\text{?}}{=} [u]T_1 + u^2 \cdot (\langle \mathbf{w}_V, \mathbf{V} \rangle + [\delta(y,z) + w_c]G) +\\
+            &+ [u^3]T_3 + [u^4]T_4 + [u^5]T_5 + [u^6]T_6
+        \end{aligned}
+    \end{equation*}
+    Note that 
+    \begin{align*}
+        \langle \mathbf{w}_V, \mathbf{V} \rangle &= \sum_{i=1}^m [w_{V,i}]V_i = \sum_{i=1}^n ([w_{i, k} \cdot v_i]G + [w_{V, i} \cdot r_i]B) \\
+        &= [\sum_{i=1}^m w_{V, i} \cdot v_i]G + [\sum_{i=1}^m w_{V, i} \cdot r_i]B \\
+        &= [\langle \mathbf{w}_V, \mathbf{v} \rangle] G + [\langle \mathbf{w}_V, \mathbf{r} \rangle] B
+    \end{align*}
+    so simplifying the LHS we get:
+    \begin{equation*}
+        \begin{aligned}
+            &[t_u]G + [\tau_u]B = \\
+            & [t_1 u + (w_c + \langle \mathbf{w}_V, \mathbf{v} \rangle + \delta(y, z)) u^2 + t_3 u^3 + t_4 u^4 + t_5 u^5 + t_6 u^6]G + \\
+            & [\tau_1 u + \langle \mathbf{w}_V, \mathbf{r} \rangle u^2 + \tau_3 u^3 + \tau_4 u^4 + \tau_5 u^5 + \tau_6 u^6]B = \\
+            & [u]T_1 + u^2 \cdot (\langle \mathbf{w}_V, \mathbf{V} \rangle + [\delta(y,z) + w_c]G) +\\
+            &+ [u^3]T_3 + [u^4]T_4 + [u^5]T_5 + [u^6]T_6 = RHS \quad \square
+        \end{aligned}
+    \end{equation*}
+\end{itemize}
+
+\textit{Perfect honest-verifier zero-knowledge} follows from the zero-knowledge construction of $\Pi_{zkip}$ protocol as Verifier learns no information about $\mathbf{a}_L, \mathbf{a}_R, \mathbf{v}$.
+
+\textit{Computational extended witness emulation} implies building extractor that combines extractors for two subprotocols: $\mathcal{E}_{ip}$ extracts witness ($\mathbf{l}_u, \mathbf{r}_u$) from $\Pi_{ip}$ than the extractor built on top of $\mathcal{E}_{zkip}$ extracts high-level witness ($\mathbf{a}_L, \mathbf{a}_R, \mathbf{a}_O, \mathbf{v}$) from $\Pi_{zkip} \quad \square$
+
+The proof size of \textbf{arithmetic circuit satisfiability} protocol is $2 \log_2n +8$ group $\mathbb{G}$ elements and $5$ field $\mathbb{F}_p$ elements.
+
+Usually the number of multipliers $n$ is not a power of $2$ so that the intermediate witness vectors $\mathbf{a}_L, \mathbf{a}_R, \mathbf{a}_O$ must be padded with zeroes to the next power of $2$ in order to apply the \textit{inner-product argument} efficiently. 
+\begin{remark}
+    The $\Pi_{sat}$ protocol could be slightly modified to provide intermediate random challenges inside the circuit. For example it would allow proving \textit{permutation check}: $\{a,b\} = \{c,d\}  \iff (a-x)\cdot(b-x) = (c-x)\cdot(d-x)$ for some random challenge $x$.
+\end{remark}
+\subsection*{Acknowledgements}
+This section was heavily inspired by:
+\begin{itemize}
+    \item \href{https://doc-internal.dalek.rs/bulletproofs/index.html}{dalek's crate bulletproofs}
+    \item \href{https://eprint.iacr.org/2017/1066.pdf}{bulletproofs whitepaper}
+    \item \href{https://rareskills.io/post/zk-multiplication}{RareSkills explanation}
+\end{itemize}
+
+\end{document}

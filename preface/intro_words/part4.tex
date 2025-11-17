@@ -1,0 +1,43 @@
+\documentclass[../../lecture-notes-148x210.tex]{subfiles}
+
+\begin{document}
+
+This section introduces a new class of zero-knowledge protocols which are based
+on the Sum-Check protocol. If previously we mostly worked over univariate
+polynomials, Sum-Check derivatives typically operate over multilinear
+polynomials in many variables. Turns out that such representation can give a
+competitive performance to protocols relying on high-degree univariate
+polynomials. 
+
+Besides Sum-Check-based approaches, we also introduce the notion of
+\textit{lookup checks}, which is a quite recent development, allowing to
+significantly reduce the arithmetical circuit size for non-native problems for
+the a zero-knowledge protocol (such as hash function computation or
+zero-knowledge Machine Learning). While this is a standalone research direction,
+we still provide it after discussing Sum-Check protocol since historically one
+of the first lookup protocols (namely, logup) is in fact Sum-Check-based.
+
+Specifically, we list sections of this chapter in \Cref{tab:essentialls-4}. 
+
+\begin{table}[H]
+    \centering
+    \begin{tabularx}{\textwidth}{ccX}
+        \Xhline{3\arrayrulewidth}
+        \rowcolor{yellow!30}\textbf{Section} & \textbf{Topic} & \textbf{Key Concepts} \\
+        \Xhline{3\arrayrulewidth}
+        \rowcolor{yellow!10}\ref{section:sumcheck} & Sum-Check Protocol & Construction of 
+        Sum-Check protocol, its performance and soundness  \\
+        \hdashline
+        \rowcolor{yellow!20}\ref{section:gkr} & GKR Protocol &
+        Sum-Check-based SNARK over arithmetical circuits \\
+        \hdashline
+        \rowcolor{yellow!10}\ref{section:lookups} & Lookup Checks & Motivation for lookup checks; plookup and logup constructions \\
+        \hdashline
+        \rowcolor{yellow!20}\ref{section:ultragroth} & UltraGroth & Implementing lookup checks in Groth16 \\
+        \Xhline{3\arrayrulewidth}
+    \end{tabularx}
+    \caption{Topics covered in Part IV}
+    \label{tab:essentialls-4}
+\end{table}
+
+\end{document}

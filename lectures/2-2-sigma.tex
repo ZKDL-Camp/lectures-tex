@@ -18,11 +18,11 @@ First, let us start with the interactive version of the protocol.
 \begin{definition}
     \textbf{The Schnorr interactive identification protocol} $\Pi_{\text{Sch}} = (\mathsf{Gen}, \mathcal{P}, \mathcal{V})$ with a generation function $\mathsf{Gen}$ and prover $\mathcal{P}$ and verifier $\mathcal{V}$ is defined as follows:
     \begin{itemize}
-        \item $\mathsf{Gen}(1^{\lambda})$: As with most public-key cryptosystems, we take $\alpha \xleftarrow{R} \mathbb{Z}_q$ and $u \gets g^{\alpha}$. We output the \textit{verification key} as $\mathsf{vk} := u$, and the \textit{secret key} as $\mathsf{sk} := \alpha$.
+        \item $\mathsf{Gen}(1^{\lambda})$: As with most public-key cryptosystems, we take $\alpha \leftarrowS \mathbb{Z}_q$ and $u \gets g^{\alpha}$. We output the \textit{verification key} as $\mathsf{vk} := u$, and the \textit{secret key} as $\mathsf{sk} := \alpha$.
         \item The protocol between $(\mathcal{P},\mathcal{V})$ is run as follows:
         \begin{itemize}
             \item $\mathcal{P}$ computes $r \gets \mathbb{Z}_q^{\times}, a \gets g^{r}$ and sends $a$ to $\mathcal{V}$.
-            \item $\mathcal{V}$ sends a random challenge $e \xleftarrow{R} \mathbb{Z}_q$ to $\mathcal{P}$.
+            \item $\mathcal{V}$ sends a random challenge $e \leftarrowS \mathbb{Z}_q$ to $\mathcal{P}$.
             \item $\mathcal{P}$ computes $\sigma \gets r + \alpha e \in \mathbb{Z}_q$ and sends $\sigma$ to $\mathcal{V}$.
             \item $\mathcal{V}$ accepts if $g^{\sigma} = a \cdot u^e$, otherwise it rejects.
         \end{itemize}
@@ -42,7 +42,7 @@ First, let us start with the interactive version of the protocol.
 
         \node[align=center,fill=white!5,thick,below=0.5cm of prover](prover-setup){
         \noindent\rule{3.5cm}{0.8pt}\\
-        $r \xleftarrow{R} \mathbb{Z}_q^{\times}$ \\
+        $r \leftarrowS \mathbb{Z}_q^{\times}$ \\
         $a \gets g^r$ \\
         \noindent\rule{3.5cm}{0.8pt}};
 
@@ -50,7 +50,7 @@ First, let us start with the interactive version of the protocol.
 
         \node[align=center,fill=white!5,thick,below=3.5cm of verifier](verifier-choice){
         \noindent\rule{3.5cm}{0.8pt}\\
-        $e \xleftarrow{R} \mathbb{Z}_q$ \\
+        $e \leftarrowS \mathbb{Z}_q$ \\
         \noindent\rule{3.5cm}{0.8pt}};
 
         \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-5.5cm]verifier.south) coordinate (l2)--(l2-|prover) node[midway, above=0mm]{Send $e$};
@@ -92,7 +92,7 @@ Now, one can prove the following theorem.
     \item \textbf{Proof of Knowledge.} To prove that the protocol is a proof of knowledge, we need to construct an extractor $\mathcal{E}^{\mathcal{P}}$. We construct it as follows:
     \begin{enumerate}
         \item Extractor runs the prover and gets $a$, $e$, and $\sigma$ as a response.
-        \item Extractor rewinds back to the verifier's challenge step, generates a new challenge $e' \xleftarrow{R} \mathbb{Z}_q$ and gets new prover's response $\sigma'$ (for the same prover's randomness $r$).
+        \item Extractor rewinds back to the verifier's challenge step, generates a new challenge $e' \leftarrowS \mathbb{Z}_q$ and gets new prover's response $\sigma'$ (for the same prover's randomness $r$).
         \item Extractor outputs the witness $\alpha \gets (\sigma - \sigma')(e - e')^{-1}$.
     \end{enumerate}
     The reason why this works is following: notice that $g^{\sigma} = a \cdot u^{e}, g^{\sigma'} = a \cdot u^{e'}$. Therefore, by dividing former by latter, we obtain $g^{\sigma - \sigma'} = u^{e - e'} = g^{\alpha(e-e')}$. It immediately follows that $\alpha = (\sigma - \sigma')(e - e')^{-1}$.
@@ -101,7 +101,7 @@ Now, one can prove the following theorem.
 \vspace{10px}
 
 \begin{remark}
-    Before considering how to make such protocol non-interactive correctly, suppose that we instead do the following: after interaction with the verifier, the prover publishes the conversation as a proof of knowledge. Would that be a valid non-interactive proof? In other words, can we convince the independent observer of the interaction that the prover knows the witness? The answer is no (and it is generally so for any interactive protocol). The reason why is that the prover can first sample randomly $e,\sigma \xleftarrow{R} \mathbb{Z}_q$, compute $a \gets g^{\sigma}/u^e$ and simply publish $(a,e,\sigma)$ as a proof. This is a valid conversation since $g^{\sigma} = a \cdot u^{e} = (g^{\sigma}/u^e) \cdot u^e$ and thus the observer would be convinced that the prover knows the witness. However, the prover might not know the witness at all!
+    Before considering how to make such protocol non-interactive correctly, suppose that we instead do the following: after interaction with the verifier, the prover publishes the conversation as a proof of knowledge. Would that be a valid non-interactive proof? In other words, can we convince the independent observer of the interaction that the prover knows the witness? The answer is no (and it is generally so for any interactive protocol). The reason why is that the prover can first sample randomly $e,\sigma \leftarrowS \mathbb{Z}_q$, compute $a \gets g^{\sigma}/u^e$ and simply publish $(a,e,\sigma)$ as a proof. This is a valid conversation since $g^{\sigma} = a \cdot u^{e} = (g^{\sigma}/u^e) \cdot u^e$ and thus the observer would be convinced that the prover knows the witness. However, the prover might not know the witness at all!
 
     Therefore, either (1) the prover needs to get a challenge $e$ \textbf{before} he commits to the value $\sigma$, or (2) challenge must be randomized. Otherwise, he can precompute $\sigma$ and publish it as a proof (or simply make a deal with the verifier to fool the observer). 
 \end{remark}
@@ -123,7 +123,7 @@ Now, turning the Schnorr's Identification Protocol into a signature scheme is qu
 \begin{definition}
     The \textbf{Schnorr Signature Scheme} $\Sigma_{\text{Sch}}$ is a tuple of algorithms $(\mathsf{Gen}, \mathsf{Sign}, \mathsf{Verify})$, where:
     \begin{itemize}
-        \item $\mathsf{Gen}(1^{\lambda})$: We take $\alpha \xleftarrow{R} \mathbb{Z}_q$ and $u \gets g^{\alpha}$. The \textit{public key} is $\mathsf{pk} := u$, while the \textit{secret key} as $\mathsf{sk} := \alpha$.
+        \item $\mathsf{Gen}(1^{\lambda})$: We take $\alpha \leftarrowS \mathbb{Z}_q$ and $u \gets g^{\alpha}$. The \textit{public key} is $\mathsf{pk} := u$, while the \textit{secret key} as $\mathsf{sk} := \alpha$.
         \item $\mathsf{Sign}(m,\mathsf{sk})$: The signer computes $r \gets \mathbb{Z}_q^{\times}, a \gets g^{r}, e \gets H(m, a), \sigma \gets r + \alpha e$ and outputs the signature $(a,\sigma)$.
         \item $\mathsf{Verify}((a, \sigma), m,\mathsf{pk})$: Verifier checks $g^{\sigma} = a \cdot u^e$ for $e \gets H(m, a)$.
     \end{itemize}
@@ -214,8 +214,8 @@ Now, let us describe the protocol.
 \begin{definition}[Okamoto's Identification Protocol]
     \textbf{Okamoto's Protocol} consists of two algorithms: $(\mathcal{P}, \mathcal{V})$, where the prover is assumed to know $(u,(\alpha,\beta)) \in \mathcal{R}$ defined above. The protocol is defined as follows:
     \begin{enumerate}
-        \item $\mathcal{P}$ computes $\alpha_r \xleftarrow{R} \mathbb{Z}_q, \; \beta_r \xleftarrow{R} \mathbb{Z}_q, \; u_r \gets g^{\alpha_r}h^{\beta_r}$ and sends commitment $u_r$ to $\mathcal{V}$.
-        \item $\mathcal{V}$ samples the challenge $c \xleftarrow{R} \mathbb{Z}_q$ and sends $c$ to $\mathcal{P}$.
+        \item $\mathcal{P}$ computes $\alpha_r \leftarrowS \mathbb{Z}_q, \; \beta_r \leftarrowS \mathbb{Z}_q, \; u_r \gets g^{\alpha_r}h^{\beta_r}$ and sends commitment $u_r$ to $\mathcal{V}$.
+        \item $\mathcal{V}$ samples the challenge $c \leftarrowS \mathbb{Z}_q$ and sends $c$ to $\mathcal{P}$.
         \item $\mathcal{P}$ computes $\alpha_z \gets \alpha_r + \alpha c, \beta_z \gets \beta_r + \beta c$ and sends $\mathbf{z} = (\alpha_z,\beta_z)$ to $\mathcal{V}$.
         \item $\mathcal{V}$ checks whether $g^{\alpha_z}h^{\beta_z} = u_r u^c$ and accepts or rejects the proof accordingly.
     \end{enumerate}
@@ -262,8 +262,8 @@ In other words, here we have a witness $\beta \in \mathbb{Z}_q$, while the state
 \begin{definition}[Chaum-Pedersen Protocol]
     \textbf{Chaum-Pedersen Protocol} consists of two algorithms: $(\mathcal{P}, \mathcal{V})$, where the prover is assumed to know $(\beta,(u,v,w)) \in \mathcal{R}$ defined above. The protocol is defined as follows:
     \begin{enumerate}
-        \item $\mathcal{P}$ computes $\beta_r \xleftarrow{R} \mathbb{Z}_q, \; v_r \xleftarrow{R} g^{\beta_r}, \; w_r \gets u^{\beta_r}$ and sends commitment $(u_r,w_r)$ to $\mathcal{V}$.
-        \item $\mathcal{V}$ samples the challenge $c \xleftarrow{R} \mathbb{Z}_q$ and sends $c$ to $\mathcal{P}$.
+        \item $\mathcal{P}$ computes $\beta_r \leftarrowS \mathbb{Z}_q, \; v_r \leftarrowS g^{\beta_r}, \; w_r \gets u^{\beta_r}$ and sends commitment $(u_r,w_r)$ to $\mathcal{V}$.
+        \item $\mathcal{V}$ samples the challenge $c \leftarrowS \mathbb{Z}_q$ and sends $c$ to $\mathcal{P}$.
         \item $\mathcal{P}$ computes $\beta_z \gets \beta_r + \beta c$ and sends $\beta_z$ to $\mathcal{V}$.
         \item $\mathcal{V}$ checks whether two conditions hold: $g^{\beta_z} = v_rv^c$ and $u^{\beta_z} = w_r w^c$, and accepts or rejects the proof accordingly.
     \end{enumerate}
@@ -324,8 +324,8 @@ Now, we formulate the general Sigma protocol for the relation $\mathcal{R}$ over
 \begin{definition}[Sigma Protocol for the pre-image of a homomorphism]
     The protocol consists of two algorithms: $(\mathcal{P}, \mathcal{V})$, where the prover is assumed to know the witness $h \in \mathbb{H}$ defined above. The protocol is defined as follows:
     \begin{enumerate}
-        \item $\mathcal{P}$ computes $h_r \xleftarrow{R} \mathbb{H}, t_r \gets \psi(h_r) \in \mathbb{T}$ and sends $t_r$ to the verifier $\mathcal{V}$.
-        \item $\mathcal{V}$ samples the challenge $c \xleftarrow{R} \mathcal{C} \subset \mathbb{Z}$ from the challenge space and sends $c$ to $\mathcal{P}$.
+        \item $\mathcal{P}$ computes $h_r \leftarrowS \mathbb{H}, t_r \gets \psi(h_r) \in \mathbb{T}$ and sends $t_r$ to the verifier $\mathcal{V}$.
+        \item $\mathcal{V}$ samples the challenge $c \leftarrowS \mathcal{C} \subset \mathbb{Z}$ from the challenge space and sends $c$ to $\mathcal{P}$.
         \item $\mathcal{P}$ computes $h_z \gets h_r \oplus h\cdot c$ and sends $h_z$ to $\mathcal{V}$.
         \item $\mathcal{V}$ checks whether $\psi(h_z) = t_r \otimes t^c$, and accepts or rejects the proof accordingly.
     \end{enumerate}
@@ -356,7 +356,7 @@ We define the following protocol.
     Define a pair of algorithms $(\mathcal{P},\mathcal{V})$ which are run as follows:
     \begin{enumerate}
         \item The prover $\mathcal{P}$ runs $\mathcal{P}_0(w_0,x_0)$ to get commitment $a_0$ and runs $\mathcal{P}_1(w_1,x_1)$ to get $a_1$ and sends the pair $\mathbf{a} = (a_0,a_1)$ to $\mathcal{V}$.
-        \item The verifier computes the challenge $c \xleftarrow{R} \mathcal{C}$ and sends it to $\mathcal{P}$.
+        \item The verifier computes the challenge $c \leftarrowS \mathcal{C}$ and sends it to $\mathcal{P}$.
         \item The prover feeds provers $\mathcal{P}_0(w_0,x_0)$ and $\mathcal{P}_1(w_1,x_1)$ with the challenge to get responses $z_0$ and $z_1$, respectively. He then sends $\mathbf{z} = (z_0,z_1)$ to $\mathcal{V}$.
         \item The verifier checks whether both $\mathcal{V}_0(a_0,c,z_0)$ and $\mathcal{V}_1(a_1,c,z_1)$ pass.
     \end{enumerate}
@@ -383,8 +383,8 @@ Now, we describe the algorithm.
 \begin{definition}[The OR Sigma Protocol]
     Define a pair of algorithms $(\mathcal{P},\mathcal{V})$ for relation $\mathcal{R}_{\text{OR}}$ with $b^* := 1-b$ as follows:
     \begin{enumerate}
-        \item The prover chooses a random challenge $c_{b^*} \xleftarrow{R} \mathcal{C}$ and generates random commitment and response $(a_{b^*}, z_{b^*})$ that form a valid accepting conversation $(a_{b^*}, c_{b^*}, z_{b^*})$ (essentially, the prover runs the simulator $(a_{b^*}, z_{b^*}) \xleftarrow{R} \mathsf{Sim}_{b^*}(x_{b^*}, c_{b^*})$). Then, $\mathcal{P}$ also runs $\mathcal{P}_b(x_b, w)$ to get a valid commitment $a_b$ and sends $(a_0,a_1)$ to $\mathcal{V}$.
-        \item The verifier sends a random challenge $c \xleftarrow{R} \mathcal{C} \subseteq \{0,1\}^{\ell}$.
+        \item The prover chooses a random challenge $c_{b^*} \leftarrowS \mathcal{C}$ and generates random commitment and response $(a_{b^*}, z_{b^*})$ that form a valid accepting conversation $(a_{b^*}, c_{b^*}, z_{b^*})$ (essentially, the prover runs the simulator $(a_{b^*}, z_{b^*}) \leftarrowS \mathsf{Sim}_{b^*}(x_{b^*}, c_{b^*})$). Then, $\mathcal{P}$ also runs $\mathcal{P}_b(x_b, w)$ to get a valid commitment $a_b$ and sends $(a_0,a_1)$ to $\mathcal{V}$.
+        \item The verifier sends a random challenge $c \leftarrowS \mathcal{C} \subseteq \{0,1\}^{\ell}$.
         \item The prover XORs both challenges: $c_b \gets c \oplus c_{b^*}$. Then it feeds the challenge $c_b$ to the prover $\mathcal{P}_b(x_b,w)$ to get the responses $z_b$ ($b \in \{0,1\}$) and sends $(c_0,z_0,z_1)$ to $\mathcal{V}$.
         \item Verifier computes $c_1 \gets c \oplus c_0$ and checks that both verifications $\mathcal{V}_0(a_0,c_0,z_0)$ and $\mathcal{V}_1(a_1,c_1,z_1)$ pass.
     \end{enumerate}
@@ -426,7 +426,7 @@ u = alpha * G + beta * H # This is the value we want to prove knowledge of
 \end{lstlisting}
 
 Now, the prover needs to generate the random commitment. This is done by choosing
-two random scalars $\alpha_r, \beta_r \xleftarrow{R} \mathbb{Z}_q$ and computing
+two random scalars $\alpha_r, \beta_r \leftarrowS \mathbb{Z}_q$ and computing
 $u_r = g^{\alpha_r}h^{\beta_r}$:
 \begin{lstlisting}[language=Python]
 # Next, we compute the commitment
@@ -553,13 +553,13 @@ protocols''.
 
     \textcolor{purple!80!black}{\textbf{Attempt 1.}} Prover sends witness $\alpha$ to the verifier. Verifier checks whether $h = g^{\alpha}$.
 
-    \textcolor{purple!80!black}{\textbf{Attempt 2.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$ and sends $a \gets \alpha + r$ to the verifier. Verifier checks whether $h = g^a$.
+    \textcolor{purple!80!black}{\textbf{Attempt 2.}} Prover chooses random $r \leftarrowS \mathbb{Z}_q$ and sends $a \gets \alpha + r$ to the verifier. Verifier checks whether $h = g^a$.
 
-    \textcolor{purple!80!black}{\textbf{Attempt 3.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$, calculates $a \gets \alpha + r$ and sends both $(a,r)$ to the verifier. Verifier checks whether $g^r h = g^a$.
+    \textcolor{purple!80!black}{\textbf{Attempt 3.}} Prover chooses random $r \leftarrowS \mathbb{Z}_q$, calculates $a \gets \alpha + r$ and sends both $(a,r)$ to the verifier. Verifier checks whether $g^r h = g^a$.
 
-    \textcolor{purple!80!black}{\textbf{Attempt 4.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$, calculates $a \gets g^r, z \gets \alpha+r$ and sends $(a,z)$ to the verifier. Verifier checks whether $a \cdot h = g^z$.
+    \textcolor{purple!80!black}{\textbf{Attempt 4.}} Prover chooses random $r \leftarrowS \mathbb{Z}_q$, calculates $a \gets g^r, z \gets \alpha+r$ and sends $(a,z)$ to the verifier. Verifier checks whether $a \cdot h = g^z$.
 
-    \textcolor{purple!80!black}{\textbf{Attempt 5.}} Prover chooses random $r \xleftarrow{R} \mathbb{Z}_q$, calculates $a \gets g^r$, and sends $a$ to the verifier. Verifier chooses $e \xleftarrow{R} \mathbb{Z}_q$ and sends to the prover. Prover calculates $z \gets \alpha e + r$ and sends to the prover. Verifier checks whether $a \cdot h^e = g^z$.
+    \textcolor{purple!80!black}{\textbf{Attempt 5.}} Prover chooses random $r \leftarrowS \mathbb{Z}_q$, calculates $a \gets g^r$, and sends $a$ to the verifier. Verifier chooses $e \leftarrowS \mathbb{Z}_q$ and sends to the prover. Prover calculates $z \gets \alpha e + r$ and sends to the prover. Verifier checks whether $a \cdot h^e = g^z$.
 
     \vspace{2px}
 
@@ -587,12 +587,12 @@ protocols''.
         \mathcal{R} = \left\{ ((u,v,w), \beta) \in \mathbb{G}^3 \times \mathbb{Z}_q: \boxed{\textcolor{purple!80!black}{\textbf{7}}} \right\}
     \end{xequation*}
 
-    Now, we apply the \textit{Fiat-Shamir Transformation}. Recall that prover, instead of getting the random challenge $c \xleftarrow{R} \mathcal{C} \subset \mathbb{Z}_q$ from the verifier interactively, calculates it as the hash function from the public statement $(u,v,w)$ and the prover's commitment. For that reason, define the non-interactive proof system $\Phi = (\mathsf{Gen}, \mathsf{Verify})$ as follows:
+    Now, we apply the \textit{Fiat-Shamir Transformation}. Recall that prover, instead of getting the random challenge $c \leftarrowS \mathcal{C} \subset \mathbb{Z}_q$ from the verifier interactively, calculates it as the hash function from the public statement $(u,v,w)$ and the prover's commitment. For that reason, define the non-interactive proof system $\Phi = (\mathsf{Gen}, \mathsf{Verify})$ as follows:
     
     \begin{itemize}
         \item $\mathsf{Gen}$: On input $(u,v,w) \in \mathbb{G}^3$, 
         \begin{enumerate}
-            \item Sample $\beta_r \xleftarrow{R} \mathbb{Z}_q$ and compute the commitment $\boxed{\textcolor{purple!80!black}{\textbf{8}}}$.
+            \item Sample $\beta_r \leftarrowS \mathbb{Z}_q$ and compute the commitment $\boxed{\textcolor{purple!80!black}{\textbf{8}}}$.
             \item Use the hash function $\boxed{\textcolor{purple!80!black}{\textbf{9}}}$ to get the challenge $c \gets \boxed{\textcolor{purple!80!black}{\textbf{10}}}$.
             \item Compute response $\beta_z \gets \beta_r + \beta c$ and output commitment $(v_r,w_r)$ and $\beta_z$ as a proof $\pi$.
         \end{enumerate}

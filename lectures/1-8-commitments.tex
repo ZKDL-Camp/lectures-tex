@@ -82,7 +82,7 @@ As the name implies, we are using a cryptographic hash function \(H\) in such sc
         $m \leftarrow \mathbb{M}$
 
     \item Prover samples random value $r$ (usually called blinding factor) from a challange space $\mathcal{C} \subset \mathbb{Z}$:
-        $r \xleftarrow{R} \mathcal{C}$
+        $r \leftarrowS \mathcal{C}$
     
     \item Both values will be concatenated and hashed with the hash function $H$ to produce the commitment:
         $c = H(m \parallel r)$
@@ -124,7 +124,7 @@ Pedersen commitment scheme algorithm:
     \item Prover and Verifier agrees on $G$ and $U$ points in a elliptic curve point group $\mathbb{G}$, $q$ is the order of the group.
     \item Prover selects a value $m$ to commit and a blinder factor $r$:
             $m \leftarrow \mathbb{Z}_q$,
-            $r \xleftarrow{R} \mathbb{Z}_q$
+            $r \leftarrowS \mathbb{Z}_q$
     \item Prover generates a commitment and sends it to the Verifier:
             $c \gets [m]G + [r]U$
 \end{enumerate}

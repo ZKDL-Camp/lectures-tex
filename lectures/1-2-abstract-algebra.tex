@@ -61,7 +61,7 @@ above, based on the set $\mathbb{G}$, we want some operation $\oplus$ to have ce
 are specified in the following definition.
 
 \begin{definition}
-    A \textbf{group} \cite[section 3]{Judson_2012}, denoted by $(\mathbb{G}, \oplus)$, is a set with a binary operation $\oplus$, obeying the following rules:
+    A \textbf{group}, denoted by $(\mathbb{G}, \oplus)$, is a set with a binary operation $\oplus$, obeying the following rules:
     \begin{enumerate}
         \item \textbf{Closure:} Binary operations always output an element from $\mathbb{G}$, that is $\forall a,b \in \mathbb{G}: a \oplus b \in \mathbb{G}$.
         \item \textbf{Associativity:} $\forall a,b,c \in \mathbb{G}: (a \oplus b)\oplus c = a \oplus (b \oplus c)$.
@@ -184,7 +184,7 @@ $\blacktriangleleft$
 
 \subsection{Subgroups}
 
-When we are finally comfortable with the concept of a group, we can move on to the concept of a \textit{subgroup} \cite[section 3]{Judson_2012}. 
+When we are finally comfortable with the concept of a group, we can move on to the concept of a \textit{subgroup}. 
 
 Suppose we have a group $(\mathbb{G},\oplus)$. Suppose one takes the subset 
 $\mathbb{H} \subset \mathbb{G}$. Of course, since all elements in $\mathbb{H}$ are still 
@@ -216,7 +216,7 @@ $\mathbb{H}$ is a \textbf{subgroup} of $\mathbb{G}$ if this is indeed the case.
 \subsection{Cyclic Groups}
 
 Cyclic groups are the most interesting groups in cryptography because of their
-simple yet powerful structure. In a cyclic group \cite[section 4]{Judson_2012},
+simple yet powerful structure. In a cyclic group,
 every element can be created by repeatedly applying the group operation to one
 element, called the \emph{generator}. This makes cyclic groups useful for many
 cryptographic algorithms, allowing for secure and efficient operations. 
@@ -385,7 +385,7 @@ out that this is not possible due to the subsequent theorem.
 
 \subsection{Cosets and Lagrange's Theorem*}
  
-Lagrange's Theorem \cite[section 6]{Judson_2012} is one of the most important
+Lagrange's Theorem is one of the most important
 results in finite group theorem, considering all the consequences. Central to
 understanding Lagranges's Theorem is the notion of a \textit{coset}. While 
 this concept is essential for Cryptography, feel free to skip this section if feel 
@@ -493,7 +493,7 @@ serves as a generalization of Euler's Theorem for arbitrary finite group.
 
 \subsection{Isomorphisms and Endomorphisms}
 
-Finally, we will define the concept of isomorphisms and endomorphisms \cite[section 9]{Judson_2012}. These are important concepts in the world of cryptography, since they allow us to compare different groups. Namely, 
+Finally, we will define the concept of isomorphisms and endomorphisms. These are important concepts in the world of cryptography, since they allow us to compare different groups. Namely, 
 suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is there any way to state that these two groups are the same? The answer is yes, and this is done via isomorphisms.
 
 \begin{definition}
@@ -565,7 +565,7 @@ Last two definitions are especially frequently used in Elliptic Curves theory.
 
 \subsection{Fields}
 
-Although typically one introduces rings before fields \cite[section 16]{Judson_2012}, we believe that for the 
+Although typically one introduces rings before fields, we believe that for the 
 basic understanding, it is better to start with fields. 
 
 Notice that when dealing with groups, we had a single operation $\oplus$, which, depending on the context, is either 
@@ -682,7 +682,7 @@ associativity holds, and our identity element is at all valid. For that reason, 
 the validity of implementation.
 
 We propose to do the following: we will randomly sample three elements from the group 
-$a,b,c \xleftarrow[]{R} \mathbb{G}$ and check our three properties:
+$a,b,c \leftarrowS \mathbb{G}$ and check our three properties:
 \begin{enumerate}
     \item $a \oplus (b \oplus c) \xlongequal{?} (a \oplus b) \oplus c$.
     \item $a \oplus e \xlongequal{?} e \oplus a \xlongequal{?} a $.
@@ -964,7 +964,7 @@ highly recommend these resources.
 
 \begin{xexercise}
     {Exercise 6.}
-    {Which of the following is a \textbf{valid} automorphism $f: X \to X$?\vspace{-10pt}}
+    {Which of the following is a \textbf{valid} automorphism $f: X \to X$?}
     {2}
     {
         \item $X = [0,1]$, $f: x \mapsto x^2$.

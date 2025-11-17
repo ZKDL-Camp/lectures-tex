@@ -22,3 +22,19 @@
 
 \mode<all>
 \endinput
+
+% --- Force Navigation Bar Colors ---
+% Redefine the template that draws each section title in the headline
+\defbeamertemplate*{section in head/foot}{altarguelles-nav}
+{%
+  % Check if the section being drawn is the current one
+  \ifnum\c@section=\the\beamer@section@nr%
+    % STYLE FOR THE CURRENT, HIGHLIGHTED SECTION
+    \usebeamerfont{section in head/foot}\color{white}\insertsectionhead%
+  \else%
+    % STYLE FOR OTHER, NON-HIGHLIGHTED SECTIONS
+    \usebeamerfont{section in head/foot shaded}\color{white!70}\insertsectionhead%
+  \fi%
+}
+% Activate the new template
+\setbeamertemplate{section in head/foot}[altarguelles-nav]

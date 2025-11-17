@@ -1,40 +1,38 @@
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{zkdl-template}[2025/02/024 ZKDL Template]
+\ProvidesClass{zkdl-template}[2025/09/05 ZKDL Template]
 
 % --- Defining the basic article style ---
 \providecommand\mtfntsize{10pt}
 \ProcessOptions\relax
 \LoadClass[a4paper,\mtfntsize]{extarticle}
 \usepackage{titlepic} % For the image on the title page
+\AtEndOfClass{\RequirePackage[tracking=smallcaps]{microtype}}
 
 % --- Required packages ---
+
+% --- Fonts and Encoding ---
 \RequirePackage[T1,T2A]{fontenc}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[english]{babel}
-\RequirePackage{cmbright}
-\RequirePackage{blkarray}
-\RequirePackage{graphicx}
-\RequirePackage{etoc}
-\RequirePackage{blindtext}
-\RequirePackage{framed}
-\RequirePackage{dsfont}
-\RequirePackage{extarrows}
-\RequirePackage[normalem]{ulem}
-\RequirePackage{indentfirst}
-\RequirePackage{float}
-\RequirePackage{subfiles}
-\RequirePackage{amsmath,amsthm,amssymb,amsfonts}
-\RequirePackage[italicdiff]{physics}
-\RequirePackage{wrapfig}
-\RequirePackage[inline,shortlabels]{enumitem}
-\setlist{topsep=2pt,itemsep=2pt,parsep=0pt,partopsep=0pt}
-\RequirePackage[dvipsnames,table]{xcolor}
-\RequirePackage{opencolor}
-\RequirePackage{tabularx}
-\usepackage{arydshln}
-\usepackage{makecell}
 
-\RequirePackage[utf8]{inputenc}
+% --- MATH & FONT PACKAGES (Corrected and Synced with bionetta.cls) ---
+% 1. Load the main math/text font package FIRST.
+%    This sets the main font to XCharter and configures math to match.
+%\RequirePackage[amsthm,xcharter,bigdelims,vvarbb]{newtxmath}
+\let\oldttdefault\ttdefault
+\RequirePackage{libertine}
+\let\ttdefault\oldttdefault
+
+% 2. Load amsmath and amsthm AFTER newtxmath.
+\RequirePackage{amsmath,amssymb,amsthm}
+\RequirePackage{bm}
+\RequirePackage{dsfont}
+\RequirePackage[italicdiff]{physics}
+\RequirePackage[makeroom]{cancel}
+\RequirePackage{extarrows}
+\RequirePackage{bbm}
+
+% --- Layout and Formatting ---
 \RequirePackage[
     paperwidth=145mm,
     paperheight=215mm,
@@ -48,29 +46,42 @@
     includefoot,
     footskip=4mm
 ]{geometry}
-\RequirePackage[most]{tcolorbox}
+\RequirePackage{indentfirst}
 \RequirePackage{multicol}
-\RequirePackage{bm}
-\RequirePackage[bottom,multiple]{footmisc} % ensures footnotes are at the bottom of the page, and separates footnotes by a comma if they are adjacent
-\RequirePackage[makeroom]{cancel}
+\RequirePackage[normalem]{ulem}
+\RequirePackage{etoc}
+\RequirePackage{framed}
+\RequirePackage{blindtext}
 
-\RequirePackage{microtype} % Improves the spacing between words and letters
-% \linespread{0.95}  % Tightens the lines by about 5%
-
-% --- Configuring Figure settings ---
-\usepackage[labelfont=bf]{caption} 
-% \captionsetup[figure]{margin=10pt} % Set caption margin for figures
-\setlength{\belowcaptionskip}{0mm}  % Set space after the caption (adjust the value as needed)
-\setlength{\textfloatsep}{1mm}      % Space between float and text (affects figures/tables)
+% --- Graphics, Figures, and Tables ---
+\RequirePackage{graphicx}
+\RequirePackage{float}
+\RequirePackage{wrapfig}
+\RequirePackage[dvipsnames,table]{xcolor}
+\RequirePackage{opencolor}
+\RequirePackage{tabularx}
+\RequirePackage{blkarray}
+\RequirePackage{arydshln}
+\RequirePackage{makecell}
+\RequirePackage[labelfont=bf]{caption}
+\setlength{\belowcaptionskip}{0mm}
+\setlength{\textfloatsep}{1mm}
 \counterwithin{figure}{section}
 
-% --- Hyperref settings ---
+% --- Lists, Footnotes, and Utilities ---
+\RequirePackage[inline,shortlabels]{enumitem}
+\setlist{topsep=2pt,itemsep=2pt,parsep=0pt,partopsep=0pt}
+\RequirePackage[bottom,multiple]{footmisc}
+\RequirePackage{subfiles}
+\RequirePackage{pifont}
+
+% --- Hyperref and Cleverref ---
 \RequirePackage{hyperref}
 \hypersetup{pdflang=en}
     \hypersetup{colorlinks=true,
       citecolor=blue!80,
       linkcolor=black!70!red}
-\RequirePackage[nameinlink]{cleveref} % nameinlink ensures that the entire element is clickable in the pdf, not just the number
+\RequirePackage[nameinlink]{cleveref}
 
 % --- Tikz settings ---
 \RequirePackage {
@@ -82,22 +93,21 @@
     pgf,
     pgfplots
 }
-\usetikzlibrary{positioning}
-\usetikzlibrary{backgrounds}
-\usetikzlibrary{tikzmark}
+\usetikzlibrary{positioning,backgrounds,tikzmark}
 
-% --- Matrix magical command
+% --- Matrix magical command (wrapped with makeatletter) ---
+\makeatletter
 \renewcommand*\env@matrix[1][*\c@MaxMatrixCols c]{%
 \hskip -\arraycolsep
 \let\@ifnextchar\new@ifnextchar
 \array{#1}}
+\makeatother
 
 % --- Ticks and crosses ---
-\usepackage{pifont} % http://ctan.org/pkg/pifont
 \newcommand{\cmark}{\textcolor{green!65!black}{\ding{51}}}%
 \newcommand{\xmark}{\textcolor{red!80!black}{\ding{55}}}%
 
-%% Code Block Settings
+% --- Code Block Settings ---
 \RequirePackage{listings}
 \definecolor{dkgreen}{rgb}{0,0.5,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -120,25 +130,50 @@
     postbreak=\mbox{\hspace{-1.4em}\textcolor{purple}{$\hookrightarrow$}\space},
     escapeinside={<@}{@>}
 }
-% --- Linter settings ---
-\RequirePackage{listings, listlings/listings-rust}
-\RequirePackage{listings, listlings/listings-circom}
-\RequirePackage{listings, listlings/listings-json}
-\RequirePackage{listings, listlings/listings-ts}
+% --- Linter settings (Combined for tidiness)---
+\RequirePackage{listlings/listings-rust}
+\RequirePackage{listlings/listings-circom}
+\RequirePackage{listlings/listings-json}
+\RequirePackage{listlings/listings-ts}
 
 \newcommand{\remind}[1]{\textcolor{red}{\textbf{#1}}} % To remind me of unfinished work to fix later
 \newcommand{\hide}[1]{} % To hide large blocks of code without using % symbols
 
-% --- Footers ---
+% --- Minted settings ---
+\RequirePackage{minted}
+% Style for minted
+\setminted{
+  fontfamily=cmtt,
+  frame=lines,      % Adding a frame for style
+  fontsize=\small   % Using a slightly smaller font for code
+}
+\usemintedstyle{colorful}
+
+% --- Headers and Footers ---
 \RequirePackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
 \lhead{}
 \rhead{}
-% \chead{\fontsize{8}{10}\selectfont\leftmark}
 \cfoot{\thepage}
 \renewcommand{\headrulewidth}{0.0mm}
 \renewcommand{\footrulewidth}{0.0mm}
 
 % --- Shortcuts ---
+
+% --- Sample random command ---
+\newcommand\leftarrowS{\leftarrow\joinrel\smalldollar}
+\newcommand\rightarrowS{\smalldollar\joinrel\rightarrow}
+
+\makeatletter
+\newcommand{\smalldollar}{\mathrel{\mathpalette\small@dollar\relax}}
+\newcommand{\small@dollar}[2]{%
+  \vcenter{\hbox{%
+    $#1\textnormal{\fontsize{0.7\dimexpr\f@size pt}{0}\selectfont\$}$%
+  }}%
+}
+\makeatother
+
 \newcommand{\F}{\mathbb{F}}
 \newcommand{\ep}{\varepsilon}
 \newcommand{\vp}{\varphi}
@@ -206,14 +241,12 @@
 
 \newcommand{\Circ}{\textit{\texttt{C}}}
 
-% --- Theorem keywords ---
-\newtheoremstyle{mystyle}{}{}{}{}{\sffamily\bfseries}{.}{ }{}
-\newtheoremstyle{cstyle}{}{}{}{}{\sffamily\bfseries}{.}{ }{\thmnote{#3}}
+% --- Theorem environments ---
+\newtheoremstyle{mystyle}{}{}{}{}{\bfseries}{.}{ }{}
+\newtheoremstyle{cstyle}{}{}{}{}{\bfseries}{.}{ }{\thmnote{#3}}
 \makeatletter
-\renewenvironment{proof}[1][\proofname] {\par\pushQED{\qed}{\normalfont\sffamily\bfseries\topsep6\p@\@plus6\p@\relax #1\@addpunct{.} }}{\popQED\endtrivlist\@endpefalse}
+\renewenvironment{proof}[1][\proofname] {\par\pushQED{\qed}{\normalfont\bfseries\topsep6\p@\@plus6\p@\relax #1\@addpunct{.} }}{\popQED\endtrivlist\@endpefalse}
 \makeatother
-%\newcommand{\coolqed}[1]{\includegraphics[width=#1cm]{sunglasses_emoji.png}} %Defines the new QED symbol
-%\renewcommand{\qedsymbol}{\coolqed{0.32}} %Implements the new QED symbol
 \theoremstyle{mystyle}{\newtheorem{definition}{Definition}[section]}
 \theoremstyle{mystyle}{\newtheorem{proposition}[definition]{Proposition}}
 \theoremstyle{mystyle}{\newtheorem{theorem}[definition]{Theorem}}
@@ -234,11 +267,12 @@
 \theoremstyle{warn}
 \newtheorem*{warning}{\warningsign{0.2}\relax}
 
-% Symbol for the warning environment, designed to be easily scalable
+% Symbol for the warning environment
 \newcommand{\warningsign}[1]{\tikz[scale=#1,every node/.style={transform shape}]{\draw[-,line width={#1*0.8mm},red,fill=yellow,rounded corners={#1*2.5mm}] (0,0)--(1,{-sqrt(3)})--(-1,{-sqrt(3)})--cycle;
 \node at (0,-1) {\fontsize{48}{60}\selectfont\bfseries!};}}
 
-% --- Box styles ---
+% --- Box styles using tcolorbox ---
+\RequirePackage[most]{tcolorbox}
 \tcolorboxenvironment{definition}{   breakable, boxrule=0pt, boxsep=0pt, colback={blue!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{blue},sharp corners,before skip=10pt,after skip=10pt}
 \tcolorboxenvironment{proposition}{  breakable, boxrule=0pt, boxsep=0pt, colback={Orange!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{Orange},sharp corners,before skip=10pt,after skip=10pt}
 \tcolorboxenvironment{theorem}{      breakable, boxrule=0pt, boxsep=0pt, colback={blue!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{blue},sharp corners,before skip=10pt,after skip=10pt}
@@ -252,59 +286,62 @@
 \tcolorboxenvironment{cthm}{         breakable, boxrule=0pt, boxsep=0pt, colback={gray!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{gray},sharp corners,before skip=10pt,after skip=10pt}
 
 % --- Algorithm packages ---
-\RequirePackage[
-    titlenumbered,
-    linesnumbered,
-    ruled
-]{algorithm2e}
+\RequirePackage[titlenumbered,linesnumbered,ruled]{algorithm2e}
 \SetKwInOut{Input}{Input}
 \SetKwInOut{Output}{Output}
 \SetKwInOut{Return}{Return}
-
 \SetKwComment{Comment}{/* }{ */}
 \newcommand\mycommentstyle[1]{\footnotesize\ttfamily\textcolor{red!70!black}{#1}}
 \SetCommentSty{mycommentstyle}
 
-% For cleverref to display the algorithms properly
+% --- Cleverref Custom Names ---
 \crefname{algocf}{alg.}{algs.}
 \Crefname{algocf}{Algorithm}{Algorithms}
-
-% For cleverref to display examples properly
 \crefname{example}{ex.}{exs.}
 \Crefname{example}{Example}{Examples}
 
-% align and align* environments with inline size
+% --- Custom environments ---
 \newenvironment{talign}{\let\displaystyle\textstyle\align}{\endalign}
 \newenvironment{talign*}{\let\displaystyle\textstyle\csname align*\endcsname}{\endalign}
 
-\usepackage[explicit]{titlesec}
+% --- Section Formatting ---
+% \usepackage[explicit]{titlesec}
+% \titleformat{\section}[block]
+%   {\fontsize{12}{14}\bfseries}
+%   {\thesection}{1em}{#1}
+% \titleformat{\subsection}[block]
+%   {\fontsize{11}{13}\bfseries}
+%   {\thesubsection}{1em}{#1}
+% \titleformat{\subsubsection}[block]
+%   {\fontsize{10}{11}\bfseries}
+%   {\thesubsubsection}{1em}{#1}
+% \titlespacing*{\section}{0pt}{5pt}{5pt}
+% \titlespacing*{\subsection}{0pt}{5pt}{5pt}
+% \titlespacing*{\subsubsection}{0pt}{5pt}{5pt}
 
-% Format for section (14pt)
-\titleformat{\section}[block]
-  {\fontsize{14}{16}\sffamily\bfseries}
-  {\thesection}{1em}{#1}
+\newcommand{\watermarkfont}{\color{black50}\normalfont\fontsize{10}{12}\selectfont}
+\newcommand{\headerfont}{\normalfont\sffamily\fontsize{8}{10}\selectfont}
+% \newcommand{\titlefont}{\color{black}\normalfont\bfseries\fontsize{18}{20}\selectfont} 
+\newcommand{\titlefont}{\color{black}\normalfont\bfseries\fontsize{16}{20}\selectfont} 
 
-% Format for subsection (12pt)
-\titleformat{\subsection}[block]
-  {\fontsize{13}{14}\sffamily\bfseries}
-  {\thesubsection}{1em}{#1}
+\newcommand{\datesfont}{\normalfont\sffamily\itshape\fontsize{8}{10}\selectfont}
+\newcommand\urlheaderfont{\color{blue}\fontsize{8}{10}\selectfont}
+\newcommand{\absfont}{\linespread{1.2}\fontsize{11}{12}\selectfont}
+\newcommand{\keywordstitlefont}{\bfseries\linespread{1.2}\fontsize{8}{10}\selectfont}
+\newcommand{\keywordsfont}{\itshape\linespread{1.2}\fontsize{11}{12}\selectfont}
+\newcommand{\copyrightfont}{\normalfont\fontsize{7}{9}\selectfont}
+% \newcommand{\footerfont}{\color{black}\normalfont\fontsize{10}{10}\selectfont}
+\newcommand{\footerfont}{\color{black}\normalfont\fontsize{11}{12}\selectfont}
+\newcommand{\subjectfont}{\color{white}\bfseries\fontsize{10}{12}\selectfont}
+\newcommand{\headingfont}{\color{black}\bfseries\fontsize{13}{14}\selectfont}
 
-% Format for subsubsection (11pt)
-\titleformat{\subsubsection}[block]
-  {\fontsize{11}{12}\sffamily\bfseries}
-  {\thesubsubsection}{1em}{#1}
-
-\titlespacing*{\section}{0pt}{5pt}{5pt}
-\titlespacing*{\subsection}{0pt}{5pt}{5pt}
-\titlespacing*{\subsubsection}{0pt}{5pt}{5pt}
 
 \let\oldsection\section
 \renewcommand{\section}{\clearpage\oldsection}
-
-% Redefine \part to start on a new page
 \let\oldpart\part
 \renewcommand{\part}[1]{\clearpage\oldpart{#1}}
 
+% --- Final Document Settings ---
 \newcommand{\Disp}{\displaystyle}
 \newcommand{\qe}{\hfill\(\bigtriangledown\)}
 \DeclareMathAlphabet\mathbfcal{OMS}{cmsy}{b}{n}

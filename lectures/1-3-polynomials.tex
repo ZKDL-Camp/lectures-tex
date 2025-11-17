@@ -4,8 +4,9 @@
 
 \subsection{Basic Definition}
 
-Polynomials \cite[section 17]{Judson_2012} are intensively used in almost all areas of cryptography. In our particular case, polynomials will encode the information about
-statements we will need to prove. That being said, let us define what polynomial is.
+Polynomials are intensively used in almost all areas of cryptography. In our
+particular case, polynomials will encode the information about statements we
+will need to prove. That being said, let us define what polynomial is.
 
 \begin{definition}
     A \textbf{polynomial} $f(x)$ is a function of the form
@@ -155,7 +156,7 @@ in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the po
     Given a set of points $\{(x_0,y_0),(x_1,y_1),\dots,(x_n,y_n)\} \subset
     \mathbb{F} \times \mathbb{F}$, there is a unique polynomial $L(x)$ of degree
     $n$ such that $L(x_i) = y_i$ for all $i=0,\dots,n$. This polynomial is
-    called the \textbf{Lagrange interpolation polynomial} \cite{Saniee_2007_LagrangeInterpolation} and can be found
+    called the \textbf{Lagrange interpolation polynomial} and can be found
     through the following formula:
     \begin{xequation}
         L(x) = \sum_{i=0}^{n} y_i \ell_i(x), \quad \ell_i(x) = \prod_{j=0, j \neq i}^{n} \frac{x-x_j}{x_i-x_j}.
@@ -198,7 +199,7 @@ single-variable case, which is easiest to understand.
     $\mathbb{F}$ be a finite field and let $f \in \mathbb{F}[x]$ be a
     polynomial. Then,
     \begin{xequation}
-        \underset{x \xleftarrow{R} \mathbb{F}}{\text{Pr}}
+        \underset{x \leftarrowS \mathbb{F}}{\text{Pr}}
         [f(x) = 0] \leq \frac{\deg f}{\left|\mathbb{F}\right|}.
     \end{xequation}
 \end{lemma}
@@ -215,14 +216,15 @@ difficult to prove. The generalization is as follows.
 
 \vspace{-0.6mm}
 
-\begin{lemma}[Multivariable Schwartz-Zippel \cite{Oveis_Gharan_2017_Lecture7}] \label{lemma:sz}
-    Let $\mathbb{F}$ be a finite field and $\mathbb{S} \subseteq \mathbb{F}^n$ be a finite $n$-dimensional subspace.
-    Let $f: \mathbb{S} \to \mathbb{F}$ be a polynomial in $n$ variables. Then,
+\begin{lemma}[Multivariable Schwartz-Zippel] \label{lemma:sz} Let $\mathbb{F}$
+    be a finite field and $\mathbb{S} \subseteq \mathbb{F}^n$ be a finite
+    $n$-dimensional subspace. Let $f: \mathbb{S} \to \mathbb{F}$ be a polynomial
+    in $n$ variables. Then,
     
     \vspace{-1.1mm}
     
     \begin{xequation}
-        \underset{\mathbf{x} \xleftarrow{R} \mathbb{S}}{\text{Pr}}
+        \underset{\mathbf{x} \leftarrowS \mathbb{S}}{\text{Pr}}
         [f(\mathbf{x}) = 0] \leq \frac{\deg f}{\left|\mathbb{S}\right|}.
     \end{xequation}
 \end{lemma}
@@ -264,7 +266,7 @@ Now, let us define the sharing scheme.
 Now, Shamir's protocol is one of the most famous secret sharing schemes. It works as follows: our finite set is $\mathbb{F}_q$ for some large prime $q$. Then, algorithms in the protocol are defined as follows:
 \begin{itemize}
     \item $\mathsf{Gen}(\alpha, k, n)$: choose random $k_1,\dots,k_{t-1}
-    \xleftarrow[]{R} \mathbb{F}_q$ and define polynomial $\omega(x) := \alpha +
+    \leftarrowS \mathbb{F}_q$ and define polynomial $\omega(x) := \alpha +
     \sum_{j=1}^{t-1}k_jx^j \in \mathbb{F}_q^{\leq (t-1)}[x]$. Then, compute
     $\alpha_i \gets \omega(i) \in \mathbb{F}_q$ for each $i$ and return
     $(\alpha_1,\dots,\alpha_n)$.
@@ -299,7 +301,6 @@ uniquely determine the polynomial and thus get value at $0$.
     {
         Suppose for three polynomials $p,q,r \in \mathbb{F}[x]$ we have $\deg p = 3, \deg q = 4, \deg r = 5$. 
         Which of the following is true for $n := \deg \{(p-q)r\}$?
-        \vspace{-3.5mm}
     }
     {2}
     {
@@ -363,7 +364,7 @@ uniquely determine the polynomial and thus get value at $0$.
     with $d$ \textbf{distinct} roots in $\mathbb{F}_p$. Suppose Alice wants to
     fool Bob by claiming that $f$ is not a zero polynomial. The protocol
     consists of $n$ rounds, where on each round Bob samples the random scalar
-    $\tau \xleftarrow{R} \mathbb{F}_p$ and checks the value of $f(\tau)$. What
+    $\tau \leftarrowS \mathbb{F}_p$ and checks the value of $f(\tau)$. What
     is the probability that Alice successfully fools Bob during the protocol?}
     {2} {
         \item Exactly $(d/p)^n$
@@ -376,7 +377,7 @@ uniquely determine the polynomial and thus get value at $0$.
 \begin{xexercise}
     {Exercise 6.} { Suppose $f \in \mathbb{F}_p[x_1,\dots,x_n]$ is an
     $n$-variable polynomial. Carol randomly samples the point $\mathbf{x}
-    \xleftarrow{R} \mathbb{S}$ where $\mathbb{S} \subseteq \mathbb{F}_p^n$ is a
+    \leftarrowS \mathbb{S}$ where $\mathbb{S} \subseteq \mathbb{F}_p^n$ is a
     set of points $(x_1,\dots,x_n)$ such that $\sum_{i=1}^n x_i=1$ over
     $\mathbb{F}_p$. According to the Schwartz-Zippel Lemma, what is the tightest
     upper bound for $\Pr[f(\mathbf{x})=0]$ among specified below?}

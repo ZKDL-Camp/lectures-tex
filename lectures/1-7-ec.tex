@@ -4,10 +4,12 @@
 
 \subsection{Classical Definition}
 
-Probably, there is no need to explain the importance of elliptic curves. Essentially, the main group being used for cryptographic 
-protocols is the group of points on an elliptic curve \cite[section 13]{Cohen_Frey_2005} \cite[section 9]{Galbraith_2012}. If elliptic curve is ``good enough'', then the discrete logarithm problem assumption,
-Diffie-Hellman assumption and other core cryptographic assumptions hold. Moreover, this group does not require
-a large field size, which is a huge advantage for many cryptographic protocols.
+Probably, there is no need to explain the importance of elliptic curves.
+Essentially, the main group being used for cryptographic protocols is the group
+of points on an elliptic curve. If elliptic curve is ``good enough'', then the
+discrete logarithm problem assumption, Diffie-Hellman assumption and other core
+cryptographic assumptions hold. Moreover, this group does not require a large
+field size, which is a huge advantage for many cryptographic protocols.
 
 So, let us formally define what an elliptic curve is. Further assume that, when speaking of the finite field $\mathbb{F}_p$, the underlying prime number is greater than $3$.\footnote{Note that, for example, for $\mathbb{F}_{2^n}$ equation of elliptic curve is very different, but usually we do not deal with binary field elements.}. The definition is the following.
 
@@ -142,7 +144,12 @@ Finally, let us define the scalar multiplication operation.
 \textbf{Question.} Why do we restrict $\alpha$ to $\mathbb{Z}_r$ and not to $\mathbb{Z}$?
 
 \subsection{Discrete Logarithm Problem on Elliptic Curves}
-Finally, as defined in the previous section, the \textbf{discrete logarithm} problem on the elliptic curve \cite[section 15]{Dan_Boneh_2023} is the following: typically, $E(\mathbb{F}_p)$ is cyclic, meaning there exist some point $G \in E(\mathbb{F}_p)$, called the \textbf{generator}, such that $\langle G \rangle = E(\mathbb{F}_p)$. Given $P \in E(\mathbb{F}_p)$, the problem consists in finding such a scalar $\alpha \in \mathbb{Z}_r$ such that $[\alpha]G = P$. 
+Finally, as defined in the previous section, the \textbf{discrete logarithm}
+problem on the elliptic curve is the following: typically, $E(\mathbb{F}_p)$ is
+cyclic, meaning there exist some point $G \in E(\mathbb{F}_p)$, called the
+\textbf{generator}, such that $\langle G \rangle = E(\mathbb{F}_p)$. Given $P
+\in E(\mathbb{F}_p)$, the problem consists in finding such a scalar $\alpha \in
+\mathbb{Z}_r$ such that $[\alpha]G = P$. 
 
 Now, if the curve is ``good'', then the discrete logarithm problem is hard. In fact, the best-known algorithms have a complexity $O(\sqrt{r})$. However, there are certain cases when the discrete log problem is much easier.
 \begin{enumerate}
@@ -547,8 +554,8 @@ Moreover, here we can use projective coordinates to make the addition and doubli
 
 \vspace{-0.15mm}
 
-Pairing \cite[section 15]{Dan_Boneh_2023} \cite[section 26]{Galbraith_2012} \cite[section 16]{Cohen_Frey_2005} is the 
-core object used in threshold signatures, zk-SNARKs constructions, and other cryptographic applications. 
+Pairing is the core object used in threshold signatures, zk-SNARKs
+constructions, and other cryptographic applications. 
 
 Consider the \textit{Decisional Diffie-Hellman problem} which we described in \Cref{section:security-analysis} 
 (based on $g^{\alpha},g^{\beta}$ and $g^{\gamma}$, decide whether $\gamma = \alpha\beta$). Turns out that for curves 
@@ -655,7 +662,7 @@ Suppose we have pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ (
 \begin{definition}
     \textbf{BLS Signature Scheme} consists of the following algorithms:
     \begin{itemize}
-        \item $\mathsf{Gen}(1^{\lambda})$: Key generation. $\mathsf{sk} \xleftarrow[]{R} \mathbb{Z}_q, \mathsf{pk} \gets [\mathsf{sk}] G_2 \in \mathbb{G}_2$.
+        \item $\mathsf{Gen}(1^{\lambda})$: Key generation. $\mathsf{sk} \leftarrowS \mathbb{Z}_q, \mathsf{pk} \gets [\mathsf{sk}] G_2 \in \mathbb{G}_2$.
         \item $\mathsf{Sign}(\mathsf{sk},m)$. Signature is $\sigma \gets [\mathsf{sk}] \mathsf{H}(m) \in \mathbb{G}_1$.
         \item $\mathsf{Verify}(\mathsf{pk},m,\sigma)$. Check whether $e(\mathsf{H}(m), \mathsf{pk}) = e(\sigma, G_2)$.
     \end{itemize}

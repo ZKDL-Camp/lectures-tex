@@ -7,9 +7,9 @@ which we are going to use throughout the book.
 
 \subsection*{Set Theory}
 
-A \textbf{set} is a well-defined collection of objects \cite[section 1]{Judson_2012}. The objects that belong to a set are called 
-its \textbf{elements}. We will denote sets by capital letters, if $a$ is an element of the set $A$, 
-we write $a \in A$.
+A \textbf{set} is a well-defined collection of objects. The objects that belong
+to a set are called its \textbf{elements}. We will denote sets by capital
+letters, if $a$ is an element of the set $A$, we write $a \in A$.
 
 Let us enumerate some fundamental sets:
 
@@ -102,17 +102,17 @@ $A^n := A \times A \times \dots \times A$ -- Cartesian product $n$ times. For ex
 $(a,b,c)$ where $a,b,c \in \mathbb{Q}$, while $\mathbb{Q}^2 \times \mathbb{R}$ is a set of triplets $(a,b,c)$ where 
 $a,b \in \mathbb{Q}$ and $c \in \mathbb{R}$.
 
-Subsets of $ A \times B$ are called relations \cite[section 1]{Judson_2012}. We
-define a function $f \subset A \times B$ from a set $A$ to a set $B$, as the
-special type of relation in which for each element $a \in A$ there is a unique
-element $b \in B$ such that $(a, b) \in f$. In other words, for every element in
-$A$ we assigns a unique element in $B$. We usually write $f : A \to B$ to denote
-such a relation and write $f(a) = b$ instead of writing down $(a,b) \in f$.
+Subsets of $ A \times B$ are called relations. We define a function $f \subset A
+\times B$ from a set $A$ to a set $B$, as the special type of relation in which
+for each element $a \in A$ there is a \textit{unique} element $b \in B$ such
+that $(a, b) \in f$. In other words, for every element in $A$ we assigns a
+unique element in $B$. We usually write $f : A \to B$ to denote such a relation
+and write $f(a) = b$ instead of writing down $(a,b) \in f$.
 
-We say the function $f : A \to B$ is \textbf{injective} if condition $a_1 = a_2$ implies
-$f(a_1) = f(a_2)$. Function $f$ is said to be \textbf{surjective} if for each 
-$b \in B$ there exists $a \in A$ such that $f(a) = b$. A function that is both
-is injective and surjective is called a \textbf{bijection}.
+We say the function $f : A \to B$ is \textbf{injective} if condition $a_1 = a_2$
+implies $f(a_1) = f(a_2)$. Function $f$ is said to be \textbf{surjective} if for
+each $b \in B$ there exists $a \in A$ such that $f(a) = b$. A function that is
+both injective and surjective is called a \textbf{bijection}.
 
 % todo: add injective, surjective and bijective illustrations
 
@@ -138,20 +138,21 @@ either $x^2=4$ or $x^2=9$'', this set is equal to~$\{\pm 2, \pm 3\}$.
 
 \subsection*{Sequences, Matrices, and Vectors}
 
-A \textbf{sequence} is a list of elements, typically indexed by natural numbers.
-To denote the regular sequence we write $\{x_n\}_{n \in \mathbb{N}}$. If the
-sequence iterates through some specific range $\mathcal{I} \subset \mathbb{N}$,
-we write $\{x_n\}_{n \in \mathcal{I}}$. For example, $\{x_n\}_{n \in \{1,2,5\}}
-= \{x_1, x_2, x_5\}$. We write vectors in bold font, e.g., $\mathbf{x} = (x_1,
-x_2, x_3) \in \mathbb{F}^3$, while matrices are denoted by capital letters in
-regular font. Here is an example matrix: $A = \begin{bmatrix} 1 & 2 \\ 3 & 4
-\end{bmatrix} \in \mathbb{F}^{2 \times 2}$. For additional linear algebra notation,
-refer to \Cref{section:linear-algebra}, where we introduce the basics of linear algebra.
+A \textbf{sequence} is a mapping from natural numbers $\mathbb{N}$ to some
+specific set $X$. To denote the sequence, we write $\{x_n\}_{n \in \mathbb{N}}
+\subset X$. If the sequence iterates through some specific set $\mathcal{I}
+\subseteq \mathbb{N}$, we write $\{x_n\}_{n \in \mathcal{I}}$. For example,
+$\{x_n\}_{n \in \{1,2,5\}} = (x_1, x_2, x_5)$. We write vectors in bold font,
+e.g., $\mathbf{x} = (x_1, x_2, x_3) \in \mathbb{F}^3$, while matrices are
+denoted by capital letters in regular font. Here is an example matrix: $A =
+\begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \in \mathbb{F}^{2 \times 2}$. For
+additional linear algebra notation, refer to \Cref{section:linear-algebra},
+where we introduce the very basics of linear algebra.
 
 Finally, we denote the set $\{0,\dots,n-1\}$ for $n \in \mathbb{N}$ by $[n]$.
 This notation is used very extensively in the book, so make sure to remember it.
-For example, instead of writing $\sum_{k=0}^{n-1}k$ we also write $\sum_{k \in
-[n]}k = \frac{n(n-1)}{2}$. Or, instead of specifying $n$ conditions
+For example, instead of writing $\sum_{k=0}^{n-1}k$ we sometimes write $\sum_{k
+\in [n]}k = \frac{n(n-1)}{2}$. Or, instead of specifying $n$ conditions
 $z_1=f(x_0)$, $z_2=f(x_1)$, \dots, $z_n=f(x_{n-1})$ explicitly, we simply say
 $z_{i+1} = f(x_i)$ for all $i \in [n]$.
 
@@ -168,7 +169,7 @@ the prover, based on $x$, has outputted $y$.
 To denote the probability of an event $E$ hapenning, we write $\Pr[E]$. For
 example, if $E$ is an event of rolling a dice and getting a number $4$, then
 $\Pr[E] = \frac{1}{6}$. To denote the random sampling from the finite set $X$,
-we write $x \xleftarrow{R} X$. For example, $x \xleftarrow{R} \{1,2,3,4,5,6\}$
+we write $x \leftarrowS X$. For example, $x \leftarrowS \{1,2,3,4,5,6\}$
 denotes the random sampling of $x$ from the set $\{1,2,3,4,5,6\}$.
 
 To denote the probability of both $E$ and $F$ happening, we write $\Pr[E,F]$ (as
@@ -181,6 +182,6 @@ is the event of the protocol outputting a certain result. For example,
 \end{xequation}
 
 When event $F$ can be written concisely, we write it in the subindex of $\Pr$.
-For instance, $\underset{x \xleftarrow{R} [6]}{\Pr}[x \equiv 0 \; (\text{mod}\,2)]=\frac{1}{2}$.
+For instance, $\underset{x \leftarrowS [6]}{\Pr}[x \equiv 0 \; (\text{mod}\,2)]=\frac{1}{2}$.
 
 \end{document}

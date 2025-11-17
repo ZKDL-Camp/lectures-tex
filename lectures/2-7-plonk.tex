@@ -803,7 +803,7 @@ When do we have the set equality \(A' = B'\)? Well, \((a_0 + X)(a_1 + X) = (b_0
 + X)(b_1 + X)\) works fine. This is true because of linear polynomial unique
 factorization property, working as prime factors. Now, we can utilize
 Schwartz-Zippel lemma to replace the latter formula with \((a_0 + \gamma)(a_1 +
-\gamma) = (b_0 + \gamma)(b_1 + \gamma)\) for some random $\gamma \xleftarrow{R}
+\gamma) = (b_0 + \gamma)(b_1 + \gamma)\) for some random $\gamma \leftarrowS
 \mathbb{F}$ with overwhelming probability, being at least $1-2/|\mathbb{F}|$. If we
 wish to generalize this for arbitrary sets \(A = \{a_0, \ldots, a_{k-1}\}\) and
 \(B = \{b_0, \ldots, b_{k-1}\}\), apply the following equivalent check:
@@ -823,7 +823,7 @@ Then, \(\prod_{i=0}^{k-1} (a_i + \gamma) = \prod_{i=0}^{k-1} (b_i + \gamma)\) ho
 Now that we can encode equality of sets of field elements, let's expand this to sets of tuples of field elements. Let \(A = \{(a_0, a_1), (a_2, a_3)\}\) and \(B = \{(b_0, b_1), (b_2, b_3)\}\). Then, similarly, if
 \[A' = \{a_0 + a_1Y + X, a_2 + a_3Y + X\}, \quad B' = \{b_0 + b_1Y + X, b_2 + b_3Y + X\},\]
 
-then $A=B$ if and only if $A'=B'$. As before, we can leverage Schwartz-Zippel lemma to reduce this down into sampling two random $\beta$ and $\gamma \xleftarrow{R} \mathbb{F}$ and checking equality of:
+then $A=B$ if and only if $A'=B'$. As before, we can leverage Schwartz-Zippel lemma to reduce this down into sampling two random $\beta$ and $\gamma \leftarrowS \mathbb{F}$ and checking equality of:
 \begin{equation*}
     (a_0 + \beta a_1 + \gamma)(a_2 + \beta a_3 + \gamma) = (b_0 + \beta b_1 + \gamma)(b_2 + \beta b_3 + \gamma)
 \end{equation*}
@@ -840,7 +840,7 @@ consider the modified sets:
     B &= \{(\eta^{3k+\ell}, T_{i,j}) : (i, j) \in \mathcal{I}, \sigma((i, j)) = (k, \ell)\}
 \end{align*}
 
-Sample two random field elements $\beta$ and $\gamma \xleftarrow{R} \mathbb{R}$. \\
+Sample two random field elements $\beta$ and $\gamma \leftarrowS \mathbb{R}$. \\
 Let $\mathcal{D} = \{1, \eta, \eta^2, \ldots, \eta^{3N-1}\}$. Then, interpolate two 
 polynomials $f$ and $g$ over the defined set $\mathcal{D}$ as follows:
 \begin{align*}
@@ -983,7 +983,7 @@ this choice.
 Assume we extend $b(x)$ to $\widetilde{b}(x) \in \mathbb{F}^{(\leq N')}[x]$ of
 higher degree $N'>N$. For convenience, assume $N' = N + \delta$ with $\delta \in
 \mathbb{N}$. How can we construct such $\widetilde{b}(x)$? We can do this by
-sampling random values $\gamma_0,\gamma_1,\dots,\gamma_{\delta} \xleftarrow{R} \mathbb{F}$ and 
+sampling random values $\gamma_0,\gamma_1,\dots,\gamma_{\delta} \leftarrowS \mathbb{F}$ and 
 letting:
 \begin{equation*}
     \widetilde{b}(x) = b(x) + z_{\Omega}(x)\sum_{j=0}^{\delta}\gamma_jx^j
@@ -1006,7 +1006,7 @@ of 8 arithmetizational polynomials:
     (\mathsf{com}(S_{\sigma_1}), \mathsf{com}(S_{\sigma_2}), \mathsf{com}(S_{\sigma_3}), \mathsf{com}(q_L), \mathsf{com}(q_R), \mathsf{com}(q_M), \mathsf{com}(q_O), \mathsf{com}(q_C))
 \end{equation*}
 Interpolate polynomials $a'(x), b'(x), c'(x)$ over corresponding columns of $T$ matrix at
-the domain $\Omega$. Sample random $b_1, b_2, b_3, b_4, b_5, b_6 \xleftarrow{R}
+the domain $\Omega$. Sample random $b_1, b_2, b_3, b_4, b_5, b_6 \leftarrowS
 \mathbb{F}$. Let the blinded polynomials be:
 \begin{align*}
 \centering
@@ -1018,17 +1018,17 @@ Add to the transcript commitments $(\mathsf{com}(a), \mathsf{com}(b),
 \mathsf{com}(c))$ of computed above polynomials.
 
 \textcolor{green!60!black}{\textbf{Round 2.}}  Sample random scalars $\beta,
-\gamma \xleftarrow{R} \mathbb{F}$ from the transcript. Let $z_0 = 1$ and define
+\gamma \leftarrowS \mathbb{F}$ from the transcript. Let $z_0 = 1$ and define
 recursively the following sequence $\{z_k\}_{0 \leq k < N}$:
 \begin{equation*}
     z_{k+1} = \frac{(a_k + \beta \omega^{k} + \gamma) (b_k + \beta \omega^{k}k_1 + \gamma) (c_k + \beta \omega^{k}k_2 + \gamma)}{(a_k + \beta S_{\sigma_1}(\omega^{k}) + \gamma) (b_k + \beta S_{\sigma_2}(\omega^{k}) + \gamma) (c_k + \beta S_{\sigma_3}(\omega^{k}) + \gamma)} \cdot z_k.
 \end{equation*}
 
 Interpolate polynomial $z'(x)$ over evaluations $(z_0, \dots, z_{N-1})$ at the
-domain $\Omega$. Sample random $b_7, b_8, b_9 \xleftarrow{R} \mathbb{F}$. Let $z(x)
+domain $\Omega$. Sample random $b_7, b_8, b_9 \leftarrowS \mathbb{F}$. Let $z(x)
 = (b_7 x^2 + b_8 x + b_9)z_{\Omega}(x) + z'(x)$. Add $\mathsf{com}(z)$ to the transcript.
 
-\textcolor{green!60!black}{\textbf{Round 3.}} Sample $\alpha \xleftarrow{R}
+\textcolor{green!60!black}{\textbf{Round 3.}} Sample $\alpha \leftarrowS
 \mathbb{F}$ from the transcript. Let $\pi(X)$ be the interpolation polynomial of the
 input matrix $\Pi$ at the domain $\Omega$. Define three new polynomials:
 \begin{align*}
@@ -1043,7 +1043,7 @@ $t$ such that $p = tz_{\Omega}$. Write $t = t_{\text{low}} +
 x^{N+2}t_{\text{mid}} + x^{2(N+2)}t_{\text{high}}$, with $t_{\text{low}},
 t_{\text{mid}}$, and $t_{\text{high}} \in \mathbb{F}^{\leq (N+1)}[x]$
 polynomials of degree at most $N+1$. Sample random $b_{10}, b_{11}
-\xleftarrow{R} \mathbb{F}$ and define:
+\leftarrowS \mathbb{F}$ and define:
 \begin{align*}
 t_{\text{low}} &= t'_{\text{low}} + b_{10}x^{N+2} \\
 t_{\text{mid}} &= t'_{\text{mid}} - b_{10} + b_{11}x^{N+2} \\
@@ -1052,12 +1052,12 @@ t_{\text{high}} &= t'_{\text{high}} - b_{11}
 
 Add to the transcript commitments $(\mathsf{com}(t_{\text{low}}), \mathsf{com}(t_{\text{mid}}), \mathsf{com}(t_{\text{high}}))$.
 
-\textcolor{green!60!black}{\textbf{Round 4.}} Sample random $\zeta \xleftarrow{R}
+\textcolor{green!60!black}{\textbf{Round 4.}} Sample random $\zeta \leftarrowS
 \mathbb{F}$ from the transcript. Compute:
 \[\bar{a} = a(\zeta), \bar{b} = b(\zeta), \bar{c} = c(\zeta), \bar{S}_{\sigma_1} = S_{\sigma_1}(\zeta), \bar{S}_{\sigma_2} = S_{\sigma_2}(\zeta), \bar{S}_{\sigma_3} = S_{\sigma_3}(\zeta), \bar{z}_{\omega} = z(\zeta \omega)\]
 and add them to the transcript.
 
-\textcolor{green!60!black}{\textbf{Round 5.}} Sample random $v \xleftarrow{R}
+\textcolor{green!60!black}{\textbf{Round 5.}} Sample random $v \leftarrowS
 \mathbb{F}$ from the transcript. Let:
 \begin{equation*}    
     \begin{aligned}

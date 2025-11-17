@@ -1,0 +1,508 @@
+\documentclass{zkdl-presentation-template}
+
+\usepackage[T1]{fontenc}
+\usepackage{kerkis}
+\usepackage{kmath}
+%\usepackage{concmath}
+\usepackage{centernot}
+
+\newcommand\leftarrowS{\leftarrow\joinrel\smalldollar}
+\newcommand\rightarrowS{\smalldollar\joinrel\rightarrow}
+
+\makeatletter
+\newcommand{\smalldollar}{\mathrel{\mathpalette\small@dollar\relax}}
+\newcommand{\small@dollar}[2]{%
+  \vcenter{\hbox{%
+    $#1\textnormal{\fontsize{0.7\dimexpr\f@size pt}{0}\selectfont\$}$%
+  }}%
+}
+\makeatother
+
+\tikzset{
+    grid_cell/.style={
+        rectangle, 
+        draw=black, 
+        very thick,
+        minimum size=0.75cm, 
+        font=\large\bfseries
+    },
+    grid_label/.style={
+        font=\small
+    },
+    hypercube_highlight/.style={
+        fill=gray!40
+    }
+}
+
+\title[Lookup Checks]{\textbf{Lookup Checks. Plookup. Logup}}
+\author{Distributed Lab}
+\date{August 14, 2025}
+\homepage{zkdl-camp.github.io}
+\github{ZKDL-Camp}
+
+\begin{document}
+    \frame {
+        \tikz [remember picture,overlay]
+        \node at
+            ([yshift=1.5cm,xshift=-1.5cm]current page.south east) 
+            %or: (current page.center)
+            {\includegraphics[width=60pt]{images/logo.png}};
+        \titlepage
+    }
+
+	\section{Introduction}
+
+    \begin{frame}{Motivation}
+        Suppose you want to implement the AES-128 or SHA-256 using arithmetical
+        circuits (for instance, for national passport verification).
+
+        As the part of such algorithm, assume given
+        $\boldsymbol{a},\boldsymbol{b},\boldsymbol{c} \in \{0,1\}^n$, you need to implement XORing:
+        \begin{equation*}
+            \boldsymbol{c} = \boldsymbol{a} \oplus \boldsymbol{b}
+        \end{equation*}
+
+        \begin{block}{Arithmetical Circuit, informally}
+            \begin{itemize}
+                \item Bit-decompose $\boldsymbol{a}$ to $\{a_i\}_{i \in [n]}$ and check $a_i(1-a_i)=0, i\in [n]$.
+                \item Bit-decompose $\boldsymbol{b}$ to $\{b_i\}_{i \in [n]}$ and check $b_i(1-b_i)=0, i\in [n]$.
+                \item Verify $c_i = a_i+b_i-2a_ib_i$ (which is precisely
+                $c_i=a_i \oplus b_i$).
+            \end{itemize}
+
+            \textbf{In Total:} $3n$ constraints for \textit{one XORing
+            operation}. E.g., for 8-bit XORing we would have approximately 24
+            constraints per operation.
+        \end{block}
+    \end{frame}
+
+    \begin{frame}{Motivation (cont.)}
+        Suppose you need to compute \textbf{10k} 8-bit XOR operations during
+        hashing (that corresponds to $\approx \text{four}$ SHA256 512-bit
+        blocks). 
+        \begin{equation*}
+            \text{Total constraints} = \text{10k} \times 24 = 240k \; \text{constraints}
+        \end{equation*}
+
+        \begin{alertblock}{Lookup}
+            With lookup, you pay $2^{16}$ constraints to commit to the lookup
+            table, and then you use only $1$ constraint per XOR. Thus in total
+            you would have $2^{16} + 10k \approx 75k$ constraints. So we get
+            $3.2\times$ boost!
+        \end{alertblock}
+
+        More generally, lookup check allows to reduce complexity from
+        $\mathcal{O}(mn)$ (where $m$ is the cost of each operation and $n$ is
+        the number of operations) to $\mathcal{O}(n+d)$, where $d$ is the lookup
+        size.
+    \end{frame}
+
+    \begin{frame}{Application to Bionetta}
+        \begin{figure}
+            \centering
+            \includegraphics[width=0.15\textwidth]{images/lecture_17/logo.png}
+        \end{figure}
+
+        In \textit{Bionetta}, lookup checks allow to reduce the number of
+        constraints $\mathcal{O}(n)$ (where $n$ is the circuit size in Groth16)
+        to sublinear $\mathcal{O}(n/\log n)$. 
+
+        More specifically, implementing $\text{ReLU}(x) = \max\{0,x\}$ naively
+        requires roughly $\mathcal{O}(b)$ constraints where $b = \log_2|\mathbb{F}|$.
+        
+        In \textit{UltraGroth}, by splitting the integer into $w$-bit limbs, one
+        can reduce the complexity per ReLU down to $b/w$ with the lookup
+        commitment cost of $2^w$ constraints. Thus, in total, one gets
+        $\mathcal{O}(2^w + \ell b/w)$ constraints with $\ell$ being the number
+        of ReLUs.
+
+        For optiomal value of $w$, this reduces to $\mathcal{O}(\ell b/\log
+        (\ell b))$.
+    \end{frame}
+
+    \begin{frame}{Formalizing the problem}
+        \begin{definition}
+            Lookup check consits in proving/verifying that $\{z_i\}_{i \in [n]}
+            \subseteq \{t_j\}_{j \in [d]}$. We will denote multisets as $\vec{z}
+            := \{z_i\}_{i \in [n]}$ and $\vec{t} = \{t_j\}_{j \in [d]}$ and
+            write inclusion check $\vec{z} \subseteq \vec{t}$ for short.
+        \end{definition}
+
+        \begin{example}
+            \begin{itemize}
+                \item $\vec{t}=\{0,1\}$. $\vec{z} \subseteq \vec{t}$ means ``all $z_i$'s are binary''.
+                \item $\vec{z}=\{10,6,7,1,1,6,10,7,1\} \subseteq \{1,6,7,10\} = \vec{t}$. On the other hand, we 
+                have $\vec{z}^* := \{1,6,10,5\} \not\subseteq \vec{t}$.
+                \item For $\vec{t} = \{t_j\}_{j \in [2^w]}$ with $t_j=j$,
+                condition ``$\vec{z} \subseteq \vec{t}$'' means ``every element
+                $z_i$ is a $w$-bit integer''.
+            \end{itemize}
+        \end{example}
+    \end{frame}
+
+    \begin{frame}{Working with tuples}
+        In particular, XOR example can also be reduced to this check. 
+        \begin{itemize}
+            \item First initialize all tuples $\vec{t} := \{(a_i,b_i,c_i)\}_{i
+            \in [2^{2n}]}$ such that $a_i \oplus b_i = c_i$ (perceive each
+            $a_i,b_i,c_i$ as a field element from $\mathbb{F}$).
+            \item We need to check whether $\vec{z} := \{(x_i,y_i,w_i)\}_{i \in
+            [m]} \subseteq \vec{t}$. The verifier samples the challenge $\beta
+            \leftarrowS \mathbb{F}$, and lookup table is perceived as
+            $\vec{t}_{\beta} = \{a_i+\beta b_i+\beta^2 c_i\}_{i \in [2^{2n}]}$,
+            witness as $\vec{z}_{\beta} := \{x_i+\beta y_i + \beta^2 w_i\}_{i
+            \in [m]}$, and then the check is $\vec{z}_{\beta} \subseteq
+            \vec{t}_{\beta}$ as usual.
+        \end{itemize}
+
+        \begin{block}{Conclusion}
+            Lookup checks are cool, so let us study them!
+        \end{block}
+    \end{frame}
+
+    \section{Plookup}
+
+    \begin{frame}{plookup}
+        \begin{definition}
+            Plookup is the Poly-IOP-based lookup check protocol that uses rather
+            \textit{exotic} multiset equality check. Why I call it
+            \textit{exotic} you will see in just a moment.
+        \end{definition}
+
+        \textbf{Reminder.} When constructing $\mathcal{P}$lon$\mathcal{K}$, we considered the
+        so-called \textit{permutation check}, which checked whether
+        multisets $\{a_i\}_{i \in [n]}$ and $\{b_i\}_{i \in [n]}$ are equal.\hspace{1.0px} This was done by running 
+        the grand product:
+        \begin{equation*}
+            \prod_{i \in [n]} (\gamma+a_i) = \prod_{i \in [n]}(\gamma+b_i), \quad \gamma \leftarrowS \mathbb{F}
+        \end{equation*}
+
+        \vspace{-15px}
+
+        \textit{Can we use it for checking $\{z_i\}_{i\in [n]} \subseteq
+        \{t_j\}_{j \in [d]}$?}\hspace{1.0px} No, consider:
+        \begin{equation*}
+            Z(\gamma) = \prod_{i \in [n]} (\gamma + z_i), \quad T(\gamma) = \prod_{j \in [d]} (\gamma + t_j)
+        \end{equation*}
+
+        \vspace{-15px}
+
+        We can merely state that roots of $Z(\gamma)$ and $T(\gamma)$ are the
+        same.
+    \end{frame}
+
+    \begin{frame}{plookup: problematic solution}
+        \begin{block}{Core problem}
+            How to reduce lookup check to the multiset equality check?
+        \end{block}
+
+        \begin{definition}
+            Given $\vec{s} = \{s_i\}_{i \in [n]}$, denote by $\partial\vec{s}$
+            the \textbf{diference set} $\{s_{i+1}-s_i\}_{i \in [n-1]}$ without
+            zero elements. For example, $\partial\{1,1,2,5,5\} = \{1,3\}$.
+        \end{definition}
+
+        \textbf{Attempt \#1.} Suppose we sort witness $\vec{z}$ and get
+        $\vec{s}$ as a result. We might reasonably expect that $\partial\vec{s}
+        = \partial\vec{t}$.
+        \begin{example}
+            Suppose $\vec{t}=\{1,4,8\}$ and $\vec{s} = \{1,1,4,8,8,8\}$. Notice
+            that $\vec{s} \subseteq \vec{t}$ and moreover $\partial\vec{t} =
+            \partial\vec{s} = \{3,4\}$.
+        \end{example}
+
+        \textcolor{red!70!black}{\textbf{Problem.}} Converse is false. Consider $\vec{s}^*:=\{1,5,5,5,8,8\}$.
+    \end{frame}
+
+    \begin{frame}{plookup: solution \#1}
+        \textbf{Attempt \#2.} Construct $\vec{s}$ --- sorted concatenation
+        $(\vec{z},\vec{t})$. First assert permutation check of $\vec{s}$ and
+        $(\vec{z},\vec{t})$. Then, assert that $\partial\vec{s} =
+        \partial\vec{t}$.
+        
+        \begin{lemma}
+            This is necessary and sufficient condition for $\vec{z} \subseteq
+            \vec{t}$.
+        \end{lemma}
+
+        \begin{example}
+            Suppose $\vec{t} = \{1,4,8\}$, $\vec{z} = \{1,1,4,8,8,8\}$, and
+            $\vec{z}^*=\{1,5,5,5,8,8\}$. For $\vec{t}$ and $\vec{z}$ we see that
+            $\vec{s} = \{1,1,1,4,4,8,8,8,8\}$ and clearly $\partial\vec{s} =
+            \{3,4\} = \partial\vec{t}$. As for $\vec{z}^*$, the sorted
+            concatenation is $\vec{s}^*=\{1,1,4,5,5,5,8,8,8\}$ and so
+            $\partial\vec{s}^*=\{1,3\} \neq \partial\vec{t}$.
+        \end{example}
+
+        Thus our protocol might simply be running two permutation checks: (a) on
+        $\vec{s}$ and $(\vec{z},\vec{t})$, and (b) on $\partial\vec{s}$ and
+        $\partial\vec{t}$. However, that's still \textbf{two} grand products. We
+        can reduce this to a single grand product.
+    \end{frame}
+
+    \begin{frame}{plookup: solution \#2}
+        \textbf{Attempt \#3.} Why do we need this strage difference set $\partial\vec{s}$? Let us 
+        make it more general!
+        \begin{definition}
+            The \textbf{randomized difference set} of $\vec{s}=\{s_i\}_{i \in
+            [n]}$ for randomness $\beta$, denoted as $\partial_{\beta}\vec{s}$,
+            is defined as $\{s_i+\beta s_{i+1}\}_{i \in [n-1]}$.
+        \end{definition} 
+
+        \begin{lemma}
+            Necessary and sufficient condition for lookup check is
+            $\partial_{\beta}\vec{s} = ((1+\beta)\vec{z},
+            \partial_{\beta}\vec{t})$ for randomly chosen $\beta \leftarrowS
+            \mathbb{F}$.
+        \end{lemma}
+
+        \textbf{Intuition.} Note that for two same consecutive integers
+        $s_i,s_{i+1}$, instead of zero, one gets $(1+\beta)s_i$. Other than
+        that, we also have elements of form $t_i+\beta t_{i+1}$, which obviously
+        form $\partial_{\beta}\vec{t}$. Thus, concatenating all elements of form
+        $(1+\beta)s_i$ and $\partial_{\beta}\vec{t}$ gives
+        $\partial_{\beta}\vec{s}$.
+    \end{frame}
+
+    \begin{frame}{Illustration}
+        Suppose we, again, have the following witness and table:
+        \begin{equation*}
+            \vec{t} = \{1,4,8\}, \quad \vec{z} = \{1,1,4,8,8,8\}
+        \end{equation*}
+
+         The sorted array is $\vec{s} = \{1,1,1,4,4,8,8,8,8\}$. Now sample 
+        random $\beta \leftarrowS \mathbb{F}$. Then we have:
+        \begin{equation*}
+            \partial_{\beta}\vec{s} = \{1+\beta,1+\beta,1+4\beta,(1+\beta)4,4+8\beta,(1+\beta)8,(1+\beta)8,(1+\beta)8\}
+        \end{equation*}
+
+         On the other hand, we also have:
+        \begin{gather*}
+            (1+\beta)\vec{z} = \{1+\beta,1+\beta,(1+\beta)4,(1+\beta)8,(1+\beta)8,(1+\beta)8\} \\
+            \partial_{\beta}\vec{t} = \{1+4\beta, 4+8\beta\}
+        \end{gather*}
+         Clearly,
+        $\partial_{\beta}\vec{s}=((1+\beta)\vec{z},\partial_{\beta}\vec{t})$.
+    \end{frame}
+
+    \begin{frame}{Protocol Specifics}
+        Now, given $\boldsymbol{t} \in \mathbb{F}^d$, $\boldsymbol{z} \in \mathbb{F}^n$,
+        and $\boldsymbol{s} \in \mathbb{F}^{n+d}$, define bi-variate polynomials $Z$ and
+        $T$ as follows:
+        \begin{gather*}
+            Z(\beta,\gamma) \triangleq (1+\beta)^n \prod_{i \in [n]}(\gamma+z_i)\prod_{i \in [d-1]}(\gamma(1+\beta)+t_i+\beta t_{i+1}) \\
+            T(\beta,\gamma) \triangleq \prod_{i \in [n+d-1]} (\gamma(1+\beta)+s_i+\beta s_{i+1})
+        \end{gather*}
+
+        \begin{theorem}
+            $Z \equiv T$ if and only if $\boldsymbol{z} \subseteq \boldsymbol{t}$ and
+            $\boldsymbol{s}$ is $(\boldsymbol{z},\boldsymbol{t})$ sorted by
+            $\boldsymbol{t}$.
+        \end{theorem}
+
+        Similarly to permutation check equation
+        $\prod_{j}(\gamma+a_j)=\prod_j(\gamma+b_j)$, the rest of the protocol is
+        done to ensure that $Z=T$ in the $\mathcal{P}$lon$\mathcal{K}$ish manner. See lecture notes for 
+        concrete details.
+    \end{frame}
+
+    \section{Logup}
+
+    \begin{frame}{Derivatives}
+        Similarly to calculus, we can define derivative operations over polynomials 
+        and rational function over arbitrary fields.
+        \begin{definition}
+            Given a polynomial $q(X) := \sum_{j=0}^d q_jX^j$ over $\mathbb{F}[X]$, the \textbf{formal
+            derivative}, denoted by $q'(X)$ ,is given by
+            $\sum_{j=1}^{d}jq_jX^{j-1}$.
+        \end{definition}
+        \begin{definition}
+            For a function $q(X)/r(X)$ from rational function field
+            $\mathbb{F}(X)$, the \textbf{formal derivative} is given by
+            \begin{equation*}
+                \left(\frac{q(X)}{r(X)}\right)' = \frac{q'(X)r(X) - q(X)r'(X)}{r(X)^2}
+            \end{equation*}
+        \end{definition}
+    \end{frame}
+
+    \begin{frame}{Logarithmic Derivative}
+        \begin{definition}
+            The \textbf{logarithmic derivative} of $q(X) \in \mathbb{F}[X]$ is given by the 
+            rational function $\mathsf{LogD}[q] = q'(X)/q(X)$.
+        \end{definition}
+        \begin{alertblock}{Motivation}
+            What is the derivative for $\log f(x)$ given $f: \mathbb{R} \to
+            \mathbb{R}$? \hspace{1px} By the chain rule, $f'(x)/f(x)$, which is given by
+            the definition above.
+        \end{alertblock}
+
+        \begin{lemma}
+            $\mathsf{logD}[qr]=\mathsf{logD}[q] + \mathsf{logD}[r]$.
+        \end{lemma}
+
+        Consequently, we can infer:
+        \begin{equation*}
+            \mathsf{logD}\left[\prod_{j=1}^n (X+a_j)\right] = \sum_{j=1}^n \mathsf{logD}\left[X+a_j\right] = \sum_{j=1}^n \frac{1}{X+a_j}
+        \end{equation*}
+    \end{frame}
+
+    \begin{frame}{Finally something useful}
+        \begin{theorem}[On fractional permutation check]
+            Let $\vec{a} = \{a_i\}_{i \in [n]}$ and $\vec{b} = \{b_i\}_{i \in [n]}$ be
+            two sequences of elements from $\mathbb{F}$. To verify with overwhelming
+            probability whether two multisets are equal, it suffices to check
+            \begin{equation*}
+                \sum_{j=1}^n \frac{1}{\gamma + a_j} = \sum_{j=1}^n \frac{1}{\gamma+b_j}
+            \end{equation*}
+            for randomly chosen $\gamma \leftarrowS \mathbb{F}$.
+        \end{theorem}
+
+        \textbf{Intuition.} Take logarithmic derivative from both sides of a
+        permutation check equation $\prod_{j=1}^n (\gamma+a_j) = \prod_{j=1}^n
+        (\gamma+b_j)$ and you are done (see prev. slide). Other direction is a
+        bit trickier to prove, but still trivial enough.
+    \end{frame}
+
+    \begin{frame}{Central Equation}
+        \begin{theorem}[On fractional lookup check]
+            Given two sequences of elements $\{t_i\}_{i \in [d]}$ and $\{z_i\}_{i \in
+            [n]}$, the inclusion check $\{z_i\}_{i \in [n]} \subseteq \{t_i\}_{i \in
+            [d]}$ is satisfied if and only if there exist the set of multiplicities
+            $\{\mu_i\}_{i \in [d]}$ where $\mu_i = \#\{j \in [n]: z_j = t_i\}$ such that:
+            \begin{equation*}
+                \sum_{i \in [n]} \frac{1}{X+z_i} = \sum_{i \in [d]} \frac{\mu_i}{X+t_i}
+            \end{equation*}
+        \end{theorem}
+
+         In particular, checking such equality at random point from $\mathbb{F}$
+        results in the soundness error of up to $(n+d)/|\mathbb{F}|$, which becomes
+        negligible for fairly large $|\mathbb{F}|$.
+
+        \begin{alertblock}{Note}
+            This is the central equation used in a large number of studies on its own. What follows 
+            is just one variation of how to apply SumCheck using this equation.
+        \end{alertblock}
+    \end{frame}
+
+    \begin{frame}{Bringing Sum-Check}
+        Suppose the lookup table size is $d=2^v$ for some $v$. Then, the table
+        $\vec{t} = \{t_j\}_{j \in [d]}$ can be viewed as a function $t:
+        \{0,1\}^v \to \mathbb{F}$.
+
+        \textcolor{red!70!black}{\textbf{Problem:}} attempting to define $\vec{z} = \{z_i\}_{i \in [n]}$
+        in a similar manner fails since in practice $n>d$, so the function
+        $\{0,1\}^v \to \mathbb{F}$ has a too-small domain. Instead, split $\vec{z}$ into 
+        $m=\lceil n/d \rceil$ f-ns $z_1,\dots,z_m: \{0,1\}^v \to \mathbb{F}$.
+
+        \begin{block}{Note}
+            In other words, we reduced the problem of $\{z_i\}_{i \in [n]}
+            \subseteq \{t_j\}_{j \in [d]}$ to $\bigcup_{i \in
+            [m]}\{z_i(\mathbf{x})\}_{\mathbf{x} \in \{0,1\}^v} \subseteq
+            \{t(\mathbf{x})\}_{\mathbf{x} \in \{0,1\}^v}$.
+        \end{block}
+
+        Sum-Check equation is as follows:
+        \begin{equation*}
+            \boxed{\sum_{\mathbf{x} \in \{0,1\}^v} \sum_{i \in [m]} \frac{1}{\gamma + z_i(\mathbf{x})} = \sum_{\mathbf{x} \in \{0,1\}^v} \frac{\mu(\mathbf{x})}{\gamma+t(\mathbf{x})}},
+        \end{equation*}
+        where $\mu(\mathbf{x}) = \sum_{i \in [m]}\#\{\mathbf{y} \in \{0,1\}^v:
+        z_i(\mathbf{y})=t(\mathbf{x})\}$.
+    \end{frame}
+
+    \begin{frame}{Running Sum-Check. Or Not?}
+        \textbf{Idea \#1:} Run Sum-Check on the sum:
+        \begin{equation*}
+            \zeta(\mathbf{x}) = \sum_{i \in [m]} \frac{1}{\gamma + z_i(\mathbf{x})} - \frac{\mu(\mathbf{x})}{\gamma+t(\mathbf{x})}
+        \end{equation*}
+
+        \vspace{-15px}
+
+        \textcolor{red!70!black}{\textbf{Problem.}} $\zeta(\mathbf{x})$ is
+        a fraction, so we can't quite run the Sum-Check yet.  \hspace{0.5px} Idea of logup is to
+        split the sum into $\ell$ terms:
+        \begin{align*}
+            \zeta(\mathbf{x}) &= \textcolor{blue!80!black}{\underbrace{\frac{\mu(\mathbf{x})}{\gamma+t(\mathbf{x})} - \frac{1}{\gamma+z_0(\mathbf{x})} - \dots - \frac{1}{\gamma+z_{\ell-2}(\mathbf{x})}}_{\zeta_0(\mathbf{x}), \ell \; \text{terms}}}\\
+            & \textcolor{green!60!black}{\underbrace{- \frac{1}{\gamma+z_{\ell-1}(\mathbf{x})} - \dots - \frac{1}{\gamma + z_{2\ell-2}(\mathbf{x})}}_{\zeta_1(\mathbf{x}), \ell \; \text{terms}}} - \dots 
+        \end{align*}
+
+        \vspace{-15px}
+
+         We form $k \approx m/\ell$ \textit{helper columns}
+        $\{h_i(\mathbf{x})\}_{i \in [k]}$ that satisfy: (a) $h_i(\mathbf{x})$
+        agrees with $\zeta_i(\mathbf{x})$ over $\{0,1\}^v$, (b)
+        $\textcolor{blue!70!black}{\sum_{\mathbf{x} \in \{0,1\}^v}\sum_{i=1}^k h_i(\mathbf{x}) = 0}$.
+    \end{frame}
+
+    \begin{frame}{Enforcing correct helper columns}
+        \textbf{Idea \#2:} Combine $k$ zero-checks using random scalars
+        $\{\lambda_i\}_{i \in [k]} \leftarrowS \mathbb{F}$ and merge into a
+        single Sum-Check protocol.
+
+        For simplicity, assume each $\zeta_i(\mathbf{x}) = \sum_{j \in
+        \mathcal{I}_i} \frac{q_j(\mathbf{x})}{r_j(\mathbf{x})}$. Note that:
+        \begin{equation*}
+            \zeta_i(\mathbf{x}) = \sum_{j \in
+        \mathcal{I}_i} \frac{q_j(\mathbf{x})}{r_j(\mathbf{x})}  = 
+        \frac{\sum_{j \in \mathcal{I}_i}q_j\prod_{k \in \mathcal{I}_i \setminus \{j\}}r_k(\mathbf{x})}{\prod_{j \in \mathcal{I}_i}r_j(\mathbf{x})}  = h_i(\mathbf{x})
+        \end{equation*}
+        
+        \vspace{-20px}
+
+        \begin{equation*}
+            \implies \textcolor{green!50!black}{h_i(\mathbf{x})\prod_{j \in \mathcal{I}_i}r_j(\mathbf{x}) = \sum_{j \in \mathcal{I}_i}q_j\prod_{k \in \mathcal{I}_i \setminus \{j\}}r_k(\mathbf{x})}
+        \end{equation*}
+
+        \begin{example}
+            For $\ell=2$, $h_0(\mathbf{x}) = \frac{\mu(\mathbf{x})}{\gamma+t(\mathbf{x})} - \frac{1}{\gamma+z_0(\mathbf{x})} = \frac{\mu(\mathbf{x})(\gamma+z_0(\mathbf{x})) - \gamma - t(\mathbf{x})}{(\gamma+t(\mathbf{x}))(\gamma+z_0(\mathbf{x}))}$. Thus, we enforce
+            the following equality:
+            \begin{equation*}
+                h_0(\mathbf{x})(\gamma+t(\mathbf{x}))(\gamma+z_0(\mathbf{x})) = \mu(\mathbf{x})(\gamma+z_0(\mathbf{x})) - \gamma - t(\mathbf{x})
+            \end{equation*}
+        \end{example}
+    \end{frame}
+
+    \begin{frame}{Final Sum-Check}
+        This way, one runs the Sum-Check on the following function for
+        randomly sampled $\boldsymbol{a} \leftarrowS \mathbb{F}^n$:
+        \begin{equation*}
+            \boxed{\sum_{r \in [k]} \textcolor{blue!70!black}{h_r(\mathbf{x})} + \textcolor{green!50!black}{\mathsf{eq}(\mathbf{x};\boldsymbol{a})\lambda_r\left(h_r(\mathbf{x})\prod_{i \in \mathcal{I}_r}r_i(\mathbf{x}) - \sum_{i \in \mathcal{I}_r}q_i(\mathbf{x})\prod_{j \in \mathcal{I}_r \setminus \{i\}} r_j(\mathbf{x})\right)} = 0}
+        \end{equation*}
+
+        \begin{itemize}
+            \item The \textcolor{blue!70!black}{first term} enforces that
+            $\sum_{\mathbf{x} \in \{0,1\}^v}\sum_{r \in [k]}h_r(\mathbf{x}) =
+            0$.
+            \item The \textcolor{green!50!black}{second term} checks whether the
+            helper columns are consistent with each $\zeta_i(\mathbf{x})$ (see
+            prev. slide). For this, we check the equality
+            $h_i(\mathbf{x})\prod_{j \in \mathcal{I}_i}r_j(\mathbf{x}) = \sum_{j
+            \in \mathcal{I}_i}q_j\prod_{k \in \mathcal{I}_i \setminus
+            \{j\}}r_k(\mathbf{x})$ at a random point $\boldsymbol{a}$ by
+            multiplying by $\mathsf{eq}(\mathbf{x};\boldsymbol{a})$ and taking a
+            linear combination of these equations.
+        \end{itemize}
+
+        \begin{lemma}
+            The larger $\ell$ is (size of each chunk), the more complex
+            computations are involved but smaller commitment sizes are required. 
+        \end{lemma}
+    \end{frame}
+
+    \begin{frame}[plain, standout]
+        \centering
+        \LARGE
+        \textbf{Thank you for your attention} \\
+        
+        \vspace{0.2cm} \Huge \ding{170} \large \\
+        
+        \vspace{1cm}
+  
+        \href{https://zkdl-camp.github.io/}{\raisebox{-.1em}{\hspace{.025em}\faIcon{globe}}\hspace{.325em}zkdl-camp.github.io} \\
+  
+        \href{https://github.com/ZKDL-Camp}{\raisebox{-.1em}{\hspace{.025em}\faIcon{github}}\hspace{.325em}github.com/ZKDL-Camp}
+        
+        \begin{center}
+            \includegraphics[width=0.15\textwidth]{images/logo.png}
+        \end{center}
+    \end{frame}
+\end{document}

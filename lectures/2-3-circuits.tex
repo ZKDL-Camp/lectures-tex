@@ -8,7 +8,7 @@
 
 Finally, we've reached the most interesting part of the course, where we will consider various zk-SNARK constructions we are using on the daily basis. Again, recall that we have the presence of two parties:
 \begin{itemize}
-    \item \textbf{Prover} $\mathcal{P}$ --- the party who knows the data that can resolve the given problem.
+    \item \textbf{Prover} $\mathcal{P}$ --- the party who knows the data that resolves the given problem.
     \item \textbf{Verifier} $\mathcal{V}$ --- the party that wants to verify the given proof.
 \end{itemize}
 
@@ -86,94 +86,156 @@ verification keys (which we call prover parameters $\mathsf{pp}$ and verifier pa
 which are then used to create and verify proofs. That being said, let us introduce the \textbf{preprocessing NARK}.
 
 \begin{definition}
-    A \textbf{preprocessing non-interactive argument of knowledge} (\textbf{preprocessing NARK}) $\Pi_{\text{preNARK}}=(\mathsf{Setup},\mathsf{Prove},\mathsf{Verify})$ consists of three algorithms:
+    A \textbf{preprocessing non-interactive argument of knowledge}
+    (\textbf{preprocessing NARK})
+    $\Pi_{\text{preNARK}}=(\mathsf{Setup},\mathsf{Prove},\mathsf{Verify})$
+    consists of three algorithms:
     \begin{itemize}
-        \item $\mathsf{Setup}(1^\lambda) \rightarrow (\mathsf{pp}, \mathsf{vp})$ --- the setup algorithm that takes the security parameter $\lambda$ and outputs the public parameters: proving and verification keys.
-        \item $\mathsf{Prove}(\mathsf{pp}, x, w) \rightarrow \pi$ --- the proving algorithm that takes the prover parameters $\mathsf{pp}$, statement $x$, and witness $w$, and outputs a proof $\pi$.
-        \item $\mathsf{Verify}(\mathsf{vp}, x, \pi) \rightarrow \{\mathsf{accept}, \mathsf{reject}\}$ --- the verification algorithm that takes the verification key, statement $x$, and proof $\pi$, and outputs a bit indicating whether the proof is valid.
+        \item $\mathsf{Setup}(1^\lambda, \mathcal{R}) \rightarrow (\mathsf{pp},
+        \mathsf{vp})$ --- the setup algorithm that takes the security parameter
+        $\lambda$ and relation $\mathcal{R}$, and outputs the public parameters:
+        proving and verification keys.
+        \item $\mathsf{Prove}(\mathsf{pp}, \mathbbm{x}, \mathbbm{w}) \rightarrow
+        \pi$ --- the proving algorithm that takes the prover parameters
+        $\mathsf{pp}$, statement $\mathbbm{x}$, and witness $\mathbbm{w}$, and outputs a proof
+        $\pi$.
+        \item $\mathsf{Verify}(\mathsf{vp}, \mathbbm{x}, \pi) \rightarrow
+        \{\mathsf{accept}, \mathsf{reject}\}$ --- the verification algorithm
+        that takes the verification key, statement $\mathbbm{x}$, and proof
+        $\pi$, and outputs a bit indicating whether the proof is valid.
     \end{itemize}
 \end{definition}
 
-Recall, that from NARK (and now preprocessing NARK, respectively) over relation $\mathcal{R}$ we require the following properties:
+Recall, that from NARK (and now preprocessing NARK, respectively) over relation
+$\mathcal{R}$ we require the following properties:
 \begin{itemize}
-    \item \textbf{Completeness} --- if the prover is honest and the statement is true, the verifier will always accept the proof:
+    \item \textbf{Completeness} --- if the prover is honest and the statement is
+    true, the verifier will always accept the proof:
     \begin{equation*}
-        \forall (x,w) \in \mathcal{R}: \text{Pr}[\mathsf{Verify}(\mathsf{vp}, x, \mathsf{Prove}(\mathsf{pp},x,w)) = \mathsf{accept}] = 1
+        \forall (\mathbbm{x},\mathbbm{w}) \in \mathcal{R}: \text{Pr}[\mathsf{Verify}(\mathsf{vp}, \mathbbm{x}, \mathsf{Prove}(\mathsf{pp},\mathbbm{x},\mathbbm{w})) = \mathsf{accept}] = 1
     \end{equation*}
-    \item \textbf{Knowledge Soundness} --- the prover cannot (statistically) generate a false proof $\pi$ that convinces the verifier. 
-    \item \textbf{Zero-knowledge} --- the verifier ``learns nothing'' about the witness $w$ from $(\mathcal{R},\mathsf{pp},\mathsf{vp},x,\pi)$.
+    \item \textbf{Knowledge Soundness} --- the prover cannot (statistically)
+    generate a false proof $\pi$ that convinces the verifier. 
+    \item \textbf{Zero-knowledge} --- the verifier ``learns nothing'' about the
+    witness $\mathbbm{w}$ from $(\mathcal{R},\mathsf{pp},\mathsf{vp},\mathbbm{x},\pi)$.
 \end{itemize}
 
-While we have formally defined all the terms here, including statistical soundness, we have not defined what \textbf{knowledge soundness} is. We give a brief informal definition below.
+While we have formally defined all the terms here, including statistical
+soundness, we have not defined what \textbf{knowledge soundness} is. We give a
+brief informal definition below.
 
 \begin{definition}[Knowledge Soundness]
-    $\Pi_{\text{preNARK}}$ is (adaptively) \textbf{knowledge sound} for a relation $\mathcal{R}$ if for every PPT adversary $\mathcal{A}=(\mathcal{A}_0,\mathcal{A}_1)$, split into two algorithms, such that:
+    $\Pi_{\text{preNARK}}$ is (adaptively) \textbf{knowledge sound} for a
+    relation $\mathcal{R}$ if for every PPT adversary
+    $\mathcal{A}=(\mathcal{A}_0,\mathcal{A}_1)$, split into two algorithms, such
+    that:
     \begin{equation*}
         \text{Pr}\begin{bmatrix}[c|c]
             & (\mathsf{pp},\mathsf{vp}) \gets \mathsf{Setup}(\cdot)\\
-            \mathsf{Verify}(\mathsf{vp},x,\pi)=\mathsf{accept} & x \gets \mathcal{A}_0(\cdot)  \\
-            & \pi \gets \mathcal{A}_1(\mathsf{pp},x)
+            \mathsf{Verify}(\mathsf{vp},\mathbbm{x},\pi)=\mathsf{accept} & \mathbbm{x} \gets \mathcal{A}_0(\cdot)  \\
+            & \pi \gets \mathcal{A}_1(\mathsf{pp},\mathbbm{x})
         \end{bmatrix} > \alpha,
     \end{equation*}
-    where $\alpha=\alpha(\lambda) \neq \mathsf{negl}(\lambda)$ is a non-negligible probability, there exists a PPT extractor $\mathcal{E}^{\mathcal{A}}$ such that
+    where $\alpha=\alpha(\lambda) \neq \mathsf{negl}(\lambda)$ is a
+    non-negligible probability, there exists a PPT extractor
+    $\mathcal{E}^{\mathcal{A}}$ such that
     \begin{equation*}
         \text{Pr}\begin{bmatrix}[c|c]
-            (x,w) \in \mathcal{R} & x \gets \mathcal{A}_0(\cdot), \; w \gets \mathcal{E}^{\mathcal{A}}(x)
+            (\mathbbm{x},\mathbbm{w}) \in \mathcal{R} & \mathbbm{x} \gets \mathcal{A}_0(\cdot), \; \mathbbm{w} \gets \mathcal{E}^{\mathcal{A}}(\mathbbm{x})
         \end{bmatrix} > \alpha - \epsilon,
     \end{equation*}
     where $\epsilon = \epsilon(\lambda)$ is a negligible function.
 \end{definition}
 
 \begin{remark}
-    Informally, the aforementioned definition means that if the prover can generate a false proof with a non-negligible probability, then there exists an extractor that can extract the witness with a probability that is almost as high (and thus is also non-negligible).
+    Informally, the aforementioned definition means that if the prover can
+    generate a false proof with a non-negligible probability, then there exists
+    an extractor that can extract the witness with a probability that is almost
+    as high (and thus is also non-negligible).
 \end{remark}
 
-Finally, to make zk-NARKs more universal and applicable to a wider range of problems, we introduce the \textbf{zk-SNARK} by adding the \textbf{succinctness} property.
+Finally, to make zk-NARKs more universal and applicable to a wider range of
+problems, we introduce the \textbf{zk-SNARK} by adding the \textbf{succinctness}
+property.
 
 \begin{definition}
-    A \textbf{zk-SNARK} (Succint NARK) is a preprocessing NARK, where the proof's length $|\pi|$ and verification time $T_{\mathcal{V}}$ are short: the verification time is sublinear in the size of the computation $C$ (denoted by $|C|$), while the proof size is sublinear in the witness size $|w|$:
+    A \textbf{zk-SNARK} (Succint NARK) is a preprocessing NARK, where the
+    proof's length $|\pi|$ and verification time $T_{\mathcal{V}}$ are short:
+    the verification time is sublinear in the size of the computation $C$
+    (denoted by $|C|$), while the proof size is sublinear in the witness size
+    $|\mathbbm{w}|$:
     \begin{equation*}
-        |\pi| = \mathsf{sublinear}(|w|), \; T_{\mathcal{V}} = O_{\lambda}(|x|, \mathsf{sublinear}(|C|)).
+        |\pi| = \mathsf{sublinear}(|\mathbbm{w}|), \; T_{\mathcal{V}} = O_{\lambda}(|\mathbbm{x}|, \mathsf{sublinear}(|C|)).
     \end{equation*}
 \end{definition}
 
 \begin{remark}
-    \textbf{Sublinearity} means that the function $f: \mathbb{N} \to \mathbb{R}$ grows slower than linearly. For example, functions $f(n) = \log n$ or $f(n) = \sqrt{n}$ are sublinear, while $f(n) = 3n+2$ is linear. Generally, if $f(n)/(c\cdot n) \xrightarrow[n \to \infty]{} 0$ for any $c \in \mathbb{R}\setminus \{0\}$, then $f(n)$ is sublinear.
+    \textbf{Sublinearity} means that the function $f: \mathbb{N} \to \mathbb{R}$
+    grows slower than linearly. For example, functions $f(n) = \log n$, $f(n) =
+    \sqrt{n}$, or $f(n)=n/\log n$ are all sublinear, while $f(n) = 3n+2$ is
+    linear. Generally, if $\lim_{n \to \infty}f(n)/(c \cdot n) = 0$ for any $c
+    \in \mathbb{R}\setminus \{0\}$, then $f(n)$ is sublinear.
 \end{remark}
 
 \begin{example}
-    Consider the protocol where the proof size is $|\pi| = O(\sqrt{|w|})$ and $T_{\mathcal{V}} = O(\sqrt[3]{|C|})$. Such protocol is a zk-SNARK, as the proof size is sublinear in the witness size and the verification time is sublinear in the size of the computation.
+    Consider the protocol where the proof size is $|\pi| = O(\sqrt{|\mathbbm{w}|})$ and
+    $T_{\mathcal{V}} = O(\sqrt[3]{|C|})$. Such protocol is a zk-SNARK, as the
+    proof size is sublinear in the witness size and the verification time is
+    sublinear in the size of the computation.
 \end{example}
 
-Although having a proof size and verification time lower than linear is nice, that is still not sufficient to make zk-SNARKs practical in the wild. For that reason, typically, in practice, we require a stricter definition of the succinctness property, where the proof size and verification time are constant or logarithmic in the size of the computation. This is the case for most zk-SNARKs used in practice.
+Although having a proof size and verification time lower than linear is nice,
+that is still not sufficient to make zk-SNARKs practical in the wild. For that
+reason, typically, in practice, we require a stricter definition of the
+succinctness property, where the proof size and verification time are constant
+or logarithmic in the size of the computation. This is the case for most
+zk-SNARKs used in practice.
 \begin{definition}
-    A \textbf{zk-SNARK} is \textbf{strongly succinct} if the proof size and verification time are constant or logarithmic in the size of the computation:
+    A \textbf{zk-SNARK} is \textbf{strongly succinct} if the proof size and
+    verification time are constant or logarithmic in the size of the
+    computation:
     \begin{equation*}
-        |\pi| = O_{\lambda}(\log |C|), \; T_{\mathcal{V}} = O_{\lambda}(|x|, \log|C|).
+        |\pi| = O_{\lambda}(\log |C|), \; T_{\mathcal{V}} = O_{\lambda}(|\mathbbm{x}|, \log|C|).
     \end{equation*}
 \end{definition}
 
 \begin{example}
     Consider three major proving systems used in practice with $N=|C|$ being the complexity of a computation:
     \begin{itemize}
-        \item \textbf{Groth16} with $|\pi| = O_{\lambda}(1)$, $T_{\mathcal{V}} = O_{\lambda}(1)$ is definitely a strongly succinct zk-SNARK since both the proof size and verification time are constant.
-        \item \textbf{STARK}s with $|\pi| = O_{\lambda}(\mathsf{polylog}(N))$ and $T_{\mathcal{V}} = O_{\lambda}(\mathsf{polylog}(N))$ are also strongly succinct zk-SNARKs since both the proof size and verification time are logarithmic in the size of the computation.
-        \item \textbf{Bulletproofs} with $|\pi| = O_{\lambda}(\log N)$ and $T_{\mathcal{V}} = O_{\lambda}(N)$ is not a strongly succinct zk-SNARK since the verification time is linear in the size of the computation.
+        \item \textbf{Groth16} (see \Cref{section:groth}) with $|\pi| =
+        O_{\lambda}(1)$, $T_{\mathcal{V}} = O_{\lambda}(1)$ is definitely a
+        strongly succinct zk-SNARK since both the proof size and verification
+        time are constant.
+        \item \textbf{STARK}s with $|\pi| = O_{\lambda}(\mathsf{polylog}(N))$
+        and $T_{\mathcal{V}} = O_{\lambda}(\mathsf{polylog}(N))$ are also
+        strongly succinct zk-SNARKs since both the proof size and verification
+        time are logarithmic in the size of the computation.
+        \item \textbf{Bulletproofs} (see \Cref{section:bulletproofs}) with
+        $|\pi| = O_{\lambda}(\log N)$ and $T_{\mathcal{V}} = O_{\lambda}(N)$ is
+        not a strongly succinct zk-SNARK since the verification time is linear
+        in the size of the computation.
     \end{itemize}
 \end{example}
 
 \subsection{Arithmetic Circuits}
 
 \subsubsection{What is Arithmetic Circuit?}
-The cryptographic tools we have learned in the previous lectures operate with numbers or certain 
-primitives above them (like finite field extensions or elliptic curves), so the first question is: how do we convert a program into a mathematical 
-language? Additionally, we need to do this in a way that can be further (a) made succinct, (b) allows us to prove 
-something about it, and (c) be as universal as possible (to be able to prove quite general statements unlike $\Sigma$-protocols considered in the previous lecture).
+The cryptographic tools we have learned in the previous lectures operate with
+numbers or certain primitives above them (like finite field extensions or
+elliptic curves), so the first question is: how do we convert a program into a
+mathematical language? Additionally, we need to do this in a way that can be
+further (a) made succinct, (b) allows us to prove something about it, and (c) be
+as universal as possible (to be able to prove quite general statements unlike
+$\Sigma$-protocols considered in the previous lecture).
 
-The \textbf{Arithmetic Circuits} can help us with these problems. Similar to \textbf{Boolean Circuits}, they consist of \textbf{gates} and 
-\textbf{wires}: gates represent operations acting all elements, connected by wires (see figure below for details). Yet, instead of operations $\mathtt{AND}$, $\mathtt{OR}$, $\mathtt{NOT}$ and such, in arithmetic circuits only 
-multiplication/addition/subtraction operations are allowed. Additionally, arithmetic circuits manipulate over elements
-from some finite field $\mathbb{F}$ (see right figure below).
+The \textbf{Arithmetic Circuits} can help us with these problems. Similar to
+\textbf{Boolean Circuits}, they consist of \textbf{gates} and \textbf{wires}:
+gates represent operations acting all elements, connected by wires (see figure
+below for details). Yet, instead of operations $\mathtt{AND}$, $\mathtt{OR}$,
+$\mathtt{NOT}$ and such, in arithmetic circuits only
+multiplication/addition/subtraction operations are allowed. Additionally,
+arithmetic circuits manipulate over elements from some finite field $\mathbb{F}$
+(see right figure below).
 
 % --- Writing diagrams ---
 
@@ -292,15 +354,18 @@ from some finite field $\mathbb{F}$ (see right figure below).
 
 % --- Finish Writing diagrams ---
 
-Let us come back to boolean circuits for a moment and consider the \texttt{AND} gate. The \textit{\texttt{AND} Gate Truth \Cref{tab:and-truth-table}} shows us the results we receive if 
-particular values are supplied to the gate. The main point here is that with this table, we can 
-verify the validity of logical statements. Boolean circuits receive an input vector of $\{0, 1\}$ 
-and resolve to \texttt{true} (1) or \texttt{false} (0); basically, they determine if the input values satisfy the 
-statement.
+Let us come back to boolean circuits for a moment and consider the \texttt{AND}
+gate. The \textit{\texttt{AND} Gate Truth \Cref{tab:and-truth-table}} shows us
+the results we receive if particular values are supplied to the gate. The main
+point here is that with this table, we can verify the validity of logical
+statements. Boolean circuits receive an input vector of $\{0, 1\}$ and resolve
+to \texttt{true} (1) or \texttt{false} (0); basically, they determine if the
+input values satisfy the statement.
 
-However, more notably, we can combine these gates to create more complex circuits that can resolve
-more complex problems. For example, we might construct a circuit depicted in \Cref{fig:bool-circuit}, 
-calculating $(a \;\texttt{AND}\; b) \,\texttt{OR}\; c$.
+However, more notably, we can combine these gates to create more complex
+circuits that can resolve more complex problems. For example, we might construct
+a circuit depicted in \Cref{fig:bool-circuit}, calculating $(a \;\texttt{AND}\;
+b) \,\texttt{OR}\; c$.
 
 \begin{figure}[h!]
     \centering
@@ -326,18 +391,24 @@ calculating $(a \;\texttt{AND}\; b) \,\texttt{OR}\; c$.
     \label{fig:bool-circuit}
 \end{figure}
 
-Although we can already represent very complex computations using boolean circuits\footnote{\ldots such as \texttt{SHA-256} hash function computation, one might take a look here: \url{http://stevengoldfeder.com/projects/circuits/sha2circuit.html}}, they are not the most convenient way to represent arithmetic operations. 
+Although we can already represent very complex computations using boolean
+circuits\footnote{such as \texttt{SHA-256} hash function computation; one might
+take a look at the example implementation here:
+\url{http://stevengoldfeder.com/projects/circuits/sha2circuit.html}.}, they are
+not the most convenient way to represent arithmetic operations. 
 
-That being said, we can do the same with \textbf{arithmetic circuits} to verify computations over some finite field $\mathbb{F}$ without excessive 
-verbosity due to a binary arithmetic, where we had to perceive all intermediate
-values as binary $\{0,1\}$.
+That being said, we can do the same with \textbf{arithmetic circuits} to verify
+computations over some finite field $\mathbb{F}$ without excessive verbosity due
+to a binary arithmetic, where we had to perceive all intermediate values as
+binary $\{0,1\}$.
 
 \subsubsection{More advanced examples}
 
-Let us take a look at some examples of programs and how can we translate them to the arithmetic
-circuits. 
+Let us take a look at some examples of programs and how can we translate them to
+the arithmetic circuits. 
 
-\textbf{Example 1: Multiplication.} Consider a very simple program, where we are to simply multiply two field elements $a,b \in \mathbb{F}$:
+\textbf{Example 1: Multiplication.} Consider a very simple program, where we are
+to simply multiply two field elements $a,b \in \mathbb{F}$:
 
 \begin{lstlisting}[language=Python,numbers=none]
     def multiply(a: F, b: F) -> F:
@@ -349,7 +420,7 @@ Since we are doing all the arithmetic in a finite field $\mathbb{F}$, we denote 
     r = a \times b
 \end{equation*}    
 
-The witness vector (essentially, our solution vector) is $\mathbf{w} = (r, a, b)$, for example: $(6, 2, 3)$. We 
+The witness vector (essentially, our solution vector) is $\mathbf{z} = (r, a, b)$, for example: $(6, 2, 3)$. We 
 assume that the $a$ and $b$ are input values. 
 
 We can think of the ``=`` in the gate as an assertion, meaning that if $a \times b$ does not equal
@@ -415,7 +486,7 @@ $\texttt{true}$ is represented by $1$ and $\texttt{false}$ by $0$, we can transf
     r = a \times (b \times c) + (1 - a) \times (b + c)    
 \end{equation*}
 
-Now, what is the witness vector in this case? One might assume that $\mathbf{w} = (r, a, b, c)$ would suffice. Then, examples of valid witnesses include $(6, 1, 2, 3)$, $(5, 0, 2, 3)$.
+Now, what is the witness vector in this case? One might assume that $\mathbf{z} = (r, a, b, c)$ would suffice. Then, examples of valid witnesses include $(6, 1, 2, 3)$, $(5, 0, 2, 3)$.
 
 But, we need to verify all the intermediate steps! This can be achieved by transforming the above
 equation using the simplest terms (the gates), ensuring the correctness of each step in the program.
@@ -490,7 +561,7 @@ Corresponding equations for the circuit are:
     \end{aligned}
 \end{equation*}
 
-With the witness vector: $\mathbf{w} = (r, r_1, r_2, r_3, r_4, r_5, a , b, c)$. One example of a valid witness is $(6, 6, 5, 0, 6, 0, 1, 2, 3)$.
+With the witness vector: $\mathbf{z} = (r, r_1, r_2, r_3, r_4, r_5, a , b, c)$. One example of a valid witness is $(6, 6, 5, 0, 6, 0, 1, 2, 3)$.
 
 \subsubsection{Circuit Satisfability Problem}
 
@@ -504,10 +575,23 @@ Now, let us generalize what we have constructed so far. First, we begin with the
     For example, previously considered multivariate polynomial $\Circ(x_1,x_2) = x_1^3 + x_2^2$ can be represented as an arithmetic circuit with three multiplication and one addition gates, as shown in \Cref{fig:multivariate-polynomial-circuit}. It is defined over inputs $\mathbf{x}=(x_1,x_2)$ with $n=2$ and $|\Circ| = 4$.
 \end{example}
 
-Now, suppose that the circuit is defined over $n$ inputs. We can always split this input into two parts: the first $\ell$ inputs are the \textit{public inputs}, being our statement $\mathbf{x} \in \mathbb{F}^{\ell}$, and the remaining $n-\ell$ inputs are the \textit{private inputs}, being our secret witness $\mathbf{w} \in \mathbb{F}^{n-\ell}$. The public inputs are known to everyone, while the private inputs are known only to the prover. The goal of the prover is to show that the circuit is satisfiable, i.e., that for the given $\mathbf{x}$, he \textit{knows} a witness $\mathbf{w}$ that resolves the circuit. Resolving in this context means that the output of the circuit is zero.
+Now, suppose that the circuit is defined over $n$ inputs. We can always split
+this input into two parts: the first $\ell$ inputs are the \textit{public
+inputs}, being our statement $\mathbf{x} \in \mathbb{F}^{\ell}$, and the
+remaining $n-\ell$ inputs are the \textit{private inputs}, being our secret
+witness $\mathbf{w} \in \mathbb{F}^{n-\ell}$. The public inputs are known to
+everyone, while the private inputs are known only to the prover. The goal of the
+prover is to show that the circuit is satisfiable, i.e., that for the given
+$\mathbf{x}$, he \textit{knows} a witness $\mathbf{w}$ that resolves the
+circuit. Resolving in this context means that the output of the circuit is zero.
 
 \begin{definition}
-    The \textbf{Circuit Satisfiability Problem} is defined as follows: given an arithmetic circuit $\Circ$ and a public input $\mathbf{x} \in \mathbb{F}^{\ell}$, determine if there exists a private input $\mathbf{w} \in \mathbb{F}^{n-\ell}$ such that $\Circ(\mathbf{x},\mathbf{w}) = 0$. More formally, the problem is determined by relation $\mathcal{R}_{\Circ}$ and corresponding language $\mathcal{L}_{\Circ}$ as follows:
+    The \textbf{Circuit Satisfiability Problem} is defined as follows: given an
+    arithmetic circuit $\Circ$ and a public input $\mathbf{x} \in
+    \mathbb{F}^{\ell}$, determine if there exists a private input $\mathbf{w}
+    \in \mathbb{F}^{n-\ell}$ such that $\Circ(\mathbf{x},\mathbf{w}) = 0$. More
+    formally, the problem is determined by relation $\mathcal{R}_{\Circ}$ and
+    corresponding language $\mathcal{L}_{\Circ}$ as follows:
     \begin{equation*}
         \begin{aligned}
             &\mathcal{R}_{\Circ} = \{(\mathbf{x},\mathbf{w}) \in \mathbb{F}^{\ell} \times \mathbb{F}^{n-\ell}: \mathtt{C}(\mathbf{x},\mathbf{w}) = 0\} \\
@@ -518,7 +602,10 @@ Now, suppose that the circuit is defined over $n$ inputs. We can always split th
 
 Let us consider some concrete example of the Circuit Satisfiability Problem.
 \begin{example}
-    Suppose our problem (as a prover) is to prove the verifier that we know the point on the circle of ``radius $\sqrt{\rho}$``\footnote{Note that in the finite field the circle equation does not have the geometrical form we are used to (similarly to Elliptic Curve equation, for instance)}, but over the finite field $\mathbb{F}$. More formally, suppose we want to claim that for the given $\rho$, we have $x_1,x_2 \in \mathbb{F}$ such that:
+    Suppose our problem (as a prover) is to prove the verifier that we know the
+    point on the circle of ``radius $\sqrt{\rho}$``, but over the
+    finite field $\mathbb{F}$. More formally, suppose we want to claim that for
+    the given $\rho$, we have $x_1,x_2 \in \mathbb{F}$ such that:
     \begin{equation*}
         x_1^2 + x_2^2 = \rho
     \end{equation*}
@@ -572,13 +659,23 @@ Let us consider some concrete example of the Circuit Satisfiability Problem.
         \textit{\textbf{Illustration:} Arithmetic circuit for the equation $x_1^2 + x_2^2 - \rho$.}
     \end{center}
 
-    Now, our statement vector is $\mathbf{x} = \rho \in \mathbb{F}$ (so $\ell=1$) and the witness vector is $\mathbf{w} = (x_1,x_2) \in \mathbb{F}^2$ (so $n-\ell=2$). The prover wants to prove that he knows the witness $\mathbf{w}$ such that $\Circ(\mathbf{x},\mathbf{w}) = 0$. For example, for $\rho=5$, the prover might have the witness $\mathbf{w} = (2,1)$ that he wants to show to the verifier\footnote{Here, $\mathbb{F} = \mathbb{F}_p$ for some prime $p > 5$}.
+    Now, our statement vector is $\mathbf{x} = \rho \in \mathbb{F}$ (so
+    $\ell=1$) and the witness vector is $\mathbf{w} = (x_1,x_2) \in
+    \mathbb{F}^2$ (so $n-\ell=2$). The prover wants to prove that he knows the
+    witness $\mathbf{w}$ such that $\Circ(\mathbf{x},\mathbf{w}) = 0$. For
+    example, for $\rho=5$, the prover might have the witness $\mathbf{w} =
+    (2,1)$ that he wants to show to the verifier.
 \end{example}
 
 Now, as with any other previously considered proving systems, suppose we are not concerned about the zero-knowledge property and simply want to prove the evaluation integrity of the circuit. Can the prover simply send the witness $\mathbf{w}$ to the verifier? Prover can send the witness, but this will not be a SNARK (and, surely, not a zk-SNARK either). 
 
 \begin{proposition}[Trivial SNARK is not a SNARK]
-    The protocol in which $\mathcal{P}$ sends the witness $\mathbf{w}$ to $\mathcal{V}$ is not a SNARK for the Circuit Satisfiability Problem. Indeed, in this case, the proof size is $|\pi| = |w|$ (since $\pi=w$) and the verification time is $T_{\mathcal{V}} = O(|\Circ|)$ (since $\Circ$ must be evaluated fully). We do not have succinctness (not even mentioning the strong succinctness) in this case.
+    The protocol in which $\mathcal{P}$ sends the witness $\mathbbm{w}$ to
+    $\mathcal{V}$ is not a SNARK for the Circuit Satisfiability Problem. Indeed,
+    in this case, the proof size is $|\pi| = |\mathbbm{w}|$ and the verification
+    time is $T_{\mathcal{V}} = O(|\Circ|)$ (since $\Circ$ must be evaluated
+    fully). We do not have succinctness (not even mentioning the strong
+    succinctness) in this case.
 \end{proposition}
 
 Proposition above motivates us to look for more advanced techniques to prove the satisfiability of the arithmetic circuits. In the next section, we introduce the Rank-1 Constraint System, which is a more flexible and general way to describe the arithmetic circuits, allowing to further encode the constraints in a more succinct way.
@@ -591,18 +688,17 @@ format of it --- \textbf{Rank-1 Constraint System}, where the simpliest term is 
 This offers a more flexible and general way to describe these parts.
 
 \subsubsection{Constraint Definition}
-With knowledge of the inner product of two vectors, we can now formulate a definition of the 
-constraint in the context of an R1CS.
+Let us define the R1CS constraint.
 
 \begin{definition}
     Each \textbf{constraint} in the Rank-1 Constraint System must be in the form:
     \begin{equation*}
-        \langle \mathbf{a}, \mathbf{w}\rangle \times \langle \mathbf{b}, \mathbf{w}\rangle = \langle \mathbf{c}, \mathbf{w}\rangle
+        \langle \boldsymbol{\ell}, \mathbf{z}\rangle \times \langle \boldsymbol{r}, \mathbf{z}\rangle = \langle \boldsymbol{o}, \mathbf{z}\rangle
     \end{equation*}
-    Where $\mathbf{w}$ is a vector containing all the \textit{input}, \textit{output}, and 
-    \textit{intermediate} variables involved in the computation. The vectors $\mathbf{a}$, 
-    $\mathbf{b}$, and $\mathbf{c}$ are vectors of coefficients corresponding to these variables, 
-    and they define the relationship between the linear combinations of $\mathbf{w}$ on the 
+    Where $\mathbf{z}$ is a vector containing all the \textit{input}, \textit{output}, and 
+    \textit{intermediate} variables involved in the computation. The vectors $\boldsymbol{\ell}$, 
+    $\boldsymbol{r}$, and $\boldsymbol{o}$ are vectors of coefficients corresponding to these variables, 
+    and they define the relationship between the linear combinations of $\mathbf{z}$ on the 
     left-hand side and the right-hand side of the equation.
 \end{definition}
 
@@ -612,17 +708,17 @@ constraint in the context of an R1CS.
         r = x_1 \times x_2
     \end{equation*}
     Since we have $3$ variables, the constraint is written as:
-    \[(a_1w_1 + a_2w_2 + a_3w_3)(b_1w_1 + b_2w_2 + b_3w_3) = c_1w_1 + c_2w_2 + c_3w_3\]
+    \[(a_1z_1 + a_2z_2 + a_3z_3) \cdot (b_1z_1 + b_2z_2 + b_3z_3) = c_1z_1 + c_2z_2 + c_3z_3\]
     Coefficients and witness vectors are:
-    $\mathbf{w} = (r, x_1, x_2), \mathbf{a} = (0, 1, 0), \mathbf{b} = (0, 0, 1), \mathbf{c} = (1, 0, 0)$. Therefore, our expression above reduces to:
-    \[ (0w_1 + 1w_2 + 0w_3)(0w_1 + 0w_2 + 1w_3) = (1w_1 + 0w_2 + 0w_3) \]
-    \[ w_2 \times w_3 = w_1 \]
+    $\mathbf{z} = (r, x_1, x_2), \boldsymbol{\ell} = (0, 1, 0), \boldsymbol{r} = (0, 0, 1), \boldsymbol{o} = (1, 0, 0)$. Therefore, our expression above reduces to:
+    \[ (0z_1 + 1z_2 + 0z_3)(0z_1 + 0z_2 + 1z_3) = (1z_1 + 0z_2 + 0z_3) \]
+    \[ z_2 \times z_3 = z_1 \]
     \[ x_1 \times x_2 = r \]
 \end{example}
 
-The interesting thing is where to take a constants from. The solution is straightforward: by placing
-1 in the witness vector, so we can obtain any desired value by multiplying it by an appropriate 
-coefficient.
+An interesting question is how to form coefficient vectors. The lazy answer is
+straightforward: by placing 1 in the witness vector at position corresponding to
+the gate input variable. 
 
 \vspace{-0.5em}
 
@@ -650,16 +746,16 @@ coefficient.
     \end{align*}
 
     For every constraint we need the coefficients vectors $a_i$, $b_i$, $c_i$, but all of them have
-    the same witness vector $\mathbf{w}$.
-    \[ \mathbf{w} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult}) \]
+    the same witness vector $\mathbf{z}$.
+    \[ \mathbf{z} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult}) \]
     The coefficients vectors:
     \begin{equation*}            
     \scalebox{0.9}{$
         \begin{aligned}
-            \mathbf{a}_1 &= (0, 0, 1, 0, 0, 0, 0) & \quad \mathbf{b}_1 &= (0, 0, 1, 0, 0, 0, 0) & \quad \mathbf{c}_1 &= (0, 0, 1, 0, 0, 0, 0) \\
-            \mathbf{a}_2 &= (0, 0, 0, 1, 0, 0, 0) & \quad \mathbf{b}_2 &= (0, 0, 0, 0, 1, 0, 0) & \quad \mathbf{c}_2 &= (0, 0, 0, 0, 0, 1, 0) \\
-            \mathbf{a}_3 &= (0, 0, 1, 0, 0, 0, 0) & \quad \mathbf{b}_3 &= (0, 0, 0, 0, 0, 1, 0) & \quad \mathbf{c}_3 &= (0, 0, 0, 0, 0, 0, 1) \\
-            \mathbf{a}_4 &= (1, 0, -1, 0, 0, 0, 0) & \quad \mathbf{b}_4 &= (0, 0, 0, 1, 1, 0, 0) & \quad \mathbf{c}_4 &= (0, 1, 0, 0, 0, 0, -1)
+            \boldsymbol{\ell}_1 &= (0, 0, 1, 0, 0, 0, 0) & \quad \boldsymbol{r}_1 &= (0, 0, 1, 0, 0, 0, 0) & \quad \boldsymbol{o}_1 &= (0, 0, 1, 0, 0, 0, 0) \\
+            \boldsymbol{\ell}_2 &= (0, 0, 0, 1, 0, 0, 0) & \quad \boldsymbol{r}_2 &= (0, 0, 0, 0, 1, 0, 0) & \quad \boldsymbol{o}_2 &= (0, 0, 0, 0, 0, 1, 0) \\
+            \boldsymbol{\ell}_3 &= (0, 0, 1, 0, 0, 0, 0) & \quad \boldsymbol{r}_3 &= (0, 0, 0, 0, 0, 1, 0) & \quad \boldsymbol{o}_3 &= (0, 0, 0, 0, 0, 0, 1) \\
+            \boldsymbol{\ell}_4 &= (1, 0, -1, 0, 0, 0, 0) & \quad \boldsymbol{r}_4 &= (0, 0, 0, 1, 1, 0, 0) & \quad \boldsymbol{o}_4 &= (0, 1, 0, 0, 0, 0, -1)
         \end{aligned}
     $}
     \end{equation*}
@@ -679,35 +775,40 @@ coefficient.
     \end{enumerate}
 \end{example}
 
-Each constraint enforces that the product of the linear combinations defined by $\mathbf{a}$ and $\mathbf{b}$ must
-equal the linear combination defined by $\mathbf{c}$. Collectively, these constraints describe the 
+Each constraint enforces that the product of the linear combinations defined by $\boldsymbol{\ell}$ and $\boldsymbol{r}$ must
+equal the linear combination defined by $\boldsymbol{o}$. Collectively, these constraints describe the 
 computation by ensuring that every step, from inputs through intermediates to outputs, satisfies 
 the defined relationships, thus encoding the entire computational process in the form of a system
 of rank-1 quadratic equations.
 
 \subsubsection{Why Rank-1?}
-The last unresolved question is where the ``rank-1`` comes from. Using the outer product we can express the constraint in another form.
+The last unresolved question is where the ``rank-1`` comes from. Using the outer
+product we can express the constraint in another form.
 
 \begin{lemma}
-    Suppose we have a constraint $\langle \mathbf{a}, \mathbf{w}\rangle \times \langle \mathbf{b}, \mathbf{w}\rangle = \langle \mathbf{c}, \mathbf{w} \rangle$ 
-    with coefficient vectors $\mathbf{a}$, $\mathbf{b}$, $\mathbf{c}$ and witness vector $\mathbf{w}$ (all from $\mathbb{F}^n$). Then it can be expressed in the 
-    form:
-    \[ \mathbf{w}^{\top} A \mathbf{w} + \mathbf{c}^{\top} \mathbf{w} = 0 \]
-    Where $A$ is the outer product of vectors $\mathbf{a}$, $\mathbf{b}$ (denoted as $\mathbf{a} \otimes \mathbf{b}$), consequently 
-    a \textbf{rank-1} matrix.
+    Suppose we have a constraint $\langle \boldsymbol{\ell}, \mathbf{z}\rangle \times
+    \langle \boldsymbol{r}, \mathbf{z}\rangle = \langle \boldsymbol{o}, \mathbf{z}
+    \rangle$ with coefficient vectors $\boldsymbol{\ell}$, $\boldsymbol{r}$, $\boldsymbol{o}$
+    and witness vector $\mathbf{z}$ (all from $\mathbb{F}^n$). Then it can be
+    expressed in the form:
+    \[ \mathbf{z}^{\top} T \mathbf{z} + \boldsymbol{o}^{\top} \mathbf{z} = 0 \]
+    Where $T$ is the outer product of vectors $\boldsymbol{\ell}$, $\boldsymbol{r}$
+    (denoted as $\boldsymbol{\ell} \otimes \boldsymbol{r}$), consequently a \textbf{rank-1}
+    matrix.
 \end{lemma}
 
-\textbf{Lemma proof.} Consider the constraint $\langle \mathbf{a}, \mathbf{w}\rangle \times \langle \mathbf{b}, \mathbf{w}\rangle
-= \langle \mathbf{c}, \mathbf{w}\rangle$, where $\mathbf{a}, \mathbf{b}, \mathbf{c}, \mathbf{w} \in \mathbb{F}^n$. Let us expand the inner
-products: 
-\[ \left(\sum_{i=1}^{n} a_i w_i\right) \times \left(\sum_{j=1}^{n} b_j w_j\right) = \sum_{k=1}^{n} c_k w_k \]
+\textbf{Lemma proof.} Consider the constraint $\langle \boldsymbol{\ell},
+\mathbf{z}\rangle \times \langle \boldsymbol{r}, \mathbf{z}\rangle = \langle
+\boldsymbol{o}, \mathbf{z}\rangle$, where $\boldsymbol{\ell}, \boldsymbol{r}, \boldsymbol{o},
+\mathbf{z} \in \mathbb{F}^n$. Let us expand the inner products: 
+\[ \sum_{i=1}^{n} \ell_i z_i \cdot \sum_{i=1}^{n} r_i z_i = \sum_{i=1}^{n} o_i z_i \]
 
 Combine the products into a double sum on the left side:
-\[ \sum_{i=1}^{n} \sum_{j=1}^{n} a_i b_j w_i w_j = \mathbf{w}^{\top} (\mathbf{a} \otimes \mathbf{b}) \mathbf{w} = \mathbf{w}^{\top} A \mathbf{w} \]
+\[ \sum_{i=1}^{n} \sum_{j=1}^{n} \ell_i r_j z_i z_j = \mathbf{z}^{\top} (\boldsymbol{\ell} \otimes \boldsymbol{r}) \mathbf{z} = \mathbf{z}^{\top} T \mathbf{z} \]
 
 Thus, the constraint can be written as:
-\[ \mathbf{w}^{\top} A \mathbf{w} + \mathbf{c}^{\top} \mathbf{w} = 0 \]
+\[ \mathbf{z}^{\top} T \mathbf{z} + \boldsymbol{o}^{\top} \mathbf{z} = 0 \]
 
-So, the rank-1 means the rank of the coefficients matrix $A$ in one of the constraint formats.
+So, the rank-1 means the rank of the coefficients matrix $T$ in one of the constraint formats.
 
 \end{document}
