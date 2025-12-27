@@ -74,7 +74,7 @@ This theorem allows us to define two new operations. Suppose $a,b,q,r$ are given
 as in the \Cref{th:division}. Then,
 \begin{itemize}
     \item \textbf{Floor Operation} ($\lfloor a/b \rfloor$ or $a \; \text{div} \; b$) is defined
-    as $q$. This operation is a standard \text{div} opeartion commonly used in programming languages.
+    as $q$. This operation is a standard \text{div} operation commonly used in programming languages.
     \item \textbf{Mod Operation} ($a \; \text{mod} \; b$) is defined as $r$. This operation is a standard
 \text{mod} operation commonly used in programming languages. 
 \end{itemize}
@@ -120,7 +120,7 @@ numbers. This is where the concept of the \textbf{greatest common divisor} (or
         \item $d$ is a maximal integer that satisfies the first condition.
     \end{enumerate}
 
-    One might right the above definition more concisely:
+    One might write the above definition more concisely:
     \begin{xequation}
         \gcd(a,b) = \max\{d \in \mathbb{N}: d \mid a \; \text{and} \; d \mid b\}.
     \end{xequation}
@@ -183,7 +183,7 @@ print(gcd(13, 17)) # Output: 1
 
 \end{lstlisting}
 
-However, such an appraoch in the worst-case scenario still requires linear time
+However, such an approach in the worst-case scenario still requires linear time
 in the size of the numbers: for example, when computing $\gcd(n, 1)$. The following lemma will be extensively employed in
 the so-called \textit{Euclidean algorithm}, which will reduce the complexity down
 to logarithmic time.
