@@ -24,7 +24,7 @@ jobs:
 
       # 2. Compile LaTeX book to PDF
       - name: Compile LaTeX
-        uses: xu-cheng/latex-action@v3
+        uses: xu-cheng/latex-action@v2
         with:
           root_file: book.tex
 
