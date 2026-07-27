@@ -303,8 +303,7 @@ TSWLatexianTemp*
 .idea/*
 
 # temp .pdf files
-/contents/*.pdf
-/preface/*.pdf
+/contents/**/*.pdf
 
 exercises.pdf
 lecture-notes-148x210.pdf
