@@ -1,0 +1,163 @@
+\documentclass{config/zkdl-template}
+
+% --- Book cover ---
+\makeatletter
+\def\maketitle{
+    \input{contents/0-auxiliary/book-cover.tex}
+    \thispagestyle{empty}
+    \pagebreak
+}
+\makeatother
+
+\begin{document}
+    \maketitle
+
+    \pagecolor{white}
+
+    \vspace*{\fill}
+    
+    % --- Abstract ---
+
+    \begin{abstract}
+        \fontsize{10}{12}\selectfont
+
+        \vspace{5mm}
+
+        \input{contents/0-auxiliary/abstract.tex}
+    \end{abstract}
+
+    \vspace*{\fill}
+
+    \thispagestyle{empty}
+    \newpage
+
+    % --- Table of Contents ---
+
+    \pagestyle{fancy}
+    \pagecolor{white}
+
+    \tableofcontents
+
+    \pagebreak
+
+    % --- Introduction and Notation ---
+
+    \section{Preface}
+    \subfile{contents/0-auxiliary/preface}
+
+    \section{Notation}\label{section:notation}
+    \subfile{contents/1-mathematics/0-notation}
+
+    % --- Chapter I: Mathematical Preliminaries ---
+
+    \part{Mathematics Crash Course}
+    \subfile{contents/0-auxiliary/chapter-intros/chapter-1}
+
+    \section{Introduction to Number Theory}\label{section:number-theory}
+    \subfile{contents/1-mathematics/1-number-theory.tex}
+
+    \section{Introduction to Abstract Algebra}\label{section:abstract-algebra}
+    \subfile{contents/1-mathematics/2-abstract-algebra.tex}
+
+    \section{Polynomials}\label{section:polynomial-rings}
+    \subfile{contents/1-mathematics/3-polynomials.tex}
+
+    \section{Linear Algebra Basics}\label{section:linear-algebra}
+    \subfile{contents/1-mathematics/4-linear-algebra-basics.tex}
+
+    \section{Fields Extension}\label{section:finite-fields}
+    \subfile{contents/1-mathematics/5-field-extension.tex}
+
+    % --- Chapter II: Cryptography Preliminaries ---
+
+    \part{Cryptography Tools}
+    \subfile{contents/0-auxiliary/chapter-intros/chapter-2.tex}
+
+    \section{Basics of Security Analysis}\label{section:security-analysis}
+    \subfile{contents/2-cryptography-basics/1-security-basics.tex}
+
+    \section{Elliptic Curves and Pairing}\label{section:elliptic-curves}
+    \subfile{contents/2-cryptography-basics/2-ec.tex}
+
+    \section{Commitment Schemes}\label{section:commitment-schemes}
+    \subfile{contents/2-cryptography-basics/3-commitments.tex}
+
+    % --- Chapter III: Foundational Zero-Knowledge ---
+
+    \part{Foundational Zero-Knowledge Protocols}
+    \subfile{contents/0-auxiliary/chapter-intros/chapter-3.tex}
+
+    \section{Introduction to Zero-Knowledge Proofs}\label{section:intro-zk}
+    \subfile{contents/3-zk-foundations/1-intro-zk.tex}
+
+    \section{Sigma Protocols}\label{section:sigma}
+    \subfile{contents/3-zk-foundations/2-sigma.tex}
+
+    \section[Arithmetic Circuits. R1CS]{Introduction to SNARKs. Arithmetic Circuits. R1CS} \label{section:r1cs}
+    \subfile{contents/3-zk-foundations/3-circuits.tex}\label{section:circuits}
+
+    \section[Quadratic Arithmetic Program]{Quadratic Arithmetic Program. Probabilistically Checkable Proofs}\label{section:qap-pcp}
+    \subfile{contents/3-zk-foundations/4-qap-pcp.tex}
+
+    \section[Pairing-based SNARKs]{Pairing-based SNARKs. Pinocchio. Groth16}\label{section:groth}
+    \subfile{contents/3-zk-foundations/5-groth.tex}
+
+    \section{Circom}\label{section:circom}
+    \subfile{contents/3-zk-foundations/6-circom.tex}
+
+    \section{PlonK}\label{section:plonk}
+    \subfile{contents/3-zk-foundations/7-plonk.tex}
+
+    \section{Bulletproofs}\label{section:bulletproofs}
+    \subfile{contents/3-zk-foundations/8-bulletproofs.tex}
+
+    % --- Chapter IV: Sum-Check and Lookups
+    \part{Sum-Check-based Protocols and Lookup Checks}
+    \subfile{contents/0-auxiliary/chapter-intros/chapter-4.tex}
+
+    \section{Sum-Check Protocol}\label{section:sumcheck}
+    \subfile{contents/4-sumcheck-lookups/1-sumcheck.tex}
+
+    \section{GKR Protocol}\label{section:gkr}
+    \subfile{contents/4-sumcheck-lookups/2-gkr.tex}
+    
+    \section{Offline Memory Checking}\label{section:toolkit}
+    \subfile{contents/4-sumcheck-lookups/3-sumcheck-toolkit.tex}
+
+    \section{Lookup Checks}\label{section:lookups}
+    \subfile{contents/4-sumcheck-lookups/4-lookup.tex}
+
+    \section{UltraGroth}\label{section:ultragroth}
+    \subfile{contents/4-sumcheck-lookups/5-ultragroth.tex}
+    
+    % --- Solutions ---
+    \part{Concluding Remarks}\label{section:solutions}
+    \subsection*{Solutions to Exercises}
+    \subfile{contents/appendices/exercise-solutions.tex}
+
+    \section{Acknowledgements}
+    \subfile{contents/0-auxiliary/acknowledgements.tex}
+
+    % --- References ---
+
+    \bibliographystyle{alpha} 
+    \bibliography{bibliography}
+
+    % --- Contact Page ---
+
+    \newpage
+    \pagestyle{empty}
+
+    \ifodd\value{page}
+        \newpage
+    \fi
+
+    \vspace*{\fill}
+
+    \begin{center}
+        \url{https://blockstream.com/contact/}
+    \end{center}
+
+    \vspace*{\fill}
+
+\end{document}
