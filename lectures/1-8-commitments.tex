@@ -110,7 +110,7 @@ $H(m, r) = c$ is negligible, which ensures \textit{hiding} property of the commi
 
 \subsection{Pedersen commitments}
 
-Pedersen commitments allow us to represent arbitrarily large vectors with a single elliptic curve point, while optionally hiding any information about the vector. Pedersen commitment uses a public group $\mathbb{G}$ of order $q$ and two random public generators $G$ and $U$: $U = [u]G$. Secret parameter $u$ should be unknown to anyone, otherwise the $\textit{Binding}$ property of the commitment scheme will be violated.
+Pedersen commitments \cite{pedersen1991} allow us to represent arbitrarily large vectors with a single elliptic curve point, while optionally hiding any information about the vector. Pedersen commitment uses a public group $\mathbb{G}$ of order $q$ and two random public generators $G$ and $U$: $U = [u]G$. Secret parameter $u$ should be unknown to anyone, otherwise the $\textit{Binding}$ property of the commitment scheme will be violated.
 EC point $U$ is chosen randomly using ``Nothing-up-my-sleeve`` to assure no one knows the discrete logarithm of a selected point.
 
 \begin{remark}
@@ -212,9 +212,24 @@ One of Merkle tree key advantages is that it allows for the selective disclosure
 \subsection{Polynomial commitment}
 
 Polynomial commitment can be used to prove that the commited polynomial satisfies certain properties $P(x_1, x_2, \ldots, x_n) = y$, without revealing what the polynomial is.
-The commitment is generally succint, which means that it is much smaller than the polynomial it represents.
+The commitment is generally succint, which means that it is much smaller than the polynomial it represents. Typically, polynomial commiment scheme is a heart of any complex \textit{zero-knowledge} proof system.
 
-\textbf{The KZG polynomial commitment scheme}
+\subsubsection{Pedersen polynomial commitment scheme}
+
+Let prover $\mathcal{P}$ wants to convince verifier $\mathcal{V}$ that he knows evaluation of polynomial $p(x) = a_d x^{d} + \dots + a_1 x + a_0 \in \mathbb{F}_{q}[x]$ at some $u \in \mathbb{F}_q$: $p(u) = y$ without revealing anything about $p(x)$. Let $\mathbb{G}$ - cyclic additive group of order $q$ where \textit{discrete logarithm} problem is hard. $G, H \in \mathbb{G}$ - points with unknown discrete logarithms between them.
+
+\textbf{Simple polynomial commitment scheme}
+\begin{enumerate}
+    \item \textit{Commit to polynomial}. Prover selects random $\gamma_i \xleftarrow{R} \mathbb{F}_q$ for all $i \in [d]$, computes Pedersen commitments for each coefficent: $\forall i \in [d]: C_i = [a_i]G + [\gamma_i]H$ and sends them to Verifier.
+    \item \textit{Challenge}. Verifier samples random $u \xleftarrow{R} \mathbb{F}_q$ and sends it to Prover
+    \item \textit{Proof of evaluation}. Prover evaluates blinded polynomial $h(x) = \gamma_d x^{d} + \dots + \gamma_1 x + \gamma_0$ at $u$: $\pi = h(u)$, original polynomial at $u$: $y = p(u)$ and sends pair $(y, \pi)$ to Verifier.
+    \item \textit{Verify the proof}. Verifier performs check $$[u^d]C_d + \dots + [u]C_1 + C_0 \stackrel{?}{=} [y]G + [\pi]H$$
+\end{enumerate}
+
+Due to Schwartz-Zippel lemma, the probability that Prover can cheat and convince Vertifier that he knows valid evaluation to not-commited polynomial is at most $\frac{1}{q}$, hence the scheme is sound.
+However, the scheme is not succinct, as the size of the commitment grows linearly with the degree of the polynomial.
+
+\subsubsection{The KZG polynomial commitment scheme}
 
 The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
 

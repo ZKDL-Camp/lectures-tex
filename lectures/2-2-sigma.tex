@@ -16,7 +16,7 @@ Now, suppose prover $\mathcal{P}$ has a valid statement and a witness $(u,\alpha
 First, let us start with the interactive version of the protocol. 
 
 \begin{definition}
-    \textbf{The Schnorr interactive identification protocol} $\Pi_{\text{Sch}} = (\mathsf{Gen}, \mathcal{P}, \mathcal{V})$ with a generation function $\mathsf{Gen}$ and prover $\mathcal{P}$ and verifier $\mathcal{V}$ is defined as follows:
+    \textbf{The Schnorr interactive identification protocol} $\Pi_{\text{Sch}} = (\mathsf{Gen}, \mathcal{P}, \mathcal{V})$ \cite{schnorr1989} with a generation function $\mathsf{Gen}$ and prover $\mathcal{P}$ and verifier $\mathcal{V}$ is defined as follows:
     \begin{itemize}
         \item $\mathsf{Gen}(1^{\lambda})$: As with most public-key cryptosystems, we take $\alpha \leftarrowS \mathbb{Z}_q$ and $u \gets g^{\alpha}$. We output the \textit{verification key} as $\mathsf{vk} := u$, and the \textit{secret key} as $\mathsf{sk} := \alpha$.
         \item The protocol between $(\mathcal{P},\mathcal{V})$ is run as follows:
@@ -121,7 +121,7 @@ Now, notice that $e$ might not be included in the proof since the verifier can c
 Now, turning the Schnorr's Identification Protocol into a signature scheme is quite straightforward. The only modification to the non-interactive proof described in the previous section is that we include the message $m \in \mathcal{M}$ instead of our statement $u \in \mathbb{G}$ in the computation of the challenge $e$. Additionally, suppose we use the hash function $H$ as a random oracle from the previous section. Now, let us give a formal definition.
 
 \begin{definition}
-    The \textbf{Schnorr Signature Scheme} $\Sigma_{\text{Sch}}$ is a tuple of algorithms $(\mathsf{Gen}, \mathsf{Sign}, \mathsf{Verify})$, where:
+    The \textbf{Schnorr Signature Scheme} $\Sigma_{\text{Sch}}$ \cite{schnorr1989} is a tuple of algorithms $(\mathsf{Gen}, \mathsf{Sign}, \mathsf{Verify})$, where:
     \begin{itemize}
         \item $\mathsf{Gen}(1^{\lambda})$: We take $\alpha \leftarrowS \mathbb{Z}_q$ and $u \gets g^{\alpha}$. The \textit{public key} is $\mathsf{pk} := u$, while the \textit{secret key} as $\mathsf{sk} := \alpha$.
         \item $\mathsf{Sign}(m,\mathsf{sk})$: The signer computes $r \gets \mathbb{Z}_q^{\times}, a \gets g^{r}, e \gets H(m, a), \sigma \gets r + \alpha e$ and outputs the signature $(a,\sigma)$.

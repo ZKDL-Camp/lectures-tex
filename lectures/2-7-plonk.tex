@@ -22,7 +22,7 @@ Particularly, in Groth16 our choice of points was $x_j = j$ for $j = 0,\dots,N-1
 for the large enough finite field $\mathbb{F}$, does not cause any issues. However, the 
 complexity of interpolation in this case is not optimal. Let us see why.
 
-Recall that the interpolation formula (see \Cref{section:math-crypto-2} for details)
+Recall that the interpolation formula (see \Cref{section:polynomial-rings} for details)
 is given by:
 \begin{equation*}
     p(x) = \sum_{i=0}^{N-1} a_i \ell_i(x), \quad \ell_i(x) = \prod_{j=0, j \neq i}^{N-1} \frac{x-x_j}{x_i-x_j}.
@@ -345,7 +345,7 @@ discussion in \Cref{fig:ntt}.
 \subsection{Plonk Arithmetization}
 
 Consider we have a certain relation $\mathcal{R}$, which we would like to write
-down into a processing-prone format over the field $\mathbb{F}$. Plonk arithmetizes this relation into a set
+down into a processing-prone format over the field $\mathbb{F}$. Plonk \cite{plonk} arithmetizes this relation into a set
 of \textit{8 polynomials}, which are then used to verify the witness knowledge. Let us 
 start with the concrete example.
 
@@ -951,7 +951,7 @@ agnostic non-interactive (Fiat-Shamir) algorithms for both prover and verifier.
     these values are not actually chosen by the prover, but rather computed
     deterministically from the transcript using Fiat-Shamir heuristic. In case 
     you are not familiar with Fiat-Shamir heuristic, we recommend you to revisit
-    the \Cref{section:zk}.
+    the \Cref{section:sigma}.
 \end{remark}
 
 \subsubsection{Gadgets}

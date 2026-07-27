@@ -68,7 +68,7 @@ overwhelming probability.
 \subsection{Plookup Protocol}
 
 One of the first lookup protocols that became practical in the zero-knowledge
-world is the \textit{plookup protocol}. It is mostly used in Poly-IOPs but can
+world is the \textit{plookup protocol} \cite{plookup}. It is mostly used in Poly-IOPs but can
 presumably be compiled to other types of protocols as well, as long as
 \textit{multiset equality} check can be implemented optimally.
 
@@ -258,7 +258,7 @@ proposition:
 \end{proposition}
 
 Now, this fact is completely unobvious, and you can see the proof in the
-\href{https://eprint.iacr.org/2020/315.pdf}{original plookup paper}. This
+original plookup paper \cite{plookup}. This
 motivates us to formulate the following protocol. Without loss of generality,
 assume $d=n+1$ (if $d \leq n$, pad $\boldsymbol{t}$ with $n-d+1$ repetitions of
 the last element).

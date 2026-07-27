@@ -589,9 +589,9 @@ but there are some ways to achieve this.
 
 While different protocols use different ways to achieve this, one of the most
 popular methods (which, in particular, is used in STARKs) is the
-\textbf{Fiat-Shamir heuristic}. The idea is the following: instead of verifier
+\textbf{Fiat-Shamir heuristic} \cite{fiat1986}. The idea is the following: instead of verifier
 sending the challenges, we can replace them with the random oracle applied to
-all the previous messages. 
+all the previous messages.
 
 Here how it goes. Suppose we have an interactive protocol $(\mathcal{P},
 \mathcal{V})$ for the statement $\mathbbm{x}$. As previously defined, the

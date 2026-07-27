@@ -29,11 +29,11 @@ which is quite curious. This blog is based on the original
 \href{https://hackmd.io/@Merlin404/Hy_O2Gi-h}{Lev Soukhanov's post} in 2023.
 However, as we prepared the conference paper for Bionetta, we discovered that
 his construction is nothing but a generalization of
-\href{https://eprint.iacr.org/2020/278}{$\textsf{MIRAGE}$ protocol}, posted back
+the $\textsf{MIRAGE}$ protocol \cite{mirage}, posted back
 in 2020! (in subsequent notation, $\textsf{MIRAGE}$ is an UltraGroth protocol
 with $d=1$). Even more surprisingly, it seems that independently of Lev
 Soukhanov's construction, Alex Ozdemir, Evan Laufer, and Dan Boneh introduced
-\href{https://eprint.iacr.org/2024/979}{$\textsf{MIRAGE+}$ protocol} in 2024,
+the $\textsf{MIRAGE+}$ protocol \cite{mirageplus} in 2024,
 which was used for proving RAM computations correctness. This protocol, which is
 hard to believe, but also coincides with the Lev Soukharnov's construction
 (although I believe the former generalizes the construction a bit more
@@ -44,9 +44,7 @@ interactive protocol.
 All three papers (Bionetta included) proved completeness, soundness, and
 zero-knowledge of this construction, so the protocol that follows can be safely
 integrated into production systems. We, of course, drop formalities in this blog
-and recommend checking
-\href{https://eprint.iacr.org/2024/979}{$\textsf{MIRAGE+}$ protocol} paper for
-proof specifics in case someone is interested.
+and recommend checking \cite{mirageplus} for proof specifics in case someone is interested.
 
 Finally, our personal opinion is that this construction is vastly underestimated
 and it is surprising that it is not yet used in production. Indeed, integrating

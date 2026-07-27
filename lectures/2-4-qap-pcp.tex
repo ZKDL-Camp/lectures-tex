@@ -354,7 +354,7 @@ must divide $m$, so $z_{\Omega} \mid m$. But that means that $m$ can be divided
 by $z_{\Omega}$ without remainder! In other words, there exists some polynomial
 $h$ such that $m=z_{\Omega}h$. We further drop index $\Omega$ for simplicity. 
 
-All in all, let us give the definition of a \textbf{Quadratic Arithmetic Program}.
+All in all, let us give the definition of a \textbf{Quadratic Arithmetic Program} \cite{qap}.
 
 \begin{definition}[Quadratic Arithmetic Program]
     Suppose that $m$ R1CS constraints with a witness of size $n$ are written in a form
@@ -523,7 +523,7 @@ Three main extensions of PCPs that are frequently used in SNARKs are:
     \end{tikzpicture}
     }
     \caption{Illustration of an Interactive Oracle Proof (IOP). On each round $i$ ($1 \leq i \leq r$), $\mathcal{V}$ sends a message $m_i$, and $\mathcal{P}$ commits to a new oracle $\pi_i$, which $\mathcal{V}$ can query at $\mathbf{q}_i=(q_{i,1},\dots,q_{i,m})$.}
-    \label{fig:pcp}
+    \label{fig:iop}
 \end{figure}
 
 While IOPs will be later used for PLONK and zk-STARKs, we will focus on Linear
