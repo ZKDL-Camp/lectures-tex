@@ -1,9 +1,12 @@
 <div align="center">
-<h1> :ninja: ZKDL Camp Lecture Notes :teacher: </h1>
+    <h1> ZKDL Camp Lecture Notes </h1>
+    <img src="contents/images/common/readme-logo.png" alt="Logo" width="600">
 </div>
 
+<br />
+
 This is a series of lectures on zero-knowledge conducted internally at
-Distributed Lab, in which we covered essentials for Research and Development 
+Blockstream and Distributed Lab, in which we covered essentials for Research and Development 
 in the field of zero-knowledge proofs and their applications. 
 
 Currently, the largest problem in zero-knowledge field is the diversity 
@@ -29,10 +32,8 @@ Projective Coordinates, and ecpairing. We proceed to the Commitment Schemes
 and explain how to formulate security definitions in Cryptography.
 - The **Zero-Knowledge Proofs** section is the core of the book. We start with
 the basic definitions and classical ZK protocols and proceed to the modern 
-constructions, currently consisting of Sigma Protocols, zk-SNARKs (R1CS, QAP,
-Pinocchio+Groth16, PlonKish Arithmetization), and basics of zk-STARKs. However,
-this is just a beginning: we will add more protocols such as Bulletproofs or 
-Halo2 in the future.
+constructions, currently consisting of Sigma Protocols, pairing-based zk-SNARKs (R1CS, QAP,
+Pinocchio+Groth16, PlonKish Arithmetization), Bulletproofs, Sum-Check protocols (GKR), and lookup tables. However, this is just a beginning: we will add more protocols such as zk-STARKs in the future.
 
 ## :open_file_folder: Structure of the repository
 
@@ -41,12 +42,11 @@ welcome! The repository is structured as follows:
 
 | Folder/File | Description |
 | --- | --- |
-| [`lectures`](lectures) | Contains the written material for the lectures in `.tex` format. If you want to add your lecture or make corrections to existing ones, you need to navigate to this folder. |
-| [`lectures/images`](lectures/images) | Contains images used in the lectures. |
-| [`presentations`](presentations) | Contains the beamer presentations for the lectures being conducted at Distributed Lab. Typically, they contain the same material as the corresponding section in the book. However, you might find it  easier to grasp the material from them. |
-| [`zkdl-template.cls`](zkdl-template.cls) | The style file for the book. |
-| [`lecture-notes-148x210.tex`](lecture-notes-148x210.tex) | The compilation of all lectures in the single file. Uses lecture files from [`lectures`](lectures) and compiles them into a single file. The latest version is then manually renamed to [`lts-notes-148x210.pdf`](lts-notes-148x210.pdf) |
-| [`lecture-notes-105x135.tex`](lecture-notes-105x135.tex) | Same as above, but  the book is of different size. You may ignore this format since the main format is 148x210. |
+| [`contents`](contents) | Contains the written material for the book in `.tex` format. If you want to add your section/chapter or make corrections to existing ones, you need to navigate to this folder. |
+| [`contents/images`](contents/images) | Contains images used in the book sections/lectures. |
+| [`presentations`](presentations) | Contains the beamer presentations for the lectures being conducted at Blockstream (and formerly Distributed Lab). Typically, they contain the same material as the corresponding section in the book. However, you might find it easier to grasp the material from them. |
+| [`config`](config) | The style/template files for the book. |
+| [`book.tex`](book.tex) | The compilation of all lectures in the single file (essentially a book). Uses section files from [`contents`](contents) and compiles them into a single file. |
 | [`sage`](sage) | Contains the SageMath code used in some lectures. For the most  part, if the code is present, the separate repository is used, such as for [Sigma Proofs](https://github.com/ZKDL-Camp/lecture-7-sigma) |
 
 ## :running_man: Setup to run locally
@@ -54,42 +54,19 @@ welcome! The repository is structured as follows:
 1. Download LaTeX locally (e.g. [TeX Live](https://www.tug.org/texlive/), if you are using MacOS: [MacTex](https://www.tug.org/mactex/)).
 2. Download relevant VSCode extensions: LaTex, LaTex Workshop etc.
 3. Clone the repository.
-4. Open in VSCode and run the [`lecture-notes-148x210.tex`](./lecture-notes-148x210.tex) file (green arrow at the top of the window).
-5. You can also compile the lecture separately from the book by following the 
-same procedure for the corresponding `.tex` file in the [`lectures`](lectures) folder.
-Note that compiled `.pdf` files are ignored by `.gitignore` and are not pushed to the repository (except for `lts-notes` files).
+4. Open in VSCode and run the [`book.tex`](./book.tex) file (green arrow at the top of the window).
+5. You can also compile each book section separately by following the 
+same procedure for the corresponding `.tex` file in the [`contents`](contents) folder.
+Note that compiled `.pdf` files are ignored by `.gitignore` and are not pushed to the repository to avoid possible conflicts.
 
 ## :books: How to add your lecture?
 
 1. Conduct the steps above and make sure you can compile everything locally.
-2. Create a new `.tex` file in the [`lectures`](lectures) folder. Name it `<part>-<number>-<topic>.tex`, where `<number>` is the next number in the sequence while `<part>` is the number of chapter in the book.
-3. Add lecture to the [`lecture-notes-148x210.tex`](lecture-notes-148x210.tex) file. For example, if the code looks as:
-
-    ```tex
-    \section{Mathematics Preliminaries}
-
-    \subfile{lectures/1-math}
-
-    \section{Elliptic Curves}
-
-    \subfile{lectures/2-ec}
-    ```
-
-    and you want to add `lectures/3-commitment-schemes`, you do
-
-    ```tex
-    \section{Mathematics Preliminaries}
-
-    \subfile{lectures/1-math}
-
-    \section{Elliptic Curves}
-
-    \subfile{lectures/2-ec}
-
-    \section{Commitment Schemes}
-
-    \subfile{lectures/3-commitment-schemes}
-    ```
-
+2. Create a new `.tex` file in the [`contents`](contents) folder in the appropriate chapter folder. Name it in the format `<number>-<topic>.tex`.
+3. Add lecture to the [`book.tex`](book.tex) file. For example, if the code looks as:
 4. To add the presentation, navigate to the [`presentations`](presentations)
-   folder and add the same name as for your lecture file.
+   folder and add the same name as for your lecture file with the appropriate number.
+
+## License
+
+The book is released under the MIT License.
