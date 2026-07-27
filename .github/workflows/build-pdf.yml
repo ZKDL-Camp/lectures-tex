@@ -24,9 +24,10 @@ jobs:
 
       # 2. Compile LaTeX book to PDF
       - name: Compile LaTeX
-        uses: xu-cheng/latex-action@v2
+        uses: xu-cheng/latex-action@v4
         with:
           root_file: book.tex
+          texlive_version: 2026
 
       # 3. Save PDF as an Actions artifact (for downloading from the workflow run tab)
       - name: Upload Artifact
