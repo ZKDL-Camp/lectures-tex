@@ -27,7 +27,7 @@ jobs:
         uses: xu-cheng/latex-action@v4
         with:
           root_file: book.tex
-          texlive_version: 2026
+          texlive_version: 2020
           latexmk_shell_escape: true
           #os: alpine
           #extra_system_packages: "py3-pygments py3-pip"
