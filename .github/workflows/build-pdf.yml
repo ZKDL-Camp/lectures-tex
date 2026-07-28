@@ -28,7 +28,6 @@ jobs:
         with:
           root_file: book.tex
           texlive_version: 2026
-          pre_compile: "tlmgr install opencolor"
           latexmk_shell_escape: true
           #os: alpine
           #extra_system_packages: "py3-pygments py3-pip"
