@@ -28,10 +28,12 @@ jobs:
         with:
           root_file: book.tex
           texlive_version: 2026
-          os: alpine
-          extra_system_packages: "py3-pygments py3-pip"
-          pre_compile: "pip install --break-system-packages latexminted"
+          pre_compile: "tlmgr install opencolor"
           latexmk_shell_escape: true
+          #os: alpine
+          #extra_system_packages: "py3-pygments py3-pip"
+          #pre_compile: "pip install --break-system-packages latexminted"
+          #latexmk_shell_escape: true
 
       # 3. Save PDF as an Actions artifact (for downloading from the workflow run tab)
       - name: Upload Artifact
