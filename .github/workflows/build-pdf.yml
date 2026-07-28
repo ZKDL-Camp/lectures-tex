@@ -27,7 +27,6 @@ jobs:
         uses: xu-cheng/latex-action@v4
         with:
           root_file: book.tex
-          args: "-pdf -interaction=nonstopmode"
           texlive_version: 2026
 
       # 3. Save PDF as an Actions artifact (for downloading from the workflow run tab)
