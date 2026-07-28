@@ -4,10 +4,6 @@ on:
   push:
     branches:
       - main
-      - '*'
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
@@ -27,12 +23,8 @@ jobs:
         uses: xu-cheng/latex-action@v4
         with:
           root_file: book.tex
-          texlive_version: 2020
+          texlive_version: 2020 # For some reason CI doesn't work for newer versions of TeX
           latexmk_shell_escape: true
-          #os: alpine
-          #extra_system_packages: "py3-pygments py3-pip"
-          #pre_compile: "pip install --break-system-packages latexminted"
-          #latexmk_shell_escape: true
 
       # 3. Save PDF as an Actions artifact (for downloading from the workflow run tab)
       - name: Upload Artifact
