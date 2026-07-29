@@ -78,9 +78,19 @@
 % --- Hyperref and Cleverref ---
 \RequirePackage{hyperref}
 \hypersetup{pdflang=en}
-    \hypersetup{colorlinks=true,
-      citecolor=blue!80,
-      linkcolor=black!70!red}
+
+% -- Hyperref coloring --
+\definecolor{linkcol}{HTML}{2E7D46} % green — internal links / TOC / theorems
+\definecolor{citecol}{HTML}{A6192E} % cherry red — citations
+\definecolor{urlcol}{HTML}{1C5F9C}  % blue — URLs
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=linkcol,
+    citecolor=citecol,
+    urlcolor=urlcol,
+}
+
 \RequirePackage[nameinlink]{cleveref}
 
 % --- Tikz settings ---
