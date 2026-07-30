@@ -8,7 +8,7 @@ cryptography. But you might wonder: why should we study abstract algebra?
 
 Consider the set $\mathbb{Z}_n$. Naturally, we want to define certain
 arithmetical operations over $\mathbb{Z}_n$. For example, having $3, 6 \in
-\mathbb{Z}_9$ I would like to know what it means to add them. Natually, one
+\mathbb{Z}_9$ I would like to know what it means to add them. Naturally, one
 would say that $3+6=0$ in $\mathbb{Z}_9$ since $3+6$ over $\mathbb{Z}$ gives $9$,
 which is congruent to $0$ modulo $9$. However, while such a structure is
 straightforward for such a set, we can define operations over much more
@@ -32,7 +32,7 @@ the following lemma to show the properties of modular arithmetic.
         which we compute pairwise sums does not matter.
         \item $\textit{Addition identity: } a + 0 \equiv a \pmod{n}$. We always have an element which 
         behaves like ``zero'' in the addition operation (or like ``one'' when multipling).
-        \item $\textit{Additive inverse: } a + (-a) \equiv 1 \pmod{n}$. For any
+        \item $\textit{Additive inverse: } a + (-a) \equiv 0 \pmod{n}$. For any
         element $a$ we always have an element $-a$ which ``zeroes out'' an element $a$.
         \item $\textit{Addition commutative: } a + b \equiv b + a \pmod{n}$. The order of elements in
         the addition operation does not matter.
@@ -187,13 +187,13 @@ $\blacktriangleleft$
 When we are finally comfortable with the concept of a group, we can move on to the concept of a \textit{subgroup}. 
 
 Suppose we have a group $(\mathbb{G},\oplus)$. Suppose one takes the subset 
-$\mathbb{H} \subset \mathbb{G}$. Of course, since all elements in $\mathbb{H}$ are still 
+$\mathbb{H} \subseteq \mathbb{G}$. Of course, since all elements in $\mathbb{H}$ are still 
 elements in $\mathbb{G}$, we can conduct operations between them via $\oplus$. 
 The natural question to ask is whether $\mathbb{H}$ is a group itself. We say that 
 $\mathbb{H}$ is a \textbf{subgroup} of $\mathbb{G}$ if this is indeed the case.
 
 \begin{definition}
-    A subset $\mathbb{H} \subset \mathbb{G}$ is called a \textbf{subgroup} of
+    A subset $\mathbb{H} \subseteq \mathbb{G}$ is called a \textbf{subgroup} of
     $\mathbb{G}$ if $\mathbb{H}$ is a group with respect to the same operation
     $\oplus$. 
     We denote this as $\mathbb{H} \leq \mathbb{G}$.
@@ -329,7 +329,7 @@ Consider this theorem as a generalization of \Cref{lemma:cyclic-group-order}. By
 using the above theorem, we can derive a criterion which the generators
 of~$\mathbb{Z}_n$ must adhere to.
 
-\begin{corollary} \label{cor:}
+\begin{corollary}\label{cor:}
     The generators of group $\mathbb{Z}_n$ are the integers from $\mathbb{Z}_n^{\times}$.
 \end{corollary}
 
@@ -380,13 +380,13 @@ of cyclic groups. For example, can we find some non-cyclic subgroup of $\mathbb{
 out that this is not possible due to the subsequent theorem.
 
 \begin{theorem}
-    Every subgroup of cyclic group is cyclic.
+    Every subgroup of a cyclic group is cyclic.
 \end{theorem}
 
 \subsection{Cosets and Lagrange's Theorem*}
  
 Lagrange's Theorem is one of the most important
-results in finite group theorem, considering all the consequences. Central to
+results in finite group theory, considering all the consequences. Central to
 understanding Lagranges's Theorem is the notion of a \textit{coset}. While 
 this concept is essential for Cryptography, feel free to skip this section if feel 
 uncomfortable with the material.
@@ -406,7 +406,7 @@ uncomfortable with the material.
         \vspace{-8mm}
         \item $0 + \mathbb{H} = 4 + \mathbb{H} = \{0, 4\}$
         \item $1 + \mathbb{H} = 5 + \mathbb{H} = \{1, 5\}$
-        \item $2 + \mathbb{H} = 6 + \mathbb{H} = \{0, 6\}$
+        \item $2 + \mathbb{H} = 6 + \mathbb{H} = \{2, 6\}$
         \item $3 + \mathbb{H} = 7 + \mathbb{H} = \{3, 7\}$
     \end{center}
 \end{example}
@@ -441,11 +441,11 @@ Note that in a commutative group, left and right cosets are always identical, so
 %     \end{multicols} 
 % \end{example}
 
-Finally, we are ready for Lagrange's Theorem. This is a fundamental result in the group
+Finally, we are ready for Lagrange's Theorem. This is a fundamental result in group
  theory, crucial for understanding the structure of finite groups.
 
 \begin{theorem} [Lagrange]
-    If $\mathbb{H}$ is a subgroup of an any finite group $\mathbb{G}$, 
+    If $\mathbb{H}$ is a subgroup of any finite group $\mathbb{G}$, 
     then $\left| \mathbb{G} \right| = \left[ \mathbb{G} : \mathbb{H} \right] \left| \mathbb{H} \right|$.
 \end{theorem}
 
@@ -497,7 +497,7 @@ Finally, we will define the concept of isomorphisms and endomorphisms. These are
 suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is there any way to state that these two groups are the same? The answer is yes, and this is done via isomorphisms.
 
 \begin{definition}
-    A function $\varphi: \mathbb{G} \to \mathbb{H}$ is called an \textbf{homomorphism} if it is a function that preserves the group operation, that is, 
+    A function $\varphi: \mathbb{G} \to \mathbb{H}$ is called a \textbf{homomorphism} if it is a function that preserves the group operation, that is, 
     \begin{xequation}
         \forall a,b \in \mathbb{G}: \varphi(a \oplus b) = \varphi(a) \odot \varphi(b).
     \end{xequation}
@@ -541,20 +541,24 @@ A generalization of the above example is the following interesting theorem.
     Suppose $\mathbb{G} = \langle g \rangle$ is a finite cyclic group and $|G| = n \in \mathbb{N}$. Then, $\mathbb{G} \cong \mathbb{Z}_n$.
 \end{theorem}
 
-\textbf{Idea of the proof.} Define a function $\varphi: \mathbb{Z}_n \to \mathbb{G}$ as $m \mapsto g^m$. One can prove that this is an isomorphism.
+\textbf{Proof idea.} Define a function $\varphi: \mathbb{Z}_n \to \mathbb{G}$ as $m \mapsto g^m$. One can prove that this is an isomorphism.
 
-Here, it is quite evident that isomorphism tells us that the groups have the same structure. Moreover, it is correct to say that if $\mathbb{G} \equiv \mathbb{H}$, then $\mathbb{G}$ and $\mathbb{H}$ are \textit{equivalent} since $\cong$ is an equivalence relation.
+Here, it is quite evident that isomorphism tells us that the groups have the same structure. 
+In fact, $\cong$ is an equivalence relation on the class of groups
+(see the exercise below), which is precisely why it is standard
+practice to call two isomorphic groups \textit{equivalent}.
 
 \textbf{Exercise (*).} Prove that $\cong$ is an equivalence relation.
 
 Finally, we will define the concept of an endomorphism and automorphism to finish the section.
 
 \begin{definition}
-    An \textbf{endomorphism} is a function $\varphi$ which maps set $X$ to itself ($\varphi: X \to X$).
+    An \textbf{endomorphism} of a group $\mathbb{G}$ is a homomorphism $\varphi: \mathbb{G} \to \mathbb{G}$
+    from $\mathbb{G}$ to itself.
 \end{definition}
 
 \begin{definition}
-    An \textbf{automorphism} is an isomorphic endomorphism.
+    An \textbf{automorphism} is a bijective endomorphism.
 \end{definition}
 
 \begin{example}
@@ -636,7 +640,7 @@ use finite fields.
     the ring\footnote{We have not defined as of now what ring is, but, roughly speaking, this is a field without 
     multiplicative inverses (such as $\mathbb{Z}_n$ for composite $n$)} of integers modulo $p$ (meaning, we need only addition, subtraction, and multiplication 
     in the protocol), while division is of little interest. When one refers to $\mathbb{F}_p$, it is typically 
-    assumed that we need full arithmetic (including division) for the procool.
+    assumed that we need full arithmetic (including division) for the protocol.
 \end{remark}
 
 \begin{example}
@@ -676,7 +680,7 @@ pub trait Group: Sized {
 }
 \end{lstlisting}
 
-\textbf{Checking group validity.} Now observer the following: we get closure for free, since the compiler will check 
+\textbf{Checking group validity.} Now observe the following: we get closure for free, since the compiler will check 
 whether the return type of the operation is the same as the type of the group. However, there is no guarantee that 
 associativity holds, and our identity element is at all valid. For that reason, we need to somehow additionally check 
 the validity of implementation.
@@ -769,7 +773,7 @@ where
 use crate::group::{Group, Samplable};
 use rand::Rng;
 
-/// Implementing group for Rotation3<f32>
+/// Implementing group for i64
 impl Group for i64 {
     fn eq(&self, other: &Self) -> bool {
         self == other
@@ -977,7 +981,7 @@ highly recommend these resources.
 \begin{xexercise}
     {Exercise 7*.}
     {
-        Denote by $\text{GL}(2,\mathbb{R})$ a set of $2\times 2$ invertable matrices with real entries. Define 
+        Denote by $\text{GL}(2,\mathbb{R})$ a set of $2\times 2$ invertible matrices with real entries. Define 
         two functions $\varphi: \text{GL}(2,\mathbb{R}) \to \mathbb{R}$:
         
         \begin{equation*}

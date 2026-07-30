@@ -4,13 +4,16 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build-and-release:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,15 +29,16 @@ jobs:
           texlive_version: 2020 # For some reason CI doesn't work for newer versions of TeX
           latexmk_shell_escape: true
 
-      # 3. Save PDF as an Actions artifact (for downloading from the workflow run tab)
+      # 3. Upload as a workflow artifact
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
           name: compiled-book
           path: book.pdf
 
-      # 4. Create or update the 'latest' GitHub Release
+      # 4. Only publish the release when this is a push to main
       - name: Publish to GitHub Release
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: softprops/action-gh-release@v2
         with:
           tag_name: latest
