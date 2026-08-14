@@ -63,6 +63,7 @@
 \RequirePackage{blkarray}
 \RequirePackage{arydshln}
 \RequirePackage{makecell}
+\RequirePackage{subcaption}
 \RequirePackage[labelfont=bf]{caption}
 \setlength{\belowcaptionskip}{0mm}
 \setlength{\textfloatsep}{1mm}
@@ -140,6 +141,7 @@
     postbreak=\mbox{\hspace{-1.4em}\textcolor{purple}{$\hookrightarrow$}\space},
     escapeinside={<@}{@>}
 }
+
 % --- Linter settings (Combined for tidiness)---
 \RequirePackage{config/listlings/listings-rust}
 \RequirePackage{config/listlings/listings-circom}

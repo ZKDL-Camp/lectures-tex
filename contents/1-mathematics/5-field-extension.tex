@@ -78,38 +78,40 @@ Now, could we have picked another polynomial, say, $q(x) = x^2+4$? Sure! As long
     \end{xequation}
 \end{example}
 
-We shifted to the polynomial consideration for a reason: now, instead of considering the complex number $\mathbb{C}$ as ``some'' tuple of real numbers $(c_0,c_1)$, now let us view it as a polynomial\footnote{Here, we use $X$ to represent the polynomial variable to avoid confusion with the notation $x+yi$.} $c_0+c_1X$ modulo polynomial $X^2+1$. 
+We shifted to the polynomial consideration for a reason: now, instead of considering the complex number $\mathbb{C}$ as ``some'' tuple of real numbers $(c_0,c_1)$, now let us view it as a polynomial $c_0+c_1x$ modulo polynomial $x^2+1$. 
 
 \begin{example}
-    Indeed, take, for example, $p_1(X) := 1+2X$ and $p_2(X) := 2+3X$. Addition is performed as we are used to:
+    Indeed, take, for example, $p_1(x) := 1+2x$ and $p_2(x) := 2+3x$. Addition is performed as we are used to:
     \begin{xequation*}
-        p_1 + p_2 = (1+2X) + (2+3X) = 3+5X,
+        p_1 + p_2 = (1+2x) + (2+3x) = 3+5x,
     \end{xequation*}
 
     but multiplication is a bit different:
     \begin{xequation*}
-        p_1p_2 = (1+2X) \cdot (2+3X) = 2 + 3X + 4X + 6X^2 = 6X^2 +7X + 2.
+        p_1p_2 = (1+2x) \cdot (2+3x) = 2 + 3x + 4x + 6x^2 = 6x^2 +7x + 2.
     \end{xequation*}
 
-    Well, and what next? Recall that we are doing arithmetic modulo $X^2+1$ and for that reason, we divide the polynomial by $X^2+1$:
-    \begin{xequation*}
-        6X^2+7X+2 = 6(X^2+1) + 7X - 4 \implies (6X^2+7X+2) \,\text{mod}\, (X^2+1) = 7X-4,
-    \end{xequation*}
+    Well, and what next? Recall that we are doing arithmetic modulo $x^2+1$ and for that reason, we divide the polynomial by $x^2+1$:
+    \begin{align*}
+        &6x^2+7x+2 = 6(x^2+1) + 7x - 4 \\
+        &\implies (6x^2+7x+2) \,\text{mod}\, (x^2+1) = 7x-4,
+    \end{align*}
 
-    meaning that $p_1p_2 = 7X-4$. Oh wow, hold on! Let us come back to our regular complex number representation and multiply $(1+2i)(2+3i)$. We get $2+3i+4i+6i^2=-4+7i$. That is exactly the same result if we change $X$ to $i$ above! In fact, what we have observed is the fact that our polynomial quotient ring $\mathbb{R}[X]/(X^2+1)$ is isomorphic to $\mathbb{C}$.
+    meaning that $p_1p_2 = 7x-4$. Now let us come back to our regular complex number representation and multiply $(1+2i)(2+3i)$. We get $2+3i+4i+6i^2=-4+7i$. 
+    That is exactly the same result if we change $x$ to $i$ above! In fact, what we have observed is the fact that our polynomial quotient ring $\mathbb{R}[x]/(x^2+1)$ is \emph{isomorphic} to $\mathbb{C}$.
 \end{example}
 
 So, let us generalize this observation to any field $\mathbb{F}$ and any irreducible polynomial $\mu(x) \in \mathbb{F}[x]$.
 
 \begin{theorem}
-    Let $\mathbb{F}$ be a field and $\mu(x)$ --- irreducible polynomial over $\mathbb{F}$ (sometimes called a \textbf{reduction polynomial}). Consider a set of polynomials over $\mathbb{F}[x]$ modulo $\mu(x)$, formally denoted as $\mathbb{F}[x]/(\mu(x))$. Then, $\mathbb{F}[x]/(\mu(x))$ is a field.
+    Let $\mathbb{F}$ be a field and $\mu(x)$ --- irreducible polynomial over $\mathbb{F}$ (sometimes called a \textbf{reduction polynomial}). Consider a set of polynomials over $\mathbb{F}[x]$ modulo $\mu(x)$, formally denoted as $\mathbb{F}[x]/(\mu)$. Then, $\mathbb{F}[x]/(\mu)$ is a field.
 \end{theorem}
 
 \begin{example}
-    As we considered above, let $\mathbb{F}=\mathbb{R}$, $\mu(x)=x^2+1$, then $\mathbb{R}[X]/(X^2+1)$ (a set of polynomials modulo $X^2+1$) is a field.
+    As we considered above, let $\mathbb{F}=\mathbb{R}$, $\mu(x)=x^2+1$, then $\mathbb{R}[x]/(x^2+1)$ (a set of polynomials modulo $x^2+1$) is a field.
 \end{example}
 \begin{example}
-    Suppose $\mathbb{F}=\mathbb{Q}$ and $\mu(x) := x^2-2$. Then, $\mathbb{Q}[X]/(X^2-2)$ is a field isomorphic to $\mathbb{Q}(\sqrt{2})$, considered above.
+    Suppose $\mathbb{F}=\mathbb{Q}$ and $\mu(x) := x^2-2$. Then, $\mathbb{Q}[x]/(x^2-2)$ is a field isomorphic to $\mathbb{Q}(\sqrt{2})$, considered above.
 \end{example}
 \begin{example}
     Suppose $\mathbb{F}=\mathbb{Q}$ and $\mu(x) := (x^2+1)(x^2-2)=x^4-x^2-2$. Then, $\mathbb{Q}[X]/(x^4-x^2-2)$ is a field isomorphic to $\mathbb{Q}(\sqrt{2},i)$.
@@ -125,23 +127,23 @@ So, let us generalize this observation to any field $\mathbb{F}$ and any irreduc
     \end{xequation}
 \end{remark}
 
-This theorem (aka definition) corresponds to viewing complex numbers as a polynomial quotient ring $\mathbb{R}[X]/(X^2+1)$. But, we can give a theorem (aka definition) for our classical representation via magical root $i$ of $x^2+1$.
+This theorem (aka definition) corresponds to viewing complex numbers as a polynomial quotient ring $\mathbb{R}[x]/(x^2+1)$. But, we can give a theorem (aka definition) for our classical representation via magical root $i$ of $x^2+1$.
 
 \begin{theorem}
-    Let $\mathbb{F}$ be a field and $\mu \in \mathbb{F}[X]$ is an irreducible polynomial of degree $n$ and let $\mathbb{K} := \mathbb{F}[X]/(\mu(X))$. Let $\theta \in \mathbb{K}$ be the root of $\mu$ over $\mathbb{K}$. Then,
+    Let $\mathbb{F}$ be a field and $\mu \in \mathbb{F}[x]$ is an irreducible polynomial of degree $n$ and let $\mathbb{K} := \mathbb{F}[x]/(\mu)$. Let $\theta \in \mathbb{K}$ be the root of $\mu$ over $\mathbb{K}$. Then,
     \begin{xequation}
-        \mathbb{K} = \{c_0+c_1\theta+\cdots+c_{n-1}\theta^{n-1}: c_0,\dots,c_{n-1} \in \mathbb{F}\}
+        \mathbb{K} = \{c_0+c_1\theta+\cdots+c_{n-1}\theta^{n-1}: c_0,\dots,c_{n-1} \in \mathbb{F}\}.
     \end{xequation}
 \end{theorem}
 
 Although this definition is quite useful, we will mostly rely on the polynomial quotient ring definition. Let us define the \textbf{prime field extension}.
 
 \begin{definition}
-    Suppose $p$ is prime and $m \geq 2$. Let $\mu \in \mathbb{F}_p[X]$ be an irreducible polynomial of degree $m$. Then, elements of $\mathbb{F}_{p^m}$ are polynomials in $\mathbb{F}_p^{(\leq m)}[X]$. In other words,
+    Suppose $p$ is prime and $m \geq 2$. Let $\mu \in \mathbb{F}_p[x]$ be an irreducible polynomial of degree $m$. Then, elements of $\mathbb{F}_{p^m}$ are polynomials in $\mathbb{F}_p[x]^{\leq m}$. In other words,
     \begin{xequation*}
         \mathbb{F}_{p^m} = \{c_0+c_1X+\cdots+c_{m-1}X^{m-1}: c_0,\dots,c_{m-1} \in \mathbb{F}_p\},
     \end{xequation*}
-    where all operations are performed modulo $\mu(X)$.
+    where all operations are performed modulo $\mu$.
 \end{definition}
 
 Again, let us consider a few examples.
@@ -150,27 +152,27 @@ Again, let us consider a few examples.
     Consider the $\mathbb{F}_{2^4}$. Then, there are $16$ elements in this set:
     \begin{xequation*}
         \begin{aligned}
-            &0, 1, X, X+1,\\ &X^2, X^2+1, X^2+X, X^2+X+1,\\
-            &X^3, X^3+1, X^3+X, X^3+X+1,\\ &X^3+X^2, X^3+X^2+1, X^3+X^2+X, X^3+X^2+X+1.
+            &0, 1, x, x+1,\\ &x^2, x^2+1, x^2+x, x^2+x+1,\\
+            &x^3, x^3+1, x^3+x, x^3+x+1,\\ &x^3+x^2, x^3+x^2+1, x^3+x^2+x, x^3+x^2+x+1.
         \end{aligned}
     \end{xequation*}
 
-    One might choose the following reduction polynomial: $\mu(X)=X^4+X+1$ (of degree $4$). Then, operations are performed in the following manner:
+    One might choose the following reduction polynomial: $\mu(x)=x^4+x+1$ (of degree $4$). Then, operations are performed in the following manner:
     \begin{itemize}
-        \item Addition: $(X^3+X^2+1)+(X^2+X+1) = X^3+X$.
-        \item Subtraction: $(X^3+X^2+1)-(X^2+X+1) = X^3+X$.
-        \item Multiplication: $(X^3+X^2+1)\cdot(X^2+X+1)=X^2+1$ since:
+        \item Addition: $(x^3+x^2+1)+(x^2+x+1) = x^3+x$.
+        \item Subtraction: $(x^3+x^2+1)-(x^2+x+1) = x^3+x$.
+        \item Multiplication: $(x^3+x^2+1)\cdot(x^2+x+1)=x^2+1$ since:
         \begin{xequation*}
-            (X^3+X^2+1)\cdot(X^2+X+1) = X^5+X+1 \; \text{mod} \; (X^4+X+1) = X^2+1
+            (x^3+x^2+1)\cdot(x^2+x+1) = x^5+x+1 \; \text{mod} \; (x^4+x+1) = x^2+1
         \end{xequation*}
-        \item Inversion: $(X^3+X^2+1)^{-1}=X^2$ since $(X^3+X^2+1)\cdot X^2 \; \text{mod} \; (X^4+X+1) = 1$.
+        \item Inversion: $(x^3+x^2+1)^{-1}=x^2$ since $(x^3+x^2+1)\cdot x^2 \; \text{mod} \; (x^4+x+1) = 1$.
     \end{itemize}
 \end{example}
 
-Now, in the subsequent sections, we would need to extend $\mathbb{F}_p$ at least to $\mathbb{F}_{p^2}$. A convenient choice, similarly to the complex numbers, is to take $\mu(X)=X^2+1$. However, in contrast to $\mathbb{R}$, equation $X^2=-1 \pmod{p}$ might have solutions over certain prime numbers $p$. Thus, we consider proposition below.
+Now, in the subsequent sections, we would need to extend $\mathbb{F}_p$ at least to $\mathbb{F}_{p^2}$. A convenient choice, similarly to the complex numbers, is to take $\mu(x)=x^2+1$. However, in contrast to $\mathbb{R}$, equation $x^2=-1 \pmod{p}$ might have solutions over certain prime numbers $p$. Thus, we consider proposition below.
 
 \begin{proposition}
-    Let $p$ be an odd prime. Then $X^2+1$ is irreducible in $\mathbb{F}_p[X]$ if and only if $p \equiv 3 \pmod{4}$.
+    Let $p$ be an odd prime. Then $x^2+1$ is irreducible in $\mathbb{F}_p[x]$ if and only if $p \equiv 3 \pmod{4}$.
 \end{proposition}
 
 \begin{corollary}
@@ -179,7 +181,7 @@ Now, in the subsequent sections, we would need to extend $\mathbb{F}_p$ at least
 
 \subsection{Multiplicative Group of a Finite Field}\label{section:multiplicative_subgroup}
 
-The non-zero elements of $\mathbb{F}_p$, denoted as $\mathbb{F}_p^{\times}$, form a multiplicative cyclic group. In other words, there exist elements $g \in \mathbb{F}_p^{\times}$, called \textit{generators}, such that
+The non-zero elements of $\mathbb{F}_p$, denoted as $\mathbb{F}_p^{\times}$, form a multiplicative cyclic group\footnote{It is easy to see why it is a group yet the proof that it is cyclic is more involved.}. In other words, there exist elements $g \in \mathbb{F}_p^{\times}$, called \textit{generators}, such that
 \begin{equation*}
     \mathbb{F}_p^{\times} = \{g^k: 0 \leq k \leq p-2\}
 \end{equation*}
@@ -222,11 +224,11 @@ Consider the following interesting question: suppose we have a field $\mathbb{F}
 \vspace{-0.75em}
 
 \begin{definition}
-    A field $\mathbb{F}$ is called \textbf{algebraically closed} if every non-constant polynomial $p(x) \in \mathbb{F}[X]$ has a root in $\mathbb{F}$.
+    A field $\mathbb{F}$ is called \textbf{algebraically closed} if every non-constant polynomial $p(x) \in \mathbb{F}[x]$ has a root in $\mathbb{F}$.
 \end{definition}
 
 \begin{example}
-    $\mathbb{R}$ is not algebraically closed since $X^2+1$ has no roots in $\mathbb{R}$. However, $\mathbb{C}$ is algebraically closed, which follows from the fundamental theorem of algebra. Since $\mathbb{C}$ is a field extension of $\mathbb{R}$, it is also an algebraic closure of $\mathbb{R}$. This is commonly denoted as $\overline{\mathbb{R}} = \mathbb{C}$.
+    $\mathbb{R}$ is not algebraically closed since $x^2+1$ has no roots in $\mathbb{R}$. However, $\mathbb{C}$ is algebraically closed, which follows from the fundamental theorem of algebra. Since $\mathbb{C}$ is a field extension of $\mathbb{R}$, it is also an algebraic closure of $\mathbb{R}$. This is commonly denoted as $\overline{\mathbb{R}} = \mathbb{C}$.
 \end{example}
 
 \begin{definition}
