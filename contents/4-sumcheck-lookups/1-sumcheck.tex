@@ -126,16 +126,17 @@ $\boldsymbol{b}' \in \{0,1\}^v$ is equal to:
     multilinear Lagrange basis polynomials:
     \vspace{-7.5px}
     \begin{gather*}
-        \mathsf{eq}(X_1,X_2;(0,0)) = (1-X_1)(1-X_2), \quad
+        \mathsf{eq}(X_1,X_2;(0,0)) = (1-X_1)(1-X_2), \;
         \mathsf{eq}(X_1,X_2;(0,1)) = (1-X_1)X_2, \\
-        \mathsf{eq}(X_1,X_2;(1,0)) = X_1(1-X_2), \quad
+        \mathsf{eq}(X_1,X_2;(1,0)) = X_1(1-X_2), \;
         \mathsf{eq}(X_1,X_2;(1,1)) = X_1X_2.
     \end{gather*}
     The multilinear extension $\widetilde{f}(X_1,X_2)$ is thus computed as:
     \vspace{-7.5px}
-    \begin{equation*}
-        \widetilde{f}(X_1,X_2) = 3(1-X_1)(1-X_2) + 4(1-X_1)X_2 + X_1(1-X_2) + 2X_1X_2 = 3 - 2X_1 + X_2.
-    \end{equation*}
+    \begin{align*}
+        \widetilde{f}(X_1,X_2) &= 3(1-X_1)(1-X_2) + 4(1-X_1)X_2 + X_1(1-X_2) + 2X_1X_2 \\
+        &= 3 - 2X_1 + X_2.
+    \end{align*}
 \end{example}
 
 Now, the question is, how fast can we compute the multilinear extension
@@ -281,9 +282,9 @@ manually add up all $2^v$ values over the boolean hypercube $\{0,1\}^v$.
 \begin{minted}{python}
 def boolean_hypercube_sum(f: PolynomialRing) -> Fp:
     """
-    Computes the sum of the polynomial f over the boolean hypercube {0,1}^v.
-    The boolean hypercube is represented by evaluating the polynomial at all
-    combinations of 0 and 1 for each variable.
+    Computes the sum of the polynomial f over the hypercube {0,1}^v.
+    The boolean hypercube is represented by evaluating the polynomial
+    at all combinations of 0 and 1 for each variable.
     """
 
     total_sum = Fp(0)
@@ -302,7 +303,8 @@ H = boolean_hypercube_sum(f)
 The SageMath generated the following $f$ and $H$:
 \begin{align*}
     f(X_1,\dots,X_{10}) &= 226921892X_2^3X_3X_4^2X_5X_6X_8^2 + 274566947X_0X_1^2X_2^2X_4X_7^2X_8X_9 \\ 
-    &+ 850030718X_1^2X_4X_6^3X_7^2X_8X_9 + 560601732X_0X_3X_5X_6X_7X_8X_9^4 - 390725845X_0^2X_2^3X_3X_9^3 \\
+    &+ 850030718X_1^2X_4X_6^3X_7^2X_8X_9 + 560601732X_0X_3X_5X_6X_7X_8X_9^4 \\
+    &- 390725845X_0^2X_2^3X_3X_9^3 \\
     H &= \sum_{\boldsymbol{b} \in \{0,1\}^{10}} f(\boldsymbol{b}) = 1053620759.
 \end{align*}
 
@@ -319,7 +321,8 @@ said, we define $\mathcal{H}$ as follows:
 \begin{minted}{python}
 def fiat_shamir_sample(input_string: str) -> Fp:
     """
-    Samples a random value from the finite field GF(p) using the Fiat-Shamir heuristic.
+    Samples a random value from the finite field GF(p) 
+    using the Fiat-Shamir heuristic.
     The input string is hashed to produce a random value.
     """
 
@@ -347,11 +350,14 @@ class SumCheckProtocol:
         claimed_sum: Fp
     ) -> None:
         """
-        Initializes the SumCheck protocol with a polynomial and the claimed sum.
+        Initializes the SumCheck protocol with a polynomial
+        and the claimed sum.
 
         Args:
-            polynomial (PolynomialRing): The polynomial to be checked.
-            claimed_sum (Fp): The sum claimed by the prover over the boolean hypercube.
+            polynomial (PolynomialRing): The polynomial 
+            to be checked.
+            claimed_sum (Fp): The sum claimed by 
+            the prover over the boolean hypercube.
         """
 
         self.f = polynomial
@@ -361,11 +367,13 @@ class SumCheckProtocol:
     @staticmethod
     def fiat_shamir_from_polynomials(polynomials: list[PolynomialRing]) -> Fp:
         """
-        Samples a random value from the finite field GF(p) using the Fiat-Shamir heuristic
+        Samples a random value from the finite field GF(p) 
+        using the Fiat-Shamir heuristic
         based on the provided polynomials.
 
         Args:
-            polynomials (list[PolynomialRing]): List of polynomials to be used for sampling.
+            polynomials (list[PolynomialRing]): 
+            List of polynomials to be used for sampling.
 
         Returns:
             Fp: A random value from the finite field GF(p).
@@ -377,10 +385,12 @@ class SumCheckProtocol:
 
     def prove(self) -> dict:
         """
-        Prover generates the transcript of the polynomial and the claimed sum.
+        Prover generates the transcript 
+        of the polynomial and the claimed sum.
 
         Returns:
-            dict: A transcript containing the polynomial, claimed sum, random values, and polynomials.
+            dict: A transcript containing the polynomial, 
+            claimed sum, random values, and polynomials.
         """
 
         # Initialize the transcript representing the 
@@ -394,16 +404,19 @@ class SumCheckProtocol:
 
         for j in range(v):
             # The protocol consists of v rounds.
-            # Finding polynomial s_j that represents the sum of f over the boolean hypercube
+            # Finding polynomial s_j that represents 
+            # the sum of f over the boolean hypercube
             Rj = PolynomialRing(Fp, 'x')
             x = Rj.gen()
             s_j = Rj.zero()
 
             for i in range(2**(v-j-1)):
-                # Convert i to a binary representation of length v-j-1
+                # Convert i to a binary representation 
+                # of length v-j-1
                 binary_representation = [(i >> k) & 1 for k in range(v-j-1)]
                 # Evaluate the polynomial at this point
-                point_value = self.f(*transcript['random_values'][:j], variables[j], *binary_representation)
+                point_value = self.f(*transcript['random_values'][:j], 
+                                      variables[j], *binary_representation)
                 univariate_poly = point_value.subs({variables[j]: x})
                 s_j += univariate_poly
 
@@ -436,18 +449,24 @@ class SumCheckProtocol:
         random_values = transcript['random_values']
         polynomials = transcript['polynomials']
 
-        # Assert that random_values is formed correctly using Fiat-Shamir heuristic
+        # Assert that random_values is formed 
+        # correctly using Fiat-Shamir heuristic
         if len(random_values) != v:
             print("Invalid number of random values in the transcript.")
             return False
         for i in range(v):
-            if random_values[i] != self.fiat_shamir_from_polynomials(polynomials[:i+1]):
-                print(f"Random value at index {i} does not match the Fiat-Shamir sample.")
+            if random_values[i] != self.fiat_shamir_from_polynomials(
+                polynomials[:i+1]
+            ):
+                print(f"Random value at index {i} does 
+                        not match the Fiat-Shamir sample.")
                 return False
 
-        # Assert that each s_r(0) + s_r(1) matches the claimed sum H
+        # Assert that each s_r(0) + s_r(1) 
+        # matches the claimed sum H
         for j in range(v):
-            # During the first round, simply check that s_1(0) + s_1(1) = H
+            # During the first round, simply check 
+            # that s_1(0) + s_1(1) = H
             if j == 0:
                 s_1 = polynomials[0]
                 if s_1(0) + s_1(1) != H:
@@ -456,11 +475,13 @@ class SumCheckProtocol:
                     return False
                 continue
             
-            # For subsequent rounds, check that the sum of the polynomials matches the claimed sum
+            # For subsequent rounds, check that the 
+            # sum of the polynomials matches the claimed sum
             s, s_previous = polynomials[j], polynomials[j-1]
             if s(0) + s(1) != s_previous(random_values[j-1]):
                 print(f"""Round {j} sum {s(0) + s(1)} does not match the 
-                        previous round's output {s_previous(random_values[j-1])}.""")
+                        previous round's output 
+                        {s_previous(random_values[j-1])}.""")
                 return False
 
         # Final round checks whether f(r) = s_v(r_v)
@@ -468,7 +489,8 @@ class SumCheckProtocol:
         last_random = random_values[-1]
 
         if last_polynomial(last_random) != f(*random_values):
-            print(f"Final check failed: {last_polynomial(last_random)} != {f(*random_values)}")
+            print(f"Final check failed: 
+                  {last_polynomial(last_random)} != {f(*random_values)}")
             return False
         
         return True
@@ -719,7 +741,7 @@ def mle_from_matrix(matrix: Matrix) -> R:
     for i in range(n):
         for j in range(n):
             # Convert i and j to binary representation of length v
-            point = [(i >> k) & 1 for k in range(v)] + [(j >> k) & 1 for k in range(v)]
+            point = [(i>>k)&1 for k in range(v)] + [(j>>k)&1 for k in range(v)]
             hypercube.append((tuple(point), matrix[i, j]))
 
     return mle_from_hypercube(hypercube)

@@ -9,11 +9,11 @@ particular case, polynomials will encode the information about statements we
 will need to prove. That being said, let us define what polynomial is.
 
 \begin{definition}
-    A \textbf{polynomial} $f(x)$ is a function of the form
+    A \textbf{polynomial} $p(x)$ is a function of the form
     \begin{xequation*}
         p(x) = c_0 + c_1 x + c_2 x^2 + \cdots + c_n x^n = \sum_{k=0}^{n} c_k x^k,
     \end{xequation*}
-    where $c_0, c_1, \dots, c_n$ are coefficients of the polynomial.
+    where $c_0, c_1, \dots, c_n$ are called coefficients of the polynomial.
 \end{definition}
 
 Notice that for now we did not specify what are $c_i$'s. We are interested in the case where $c_i \in \mathbb{F}$, where $\mathbb{F}$ is a field. 
@@ -24,14 +24,6 @@ Notice that for now we did not specify what are $c_i$'s. We are interested in th
         \mathbb{F}[x] = \left\{p(x) = \sum_{k=0}^{n} c_k x^k: c_k \in \mathbb{F}, \; k = 0,\dots,n\right\}.
     \end{xequation}
 \end{definition}
-
-\vspace{-4mm}
-
-\begin{definition}
-    Evaluation of a polynomial $p(x) \in \mathbb{F}[x]$ at point $x_0 \in \mathbb{F}$ is simply finding the value of $p(x_0) \in \mathbb{F}$.
-\end{definition}
-
-\vspace{-4mm}
 
 \begin{example}
     Consider the finite field $\mathbb{F}_3$. Then, some examples of polynomials from $\mathbb{F}_3[x]$ are listed below:
@@ -52,12 +44,12 @@ Notice that for now we did not specify what are $c_i$'s. We are interested in th
 \vspace{-4mm}
 
 \begin{definition}
-    The \textbf{degree} of a polynomial $p(x) = c_0+c_1x+c_2x^2+\dots$ is the largest $k \in \mathbb{Z}_{\geq 0}$ such that $c_k \neq 0$. We denote the degree of a polynomial as $\deg p$. We also denote by $\mathbb{F}^{(\leq m)}[x]$ a set of polynomials of degree at most $m$.
+    The \textbf{degree} of a polynomial $p(x) = c_0+c_1x+c_2x^2+\dots$ is the largest $k \in \mathbb{Z}_{\geq 0}$ such that $c_k \neq 0$. We denote the degree of a polynomial as $\deg p$. We also denote by $\mathbb{F}[x]^{\leq m} := \{p \in \mathbb{F}[x]: \deg p \leq m\}$.
 \end{definition}
 
 \begin{example}
-    The degree of the polynomial $p(x) = 1 + 2x + 3x^2$ is $2$, so $p(x) \in
-    \mathbb{F}_5^{(\leq 2)}[x]$.
+    The degree of the polynomial $p(x) = 1 + 2x + 3x^2$ is $2$. Consequently, in particular, $p \in
+    \mathbb{F}_5[x]^{\leq 2}$.
 \end{example}
 
 \begin{theorem}
@@ -71,7 +63,7 @@ Notice that for now we did not specify what are $c_i$'s. We are interested in th
 \subsection{Roots and divisibility}
 
 \begin{definition}
-    Let $p(x) \in \mathbb{F}[x]$ be a polynomial of degree $\deg p \geq 1$. A field element $x_0 \in \mathbb{F}$ is called a root of $p(x)$ if $p(x_0) = 0$.
+    Let $p(x) \in \mathbb{F}[x]$ be a polynomial of degree $\deg p \geq 1$. A field element $x_0 \in \mathbb{F}$ is called a \textbf{root} of $p(x)$ if $p(x_0) = 0$.
 \end{definition}
 
 \vspace{-4mm}
@@ -80,17 +72,17 @@ Notice that for now we did not specify what are $c_i$'s. We are interested in th
     Consider the polynomial $p(x) = 1 + x + x^2 \in \mathbb{F}_3[x]$. Then, $x_0=1$ is a root of $p(x)$ since $p(x_0) = 1 + 1 + 1 \; \text{mod} \; 3 = 0$.
 \end{example}
 
-One of the fundamental theorems of polynomials is following.
+One of the fundamental theorems of polynomials is the following.
 
-\begin{theorem}
-    Let $p(x) \in \mathbb{F}[x], \deg p \geq 1$. Then, $x_0 \in \mathbb{F}$ is a root of $p(x)$ if and only if there exists a polynomial $q(x)$ (with $\deg q = n-1$) such that
+\begin{theorem}\label{th:root-div}
+    Let $p \in \mathbb{F}[x], \deg p \geq 1$. Then, $x_0 \in \mathbb{F}$ is a root of $p(x)$ if and only if there exists a polynomial $q(x)$ (with $\deg q = n-1$) such that
     \begin{xequation}
         p(x) = (x-x_0)q(x)
     \end{xequation}
 \end{theorem}
 
 \begin{example}
-    Note that $x_0=1$ is a root of $p(x) = x^2+2$. Indeed, we can write $p(x) = (x-1)(x-2)$, so here $q(x) = x-2$.
+    For example, $x_0=1$ is a root of $p(x) = x^2+2$ over $\mathbb{F}_3$. On the other hand, $p(x) = (x-1)(x-2)$ ($q(x) = x - 2$ according to Theorem~\ref{th:root-div}).
 \end{example}
 
 Also, this might not be obvious, but we can also divide polynomials in the same way as we divide integers. The result of division is not always a polynomial, so we also get a remainder.
@@ -98,7 +90,7 @@ Also, this might not be obvious, but we can also divide polynomials in the same 
 \begin{theorem}
     Given $f,g \in \mathbb{F}[x]$ with $g \neq 0$, there are unique polynomials $p,q \in \mathbb{F}[x]$ such that 
     \begin{xequation}
-        f = q \cdot g + r, \; 0 \leq \deg r < \deg g
+        f = q \cdot g + r, \; 0 \leq \deg r < \deg g.
     \end{xequation}
 \end{theorem}
 
@@ -108,21 +100,21 @@ Also, this might not be obvious, but we can also divide polynomials in the same 
         f \, \text{div} \, g = x^2-x+1, \quad f \, \text{mod} \, g = 1.
     \end{xequation*}
 
-    The notation is pretty similar to one used in integer division.
+    The notation is similar to one used in integer division.
 \end{example}
 
-Similarly, one can define $\text{gcd}$, $\text{lcm}$, and other number field theory operations for polynomials. However, we will not go into details here, besides mentioning the divisibility.
+Similarly, one can define $\text{gcd}$, $\text{lcm}$, and other number field theory operations for polynomials\footnote{This follows from the fact that both $\mathbb{Z}$ and $\mathbb{F}[x]$ are so-called \textit{principal ideal domains}. For a careful treatment of the details, see for example \cite[Chapters 1 \& 2]{ireland}.}. However, we will not go into details here, besides mentioning the divisibility.
 
 \begin{definition}
     A polynomial $f(x) \in \mathbb{F}[x]$ is called \textbf{divisible} by $g(x) \in \mathbb{F}[x]$ (or, $g$ \textbf{divides} $f$, written as $g \mid f$) if there exists a polynomial $h(x) \in \mathbb{F}[x]$ such that $f=gh$.
 \end{definition}
 
-\begin{theorem}
+\begin{proposition}[Theorem~\ref{th:root-div} restated]
     If $x_0 \in \mathbb{F}$ is a root of $p(x) \in \mathbb{F}[x]$, then $(x-x_0) \mid p(x)$.
-\end{theorem}
+\end{proposition}
 
 \begin{definition}
-    A polynomial $f(x) \in \mathbb{F}[x]$ is said to be \textbf{irreducible} in $\mathbb{F}$ if there are no polynomials $g,h \in \mathbb{F}[x]$ both of degree more than $1$ such that $f = gh$.
+    A polynomial $f(x) \in \mathbb{F}[x]$ is said to be \textbf{irreducible} in $\mathbb{F}$ if there are no polynomials $g,h \in \mathbb{F}[x]$ both of degree more than $1$ such that $f = gh$ holds.
 \end{definition}
 
 \begin{example}
@@ -170,7 +162,8 @@ in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the po
             1, & i = j \\ 0, & i \neq j
         \end{cases},
     \end{xequation*}
-    where $\delta_{ij}$ is the Kronecker delta. Moreover, $\{\ell_i\}_{i=1}^n$ form a basis of $\mathbb{F}^{(\leq n)}[x]$: for any polynomial $p(x) \in \mathbb{F}^{(\leq n)}[x]$ there exist unique coefficients $\alpha_0,\dots,\alpha_n \in \mathbb{F}$ such that
+
+    where $\delta_{ij}$ is the so-called \textit{Kronecker delta}. Moreover, $\{\ell_i\}_{i=1}^n$ form a \textit{basis} of $\mathbb{F}[x]^{\leq n}$ (see \Cref{section:linear-algebra} for the definition). Put simply, for any polynomial $p \in \mathbb{F}[x]^{\leq n}$ there exist unique coefficients $\alpha_0,\dots,\alpha_n \in \mathbb{F}$ such that
     \begin{xequation}
         p(x) = \sum_{i=0}^{n} \alpha_i \ell_i(x).
     \end{xequation}
@@ -200,7 +193,7 @@ single-variable case, which is easiest to understand.
     polynomial. Then,
     \begin{xequation}
         \underset{x \leftarrowS \mathbb{F}}{\text{Pr}}
-        [f(x) = 0] \leq \frac{\deg f}{\left|\mathbb{F}\right|}.
+        [f(x) = 0] \leq \frac{\deg f}{\#\mathbb{F}}.
     \end{xequation}
 \end{lemma}
 
@@ -208,7 +201,7 @@ single-variable case, which is easiest to understand.
 
 \textbf{Proof Idea.} The proof is quite simple. The polynomial of degree up to
 $n:=\deg f$ can have up to $n$ roots. Therefore, when we pick the point $x$
-uniformly at random from the field $\mathbb{F}$, there is at most $n/|\mathbb{F}|$
+uniformly at random from the field $\mathbb{F}$, there is at most $n/\#\mathbb{F}$
 chance to pick the root of the polynomial.
 
 However, the lemma can be generalized to the multi-variable case, which is more
@@ -225,7 +218,7 @@ difficult to prove. The generalization is as follows.
     
     \begin{xequation}
         \underset{\mathbf{x} \leftarrowS \mathbb{S}}{\text{Pr}}
-        [f(\mathbf{x}) = 0] \leq \frac{\deg f}{\left|\mathbb{S}\right|}.
+        [f(\mathbf{x}) = 0] \leq \frac{\deg f}{\#\mathbb{S}}.
     \end{xequation}
 \end{lemma}
 

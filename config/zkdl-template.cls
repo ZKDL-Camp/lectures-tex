@@ -157,7 +157,7 @@
 \setminted{
   fontfamily=cmtt,
   frame=lines,      % Adding a frame for style
-  fontsize=\small   % Using a slightly smaller font for code
+  fontsize=\footnotesize   % Using a slightly smaller font for code
 }
 \usemintedstyle{colorful}
 
@@ -285,6 +285,7 @@
 
 % --- Box styles using tcolorbox ---
 \RequirePackage[most]{tcolorbox}
+
 \tcolorboxenvironment{definition}{   breakable, boxrule=0pt, boxsep=0pt, colback={blue!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{blue},sharp corners,before skip=10pt,after skip=10pt}
 \tcolorboxenvironment{proposition}{  breakable, boxrule=0pt, boxsep=0pt, colback={Orange!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{Orange},sharp corners,before skip=10pt,after skip=10pt}
 \tcolorboxenvironment{theorem}{      breakable, boxrule=0pt, boxsep=0pt, colback={blue!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{blue},sharp corners,before skip=10pt,after skip=10pt}
