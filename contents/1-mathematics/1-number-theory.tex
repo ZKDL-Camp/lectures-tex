@@ -521,7 +521,7 @@ prime generation in cryptographic systems or constructing special primes.
     For any $a, b \in \mathbb{N}$ if $\gcd(a, b) = 1$, then infinite primes number form of $am + b$ exists, where $m \in \mathbb{N}$.
 \end{theorem}
 
-In other words, every infinite arithmetic progression whose first term and difference are positive integers contains an infinite number of primes.
+In other words, every infinite arithmetic progression whose first term and difference are coprime positive integers contains an infinite number of primes.
 
 \subsection{Fundamental Theorem of Arithmetic}
 The Fundamental Theorem of Arithmetic states that every integer greater than 1 can be 
@@ -1091,8 +1091,8 @@ print(inverse(8, 17)) # Output: 15
     {Which of the following statements is \textbf{false}?}
     {1}
     {
-        \item $\gcd(p,q)=1$ for any two prime numbers $p$ and $q$.
-        \item $\lcm(p,q)=pq$ for any two primes $p$ and $q$.
+        \item $\gcd(p,q)=1$ for any two \textit{distinct} prime numbers $p$ and $q$.
+        \item $\lcm(p,q)=pq$ for any two \textit{distinct} primes $p$ and $q$.
         \item $\gcd(n,m) = \gcd(m,n)$ for any integers $n,m$.
         \item $\lcm(n+1,n-1) = n^2-1$ for any integer $n$.
     }
