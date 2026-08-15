@@ -264,7 +264,7 @@ Specifically, consider \Cref{fig:linear-eqs-3d-illustration}.
 Notice that there are three primary cases how such vectors and righthand side are located in the space:
 \begin{itemize}
     \item Vectors lie on the same \textit{line} (as illustrated by \textit{System (c)}).
-    Since $(1,4,7)$ does not lie on the same lines as other vectors, the system has no solutions.
+    Since $(1,4,7)$ does not lie on the same line as the other vectors, the system has no solutions.
     Otherwise, it has an infinite number of solutions.
     \item Vectors lie on the same \textit{plane} (as illustrated by \textit{System (b)}).
     Since $(2,2,2)$ lies on this plane, there is an infinite number of solutions.
@@ -304,7 +304,7 @@ In turn, if \textit{System (c)} had solutions, we would need two free variables 
   \begin{subfigure}[c]{0.50\textwidth}
     \caption{\textcolor{oc-indigo-7}{\textit{System (b)}} \\[2pt]
              Three vectors are situated on the same plane.
-             Consequently, the equation will have infinite number solutions if the righthand side also lies on this plane.
+             Consequently, the equation will have an infinite number of solutions if the righthand side also lies on this plane.
              Otherwise, the system has no solutions.}
   \end{subfigure}
 
@@ -326,7 +326,7 @@ In turn, if \textit{System (c)} had solutions, we would need two free variables 
 \end{figure}
 
 Now, here is the thing: in cryptography, we typically need to operate over systems of \textit{thousands} of linear relations.
-While we could ``manually'' analyze simple cases as $2 \times 2$ or $3 \times 3$ linear equations, we need a more systematic way to give answers to the preceeding questions.
+While we could ``manually'' analyze simple cases as $2 \times 2$ or $3 \times 3$ linear equations, we need a more systematic way to give answers to the preceding questions.
 
 The linear algebra gives all the necessary tools. 
 Specifically, as you could have already noticed, the key of studying such equations is to see how column-vectors of some equation are related.
@@ -342,7 +342,7 @@ For instance, for \textit{System (a)}, we have:
     \end{bmatrix}.
 \end{equation*}
 
-While of course the number of solutions depend on the righthand side, the primary structure of the solution set is \emph{determined by a map $\mathbf{x} \mapsto A\mathbf{x}$}.
+While of course the number of solutions depends on the righthand side, the primary structure of the solution set is \emph{determined by a map $\mathbf{x} \mapsto A\mathbf{x}$}.
 In a sense, this is exactly what we are going to study in this section.
 For example, when we develop the whole toolkit, here is how we can answer the previous questions systematically:
 
@@ -846,7 +846,7 @@ This definition requires some examples.
     \end{equation*}
 \end{example}
 
-Notice that while basis in not unique for the given vector space, the number of basis vectors was the same.
+Notice that while the basis in not unique for the given vector space, the number of basis vectors was the same.
 This raises the natural question: can we find the basis $\mathbf{e}_1,\dots,\mathbf{e}_m$ for $\mathbb{F}^n$ or $\mathbb{F}[x]^{<n}$ with $m \neq n$?
 The answer is no.
 
@@ -854,7 +854,7 @@ The answer is no.
     Any two bases of a vector space have the same length.
 \end{lemma}
 
-This motivates us to give the following definion.
+This motivates us to give the following definition.
 
 \begin{definition}
     The \textbf{dimension} of the vector space $V$, denoted by $\dim V$, is the length of any basis of $V$.
@@ -1118,7 +1118,7 @@ The natural way to represent this relation is as follows:
 \end{equation*}
 
 where $\mathbf{1}_n$ represents the vector of length $n$ consisting of $1$'s.
-More generally, a R1CS relation, furhter considered in \Cref{section:r1cs}, is concisely represented in terms of Hadamard product between two specifically chosen large vectors.
+More generally, a R1CS relation, further considered in \Cref{section:r1cs}, is concisely represented in terms of Hadamard product between two specifically chosen large vectors.
 
 \subsubsection{Outer Product}
 
@@ -1154,7 +1154,7 @@ The final product we introduce is the \textbf{outer product}.
 \vspace{-4.2mm}
 
 \begin{example}
-    Let $\mathbf{u}, \mathbf{v}$ are vectors over the real number $\mathbb{R}$, where
+    Let $\mathbf{u}, \mathbf{v}$ be vectors over the real number $\mathbb{R}$, where
     $\mathbf{u}=(1, 2, 3)$ and $\mathbf{v} = (2, 4, 3)$. Then: 
     \begin{xequation*}
         \mathbf{u} \otimes \mathbf{v} = \mathbf{u}\mathbf{v}^{\top} = \begin{bmatrix}
