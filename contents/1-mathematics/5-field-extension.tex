@@ -19,7 +19,7 @@ In spite of what interpretation you have seen, the complex number is just a tupl
 
 Formally, definition of the field extension is straightforward:
 \begin{definition}
-    Let $\mathbb{F}$ be a field and $\mathbb{K}$ be another field. We say that $\mathbb{K}$ is an \textbf{extension} of $\mathbb{F}$ if $\mathbb{F} \subset \mathbb{K}$ and we denote it as $\mathbb{K}/\mathbb{F}$.
+    Let $\mathbb{F}$ be a field and $\mathbb{K}$ be another field. We say that $\mathbb{K}$ is an \textbf{extension} of $\mathbb{F}$ if $\mathbb{F} \subset \mathbb{K}$ and $1_{\mathbb{F}} \in \mathbb{K}$ and we denote it as $\mathbb{K}/\mathbb{F}$.
 \end{definition}
 
 Despite just a simplicity of the definition, the field extensions are a very powerful tool in mathematics. But first, let us consider a few non-trivial examples of field extensions.
@@ -121,8 +121,7 @@ So, let us generalize this observation to any field $\mathbb{F}$ and any irreduc
     Although we have not defined the isomorphism between two rings/fields, it is defined similarly to group isomorphism. Suppose we have fields $(\mathbb{F},+,\times)$ and $(\mathbb{K}, \oplus, \otimes)$. Bijective function $\phi: \mathbb{F} \to \mathbb{K}$ is called an isomorphism if it preserves additive and multiplicative structures, that is for all $a,b \in \mathbb{F}$:
     \begin{xequation}
         \begin{aligned}
-            \phi(a+b) = \phi(a) \oplus \phi(b),\\
-            \phi(a\times b) = \phi(a) \otimes \phi(b).
+            \phi(a+b) = \phi(a) \oplus \phi(b), \quad \phi(a\times b) = \phi(a) \otimes \phi(b), \quad \phi(1_{\mathbb{F}}) = 1_{\mathbb{K}}.
         \end{aligned}
     \end{xequation}
 \end{remark}
@@ -256,7 +255,7 @@ But what form does the $\overline{\mathbb{F}}_{p}$ have? Well, it is a union of 
 \vspace{-4mm}
 
 \begin{remark}
-    But this definition is super counter-intuitive! So here how we usually interpret it. Suppose I tell you that polynomial $q(x)$ has a root in $\overline{\mathbb{F}}_p$. What that means is that there exists some extension $\mathbb{F}_{p^m}$ such that for some $\alpha \in \mathbb{F}_{p^m}$, $q(\alpha)=0$. We do not know how large this $m$ is, but we know that it exists. For that reason, $\overline{\mathbb{F}}_p$ is defined as an infinite union of all possible field extensions.
+    This definition might rightfully seem counterintuitive. So here how we usually interpret it. Suppose I tell you that polynomial $q(x)$ has a root in $\overline{\mathbb{F}}_p$. What that means is that there exists some extension $\mathbb{F}_{p^m}$ such that for some $\alpha \in \mathbb{F}_{p^m}$, $q(\alpha)=0$. We do not know how large this $m$ is, but we know that it exists. For that reason, $\overline{\mathbb{F}}_p$ is defined as an infinite union of all possible field extensions.
 \end{remark}
 
 \subsection{Exercises}
