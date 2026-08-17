@@ -11,14 +11,12 @@
 % --- Required packages ---
 
 % --- Fonts and Encoding ---
-\RequirePackage[T1,T2A]{fontenc}
+\RequirePackage[T1]{fontenc}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[english]{babel}
 
-% --- MATH & FONT PACKAGES (Corrected and Synced with bionetta.cls) ---
 % 1. Load the main math/text font package FIRST.
 %    This sets the main font to XCharter and configures math to match.
-%\RequirePackage[amsthm,xcharter,bigdelims,vvarbb]{newtxmath}
 \let\oldttdefault\ttdefault
 \RequirePackage{libertine}
 \let\ttdefault\oldttdefault
@@ -93,6 +91,29 @@
 }
 
 \RequirePackage[nameinlink]{cleveref}
+
+% --- Table of contents must display hidden sections ---
+\makeatletter
+\newcommand{\current@secname}{section}
+
+% 1. Capture the section level name (section, subsection, subsubsection)
+\let\old@startsection\@startsection
+\def\@startsection#1#2#3#4#5#6{%
+  \gdef\current@secname{#1}%
+  \old@startsection{#1}{#2}{#3}{#4}{#5}{#6}%
+}
+
+% 2. Dynamically pass \current@secname to \addcontentsline
+\let\old@ssect\@ssect
+\def\@ssect#1#2#3#4#5{%
+  \old@ssect{#1}{#2}{#3}{#4}{#5}%
+  \phantomsection
+  \addcontentsline{toc}{\current@secname}{#5}%
+}
+\makeatother
+
+% 3. Ensure the ToC depth includes subsubsections (level 3)
+\setcounter{tocdepth}{3}
 
 % --- Tikz settings ---
 \RequirePackage {
@@ -270,6 +291,14 @@
 \theoremstyle{mystyle}{\newtheorem{examples}{Examples}[section]}
 \theoremstyle{definition}{\newtheorem*{exercise}{Exercise}}
 \theoremstyle{cstyle}{\newtheorem*{cthm}{}}
+
+% --- Map shared counter environments to their proper cleveref types ---
+\crefalias{proposition}{proposition}
+\crefalias{theorem}{theorem}
+\crefalias{lemma}{lemma}
+\crefalias{corollary}{corollary}
+\crefalias{example}{example}
+\crefalias{examples}{example}
 
 % Load custom environment 
 \input{config/x-environments.cls}

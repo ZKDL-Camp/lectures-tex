@@ -260,7 +260,7 @@ Now, Shamir's protocol is one of the most famous secret sharing schemes. It work
 \begin{itemize}
     \item $\mathsf{Gen}(\alpha, k, n)$: choose random $k_1,\dots,k_{t-1}
     \leftarrowS \mathbb{F}_q$ and define polynomial $\omega(x) := \alpha +
-    \sum_{j=1}^{t-1}k_jx^j \in \mathbb{F}_q^{\leq (t-1)}[x]$. Then, compute
+    \sum_{j=1}^{t-1}k_jx^j \in \mathbb{F}_q[x]^{<t}$. Then, compute
     $\alpha_i \gets \omega(i) \in \mathbb{F}_q$ for each $i$ and return
     $(\alpha_1,\dots,\alpha_n)$.
     \item $\mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}})$: reconstruct the polynomial $\omega(x)$ using Lagrange interpolation and return $\omega(0) = \alpha$.
@@ -286,6 +286,71 @@ uniquely determine the polynomial and thus get value at $0$.
     \caption{Illustration of Shamir's Secret Sharing}
     \label{fig:shamir}
 \end{figure}
+
+\subsubsection{SageMath Implementation}\label{sec:shamir-impl}
+
+Let us implement this protocol in SageMath.
+First, we will set up our finite field $\mathbb{F}_q$ and polynomial ring $\mathbb{F}_q[x]$.
+
+\begin{minted}{python}
+from typing import List, Tuple
+
+q = 2^(31) - 1
+Fq = GF(q)
+P.<x> = PolynomialRing(Fq)
+\end{minted}
+
+Now, let us write the $\mathsf{Gen}$ function that returns shares $\{(i, f(i))\}_{i \in [n]}$.
+
+\begin{minted}{python}
+def generate(n: int, k: int) -> List[[Fq, int]]:
+    """
+    Generate a Shamir secret sharing scheme with n shares and k threshold.
+    """
+
+    # Generate a random polynomial
+    f = P.random_element(degree=k-1)
+    
+    # Generate a secret
+    secret = Fq.random_element()
+    print(f'Chosen secret: {secret}')
+
+    # Set the constant term as the secret
+    f = P([secret] + [f[i] for i in range(1, k)])
+    print(f'Polynomial: {f}')
+    
+    # Return shares
+    return [(Fq(i), f(i)) for i in range(1, n+1)]
+\end{minted}
+
+This way, using the following function, we generate shares:
+
+\vspace{-6px}
+\begin{minted}{python}
+shares = generate(5, 3) # Generate 3-of-5 shares
+\end{minted}
+\vspace{-6px}
+
+Finally, we write the $\mathsf{Comb}$ function that reconstructs the secret value by interpolating given values.
+
+\begin{minted}{python}
+def reconstruct(shares: List[Tuple[int, Fq]], threshold: int) -> Fq:
+    """
+    Reconstruct the secret from the shares using Lagrange interpolation.
+    """
+    
+    assert len(shares) >= threshold, f"Not enough shares to reconstruct 
+                                    the secret, got {len(shares)}"
+
+    reconstructed_polynomial = P.lagrange_polynomial(shares)
+    print(f'Reconstructed polynomial: {reconstructed_polynomial}')
+
+    # The secret is the constant term of the polynomial
+    return reconstructed_polynomial(0)
+
+recovered_secret = reconstruct(shares[1:4], 3) # Try any subset of 3 elements
+print(f'Recovered secret: {recovered_secret}')
+\end{minted}
 
 \subsection{Exercises}
 
@@ -340,7 +405,7 @@ uniquely determine the polynomial and thus get value at $0$.
         \begin{xequation}
             P_n(x) = x^{2n} + x^n -2, \quad Q(x) = x^2 + 1
         \end{xequation}
-        For which values of $n$ does polynomial $Q(x)$ divides $P_n(x)$
+        For which values of $n$ does polynomial $Q(x)$ divide $P_n(x)$
     }
     {1}
     {

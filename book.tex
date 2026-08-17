@@ -42,10 +42,10 @@
 
     % --- Introduction and Notation ---
 
-    \section{Preface}
+    \section*{Preface}
     \subfile{contents/0-auxiliary/preface}
 
-    \section{Notation}\label{section:notation}
+    \section*{Notation}\label{section:notation}
     \subfile{contents/1-mathematics/0-notation}
 
     % --- Chapter I: Mathematical Preliminaries ---
@@ -140,23 +140,27 @@
     % \section{LatticeFold}
     % \subfile{contents/5-post-quantum/2-latticefold.tex}
     
-    % --- Solutions ---
-    \part{Concluding Remarks}\label{section:solutions}
-    \subsection*{Solutions to Exercises}
-    \subfile{contents/appendices/exercise-solutions.tex}
-
-    \section*{Acknowledgements}
-    \subfile{contents/0-auxiliary/acknowledgements.tex}
-
-    \section*{Changelog}
-    \subfile{contents/0-auxiliary/changelog.tex}
+        
     % --- References ---
-
     \bibliographystyle{alpha} 
     \bibliography{bibliography,cryptobib/abbrev3,cryptobib/crypto}
 
-    % --- Contact Page ---
+    % --- Closing Remarks ---
+    \part{Concluding Remarks}\label{section:solutions}
 
+    % -- Acknowledgements --
+    \subsection*{Authors \& Acknowledgements}
+    \subfile{contents/0-auxiliary/acknowledgements.tex}
+
+    % -- Changelog --
+    \subsection*{Changelog}
+    \subfile{contents/0-auxiliary/changelog.tex}
+
+    % --- Exercise Solutions ---
+    \section*{Solutions to Exercises}
+    \subfile{contents/appendices/exercise-solutions.tex}
+
+    % --- Contact Page ---
     \input{contents/0-auxiliary/contact-page.tex}
 
 \end{document}

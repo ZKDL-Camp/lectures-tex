@@ -556,12 +556,13 @@ suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is t
 \end{definition}
 
 \begin{example}
-    Consider the group of integers $(\mathbb{Z},+)$ and the group of integers modulo $12$ $(\mathbb{Z}_{12},+)$. The function $\varphi: \mathbb{Z} \to \mathbb{Z}_{12}$ defined as $\varphi(x) = x \;\text{mod}\; 12$ is a homomorphism. Indeed:
+    Consider the group of integers $(\mathbb{Z},+)$ and the group of integers modulo $12$ $(\mathbb{Z}_{12},+)$. The function $\pi: \mathbb{Z} \to \mathbb{Z}_{12}$ defined as $\pi(x) = x \;\text{mod}\; 12$ is a homomorphism. Indeed:
     \begin{xequation*}
-        \varphi(a+b) = (a+b) \;\text{mod}\; 12 = (a \;\text{mod}\; 12) + (b \;\text{mod}\; 12) = \varphi(a) + \varphi(b).
+        \pi(a+b) = (a+b) \;\text{mod}\; 12 = (a \;\text{mod}\; 12) + (b \;\text{mod}\; 12) = \pi(a) + \pi(b).
     \end{xequation*}
 
-    However, this function is not an isomorphism, since it is not bijective. For example, $\varphi(0) = \varphi(12) = 0$.
+    However, $\pi$ is not an isomorphism, since it is not bijective. For example, $\pi(0) = \pi(12) = 0$.
+    Such map is commonly called a \textit{canonical projection}.
 \end{example}
 
 \begin{example}
@@ -580,7 +581,7 @@ suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is t
 A generalization of the above example is the following interesting theorem.
 
 \begin{theorem}
-    Suppose $\mathbb{G} = \langle g \rangle$ is a finite cyclic group and $|G| = n \in \mathbb{N}$. Then, $\mathbb{G} \cong \mathbb{Z}_n$.
+    Let $\mathbb{G} = \langle g \rangle$ be a finite cyclic group of order $n$. Then, $\mathbb{G} \cong \mathbb{Z}_n$.
 \end{theorem}
 
 \textbf{Proof idea.} Define a function $\varphi: \mathbb{Z}_n \to \mathbb{G}$ as $m \mapsto g^m$. One can prove that this is an isomorphism.
@@ -591,6 +592,15 @@ In fact, $\cong$ is an equivalence relation on the class of groups
 practice to call two isomorphic groups \textit{equivalent}.
 
 \textbf{Exercise (*).} Prove that $\cong$ is an equivalence relation.
+
+Using the notion of isomorphism, we can restate Chinese Remainder Theorem (Thereom~\ref{th:chinese_remainder_theorem}) in the algebraic form.
+\begin{theorem}[Restated Theorem~\ref{th:chinese_remainder_theorem}]
+    Let $N=n_1\dots n_k$ and $n_1,\dots,n_k$ be pairwise coprime. Then, the map
+    $[x]_N \mapsto ([x]_{n_1}, \dots, [x]_{n_k})$ defines the isomorphism\footnote{Here, this is a \textit{ring} isomorphism, meaning, that it preserves both addition and multiplication: \textit{i.e.,} $\varphi(x+y)=\varphi(x)+\varphi(y)$, $\varphi(xy)=\varphi(x)\varphi(y)$, and $\varphi(1)=1$.}
+    \begin{equation*}
+        \mathbb{Z}_N \cong \mathbb{Z}_{n_1} \times \dots \times \mathbb{Z}_{n_k}.
+    \end{equation*}
+\end{theorem} 
 
 Finally, we will define the concept of an endomorphism and automorphism to finish the section.
 
@@ -659,7 +669,7 @@ What this definition states is that we can perform the following operations:
 Interestingly though, it is very difficult to come up with some more complicated, non-trivial examples. For that 
 reason, we will simply move to the most central field used in cryptography -- finite fields.
 
-\subsection{Finite Fields}
+\subsection{Prime Fields}
 Notice that $(\mathbb{Z},+,\times)$ does not form a field since division is not
 closed. Similarly, the tuple $(\mathbb{Z}_n,+,\times)$ also does not always form
 a field since the multiplicative inverses are defined only for coprime numbers.
@@ -704,7 +714,7 @@ For that reason, we might even code a group in Rust! We will also write a simple
 valid and whether the group is abelian.
 
 \textbf{Trait for Group.} First, we define a trait for a group. We will define a group as a trait with the following methods:
-\begin{lstlisting}[language=Rust]
+\begin{minted}{rust}
 /// Trait that represents a group.
 pub trait Group: Sized {
     /// Checks whether the two elements are equal.
@@ -720,7 +730,7 @@ pub trait Group: Sized {
         self.add(&a.negate())
     }
 }
-\end{lstlisting}
+\end{minted}
 
 \textbf{Checking group validity.} Now observe the following: we get closure for free, since the compiler will check 
 whether the return type of the operation is the same as the type of the group. However, there is no guarantee that 
@@ -738,16 +748,16 @@ $a,b,c \leftarrowS \mathbb{G}$ and check our three properties:
 Additionally, if we want to verify whether the group is abelian, we can check whether $a \oplus b \xlongequal{?} b \oplus a$. 
 
 For that reason, for the check, we require the group to be samplable (i.e. we can randomly sample elements from the group):
-\begin{lstlisting}[language=Rust]
+\begin{minted}{rust}
 /// Trait for sampling a random element from a group.
 pub trait Samplable {
     /// Returns a random element from the group.
     fn sample() -> Self;
 }
-\end{lstlisting}
+\end{minted}
 
 And now, our test looks as follows:
-\begin{lstlisting}[language=Rust]
+\begin{minted}{rust}
 /// Number of tests to check the group properties.
 const TESTS_NUMBER: usize = 100;
 
@@ -770,21 +780,21 @@ where
         let ab_c = a.add(&b).add(&c);
         let a_bc = a.add(&b.add(&c));
         let associativity_holds = ab_c.eq(&a_bc);
-        assert!(associativity_holds, "Associativity does not hold for the given group");
+        assert!(associativity_holds, "Associativity does not hold");
 
         // Check whether identity element is valid
         let e = G::identity();
         let ae = a.add(&e);
         let ea = e.add(&a);
         let identity_holds = ae.eq(&a) && ea.eq(&a);
-        assert!(identity_holds, "Identity element does not hold for the given group");
+        assert!(identity_holds, "Identity element does not hold");
 
         // Check whether inverse element is valid
         let a_neg = a.negate();
         let a_neg_add_a = a_neg.add(&a);
         let a_add_a_neg = a.add(&a_neg);
         let inverse_holds = a_neg_add_a.eq(&e) && a_add_a_neg.eq(&e);
-        assert!(inverse_holds, "Inverse element does not hold for the given group");
+        assert!(inverse_holds, "Inverse element does not hold");
     }
 }
 
@@ -805,13 +815,13 @@ where
         // Check whether commutativity holds
         let ab = a.add(&b);
         let ba = b.add(&a);
-        assert!(ab.eq(&ba), "Commutativity does not hold for the given group");
+        assert!(ab.eq(&ba), "Commutativity does not hold");
     }
 }    
-\end{lstlisting}
+\end{minted}
 
 \textbf{Testing the group $(\mathbb{Z}, +)$.} And now, we can define a group for integers and check whether it is valid and abelian:
-\begin{lstlisting}[language=Rust]
+\begin{minted}{rust}
 use crate::group::{Group, Samplable};
 use rand::Rng;
 
@@ -844,13 +854,13 @@ impl Samplable for i64 {
         gen.gen_range(min..max)
     }
 }
-\end{lstlisting}
+\end{minted}
 
 Just a small note: since we cannot generate infinite integers, we restrict the range of integers to prevent overflow. So, 
 for the sake of simplicity, we divide the range of integers by $3$, in which overflow never occurs.
 
 And now, the moment of truth! Let us define some tests and run them:
-\begin{lstlisting}[language=Rust]
+\begin{minted}{rust}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -866,7 +876,7 @@ mod tests {
         assert_group_abelian::<i64>();
     }
 }
-\end{lstlisting}
+\end{minted}
 
 Both tests pass! Now let us consider something a bit trickier.
 
@@ -878,7 +888,7 @@ holds as well.
 
 We will use the \texttt{nalgebra} library for this purpose, which contains the implementation of rotation matrices. 
 So our implementation can look as follows:
-\begin{lstlisting}[language=Rust]
+\begin{minted}{rust}
 /// A threshold below which two floating point numbers are considered equal.
 const EPSILON: f32 = 1e-6;
 
@@ -915,7 +925,7 @@ impl Samplable for Rotation3<f32> {
         Rotation3::from_euler_angles(roll, pitch, yaw)
     }
 }
-\end{lstlisting}
+\end{minted}
 
 \vspace{-2mm}
 

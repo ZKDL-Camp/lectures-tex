@@ -95,7 +95,7 @@ as in the \Cref{th:division}. Then,
     \end{enumerate}
 
     To compare the results, we can use the following Python code:
-    \begin{lstlisting}[language=Python, numbers=none]
+\begin{minted}{python}
 def divmod(a: int, b: int) -> Tuple[int, int]:
     q = a // b
     r = a % b
@@ -106,7 +106,7 @@ q, r = divmod(a, b)
 assert a == b * q + r, 'Theorem does not hold'
 
 print(q, r) # (5, 4)
-\end{lstlisting}
+\end{minted}
 \end{example}
 
 In division operations, it is common to check for any shared factors between two
@@ -170,7 +170,7 @@ apply this recursively until, at some point, one of the integers is zero. The
 other one will be the GCD result, as follows from the second property of
 \Cref{lemma:gcd_properties}. Suprisingly, this can be written in a couple of
 lines of code:
-\begin{lstlisting}[language=Python, numbers=none]
+\begin{minted}{python}
 def gcd(a: int, b: int) -> int:
     # We want a to be always greater than b
     if a <= b:
@@ -181,7 +181,7 @@ print(gcd(42, 28)) # Output: 14
 print(gcd(36, 14)) # Output: 2
 print(gcd(13, 17)) # Output: 1
 
-\end{lstlisting}
+\end{minted}
 
 However, such an approach in the worst-case scenario still requires linear time
 in the size of the numbers: for example, when computing $\gcd(n, 1)$. The following lemma will be extensively employed in
@@ -196,14 +196,14 @@ to logarithmic time.
 Now, this is much better! Let us apply this idea again, but with the modulo 
 operation instead of subtraction:
 
-\begin{lstlisting}[language=Python, numbers=none]
+\begin{minted}{python}
 def gcd(a: int, b: int) -> int:
     return gcd(b, a % b) if b != 0 else a
     
 print(gcd(42, 28)) # Output: 14
 print(gcd(36, 14)) # Output: 2
 print(gcd(13, 17)) # Output: 1
-\end{lstlisting}
+\end{minted}
 
 Notice that the algorithm can be easily implemented in a single line! Moreover,
 the complexity reduced down to logarithmic time: for computing $\gcd(a,b)$ we
@@ -781,7 +781,7 @@ Based on Extended Euclidean \Cref{alg:extended_euclidean} and \Cref{th:inverse_e
 
 Let us see the concrete implementation of the Extended Euclidean Algorithm and
 the Modular Multiplicative Inverse Algorithm in Python.
-\begin{lstlisting}[language=Python]
+\begin{minted}{python}
 def extended_gcd(a: int, b: int) -> Tuple[int, int]:
     x0, x1, y0, y1 = 1, 0, 0, 1
     while b:
@@ -800,7 +800,7 @@ def inverse(a: int, n: int) -> int:
 print(inverse(3, 7)) # Output: -2
 print(inverse(12, 17)) # Output: -7
 print(inverse(18, 24)) # Panics as gcd(18, 24) != 1
-\end{lstlisting}
+\end{minted}
 
 Let us verify manually that $12^{-1}$ modulo $17$ was found correctly. Consider 
 the following example.
@@ -910,7 +910,7 @@ problems with smaller modules. This decomposition reduces the required computati
 complexity, especially when working with large numbers, and is widely used 
 in areas such as modular arithmetic, cryptography, and algorithmic number theory. 
 
-\begin{theorem} [Chinese Remainder Theorem] \label{th:chinese_remainder_theorem}
+\begin{theorem}[Chinese Remainder Theorem]\label{th:chinese_remainder_theorem}
     Suppose there is the following system
     \begin{xequation}    
         \begin{cases}
@@ -1062,14 +1062,14 @@ number faster than using the Extended Euclidean Algorithm.
 Note that computing $a^{p-2} \; \text{mod} \; p$ requires less than $2\log_2p$ modular operations using 
 the fast exponentiation algorithm. In Python, implementation using in-built \texttt{pow} function 
 looks extremely simple:
-\begin{lstlisting}[language=Python]
+\begin{minted}{python}
 def inverse(a: int, p: int) -> int:
     return pow(a, p-2, p)
 
 print(inverse(3, 5))  # Output: 2
 print(inverse(7, 39)) # Output: 7
 print(inverse(8, 17)) # Output: 15
-\end{lstlisting}
+\end{minted}
 
 \subsection{Exercises}
 
