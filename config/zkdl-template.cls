@@ -275,28 +275,41 @@
 \newcommand{\Circ}{\textit{\texttt{C}}}
 
 % --- Theorem environments ---
+% --- Theorem environments ---
 \newtheoremstyle{mystyle}{}{}{}{}{\bfseries}{.}{ }{}
 \newtheoremstyle{cstyle}{}{}{}{}{\bfseries}{.}{ }{\thmnote{#3}}
 \makeatletter
 \renewenvironment{proof}[1][\proofname] {\par\pushQED{\qed}{\normalfont\bfseries\topsep6\p@\@plus6\p@\relax #1\@addpunct{.} }}{\popQED\endtrivlist\@endpefalse}
 \makeatother
-\theoremstyle{mystyle}{\newtheorem{definition}{Definition}[section]}
-\theoremstyle{mystyle}{\newtheorem{proposition}[definition]{Proposition}}
-\theoremstyle{mystyle}{\newtheorem{theorem}[definition]{Theorem}}
-\theoremstyle{mystyle}{\newtheorem{lemma}[definition]{Lemma}}
-\theoremstyle{mystyle}{\newtheorem{corollary}[definition]{Corollary}}
-\theoremstyle{mystyle}{\newtheorem*{remark}{Remark}}
-\theoremstyle{mystyle}{\newtheorem*{remarks}{Remarks}}
-\theoremstyle{mystyle}{\newtheorem{example}{Example}[section]}
-\theoremstyle{mystyle}{\newtheorem{examples}{Examples}[section]}
-\theoremstyle{definition}{\newtheorem*{exercise}{Exercise}}
-\theoremstyle{cstyle}{\newtheorem*{cthm}{}}
+
+\theoremstyle{mystyle}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{corollary}{Corollary}[section]
+\newtheorem*{remark}{Remark}
+\newtheorem*{remarks}{Remarks}
+\newtheorem{example}{Example}[section]
+\newtheorem{examples}{Examples}[section]
+
+\theoremstyle{definition}
+\newtheorem*{exercise}{Exercise}
+
+\theoremstyle{cstyle}
+\newtheorem*{cthm}{}
 
 % --- Map shared counter environments to their proper cleveref types ---
-\crefalias{proposition}{proposition}
-\crefalias{theorem}{theorem}
-\crefalias{lemma}{lemma}
-\crefalias{corollary}{corollary}
+\crefname{definition}{definition}{definitions}
+\Crefname{definition}{Definition}{Definitions}
+\crefname{theorem}{theorem}{theorems}
+\Crefname{theorem}{Theorem}{Theorems}
+\crefname{lemma}{lemma}{lemmas}
+\Crefname{lemma}{Lemma}{Lemmas}
+\crefname{corollary}{corollary}{corollaries}
+\Crefname{corollary}{Corollary}{Corollaries}
+\crefname{proposition}{proposition}{propositions}
+\Crefname{proposition}{Proposition}{Propositions}
 \crefalias{example}{example}
 \crefalias{examples}{example}
 

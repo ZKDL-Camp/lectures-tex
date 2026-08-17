@@ -1216,9 +1216,9 @@ When is $V$ a linear subspace of $\mathbb{F}^n$?
 \end{enumerate}
 
 \textbf{Exercise 5*.} Recall that $V := \mathbb{R}[x]^{\leq 2}$ is a vector space over $\mathbb{R}$.
-Define the inner product over $V$ as follows:
+Define the inner product over $V$ as follows\footnote{You might use the fact that $\int_0^1 \sum_{n=0}^N \alpha_nx^n = \sum_{n=0}^N \frac{\alpha_n}{n+1}$.}:
 \begin{equation*}
-    \langle p(x), q(x) \rangle := \int_0^1 p(x)q(x)dx.
+    \langle p,q \rangle := \int_0^1 p(x)q(x)dx, \quad p,q \in V.
 \end{equation*}
 Compute the ``length'' of the polynomial $x$ in $V$ (\textit{i.e.}, its norm $\|x\|$).
 \begin{enumerate}[(A)]
@@ -1227,5 +1227,9 @@ Compute the ``length'' of the polynomial $x$ in $V$ (\textit{i.e.}, its norm $\|
     \item $\sqrt{2}$.
     \item $1$.
 \end{enumerate}
+
+\textbf{Exercise 6*.} Using $V$ and inner product from the previous exercise, find any polynomial $q \in V$ orthogonal to $x^2$.
+
+\textit{Hint:} Let $q(x) := \alpha x+\beta$ for some $\alpha,\beta \in \mathbb{R}$. Is it possible for the identity $\langle q(x), x^2 \rangle=0$ to hold for some choice of $\alpha,\beta$?
 
 \end{document}

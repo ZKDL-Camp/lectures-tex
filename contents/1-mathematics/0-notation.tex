@@ -5,7 +5,7 @@
 Before delving into the world of zero-knowledge, we need to settle the notation
 which we are going to use throughout the book. 
 
-\subsection*{Set Theory}
+\subsection{Set Theory}
 
 A \textbf{set} is a well-defined collection of objects. The objects that belong
 to a set are called its \textbf{elements}. We will denote sets by capital
@@ -94,7 +94,7 @@ function and $\phi(a)$ is a predicate (function, inputting $a$ and returning tru
 on $a$ is met). For example, $\{x^3: x \in \mathbb{R}, x^2 = 4\}$ is ``a set of values $x^3$ which are the real 
 solutions to equation $x^2 = 4$''. It is quite easy to see that this set is simply $\{2^3, (-2)^3\} = \{8,-8\}$. 
 
-\subsection*{Cartesian Products and Functions}
+\subsection{Cartesian Products and Functions}
 
 The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \in B$ (or, written shortly, 
 $A \times B = \{(a,b): a \in A, b \in B\}$), called a Cartesian product. We additionally introduce notation 
@@ -116,7 +116,7 @@ both injective and surjective is called a \textbf{bijection}.
 
 % todo: add injective, surjective and bijective illustrations
 
-\subsection*{Logic}
+\subsection{Logic}
 
 Symbol $\forall$ means ``for all...''. For instance, $(\forall a \in A \subseteq \mathbb{R}): \{a < 1\}$ is 
 read as: ``For any $a$ in set $A$ (which is a subset of real numbers), it is true that $a<1$''. Or, more shortly, ``Any (real) 
@@ -136,7 +136,7 @@ $x^2=4$ and $x$ is positive''. Of course, $\{x \in \mathbb{R}: x^2 = 4 \wedge x 
 Symbol $\vee$ means ``or''. For example, $\{x \in \mathbb{R}: x^2 = 4 \vee x^2 = 9\}$ is read as ``a set of real $x$ such that 
 either $x^2=4$ or $x^2=9$''; this set is equal to~$\{\pm 2, \pm 3\}$.
 
-\subsection*{Sequences, Matrices, and Vectors}
+\subsection{Sequences, Matrices, and Vectors}
 
 A \textbf{sequence} is a mapping from natural numbers $\mathbb{N}$ to some
 specific set $X$. To denote the sequence, we write $\{x_n\}_{n \in \mathbb{N}}
@@ -156,7 +156,7 @@ For example, instead of writing $\sum_{k=0}^{n-1}k$ we sometimes write $\sum_{k
 $z_1=f(x_0)$, $z_2=f(x_1)$, \dots, $z_n=f(x_{n-1})$ explicitly, we simply say
 $z_{i+1} = f(x_i)$ for all $i \in [n]$.
 
-\subsection*{Algorithms and Probabilities}
+\subsection{Algorithms and Probabilities}
 
 Suppose we specified the algorithm $A$ that takes some input $x$ and returns
 some output $y$. We write $y \gets A(x)$ to denote that the algorithm $A$ is

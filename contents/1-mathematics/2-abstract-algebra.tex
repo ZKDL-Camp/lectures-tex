@@ -58,7 +58,7 @@ When we have two operations (think of addition and multiplication), the set with
 Finally, if multiplication behaves nicely, we obtain a \textit{field}.
 
 It then makes sense to study these sets with operations abstractly.
-After all, we should not care what type of set we have underneath, be it a set of elliptic curve points or simply $\mathbb{Z}_n$.
+After all, we should not care what type of set we have underneath, be it a set of elliptic curve points or simply $\mathbb{Z}_n$.\footnote{Moreover, for cyclic elliptic curves these two groups are equivalent, thanks to \Cref{th:cyclic-group-isomorphism}.}
 All theorems and facts we will develop will apply to both, which is surely convenient.
 
 % \subsection*{What modern algebra studies?}
@@ -300,7 +300,7 @@ size. Such size is what we call the \textit{order} of the element $g$.
 \begin{definition}
     Let $\mathbb{G}$ be group and $g \in \mathbb{G}$. The minimal natural number
     $n$ for which $g^n = 1$ is called the \textbf{order} of element $g$ and
-    we denote it by $\text{ord}(g)$. If such integer does not exist, we assume that
+    we denote it by $\text{ord}(g)$. If such integer does not exist, we write
     $\text{ord}(g)=\infty$.
 \end{definition}
 
@@ -580,7 +580,7 @@ suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is t
 
 A generalization of the above example is the following interesting theorem.
 
-\begin{theorem}
+\begin{theorem}\label{th:cyclic-group-isomorphism}
     Let $\mathbb{G} = \langle g \rangle$ be a finite cyclic group of order $n$. Then, $\mathbb{G} \cong \mathbb{Z}_n$.
 \end{theorem}
 
@@ -593,8 +593,8 @@ practice to call two isomorphic groups \textit{equivalent}.
 
 \textbf{Exercise (*).} Prove that $\cong$ is an equivalence relation.
 
-Using the notion of isomorphism, we can restate Chinese Remainder Theorem (Thereom~\ref{th:chinese_remainder_theorem}) in the algebraic form.
-\begin{theorem}[Restated Theorem~\ref{th:chinese_remainder_theorem}]
+Using the notion of isomorphism, we can restate Chinese Remainder Theorem (\Cref{th:chinese_remainder_theorem}) in the algebraic form.
+\begin{theorem}[Restated \Cref{th:chinese_remainder_theorem}]
     Let $N=n_1\dots n_k$ and $n_1,\dots,n_k$ be pairwise coprime. Then, the map
     $[x]_N \mapsto ([x]_{n_1}, \dots, [x]_{n_k})$ defines the isomorphism\footnote{Here, this is a \textit{ring} isomorphism, meaning, that it preserves both addition and multiplication: \textit{i.e.,} $\varphi(x+y)=\varphi(x)+\varphi(y)$, $\varphi(xy)=\varphi(x)\varphi(y)$, and $\varphi(1)=1$.}
     \begin{equation*}
