@@ -5,7 +5,7 @@
 As you can recall from high school math, typically real-world processes are
 described using real numbers, denoted by $\mathbb{R}$. For example, to describe
 the position or the velocity of an object, you would rather use real numbers
-instead of fields, groups, or p-adic numbers.
+instead of fields, groups, or $p$-adic numbers.
 
 However, when it comes to working with computers, real numbers become very
 inconvenient to work with. The primary reason is that the set $\mathbb{R}$ is
@@ -73,7 +73,7 @@ theorem}.
 This theorem allows us to define two new operations. Suppose $a,b,q,r$ are given
 as in the \Cref{th:division}. Then,
 \begin{itemize}
-    \item \textbf{Floor Operation} ($\lfloor a/b \rfloor$ or $a \; \text{div} \; b$) is defined
+    \item \textbf{Floor Operation} ($a \; \text{div} \; b$) is defined
     as $q$. This operation is a standard \text{div} operation commonly used in programming languages.
     \item \textbf{Mod Operation} ($a \; \text{mod} \; b$) is defined as $r$. This operation is a standard
 \text{mod} operation commonly used in programming languages. 
@@ -127,7 +127,7 @@ numbers. This is where the concept of the \textbf{greatest common divisor} (or
 \end{definition}
 
 \begin{example}
-    Just as an example, let us find the $\gcd(a, b)$ for a few pairs of integers.
+    Let us compute $\gcd(a, b)$ for a few pairs of integers.
     
     \begin{xmulticols}{2}
         \begin{enumerate}
@@ -146,7 +146,7 @@ numbers. This is where the concept of the \textbf{greatest common divisor} (or
 As with any fundamental concept, let us explore some basic properties of the GCD operation.
 
 \begin{lemma}[Greatest common divisor properties]\label{lemma:gcd_properties}
-    \hfil
+    \hfill
     \begin{enumerate}
         \item $\gcd(a, b) = b \iff b \mid a$
         \item If $a \neq 0$, then $\gcd(a, 0) = a$
@@ -164,11 +164,11 @@ seem quite abstract.
     For any integers $a,b \in \mathbb{Z}$, we have $\gcd(a, b) = \gcd(b, a - b)$. 
 \end{lemma}
 
-How does it help? Here is how: instead of computing $\gcd(a,b)$ directly, we
+This reduces the problem to a smaller one: instead of computing $\gcd(a,b)$ directly, we
 reduce the problem to a simpler one, where one of the numbers is smaller. We
 apply this recursively until, at some point, one of the integers is zero. The
 other one will be the GCD result, as follows from the second property of
-\Cref{lemma:gcd_properties}. Suprisingly, this can be written in a couple of
+\Cref{lemma:gcd_properties}. The resulting algorithm can be written in a couple of
 lines of code:
 \begin{lstlisting}[language=Python, numbers=none]
 def gcd(a: int, b: int) -> int:
@@ -193,7 +193,7 @@ to logarithmic time.
     $\gcd(a,b) =\gcd(b, a \; \text{mod} \; b)$.
 \end{corollary}
 
-Now, this is much better! Let us apply this idea again, but with the modulo 
+Now we can apply the same idea, but with the modulo 
 operation instead of subtraction:
 
 \begin{lstlisting}[language=Python, numbers=none]
@@ -287,8 +287,8 @@ For that reason, we provide the following definition.
 \begin{theorem}[Computational Properties Of GCD and LCM For Multiple Arguments.]
     The following two statements are true:
     \begin{itemize}
-        \item $\forall a, b \in \mathbb{N}: \gcd(a, b, c) = \gcd(\gcd(a, b), c) = \gcd(a, \gcd(a, b))$.
-        \item $\forall a, b \in \mathbb{N}: \lcm(a, b, c) = \lcm(\lcm(a, b), c) = \lcm(a, \lcm(a, b))$.
+        \item $\forall a, b \in \mathbb{N}: \gcd(a, b, c) = \gcd(\gcd(a, b), c) = \gcd(a, \gcd(b, c))$.
+        \item $\forall a, b \in \mathbb{N}: \lcm(a, b, c) = \lcm(\lcm(a, b), c) = \lcm(a, \lcm(b, c))$.
     \end{itemize}
 \end{theorem}
 
@@ -358,7 +358,7 @@ algorithm.
         $q_i \gets  r_{i-1} \; \text{div} \; r_{i}$ \\
         $u_{i+1} \gets u_{i-1} - u_{i} q_i$ \\
         $v_{i+1} \gets v_{i-1} - v_{i} q_i$ \\
-        $r_{i+1} \gets  a u_{i+1} + b v_{i}$ \\
+        $r_{i+1} \gets  a u_{i+1} + b v_{i+1}$ \\
     }
 
     \textbf{return} $(r_i, u_i, v_i)$
@@ -441,8 +441,8 @@ makes primes central to number theory and cryptography in particular, where
 we will use them in finite fields extensively.
 
 \begin{definition}
-    Number $p \in \mathbb{N}$ is called \textbf{prime} if and only if its only
-    two positive divisors are $1$ and $n$. 
+    Number $p \in \mathbb{N}, p > 1$, is called \textbf{prime} if and only if its only
+    positive divisors are $1$ and $p$. 
 \end{definition}
 
 \begin{definition}
@@ -521,7 +521,7 @@ prime generation in cryptographic systems or constructing special primes.
     For any $a, b \in \mathbb{N}$ if $\gcd(a, b) = 1$, then infinite primes number form of $am + b$ exists, where $m \in \mathbb{N}$.
 \end{theorem}
 
-In other words, every infinite arithmetic progression whose first term and difference are positive integers contains an infinite number of primes.
+In other words, every infinite arithmetic progression whose first term and difference are positive coprime integers contains an infinite number of primes.
 
 \subsection{Fundamental Theorem of Arithmetic}
 The Fundamental Theorem of Arithmetic states that every integer greater than 1 can be 
@@ -575,12 +575,12 @@ $\alpha_1=1$, which satisfies the representation. Therefore, $n_0$ must be
 composite, which means $\exists a, b \in \mathbb{N}, 1 < a, b < n_0$ such that
 $n = ab$. Since $n_0$ is the smallest non-decomposable number and $a, b < n_0$,
 then $a$ and $b$ can be represented as 
-\begin{equation*}
+\begin{xequation*}
     \begin{aligned}
         a &= p_{1}^{\alpha_{1}} \dots p_{t}^{\alpha_{t}} \\
         b &= q_{1}^{\beta_{1}} \dots q_{k}^{\beta_{k}}.
     \end{aligned}
-\end{equation*}
+\end{xequation*}
 Therefore, $n_0 = ab=p_{1}^{\alpha_{1}} \dots p_{t}^{\alpha_{t}}
 q_{1}^{\beta_{1}} \dots q_{k}^{\beta_{k}}$. Thus, the contradiction, as $n_0$ is
 represented as the product of primes. $\blacktriangleleft$  
@@ -590,8 +590,8 @@ represented as the product of primes. $\blacktriangleleft$
 
     \begin{enumerate}
         \item If $d \mid n$, then $d = p_{1}^{\beta_1}p_{2}^{\beta_2} \dots p_{t}^{\beta_t}$, where $0 \leq \beta_i \leq \alpha_i$.
-        \item Suppose $a = p_{1}^{\alpha_1} \dots p_{t}^{\alpha_t}$ and $b = p_{1}^{\beta_1} \dots p_{t}^{\beta_t}$. Then, the GCD can be evaluated as $\gcd(a, b) = \prod_{i=0}^{t}p^{\min\{\alpha_i, \beta_i\}}$.
-        \item Suppose $a = p_{1}^{\alpha_1} \dots p_{t}^{\alpha_t}$ and $b = p_{1}^{\beta_1} \dots p_{t}^{\beta_t}$. Then, the LCM can be evaluated as $\lcm(a, b) = \prod_{i=0}^{t}p^{\max\{\alpha_i, \beta_i\}}$.
+        \item Suppose $a = p_{1}^{\alpha_1} \dots p_{t}^{\alpha_t}$ and $b = p_{1}^{\beta_1} \dots p_{t}^{\beta_t}$. Then, the GCD can be evaluated as $\gcd(a, b) = \prod_{i=1}^{t}p_i^{\min\{\alpha_i, \beta_i\}}$.
+        \item Suppose $a = p_{1}^{\alpha_1} \dots p_{t}^{\alpha_t}$ and $b = p_{1}^{\beta_1} \dots p_{t}^{\beta_t}$. Then, the LCM can be evaluated as $\lcm(a, b) = \prod_{i=1}^{t}p_i^{\max\{\alpha_i, \beta_i\}}$.
         \item If $b \mid a$ and $c \mid a$ and $\gcd(b, c) = 1$, then $bc \mid a$.
     \end{enumerate}
 \end{corollary}
@@ -689,7 +689,7 @@ but, as mentioned earlier, we will not delve into the details of the proofs in t
 \begin{lemma}[Key Congruence Relation Properties]\label{lemma:congruence_scale}
     \hfill
     \begin{enumerate}
-        \item For any $k \neq 0$ and $a \equiv b \pmod{n}$, we have $ak \equiv bk \pmod{nk}$
+        \item For any $k \in \mathbb{N}$ and $a \equiv b \pmod{n}$, we have $ak \equiv bk \pmod{nk}$
         \item If $a \equiv b \pmod{n}$, then we can divide both sides by $\gcd(a, b, n)$:
         \begin{xequation*}
             a/d \equiv b/d \; (\text{mod}\; n/d) \; \text{with} \; d = \gcd(a,b,n)
@@ -715,7 +715,7 @@ notation $n\mathbb{Z}$ to denote the set of all multiples of $n$.
     \begin{xequation*}
         \begin{aligned}
         &[0]_2 = \{0, \pm 2, \pm 4, \pm 6, \pm 8, \ldots \}, \\
-        &[1]_2 = \{1, \pm 3, \pm 5, \pm 7, \pm 9, \ldots \}.
+        &[1]_2 = \{\pm 1, \pm 3, \pm 5, \pm 7, \pm 9, \ldots \}.
         \end{aligned}
     \end{xequation*}
     In turn, the congruence class $[3]_5$ modulo $5$ is the set of numbers that
@@ -843,7 +843,7 @@ the following example.
 \end{remark}
 
 \begin{definition}
-    The \textbf{multiplicative group of integers} modulo $n$, denoted as $\mathbb{Z}_n^{\times}$, is a set of natural numbers that are coprime to $n$ and less than $n$. In other words, $\mathbb{Z}_n^{\times} = \{a \in \mathbb{N}: \gcd(a, n) = 1\}$.
+    The \textbf{multiplicative group of integers} modulo $n$, denoted as $\mathbb{Z}_n^{\times}$, is a set of natural numbers that are coprime to $n$ and less than $n$. In other words, $\mathbb{Z}_n^{\times} = \{a \in \mathbb{N}: a<n \wedge \gcd(a, n) = 1\}$.
 \end{definition}
 
 \begin{example}
@@ -869,15 +869,15 @@ elements of $\mathbb{Z}_n^{\times}$ has the special name, which we define below.
     $\varphi(n)$ counts all coprime integers with $n$ in range $[1, n]$. 
 \end{remark}
 
-Remarkably, $\varphi(n)$ has a lot of curious properties, which we specify
-below.
+The following properties allow computing $\varphi(n)$ directly from the prime 
+factorization of $n$.
 
 \begin{lemma}[Euler's totient function properties]
     \hfill
     \begin{enumerate}
         \item $\varphi(1) = 1$.
         \item $\varphi(p) = p - 1$, where $p$ is prime.
-        \item $\varphi(pq) = \varphi(p) \cdot \varphi(q)$, where $p, q$ are primes.
+        \item $\varphi(pq) = \varphi(p) \cdot \varphi(q)$, where $p, q$ are distinct primes.
         \item $\varphi(p^{\alpha}) = p^{\alpha} - p^{\alpha - 1}$, where $p$ is prime.        
     \end{enumerate}    
 \end{lemma}
@@ -912,14 +912,14 @@ in areas such as modular arithmetic, cryptography, and algorithmic number theory
 
 \begin{theorem} [Chinese Remainder Theorem] \label{th:chinese_remainder_theorem}
     Suppose there is the following system
-    \begin{xequation}    
+    \begin{equation}    
         \begin{cases}
             x \equiv x_1 \pmod{n_1} \\
             x \equiv x_2 \pmod{n_2} \\
             \cdots \\
             x \equiv x_t \pmod{n_t} \\
         \end{cases}
-    \end{xequation}
+    \end{equation}
     where the $n_1,\dots,n_t$ are pairwise coprimes and $x_1, x_2, \cdots x_t$ are fixed numbers. 
     Then, this system has a unique solution modulo $N = n_1n_2 \cdots n_t$.
 \end{theorem}
@@ -957,7 +957,7 @@ Besides, using this idea, we can write an efficient algorithm to compute $x_0$ i
 
     To simplify the calculations, we give inverses for granted: $a_1 = 3$, $a_2
     = 6$, $a_3 = 6$. The solution is then given by $x_0 \equiv 3 \times 77 \times 1 + 6
-    \times 55 \times 2 + 6 \times 35 \times 3 \equiv 1521 \equiv 81 \pmod{385}$.
+    \times 55 \times 2 + 6 \times 35 \times 3 \equiv 1521 \equiv 366 \pmod{385}$.
     
     However, as you can notice, the solution is not unique in general. We can
     increase the value with $N = 385$. Thus, the final solutions are $x = 81 +
@@ -1018,8 +1018,8 @@ of all $x_i$ from both sides, leading to the conclusion of Euler's theorem.
 $\blacktriangleleft$
 
 \begin{example}
-    Let us consider how Euler's Theorem works by computing seemingly scary
-    expression $29^{202} \pmod{13}$. By means of \Cref{th:euler_theorem} we have
+    Let us consider how Euler's Theorem works by computing expression 
+    $29^{202} \pmod{13}$. By means of \Cref{th:euler_theorem} we have
     $29^{\varphi(n)} \equiv 1 \pmod{13}$, where $\varphi(13) = 12$. Using this,
     let us try to simplify the expression, 
  
@@ -1055,7 +1055,7 @@ this fact allows to find the modular multiplicative inverse of an integer $a$ mo
 number faster than using the Extended Euclidean Algorithm.
 
 \begin{corollary}
-    For any integer $a$ and prime number $p$, the modular multiplicative inverse $a^{-1} \pmod{p}$ is $a^{p-2} \pmod{p}$.
+    Let $p$ be a prime number and let $a \in \mathbb{Z}$ with $p \nmid a$. Then $a^{-1} \equiv a^{p-2} \pmod{p}$.
 \end{corollary}
 
 \textbf{Proof.} Notice that $a \cdot a^{p-2} = a^{p-1} \equiv 1 \pmod{p}$ from \Cref{cor:fermat_little_theorem}. 
@@ -1067,7 +1067,7 @@ def inverse(a: int, p: int) -> int:
     return pow(a, p-2, p)
 
 print(inverse(3, 5))  # Output: 2
-print(inverse(7, 39)) # Output: 7
+print(inverse(7, 41)) # Output: 6
 print(inverse(8, 17)) # Output: 15
 \end{lstlisting}
 
@@ -1091,8 +1091,8 @@ print(inverse(8, 17)) # Output: 15
     {Which of the following statements is \textbf{false}?}
     {1}
     {
-        \item $\gcd(p,q)=1$ for any two prime numbers $p$ and $q$.
-        \item $\lcm(p,q)=pq$ for any two primes $p$ and $q$.
+        \item $\gcd(p,q)=1$ for any two distinct prime numbers $p$ and $q$.
+        \item $\lcm(p,q)=pq$ for any two distinct primes $p$ and $q$.
         \item $\gcd(n,m) = \gcd(m,n)$ for any integers $n,m$.
         \item $\lcm(n+1,n-1) = n^2-1$ for any integer $n$.
     }
@@ -1124,7 +1124,7 @@ print(inverse(8, 17)) # Output: 15
 
 \begin{xexercise}
     {Exercise 5.}
-    {What sum of all integers $n$ satisfying $(n + 1) \mid (n^2 + 1)$?}
+    {What is the sum of all integers $n$ satisfying $(n + 1) \mid (n^2 + 1)$?}
     {4}
     {
         \item 1
