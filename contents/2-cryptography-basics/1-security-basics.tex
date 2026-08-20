@@ -2,9 +2,9 @@
 
 \begin{document}
 
-In many cases, technical papers include the analysis on the key question: ``How secure is this cryptographic algorithm?'' or rather ``Why this cryptographic algorithm is secure?''. In this section, we will shortly describe the notation and typical construction for justifying the security of cryptographic algorithms.
+In many cases, technical papers include an analysis on the key question: ``How secure is this cryptographic algorithm?'' or rather ``Why this cryptographic algorithm is secure?''. In this section, we will briefly describe the notation and typical construction for justifying the security of cryptographic algorithms.
 
-Typically, the cryptographic security is defined in a form of a game between the adversary (who we call $\mathcal{A}$) and the challenger (who we call $\mathcal{C}h$). The adversary is trying to break the security of the cryptographic algorithm using arbitrary (but still efficient) protocol, while the challenger is following a simple, fixed protocol. The game is played in a form of a challenge, where the adversary is given some information and is asked to perform some task. The security of the cryptographic algorithm is defined based on the probability of the adversary to win the game.
+Typically, the cryptographic security is defined in a form of a game between the adversary (who we call $\mathcal{A}$) and the challenger (who we call $\mathcal{C}h$). The adversary is trying to break the security of the cryptographic algorithm using arbitrary (but still efficient) protocol, while the challenger is following a simple, fixed protocol. The game is played in a form of a challenge, where the adversary is given some information and is asked to perform some task. The security of the cryptographic algorithm is defined based on the probability that the adversary wins the game.
 
 \subsection{Cipher Semantic Security}
 Let us get into specifics. Suppose that we want to specify that the encryption scheme is secure. Recall that 
@@ -23,7 +23,7 @@ Of course, we require the \textbf{correctness}:
 
 Now let us play the following game between adversary $\mathcal{A}$ and challenger $\mathcal{C}h$:
 \begin{enumerate}
-    \item $\mathcal{A}$ picks any two messages $m_0,m_1 \in \mathcal{M}$ on his choice.
+    \item $\mathcal{A}$ picks any two messages $m_0,m_1 \in \mathcal{M}$ of their choice.
     \item $\mathcal{C}h$ picks a random key $k \leftarrowS \mathcal{K}$ and random bit $b \leftarrowS \{0,1\}$ and sends the cipher $c = E(k,m_b)$ to $\mathcal{A}$.
     \item $\mathcal{A}$ is trying to guess the bit $b$ by using the cipher $c$.
     \item $\mathcal{A}$ outputs the guess $\hat{b}$.
@@ -69,13 +69,13 @@ We say that the encryption scheme is \textbf{semantically secure}\footnote{This 
 \textbf{bit-guessing} version.} if for any efficient adversary $\mathcal{A}$ the advantage $\text{SSAdv}[\mathcal{A}]$ 
 is negligible. In other words, the adversary cannot guess the bit $b$ with a probability significantly higher than~$1/2$.
 
-Now, what negligible means? Let us give the formal definition!
+Now, what negligible means? Let us give the formal definition.
 
 \begin{definition}
     A function $f: \mathbb{N} \to \mathbb{R}$ is called \textbf{negligible} if for all $c \in \mathbb{R}_{>0}$ there exists $n_c \in \mathbb{N}$ such that for any $n \geq n_c$ we have $|f(n)| < 1/n^c$.
 \end{definition}
 
-The alternative definition, which is problably easier to interpret, is the following.
+The alternative definition, which is probably easier to interpret, is the following.
 
 \begin{theorem}
     A function $f: \mathbb{N} \to \mathbb{R}$ is \textbf{negligible} if and only if for any $c \in \mathbb{R}_{>0}$, we have
@@ -100,14 +100,14 @@ The alternative definition, which is problably easier to interpret, is the follo
     \end{equation*}
 \end{example}
 
-Well, that is weird. For some reason we are considering a function the depends on some natural number $n$, but what is this number?
+Well, that is weird. For some reason we are considering a function that depends on some natural number $n$, but what is this number?
 
-Typically, when defining the security of the cryptographic algorithm, we are considering the security parameter $\lambda$ (e.g., the length of the key). The function is negligible if the probability of the adversary to break the security of the cryptographic algorithm is decreasing with the increasing of the security parameter $\lambda$. Moreover, we require that the probability of the adversary to break the security of the cryptographic algorithm is decreasing faster than any polynomial function of the security parameter $\lambda$.
+Typically, when defining the security of the cryptographic algorithm, we are considering the security parameter $\lambda$ (e.g., the length of the key). The function is negligible if the probability that the adversary breaks the security of the cryptographic algorithm is decreasing with the increasing of the security parameter $\lambda$. Moreover, we require that the probability that the adversary breaks the security of the cryptographic algorithm is decreasing faster than any polynomial function of the security parameter $\lambda$.
 
 So all in all, we can define the semantic security as follows.
 
 \begin{definition}
-    The encryption scheme $\mathcal{E}$ with a security paramter $\lambda \in \mathbb{N}$ is \textbf{semantically secure} if for any efficient adversary $\mathcal{A}$ we have:
+    The encryption scheme $\mathcal{E}$ with a security parameter $\lambda \in \mathbb{N}$ is \textbf{semantically secure} if for any efficient adversary $\mathcal{A}$ we have:
     \begin{equation*}
         \left|\text{Pr}\begin{bmatrix}[c|c]
             & m_0, m_1 \gets \mathcal{A}, \; k \leftarrowS \mathcal{K}, \; b \leftarrowS \{0,1\} \\
@@ -117,9 +117,9 @@ So all in all, we can define the semantic security as follows.
     \end{equation*}
 \end{definition}
 
-Do not be afraid of such complex notation, it is quite simple. Notation $\text{Pr}[A \mid B]$ means ``the probability of $A$, given that $B$ occurred''. So our inner probability is read as ``the probability that the guessed bit $\hat{b}$ equals $b$ given the setup on the right''. Then, on the right we define the setup: first we generate two messages $m_0,m_1 \in \mathcal{M}$, then we choose a random bit $b$ and a key $k$, cipher the message $m_b$, send it to the adversary and the adversary, based on provided cipher, gives $\hat{b}$ as an output. We then claim that the probability of the adversary to guess the bit $b$ is close to $1/2$.
+Do not be afraid of such complex notation, it is quite simple. Notation $\text{Pr}[A \mid B]$ means ``the probability of $A$, given that $B$ occurred''. So our inner probability is read as ``the probability that the guessed bit $\hat{b}$ equals $b$ given the setup on the right''. Then, on the right we define the setup: first we generate two messages $m_0,m_1 \in \mathcal{M}$, then we choose a random bit $b$ and a key $k$, cipher the message $m_b$, send it to the adversary and the adversary, based on provided cipher, gives $\hat{b}$ as an output. We then claim that the probability that the adversary guesses the bit $b$ is close to $1/2$.
 
-Let us see some more examples of how to define the security of certain crypographic objects.
+Let us see some more examples of how to define the security of certain cryptographic objects.
 
 \subsection{Message recovery attacks}
 
@@ -129,12 +129,12 @@ Of course, any reasonable notion of security should rule out such an attack, and
 Although this might seem intuitively obvious, we provide a formal proof to clarify the reasoning. 
 One of the reasons for doing this is to thoroughly demonstrate the concept of a \emph{security reduction}, which is the primary method used to assess the security of systems.
 
-Let us play the following attack game message recovery between adversary $\mathcal{A}$ and challenger $\mathcal{C}h$.
+Let us play the following message recovery attack game between adversary $\mathcal{A}$ and challenger $\mathcal{C}h$.
 For a given cipher $\mathcal{E} = (E, D)$, defined over $\mathcal{K}, \mathcal{M}, \mathcal{C}$, and for a given adversary $\mathcal{A}$, the attack game proceeds as follows: 
 
 \begin{itemize}
-    \item The challenger computes $m \leftarrowS \mathcal{M}$, $k \leftarrowS \mathcal{K}$, $c \leftarrowS E(k, m)$ and sends c to the adversary.
-    \item the adversary output a message $\hat{m} \in \mathcal{M}$.
+    \item The challenger computes $m \leftarrowS \mathcal{M}$, $k \leftarrowS \mathcal{K}$, $c \leftarrowS E(k, m)$ and sends $c$ to the adversary.
+    \item the adversary outputs a message $\hat{m} \in \mathcal{M}$.
 \end{itemize}
 
 We say that $\mathcal{A}$ wins the game in this case, and we define $\mathcal{A}$'s message recovery advantage with respect to $\mathcal{E}$ as:
@@ -356,7 +356,7 @@ random element in $\mathbb{G}$. Formally, we define this problem as follows.
 Now, let us break this assumption for some quite generic group! Consider the following example.
 
 \begin{theorem}
-    Suppose that $\mathbb{G}$ is a cyclic group of an even order. Then, the Decision
+    Suppose that $\mathbb{G}$ is a cyclic group of even order. Then, the Decision
     Diffie-Hellman Assumption does not hold in $\mathbb{G}$. In fact, there is an efficient adversary $\mathcal{A}$ 
     that can distinguish $g^{\alpha\beta}$ from a random element in $\mathbb{G}$ with an advantage $1/4$.
 \end{theorem}
