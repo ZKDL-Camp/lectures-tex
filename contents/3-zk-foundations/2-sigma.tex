@@ -103,7 +103,7 @@ Now, one can prove the following theorem.
 \begin{remark}
     Before considering how to make such protocol non-interactive correctly, suppose that we instead do the following: after interaction with the verifier, the prover publishes the conversation as a proof of knowledge. Would that be a valid non-interactive proof? In other words, can we convince the independent observer of the interaction that the prover knows the witness? The answer is no (and it is generally so for any interactive protocol). The reason why is that the prover can first sample randomly $e,\sigma \leftarrowS \mathbb{Z}_q$, compute $a \gets g^{\sigma}/u^e$ and simply publish $(a,e,\sigma)$ as a proof. This is a valid conversation since $g^{\sigma} = a \cdot u^{e} = (g^{\sigma}/u^e) \cdot u^e$ and thus the observer would be convinced that the prover knows the witness. However, the prover might not know the witness at all!
 
-    Therefore, either (1) the prover needs to get a challenge $e$ \textbf{after} he commits to the value $\sigma$, or (2) challenge must be randomized. Otherwise, he can precompute $\sigma$ and publish it as a proof (or simply make a deal with the verifier to fool the observer). 
+    Therefore, either (1) the prover needs to get a challenge $e$ \textbf{after} he commits to the value $a$, or (2) challenge must be randomized. Otherwise, he can precompute $\sigma$ and publish it as a proof (or simply make a deal with the verifier to fool the observer). 
 \end{remark}
 
 Now, notice that the provided protocol is a public-coin protocol. Therefore, we can apply the Fiat-Shamir transformation to make it non-interactive. Suppose we have a random oracle $\mathcal{O}_{\text{R}}: \mathbb{G} \times \mathbb{G} \to \mathbb{Z}_q$:
