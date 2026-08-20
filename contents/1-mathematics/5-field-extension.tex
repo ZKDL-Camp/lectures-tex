@@ -6,7 +6,7 @@
 
 Previously, our discussion resolved around the finite field $\mathbb{F}_p$ for a prime $p$. However, many protocols
 need more than just a prime field. For example, elliptic curve pairings and certain STARK constructions require
-extending $\mathbb{F}_p$ to, in a sense, the analogous of complex numbers. 
+extending $\mathbb{F}_p$ to, in a sense, the analogue of complex numbers. 
 
 From school and, possibly, university, you might remember how complex numbers $\mathbb{C}$ are constructed. You take two real numbers, say, $x,y \in \mathbb{R}$, introduce a new
 symbol $i$ satisfying $i^2 = -1$, and define the complex number as $z = x + iy$. In certain cases, one might encounter a bit more rigorous and abstract definition of complex numbers as
@@ -17,7 +17,7 @@ the set of pairs $(x,y) \in \mathbb{R}^2$ where addition in naturally defined as
 
 In spite of what interpretation you have seen, the complex number is just a tuple of two real numbers that satisfy a bit different rules of multiplication (since addition is typically defined in the same way). What is even more important to us, is that $\mathbb{C}$ is our first example of the so-called \textbf{field extension} of $\mathbb{R}$.
 
-Formally, definition of the field extension is straightforward:
+Formally, the definition of the field extension is straightforward:
 \begin{definition}
     Let $\mathbb{F}$ be a field and $\mathbb{K}$ be another field. We say that $\mathbb{K}$ is an \textbf{extension} of $\mathbb{F}$ if $\mathbb{F} \subset \mathbb{K}$ and $1_{\mathbb{F}} \in \mathbb{K}$ and we denote it as $\mathbb{K}/\mathbb{F}$.
 \end{definition}
@@ -42,7 +42,7 @@ Despite just a simplicity of the definition, the field extensions are a very pow
 \end{example}
 
 \begin{example}
-    Consider $\mathbb{Q}(\sqrt{2}, i) = \{a+bi: a,b \in \mathbb{Q}(\sqrt{2})\}$ where $i^2=-1$. This is a field extension of $\mathbb{Q}(\sqrt{2})$ and, consequently, of $\mathbb{Q}$. The representation of the element is:
+    Consider $\mathbb{Q}(\sqrt{2}, i) = \{a+bi: a,b \in \mathbb{Q}(\sqrt{2})\}$ where $i^2=-1$. This is a field extension of $\mathbb{Q}(\sqrt{2})$ and, consequently, of $\mathbb{Q}$. An element is represented as:
     \begin{xequation*}
         (a+b\sqrt{2}) + (c+d\sqrt{2})i = a + b\sqrt{2} + ci + d\sqrt{2}i
     \end{xequation*}
@@ -67,7 +67,7 @@ Despite just a simplicity of the definition, the field extensions are a very pow
 
 Now, we present a more general way to construct field extensions. Notice that when constructing $\mathbb{C}$, we used the magical element $i$ that satisfies $i^2=-1$. But here is another way how to think of it.
 
-Consider the set of polynomials $\mathbb{R}[x]$, then I pick $p(x):=x^2+1 \in \mathbb{R}[x]$ and ask you to find roots of $p(x)$. Of course, you would claim ``hey, this equation has no solutions over $\mathbb{R}$'' and that is totally true. That is why mathematicians introduced a new element $i$ that we formally called the root of $x^2+1$. Note however, that $i$ is not a number in the traditional sense, but rather a fictional symbol that we artifically introduced to satisfy the equation.
+Consider the set of polynomials $\mathbb{R}[x]$, then we pick $p(x):=x^2+1 \in \mathbb{R}[x]$ and ask you to find roots of $p(x)$. Of course, you would claim ``hey, this equation has no solutions over $\mathbb{R}$'' and that is totally true. That is why mathematicians introduced a new element $i$ that we formally called the root of $x^2+1$. Note however, that $i$ is not a number in the traditional sense, but rather a fictional symbol that we artificially introduced to satisfy the equation.
 
 Now, could we have picked another polynomial, say, $q(x) = x^2+4$? Sure! As long as its roots cannot be found in $\mathbb{R}$, we are good to go.
 
@@ -114,7 +114,7 @@ So, let us generalize this observation to any field $\mathbb{F}$ and any irreduc
     Suppose $\mathbb{F}=\mathbb{Q}$ and $\mu(x) := x^2-2$. Then, $\mathbb{Q}[x]/(x^2-2)$ is a field isomorphic to $\mathbb{Q}(\sqrt{2})$, considered above.
 \end{example}
 \begin{example}
-    Suppose $\mathbb{F}=\mathbb{Q}$ and $\mu(x) := (x^2+1)(x^2-2)=x^4-x^2-2$. Then, $\mathbb{Q}[X]/(x^4-x^2-2)$ is a field isomorphic to $\mathbb{Q}(\sqrt{2},i)$.
+    Suppose $\mathbb{F}=\mathbb{Q}$ and $\mu(x) := (x^2+1)(x^2-2)=x^4-x^2-2$. Then, $\mathbb{Q}[x]/(x^4-x^2-2)$ is a field isomorphic to $\mathbb{Q}(\sqrt{2},i)$.
 \end{example}
 
 \begin{remark}
@@ -129,7 +129,7 @@ So, let us generalize this observation to any field $\mathbb{F}$ and any irreduc
 This theorem (aka definition) corresponds to viewing complex numbers as a polynomial quotient ring $\mathbb{R}[x]/(x^2+1)$. But, we can give a theorem (aka definition) for our classical representation via magical root $i$ of $x^2+1$.
 
 \begin{theorem}
-    Let $\mathbb{F}$ be a field and $\mu \in \mathbb{F}[x]$ is an irreducible polynomial of degree $n$ and let $\mathbb{K} := \mathbb{F}[x]/(\mu)$. Let $\theta \in \mathbb{K}$ be the root of $\mu$ over $\mathbb{K}$. Then,
+    Let $\mathbb{F}$ be a field and $\mu \in \mathbb{F}[x]$ be an irreducible polynomial of degree $n$ and let $\mathbb{K} := \mathbb{F}[x]/(\mu)$. Let $\theta \in \mathbb{K}$ be the root of $\mu$ over $\mathbb{K}$. Then,
     \begin{xequation}
         \mathbb{K} = \{c_0+c_1\theta+\cdots+c_{n-1}\theta^{n-1}: c_0,\dots,c_{n-1} \in \mathbb{F}\}.
     \end{xequation}
@@ -180,7 +180,7 @@ Now, in the subsequent sections, we would need to extend $\mathbb{F}_p$ at least
 
 \subsection{Multiplicative Group of a Finite Field}\label{section:multiplicative_subgroup}
 
-The non-zero elements of $\mathbb{F}_p$, denoted as $\mathbb{F}_p^{\times}$, form a multiplicative cyclic group\footnote{It is easy to see why it is a group yet the proof that it is cyclic is more involved.}. In other words, there exist elements $g \in \mathbb{F}_p^{\times}$, called \textit{generators}, such that
+The non-zero elements of $\mathbb{F}_p$, denoted as $\mathbb{F}_p^{\times}$, form a multiplicative cyclic group\footnote{It is easy to see why it is a group, yet the proof that it is cyclic is more involved.}. In other words, there exist elements $g \in \mathbb{F}_p^{\times}$, called \textit{generators}, such that
 \begin{equation*}
     \mathbb{F}_p^{\times} = \{g^k: 0 \leq k \leq p-2\}
 \end{equation*}
@@ -205,7 +205,7 @@ The order of $x \in \mathbb{F}_p^{\times}$ is the smallest positive integer $r$ 
 In STARKs (and in optimizing operations) for DFT (Discrete Fourier Transform) we would need the so-called $n$th primitive roots of unity.
 
 \begin{example}
-    For those who studied complex numbers a bit (it is totally OK if you did not, so you might skip this example), recall an equation $\zeta^n=1$ over $\mathbb{C}$. The solutions are $\zeta_k = \cos\left(\frac{2\pi k}{n}\right) + i\sin\left(\frac{2\pi k}{n}\right)$ for $k\in\{0,1,\dots,n-1\}$, so one has exactly $n$ solutions (in contrast to $x^n=1$ over $\mathbb{R}$ where there are at most $2$ solutions\footnote{Think why.}). For any solution $\zeta_k$, it is true that $\zeta_k^n=1$, but if one were to consider the subgroup generated by $\zeta_k$ (that is, $\{1,\zeta_k, \zeta_k^2,\dots\}$), then not neccecerily $\langle \zeta_k \rangle$ would enumerate all the roots of unity $\{\zeta_j\}_{j=0}^{n-1}$. For that reason, we call $\zeta_k$ the $n$th primitive root of unity if $\langle \zeta_k \rangle$ enumerates all roots of unity. One can show that this is the case if and only if $\gcd(k,n)=1$. This is always the case for $k=1$, so commonly mathematicians use $\zeta_n$ to denote an expression $\cos \frac{2\pi}{n} + i\sin\frac{2\pi}{n} = e^{2\pi i/n}$.
+    For those who studied complex numbers a bit (it is totally OK if you did not, so you might skip this example), recall an equation $\zeta^n=1$ over $\mathbb{C}$. The solutions are $\zeta_k = \cos\left(\frac{2\pi k}{n}\right) + i\sin\left(\frac{2\pi k}{n}\right)$ for $k\in\{0,1,\dots,n-1\}$, so one has exactly $n$ solutions (in contrast to $x^n=1$ over $\mathbb{R}$ where there are at most $2$ solutions\footnote{Think why.}). For any solution $\zeta_k$, it is true that $\zeta_k^n=1$, but if one were to consider the subgroup generated by $\zeta_k$ (that is, $\{1,\zeta_k, \zeta_k^2,\dots\}$), then not necessarily $\langle \zeta_k \rangle$ would enumerate all the roots of unity $\{\zeta_j\}_{j=0}^{n-1}$. For that reason, we call $\zeta_k$ the $n$th primitive root of unity if $\langle \zeta_k \rangle$ enumerates all roots of unity. One can show that this is the case if and only if $\gcd(k,n)=1$. This is always the case for $k=1$, so commonly mathematicians use $\zeta_n$ to denote an expression $\cos \frac{2\pi}{n} + i\sin\frac{2\pi}{n} = e^{2\pi i/n}$.
 \end{example}
 
 Yet, let us give the broader definition, including the finite fields case.
@@ -218,7 +218,7 @@ Note that such $\omega$ exists if and only if $n \mid (p-1)$.
 
 \subsection{Algebraic Closure}
 
-Consider the following interesting question: suppose we have a field $\mathbb{F}$. Is there an extension $\mathbb{K}/\mathbb{F}$ such that $\mathbb{K}$ contains all roots of any polynomial in $\mathbb{F}[X]$? The answer is yes, and such a field is called the \textbf{algebraic closure} of $\mathbb{F}$, although not always this algebraic closure has a nice form. But first, let us define what it means for field $\mathbb{F}$ to be algebraically closed.
+Consider the following interesting question: suppose we have a field $\mathbb{F}$. Is there an extension $\mathbb{K}/\mathbb{F}$ such that $\mathbb{K}$ contains all roots of any polynomial in $\mathbb{F}[x]$? The answer is yes, and such a field is called the \textbf{algebraic closure} of $\mathbb{F}$, although not always this algebraic closure has a nice form. But first, let us define what it means for field $\mathbb{F}$ to be algebraically closed.
 
 \vspace{-0.75em}
 
@@ -234,7 +234,7 @@ Consider the following interesting question: suppose we have a field $\mathbb{F}
     A field $\mathbb{K}$ is called an \textbf{algebraic closure} of $\mathbb{F}$ if $\mathbb{K}/\mathbb{F}$ is algebraically closed. This is denoted as $\overline{\mathbb{F}} = \mathbb{K}$.
 \end{definition}
 
-Since we are doing cryptography and not mathematics, we are interested in the algebraic closure of $\mathbb{F}_p$. Well, I have two news for you (as always, one is good and one is bad). The good news is that any finite field $\mathbb{F}_{p^m}$ has an algebraic closure. The bad news is that it does not have a form $\mathbb{F}_{p^k}$ for $k>m$ and there are infinitely many elements in it (so in other words, the algebraic closure of a finite field is not finite). This is due to the following theorem.
+Since we are doing cryptography and not mathematics, we are interested in the algebraic closure of $\mathbb{F}_p$. Well, we have two news for you (as always, one is good and one is bad). The good news is that any finite field $\mathbb{F}_{p^m}$ has an algebraic closure. The bad news is that it does not have a form $\mathbb{F}_{p^k}$ for $k>m$ and there are infinitely many elements in it (so in other words, the algebraic closure of a finite field is not finite). This is due to the following theorem.
 
 \begin{theorem}
     No finite field $\mathbb{F}$ is algebraically closed.
@@ -255,7 +255,7 @@ But what form does the $\overline{\mathbb{F}}_{p}$ have? Well, it is a union of 
 \vspace{-4mm}
 
 \begin{remark}
-    This definition might rightfully seem counterintuitive. So here how we usually interpret it. Suppose I tell you that polynomial $q(x)$ has a root in $\overline{\mathbb{F}}_p$. What that means is that there exists some extension $\mathbb{F}_{p^m}$ such that for some $\alpha \in \mathbb{F}_{p^m}$, $q(\alpha)=0$. We do not know how large this $m$ is, but we know that it exists. For that reason, $\overline{\mathbb{F}}_p$ is defined as an infinite union of all possible field extensions.
+    This definition might rightfully seem counterintuitive. So here is how we usually interpret it. Suppose I tell you that polynomial $q(x)$ has a root in $\overline{\mathbb{F}}_p$. What that means is that there exists some extension $\mathbb{F}_{p^m}$ such that for some $\alpha \in \mathbb{F}_{p^m}$, $q(\alpha)=0$. We do not know how large this $m$ is, but we know that it exists. For that reason, $\overline{\mathbb{F}}_p$ is defined as an infinite union of all possible field extensions.
 \end{remark}
 
 \subsection{Exercises}
@@ -303,7 +303,7 @@ But what form does the $\overline{\mathbb{F}}_{p}$ have? Well, it is a union of 
     \textit{You are given the passage explaining the topic of tower of extensions. The text has gaps that you need to fill in with the correct statement among the provided choices.}
     \vspace{5px}
     
-    This question demonstrates the concept of the so-called \textbf{tower of extensions}. Suppose we want to build an extension field $\mathbb{F}_{p^4}$. Of course, we can find some irreducible polynomial $p(X)$ of degree $4$ over $\mathbb{F}_p$ and build $\mathbb{F}_{p^4}$ as $\mathbb{F}_p[X]/(p(X))$. However, this method is very inconvenient since implementing the full $4$-degree polynomial arithmetic is inconvenient. Moreover, if we were to implement arithmetic over, say, $\mathbb{F}_{p^{24}}$, that would make the matters worse. For this reason, we will build $\mathbb{F}_{p^4}$ as $\mathbb{F}_{p^2}[j]/(q(j))$ where $q(j)$ is an irreducible polynomial of degree $2$ over $\mathbb{F}_{p^2}$, which itself is represented as $\mathbb{F}_p[i]/(r(i))$ for some suitable irreducible quadratic polynomial $r(i)$. This way, we can first implement $\mathbb{F}_{p^2}$, then $\mathbb{F}_{p^4}$, relying on the implementation of $\mathbb{F}_{p^2}$.
+    This question demonstrates the concept of the so-called \textbf{tower of extensions}. Suppose we want to build an extension field $\mathbb{F}_{p^4}$. Of course, we can find some irreducible polynomial $p(x)$ of degree $4$ over $\mathbb{F}_p$ and build $\mathbb{F}_{p^4}$ as $\mathbb{F}_p[x]/(p(X))$. However, this method is very inconvenient since implementing the full $4$-degree polynomial arithmetic is cumbersome. Moreover, if we were to implement arithmetic over, say, $\mathbb{F}_{p^{24}}$, that would make matters worse. For this reason, we will build $\mathbb{F}_{p^4}$ as $\mathbb{F}_{p^2}[j]/(q(j))$ where $q(j)$ is an irreducible polynomial of degree $2$ over $\mathbb{F}_{p^2}$, which itself is represented as $\mathbb{F}_p[i]/(r(i))$ for some suitable irreducible quadratic polynomial $r(i)$. This way, we can first implement $\mathbb{F}_{p^2}$, then $\mathbb{F}_{p^4}$, relying on the implementation of $\mathbb{F}_{p^2}$.
     \vspace{5px}
 
     For illustration purposes, let us pick $p:=5$. As noted above, we want to build $\mathbb{F}_{5^2}$ first. A valid way to represent $\mathbb{F}_{5^2}$ would be to set $\mathbb{F}_{5^2} := \boxed{\textcolor{blue}{\textbf{4}}}$. Given this representation, the zero of a linear polynomial $f(x) = ix - (i+3)$, defined over $\mathbb{F}_{5^2}$, is $\boxed{\textcolor{blue}{\textbf{5}}}$.

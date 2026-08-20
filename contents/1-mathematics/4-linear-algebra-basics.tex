@@ -708,7 +708,7 @@ Let us now give a bit more general definition.
 \begin{remark}
     Although practically we will only encounter vector spaces of the form $\mathbb{F}^n$, the notion of vector space is very broad. For example, consider the following two sets:
     \begin{align*}
-        U_1 &:= \mathbb{R}[X]^{\leq n}, \; \textcolor{gray}{\textit{// polynomials in $\mathbb{R}$ of maximum degree $n$}} \\
+        U_1 &:= \mathbb{R}[x]^{\leq n}, \; \textcolor{gray}{\textit{// polynomials in $\mathbb{R}$ of maximum degree $n$}} \\
         U_2 &:= \{\text{all functions $f: [0,1] \to \mathbb{R}$ continuous over $[0,1]$}\}.
     \end{align*}
     One can check, that both $U_1$ and $U_2$ are in fact vector spaces over $\mathbb{R}$ with $U_1$ being of finite dimension while $U_2$ being infinitely-dimensional.
@@ -818,7 +818,7 @@ This definition requires some examples.
     Basis is typically not unique. 
     For instance, for $\mathbb{R}^2$, vectors $\mathbf{u}_1=(1,2)$ and $\mathbf{u}_2=(2,1)$ also form a basis.
     Indeed, one can first check that they are linearly independent. 
-    Besides, for any $(x_1,x_2) \in \mathbb{R}$, one can check:
+    Besides, for any $(x_1,x_2) \in \mathbb{R}^2$, one can check:
     \begin{equation*}
         \begin{bmatrix}
             x_1 \\ x_2
@@ -847,7 +847,7 @@ This definition requires some examples.
 \end{example}
 
 Notice that while the basis in not unique for the given vector space, the number of basis vectors was the same.
-This raises the natural question: can we find the basis $\mathbf{e}_1,\dots,\mathbf{e}_m$ for $\mathbb{F}^n$ or $\mathbb{F}[x]^{<n}$ with $m \neq n$?
+This raises the natural question: can we find the basis $\mathbf{e}_1,\dots,\mathbf{e}_m$ for $\mathbb{F}^n$ or $\mathbb{F}[x]^{\leq n-1}$ with $m \neq n$?
 The answer is no.
 
 \begin{lemma}
@@ -861,7 +861,7 @@ This motivates us to give the following definition.
 \end{definition}
 
 \begin{example}
-    As we have observed earlier, $\dim \mathbb{F}^n=\dim \mathbb{F}[x]^{<n} = n$.
+    As we have observed earlier, $\dim \mathbb{F}^n=\dim \mathbb{F}[x]^{\leq n-1} = n$.
 \end{example}
 
 \subsection{Matrix}
@@ -871,7 +871,7 @@ basic sense, the matrix is a rectangular array of numbers, symbols, or
 expressions, arranged in rows and columns. For example, the matrix $A$ with $m$
 rows and $n$ columns, consisting of elements from the field $\mathbb{F}$
 is denoted as $A \in \mathbb{F}^{m \times n}$. Additionally, we use notation $A
-= (a_{i,j})_{i,j=1}^{m \times n}$ to denote the square matrix $A$ of size $m
+= (a_{i,j})_{i,j=1}^{m \times n}$ to denote the matrix $A$ of size $m
 \times n$ with elements $a_{i,j}$. Now, let us define operations on matrices.
 
 \begin{definition}[Matrix operations]\label{def:matrix-ops}
@@ -991,7 +991,7 @@ That is, for $A \in \mathbb{F}^{m \times n}$, let
         \mathbf{u}_1^{\top} \\
         \vdots \\
         \mathbf{u}_m^{\top}
-    \end{bmatrix} \; \text{for some} \; \mathbf{u}_1,\dots,\mathbf{u}_n \in \mathbb{F}^n.
+    \end{bmatrix} \; \text{for some} \; \mathbf{u}_1,\dots,\mathbf{u}_n \in \mathbb{F}^m.
 \end{equation*}
 
 Similarly, we might ask: what portion of $\mathbb{F}^n$ do $\mathbf{u}_1,\dots,\mathbf{u}_m$ span?
@@ -1049,7 +1049,7 @@ Plenty of functions can be built that satisfy the inner product definition, we w
 
     For example, let $\mathbb{F}=\mathbb{R}$ and let $\mathbf{u}=(1, 2, 3)$, $\mathbf{v} = (2, 4, 3)$. Then,
     \begin{xequation*}
-        \langle \mathbf{u}, \mathbf{v}\rangle = \sum_{i=1}^{3}u_iv_i = 2 \cdot 1 + 2 \cdot 4 + 3 \cdot 3 = 2 + 8 + 9 = 19
+        \langle \mathbf{u}, \mathbf{v}\rangle = \sum_{i=1}^{3}u_iv_i = 1 \cdot 2 + 2 \cdot 4 + 3 \cdot 3 = 2 + 8 + 9 = 19
     \end{xequation*}
 \end{example}
 
@@ -1130,10 +1130,10 @@ The final product we introduce is the \textbf{outer product}.
     in the second vector:
     \begin{xequation}
         \mathbf{u} \otimes \mathbf{v} := \mathbf{u}\mathbf{v}^{\top} = \begin{bmatrix}
-            u_1 v_1 & u_1 v_2 & \cdots & u_1 v_n \\
-            u_2 v_1 & u_2 v_2 & \cdots & u_2 v_n \\
+            u_1 v_1 & u_1 v_2 & \cdots & u_1 v_m \\
+            u_2 v_1 & u_2 v_2 & \cdots & u_2 v_m \\
             \vdots & \vdots & \ddots & \vdots \\
-            u_m v_1 & u_m v_2 & \cdots & u_m v_n
+            u_n v_1 & u_n v_2 & \cdots & u_n v_m
         \end{bmatrix}
     \end{xequation}
 \end{definition}

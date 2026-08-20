@@ -8,7 +8,7 @@ cryptography. But you might wonder: why should we study abstract algebra?
 
 Consider the set $\mathbb{Z}_n$. Naturally, we want to define certain
 arithmetical operations over $\mathbb{Z}_n$. For example, having $3, 6 \in
-\mathbb{Z}_9$ I would like to know what it means to add them. Naturally, one
+\mathbb{Z}_9$ we would like to know what it means to add them. Naturally, one
 would say that $3+6=0$ in $\mathbb{Z}_9$ since $3+6$ over $\mathbb{Z}$ gives $9$,
 which is congruent to $0$ modulo $9$. However, while such a structure is
 straightforward for such a set, we can define operations over much more
@@ -31,7 +31,7 @@ the following proposition to show the properties of modular arithmetic.
         \item $\textit{Addition associative: } a + (b + c) \equiv (a + b) + c \pmod{n}$. The order in 
         which we compute pairwise sums does not matter.
         \item $\textit{Addition identity: } a + 0 \equiv a \pmod{n}$. We always have an element which 
-        behaves like ``zero'' in the addition operation (or like ``one'' when multipling).
+        behaves like ``zero'' in the addition operation (or like ``one'' when multiplying).
         \item $\textit{Additive inverse: } a + (-a) \equiv 0 \pmod{n}$. For any
         element $a$ we always have an element $-a$ which ``zeroes out'' an element $a$.
         \item $\textit{Addition commutativity: } a + b \equiv b + a \pmod{n}$. The order of elements in
@@ -356,7 +356,7 @@ are cyclic and, therefore, abelian.
 
 \begin{lemma}\label{lemma:cyclic-group-order}
     Let $\mathbb{G}=\langle g \rangle$ be a cyclic group of order $n$. Then
-    $g^{m} = e$ holds if and only if $m \mid n$.
+    $g^{m} = e$ holds if and only if $n \mid m$.
 \end{lemma}
 
 \begin{theorem}
@@ -429,8 +429,8 @@ out that this is not possible due to the subsequent theorem.
  
 Lagrange's Theorem is one of the most important
 results in finite group theory, considering all the consequences. Central to
-understanding Lagranges's Theorem is the notion of a \textit{coset}. While 
-this concept is essential for Cryptography, feel free to skip this section if feel 
+understanding Lagrange's Theorem is the notion of a \textit{coset}. While 
+this concept is essential for cryptography, feel free to skip this section if feel 
 uncomfortable with the material.
 
 \begin{definition}
@@ -511,7 +511,7 @@ it follows directly that $\left| \mathbb{H} \right|$ divides $\left| \mathbb{G} 
 \begin{corollary}
     Let $\mathbb{G}$ be a finite group and $g \in \mathbb{G}$, 
     then $\text{ord}(g) \mid \#\mathbb{G}$. In other words, the order of $g$ must 
-    divide the numbers of elements in $\mathbb{G}$. 
+    divide the number of elements in $\mathbb{G}$. 
 \end{corollary}
 
 Additionally, consider the following fact which seems to be obvious but required aforementioned 
@@ -531,7 +531,7 @@ theorems to be easily proven.
 \end{example}
 
 Based on the example above, one might notice that \Cref{corollary:group-exp}
-serves as a generalization of Euler's Theorem for arbitrary finite group.
+serves as a generalization of Euler's Theorem for an arbitrary finite group.
 
 \subsection{Isomorphisms and Endomorphisms}
 
@@ -556,9 +556,9 @@ suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is t
 \end{definition}
 
 \begin{example}
-    Consider the group of integers $(\mathbb{Z},+)$ and the group of integers modulo $12$ $(\mathbb{Z}_{12},+)$. The function $\pi: \mathbb{Z} \to \mathbb{Z}_{12}$ defined as $\pi(x) = x \;\text{mod}\; 12$ is a homomorphism. Indeed:
+    Consider the group of integers $(\mathbb{Z},+)$ and the group of integers modulo $12$ $(\mathbb{Z}_{12},+)$. The function $\pi: \mathbb{Z} \to \mathbb{Z}_{12}$ defined as $\pi(x) \equiv x \;\text{mod}\; 12$ is a homomorphism. Indeed:
     \begin{xequation*}
-        \pi(a+b) = (a+b) \;\text{mod}\; 12 = (a \;\text{mod}\; 12) + (b \;\text{mod}\; 12) = \pi(a) + \pi(b).
+        \pi(a+b) \equiv (a+b) \;\text{mod}\; 12 \equiv (a \;\text{mod}\; 12) + (b \;\text{mod}\; 12) \equiv \pi(a) + \pi(b).
     \end{xequation*}
 
     However, $\pi$ is not an isomorphism, since it is not bijective. For example, $\pi(0) = \pi(12) = 0$.
@@ -605,7 +605,7 @@ Using the notion of isomorphism, we can restate Chinese Remainder Theorem (\Cref
 Finally, we will define the concept of an endomorphism and automorphism to finish the section.
 
 \begin{definition}
-    An \textbf{endomorphism} of a group $\mathbb{G}$ is a homomorphism $\varphi: \mathbb{G} \to \mathbb{G}$
+    An \textbf{endomorphism} of a group $\mathbb{G}$ is a homomorphism $\qquad \varphi: \mathbb{G} \to \mathbb{G}$
     from $\mathbb{G}$ to itself.
 \end{definition}
 
@@ -614,10 +614,10 @@ Finally, we will define the concept of an endomorphism and automorphism to finis
 \end{definition}
 
 \begin{example}
-    Given a group $\mathbb{G}$, fixate $a \in \mathbb{G}$. The map $\varphi: x \mapsto axa^{-1}$ is an automorphism.
+    Given a group $\mathbb{G}$ and a fixed element $a \in \mathbb{G}$, the map $\varphi: x \mapsto axa^{-1}$ is an automorphism.
 \end{example}
 
-Last two definitions are especially frequently used in Elliptic Curves theory.
+The last two definitions are especially frequently used in Elliptic Curves theory.
 
 \subsection{Fields}
 
@@ -683,7 +683,7 @@ every integer has a well-defined inverse modulo $p$. Such fields are called
     finite fields are denoted as $\mathbb{F}_p$ or $\text{GF}(p)$.
 \end{definition}
 
-Finite fields is the core object in cryptography. Instead of real numbers or pure integers, we will almost always 
+Finite fields are the core object in cryptography. Instead of real numbers or pure integers, we will almost always 
 use finite fields.
 
 \begin{remark}
@@ -710,7 +710,7 @@ use finite fields.
 In programming, we can think of a group as an interface, having a single binary operation defined, that obeys the 
 rules of closure, associativity, identity element, and inverse element.
 
-For that reason, we might even code a group in Rust! We will also write a simple test to check whether the group is 
+For that reason, we can code a group in Rust. We will also write a simple test to check whether the group is 
 valid and whether the group is abelian.
 
 \textbf{Trait for Group.} First, we define a trait for a group. We will define a group as a trait with the following methods:
@@ -734,7 +734,7 @@ pub trait Group: Sized {
 
 \textbf{Checking group validity.} Now observe the following: we get closure for free, since the compiler will check 
 whether the return type of the operation is the same as the type of the group. However, there is no guarantee that 
-associativity holds, and our identity element is at all valid. For that reason, we need to somehow additionally check 
+associativity holds, and our identity element is valid at all. For that reason, we need to somehow additionally check 
 the validity of implementation.
 
 We propose to do the following: we will randomly sample three elements from the group 
@@ -859,7 +859,7 @@ impl Samplable for i64 {
 Just a small note: since we cannot generate infinite integers, we restrict the range of integers to prevent overflow. So, 
 for the sake of simplicity, we divide the range of integers by $3$, in which overflow never occurs.
 
-And now, the moment of truth! Let us define some tests and run them:
+Finally, we define the tests and run them:
 \begin{minted}{rust}
 #[cfg(test)]
 mod tests {
@@ -878,10 +878,10 @@ mod tests {
 }
 \end{minted}
 
-Both tests pass! Now let us consider something a bit trickier.
+Both tests pass. Now let us consider something a bit trickier.
 
 \textbf{Testing the group $\text{SO}(3)$.} We can define a group for $3 \times 3$ rotation matrices. Of course, 
-composition of two rotation is not commutative, so we expect the abelian test to fail. However, the group is still 
+composition of two rotations is not commutative, so we expect the abelian test to fail. However, the group is still 
 valid! For example, there is an identity rotation matrix $E$, and for each rotation matrix $A \in \text{SO}(3)$, 
 there exists a rotation matrix $A^{-1} \in \text{SO}(3)$ such that $AA^{-1} = A^{-1}A = E$. Finally, the associativity 
 holds as well.
@@ -931,7 +931,7 @@ impl Samplable for Rotation3<f32> {
 
 Here, there are two tricky moments:
 \begin{enumerate}
-    \item We cannot compare floating point numbers directly, since they might differ by a small amount. For that reason, we define a small threshold $\varepsilon$. We say that two matrices are equal iff the norm\footnote{one can think of norm as being the measure of ``distance'' between two objects. Similarly, we can define norm not only on matrices, but on vectors as well: see Definition~\ref{def:length}.} of their difference is less than $\varepsilon$.
+    \item We cannot compare floating point numbers directly, since they might differ by a small amount. For that reason, we define a small threshold $\varepsilon$. We say that two matrices are equal iff the norm\footnote{One can think of norm as being the measure of ``distance'' between two objects. Similarly, we can define norm not only on matrices, but on vectors as well: see Definition~\ref{def:length}.} of their difference is less than $\varepsilon$.
     \item To generate a random rotation matrix, we generate three random angles and create a rotation matrix from these angles.
 \end{enumerate}
 

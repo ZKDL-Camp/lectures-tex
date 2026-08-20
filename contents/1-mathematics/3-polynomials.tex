@@ -6,7 +6,7 @@
 
 Polynomials are intensively used in almost all areas of cryptography. In our
 particular case, polynomials will encode the information about statements we
-will need to prove. That being said, let us define what polynomial is.
+will need to prove. That being said, let us define what a polynomial is.
 
 \begin{definition}
     A \textbf{polynomial} $p(x)$ is a function of the form
@@ -48,7 +48,7 @@ Notice that for now we did not specify what are $c_i$'s. We are interested in th
 \end{definition}
 
 \begin{example}
-    The degree of the polynomial $p(x) = 1 + 2x + 3x^2$ is $2$. Consequently, in particular, $p \in
+    The degree of the polynomial $p(x) = 1 + 2x + 3x^2$ is $2$. Consequently, $p \in
     \mathbb{F}_5[x]^{\leq 2}$.
 \end{example}
 
@@ -82,7 +82,7 @@ One of the fundamental theorems of polynomials is the following.
 \end{theorem}
 
 \begin{example}
-    For example, $x_0=1$ is a root of $p(x) = x^2+2$ over $\mathbb{F}_3$. On the other hand, $p(x) = (x-1)(x-2)$ ($q(x) = x - 2$ according to Theorem~\ref{th:root-div}).
+    For example, $x_0=1$ is a root of $p(x) = x^2+2$ over $\mathbb{F}_3$. Indeed, $p(x) = (x-1)(x-2)$ ($q(x) = x - 2$ according to Theorem~\ref{th:root-div}).
 \end{example}
 
 Also, this might not be obvious, but we can also divide polynomials in the same way as we divide integers. The result of division is not always a polynomial, so we also get a remainder.
@@ -100,7 +100,7 @@ Also, this might not be obvious, but we can also divide polynomials in the same 
         f \, \text{div} \, g = x^2-x+1, \quad f \, \text{mod} \, g = 1.
     \end{xequation*}
 
-    The notation is similar to one used in integer division.
+    The notation is similar to the one used in integer division.
 \end{example}
 
 Similarly, one can define $\text{gcd}$, $\text{lcm}$, and other number field theory operations for polynomials\footnote{This follows from the fact that both $\mathbb{Z}$ and $\mathbb{F}[x]$ are so-called \textit{principal ideal domains}. For a careful treatment of the details, see for example \cite[Chapters 1 \& 2]{ireland}.}. However, we will not go into details here, besides mentioning the divisibility.
@@ -118,7 +118,7 @@ Similarly, one can define $\text{gcd}$, $\text{lcm}$, and other number field the
 \end{definition}
 
 \begin{example}
-    A polynomial $f(x) = x^2+16$ is irreducible in $\mathbb{R}$. In turn, $f(x) = x^2-2$ is not irreducible since $f(x) = (x-\sqrt{2})(x+\sqrt{2})$. 
+    A polynomial $f(x) = x^2+16$ is irreducible in $\mathbb{R}$. On the other hand, $f(x) = x^2-2$ is not irreducible since $f(x) = (x-\sqrt{2})(x+\sqrt{2})$. 
 \end{example}
 
 \begin{example}
@@ -131,7 +131,7 @@ Now, let us ask the question: what defines the polynomial? Well, given expressio
 
 Indeed, each polynomial of degree $n$ is uniquely determined by the vector of its coefficients $(c_0,c_1,\dots,c_n) \in \mathbb{F}^n$. However, that is not the only way to define a polynomial.
 
-Suppose I tell you that $p(x) = ax + b$ -- just a simple linear function over $\mathbb{R}$. Suppose I tell you that $p(x)$ intercepts $(0,0)$ and $(1,2)$. Then, you can easily say that $p(x) = 2x$. 
+Suppose that $p(x) = ax + b$ -- just a simple linear function over $\mathbb{R}$. Suppose that $p(x)$ intercepts $(0,0)$ and $(1,2)$. Then, you can easily say that $p(x) = 2x$. 
 
 The more general question is: suppose $\deg p = n$, how many points do I need to define the polynomial $p(x)$ uniquely? The answer is $n+1$ distinct points. This is the idea behind the interpolation:
 the polynomial is uniquely defined by $n+1$ distinct points on the plane. An example is depicted 
@@ -156,14 +156,14 @@ in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the po
 \end{theorem}
 
 \begin{lemma}
-    The polynomials $\{\ell_i\}_{i=1}^n$, in fact, have quite an interesting property:
+    The polynomials $\{\ell_i\}_{i=0}^n$, in fact, have quite an interesting property:
     \begin{xequation*}
         \ell_i(x_j) = \delta_{ij} = \begin{cases}
             1, & i = j \\ 0, & i \neq j
         \end{cases},
     \end{xequation*}
 
-    where $\delta_{ij}$ is the so-called \textit{Kronecker delta}. Moreover, $\{\ell_i\}_{i=1}^n$ form a \textit{basis} of $\mathbb{F}[x]^{\leq n}$ (see \Cref{section:linear-algebra} for the definition). Put simply, for any polynomial $p \in \mathbb{F}[x]^{\leq n}$ there exist unique coefficients $\alpha_0,\dots,\alpha_n \in \mathbb{F}$ such that
+    where $\delta_{ij}$ is the so-called \textit{Kronecker delta}. Moreover, $\{\ell_i\}_{i=0}^n$ form a \textit{basis} of $\mathbb{F}[x]^{\leq n}$ (see \Cref{section:linear-algebra} for the definition). Put simply, for any polynomial $p \in \mathbb{F}[x]^{\leq n}$ there exist unique coefficients $\alpha_0,\dots,\alpha_n \in \mathbb{F}$ such that
     \begin{xequation}
         p(x) = \sum_{i=0}^{n} \alpha_i \ell_i(x).
     \end{xequation}
@@ -189,7 +189,7 @@ single-variable case, which is easiest to understand.
 \vspace{-0.6mm}
 
 \begin{lemma}[Single Variable Schwartz-Zippel Lemma]\label{lemma:one-sz} Let
-    $\mathbb{F}$ be a finite field and let $f \in \mathbb{F}[x]$ be a
+    $\mathbb{F}$ be a finite field and let $f \in \mathbb{F}[x]$ be a non-zero
     polynomial. Then,
     \begin{xequation}
         \underset{x \leftarrowS \mathbb{F}}{\text{Pr}}
@@ -266,10 +266,10 @@ Now, Shamir's protocol is one of the most famous secret sharing schemes. It work
     \item $\mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}})$: reconstruct the polynomial $\omega(x)$ using Lagrange interpolation and return $\omega(0) = \alpha$.
 \end{itemize}
 
-The combination function is possible since, having $t$ points $\{i,\alpha_i\}_{i
+The combination function is possible since, having $t$ points $\{(i,\alpha_i)\}_{i
 \in \mathcal{I}}$ with $\omega(i) = \alpha_i$, we can fully reconstruct the
 polynomial $\omega(x)$ and then evaluate it at $0$ to get $\alpha$. Instead,
-suppose we have only $t-1$ (or less) pairs $\{i,\alpha_i\}_{i \in \mathcal{I}}$.
+suppose we have only $t-1$ (or less) pairs $\{(i,\alpha_i)\}_{i \in \mathcal{I}}$.
 Then, there are many polynomials $\omega(x)$ that pass through these points (in
 fact, if we were in the field of real numbers, this number would be infinite),
 and thus the secret $\alpha$ is not uniquely determined. The intuition behind
