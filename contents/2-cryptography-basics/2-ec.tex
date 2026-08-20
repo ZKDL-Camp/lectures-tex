@@ -11,7 +11,7 @@ discrete logarithm problem assumption, Diffie-Hellman assumption and other core
 cryptographic assumptions hold. Moreover, this group does not require a large
 field size, which is a huge advantage for many cryptographic protocols.
 
-So, let us formally define what an elliptic curve is. Further assume that, when speaking of the finite field $\mathbb{F}_p$, the underlying prime number is greater than $3$.\footnote{Note that, for example, for $\mathbb{F}_{2^n}$ equation of elliptic curve is very different, but usually we do not deal with binary field elements.}. The definition is the following.
+So, let us formally define what an elliptic curve is. Further assume that, when speaking of the finite field $\mathbb{F}_p$, the underlying prime number is greater than $3$\footnote{Note that, for example, for $\mathbb{F}_{2^n}$ equation of elliptic curve is very different, but usually we do not deal with binary field extensions.}. The definition is the following.
 
 \begin{definition}
     Suppose that $\mathbb{K}$ is a field. An \textbf{elliptic curve} $E$ over $\mathbb{K}$ is defined as a set of points $(x,y) \in \mathbb{K}^2$:
@@ -22,7 +22,7 @@ So, let us formally define what an elliptic curve is. Further assume that, when 
 \end{definition}
 
 \begin{remark}
-    One might wonder why $4a^3+27b^2 \neq 0$. This is due to the fact that the curve $y^2=x^3+ax+b$ might have certain degeneracies and special points, which are not desirable for us. So we require this condition to make $E/\mathbb{K}$ ``good''.
+    One might rightfully ask why do we require $4a^3+27b^2 \neq 0$. This is due to the fact that the curve $y^2=x^3+ax+b$ might have certain degeneracies and special points (namely, \textit{singular} points), which are not desirable for us. So we require this condition to make $E/\mathbb{K}$ ``smooth enough''.
 \end{remark}
 
 \begin{definition}
@@ -40,20 +40,24 @@ So, let us formally define what an elliptic curve is. Further assume that, when 
     \label{fig:ec_1}
 \end{figure}
 
-Typically, our elliptic curve is defined over a finite field $\mathbb{F}_p$, so we are interested in this paricular case. 
+Typically, our elliptic curve is defined over a finite field $\mathbb{F}_p$, so further feel free to assume that $\mathbb{K}=\mathbb{F}_p$.
 
 \begin{remark}
-    Although, in many cases one might encounter the definition where an elliptic curve $E$ is defined over the algebraic closure of $\mathbb{F}_p$, that is $E/\overline{\mathbb{F}}_p$. This is typically important when considering elliptic curve pairings. However, for the sake of simplicity, we will consider elliptic curves over $\mathbb{F}_p$ and corresponding finite extensions $\mathbb{F}_{p^m}$ as of now.
+    In many cases one might encounter the definition where an elliptic curve $E$ is defined over the algebraic closure of $\mathbb{F}_p$, that is $E/\overline{\mathbb{F}}_p$.
+    The primary reason is that studying geometric objects in algebra is significantly easier when working in the algebraically closed fields (primarily thanks to the so-called \textit{Hilbert's Nullstellensatz Theorem}).
 \end{remark}
 
 \begin{remark}
     It is easy to see that if $(x,y) \in E/\mathbb{K}$, then $(x,-y) \in E/\mathbb{K}$. We will use this fact intensively further.
 \end{remark}
 
-Now, elliptic curves are useless without any operation defined on top of them. But as will be seen later, it is quite unclear how to define the identity element. For that reason, we introduce a bit different definition of a set of points on the curve.
+Now, for cryptographic applications, elliptic curves are useless without any operation defined on top of them. 
+Consequently, our goal is to equip $E/\mathbb{K}$ with an operation that will turn $E$ into a group.
+But as will be seen later, it is quite unclear how to define the identity element. 
+For that reason, we introduce a slightly different definition of a set of points on $E$ than what one might anticipate.
 
 \begin{definition}
-    The set of points on the curve, denoted as $E_{a,b}(\mathbb{K})$, is defined as:
+    The set of points on an elliptic curve, denoted $E_{a,b}(\mathbb{K})$, is defined as:
     \begin{equation*}
         E_{a,b}(\mathbb{K}) = \{(x,y) \in \mathbb{A}^2(\mathbb{K}): y^2=x^3+ax+b\} \cup \{\mathcal{O}\},
     \end{equation*}
@@ -61,21 +65,24 @@ Now, elliptic curves are useless without any operation defined on top of them. B
 \end{definition}
 
 \begin{remark}
-    The difference between $E(\mathbb{K})$ and $E/\mathbb{K}$ is that the former includes the point at infinity, while the latter does not. We also omit the index $a,b$, so instead of $E_{a,b}(\mathbb{K})$ we write simply $E(\mathbb{K})$.
+    The difference between $E(\mathbb{K})$ and $E/\mathbb{K}$ is that the former includes the point at infinity, while the latter does not. We also commonly omit the index $a,b$, so instead of $E_{a,b}(\mathbb{K})$ we write simply $E(\mathbb{K})$.
 \end{remark}
 
-Now, the reason we introduced the point at infinity $\mathcal{O}$ is because it allows us to define the group binary operation $\oplus$ on the elliptic curve. The operation is sometimes called the \textbf{chord-tangent law}. Let us define it.
+The reason we introduced the point at infinity $\mathcal{O}$ is because it allows us to define the group binary operation $\oplus$ on the elliptic curve. The operation is sometimes called the \textbf{chord-tangent law}. Let us define it.
 
 \vspace{-0.5em}
 
-\begin{definition}
-    Consider the curve $E(\mathbb{F}_{p^m})$. We define $\mathcal{O}$ as the identity element of the group. That is, for all points $P$, we set $P \oplus \mathcal{O} = \mathcal{O} \oplus P = P$. For any other non-identity elements $P=(x_P,y_P),Q=(x_Q,y_Q) \in E(\mathbb{F}_{p^m})$, define the $P\oplus Q = (x_R,y_R)$ as follows:
+\begin{definition}\label{def:ec-add}
+    Consider an elliptic curve $E(\mathbb{K})$ over any field $\mathbb{K}$. 
+    We define $\mathcal{O}$ as the identity element of the group. 
+    That is, for all points $P \in E(\mathbb{K})$, let $P \oplus \mathcal{O} = \mathcal{O} \oplus P = P$. 
+    For any other non-identity elements $P=(x_P,y_P)$ and $Q=(x_Q,y_Q) \in E(\mathbb{K})$, define the $P\oplus Q = (x_R,y_R)$ as follows:
     \begin{enumerate}
-        \item If $x_P\neq x_Q$, use the \textbf{chord method}. Define $\lambda := \frac{y_P-y_Q}{x_P-x_Q}$ --- the slope between $P$ and $Q$. Set the resultant coordinates as:
+        \item If $x_P\neq x_Q$, use the \textbf{chord method}. Define $\lambda := (y_P-y_Q)/(x_P-x_Q)$ --- the slope between $P$ and $Q$. Set the resultant coordinates as:
         \begin{equation*}
             x_R := \lambda^2 - x_P - x_Q, \quad y_R := \lambda(x_P-x_R)-y_P.
         \end{equation*}
-        \item If $x_P=x_Q \wedge y_P=y_Q$ (that is, $P=Q$), use the \textbf{tangent method}. Define the slope of the tangent at $P$ as $\lambda := \frac{3x_P^2+a}{2y_P}$ and set
+        \item If $x_P=x_Q$ and $y_P=y_Q$ (that is, $P=Q$), use the \textbf{tangent method}. Define the slope of the tangent at $P$ as $\lambda := \frac{3x_P^2+a}{2y_P}$ and set
         \begin{equation*}
             x_R := \lambda^2 - 2x_P, \quad y_R := \lambda(x_P-x_R)-y_P.
         \end{equation*}
@@ -83,7 +90,8 @@ Now, the reason we introduced the point at infinity $\mathcal{O}$ is because it 
     \end{enumerate}
 \end{definition}
 
-The aforementioned definition is illustrated in the Figure below\footnote{Illustration taken from \textit{``Pairing for Beginners''}}.
+The aforementioned definition is illustrated in the Figure below\footnote{Illustration taken from \textit{``Pairing for Beginners''}~\cite[Figures 2.5 \& 2.6]{pairing-for-beginners}.}.
+Further, we denote the group multiplication by $[\alpha]P$ for $\alpha \in \mathbb{Z}$ and $P \in E(\mathbb{K})$ and call it a \textit{scalar multiplication}.
 
 \vspace{-2.5mm}
 
@@ -96,87 +104,101 @@ The aforementioned definition is illustrated in the Figure below\footnote{Illust
 \vspace{-5mm}
 
 \begin{example}
-    Consider $E/\mathbb{R}: y^2=x^3-2x$. The points $(-1,-1),(0,0),(2,2)$ are all on $E$ and also on the line $\ell: y=x$. Therefore, $(-1,1) \oplus (0,0) = (2,-2)$ or, similarly, $(2,2) \oplus (-1,-1) = (0,0)$.
+    Consider an elliptic curve $E/\mathbb{Q}: y^2=x^3-2x$.
+    Suppose we want to compute: \textit{(i)} $(-1,-1) \oplus (0,0)$ and \textit{(ii)} $[2](-1,-1)$ over $E/\mathbb{R}$.
 
-    Now, let us compute $[2](-1,-1)$. Calculate the tangent slope as $\lambda := \frac{3\cdot(-1)^2 - 2}{2\cdot(-1)} = -\frac{1}{2}$. Thus, the tangent line has an equation $\ell': y = -\frac{1}{2}x+c$. Substituting $(-1,-1)$ into the equation, we get $c=-\frac{3}{2}$. Therefore, the equation of the tangent line is $y=-\frac{1}{2}x-\frac{3}{2}$. The intersection of the curve and the line is $\left(\frac{9}{4},-\frac{21}{8}\right)$, yielding $[2](-1,-1) = \left(\frac{9}{4},-\frac{21}{8}\right)$.
+    \begin{enumerate}
+        \item[\textit{(i)}] One checks that the point $(2,2)$ lies on $E$ and moreover lies on the same line as $(-1,-1)$ and $(0,0)$.
+    Consequently, $(-1,-1) \oplus (0,0) = (2,-2)$.
+        \item[\textit{(ii)}] We compute the slope using \Cref{def:ec-add}: $\lambda = -\frac{1}{2}$. 
+    Thus, the tangent line is $\ell': y = -\frac{1}{2}x+c$. Substituting $(-1,-1)$ into the equation, we get $c=-\frac{3}{2}$ and so the tangent line is $y=-\frac{1}{2}x-\frac{3}{2}$. The intersection of the curve and the line is $\left(\frac{9}{4},-\frac{21}{8}\right)$.
+    Consequently, $[2](-1,-1) = \left(\frac{9}{4},\frac{21}{8}\right)$.
+    \end{enumerate}
 
     The whole illustration is depicted in \Cref{fig:ec_2}.
 
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.4\textwidth]{contents/images/lecture_3/ec_illustration_2.pdf}
-        \caption{Illustration of the group law on the elliptic curve $E/\mathbb{R}: y^2=x^3-2x$. In \textcolor{red}{red} we marked points lying on the line $\ell: y=x$. In \textcolor{red}{dashed red}, we marked the line $\ell$, while in \textcolor{green}{dashed green} --- the tangent line $\ell'$ at $(-1,-1)$, which is used to calculate $[2](-1,1)$.}
+        \caption{Illustration of the group law on the elliptic curve $E/\mathbb{R}: y^2=x^3-2x$. In \textcolor{oc-red-7}{red} we marked points lying on the line $\ell: y=x$. In \textcolor{oc-red-7}{dashed red}, we marked the line $\ell$, while in \textcolor{oc-green-7}{dashed green} --- the tangent line $\ell'$ at $(-1,-1)$, which is used to calculate $[2](-1,1)$.}
         \label{fig:ec_2}
     \end{figure}
 \end{example}
 
 \begin{theorem}
-    $(E(\mathbb{F}_{p^m}),\oplus)$ forms an abelian group.
+    $(E(\mathbb{K}),\oplus)$ forms an abelian group.
 \end{theorem}
 
-\textbf{Proof Sketch.} The identity element is $\mathcal{O}$. Every point $\mathcal{O} \neq P=(x_P,y_P) \in E(\mathbb{F}_{p^m})$ has an additive inverse: indeed, $\ominus P := (x_P,-y_P)$. Finally, a bit of algebra might show that the operation is associative. It is also clearly commutative: even geometrically it is evident, that the result of $P\oplus Q$ does not depend on the order of $P$ and $Q$ (``drawing a line between $P$ and $Q$'' and ``drawing a line between $Q$ and $P$'' are equivalent statements). $\blacksquare$
+\begin{proof}
+All properties besides associativity are obvious.
+Checking associativity is a direct algebraic check, which we omit.
+\end{proof}
 
-Now, let us talk a bit about the group order. The group order is the number of elements in the group. For elliptic curves, the group order is typically denoted as $r$ or $n$, but we are going to use $r$. Also, the following theorem is quite important.
+Now, let us talk a bit about the group order. The group order is the number of elements in the group. For elliptic curves, the group order is typically denoted as $r$ or $n$. We are going to use $r$. 
+The following theorem is the central tool for estimating the number of points on an elliptic curve.
 
-\begin{theorem}
-    Define $r := |E(\mathbb{F}_{p^m})|$. Then, $r = p^m + 1 - t$ for some
-    integer $|t| \leq 2\sqrt{p^m}$. A bit more intuitive explanation: the number
-    of points on the curve is close to $p^m$. This theorem is commonly called
-    the \textbf{Hasse's Theorem}, and the value $t$ is called
-    the \textbf{Trace of Frobenius}.
+\begin{theorem}[Hasse's Theorem]\label{th:hasse}
+    Let $r := \#E(\mathbb{F}_{q})$ where $q=p^n$ for prime $p$ and $n \in \mathbb{N}$. Then,
+    \begin{equation*}
+        \left| r - (q+1) \right| \leq 2\sqrt{q}.
+    \end{equation*}
 \end{theorem}
+
+A bit more intuitive explanation of above theorem: the number of points on an elliptic curve defined over the large finite field $\mathbb{F}_q$ is very close to $q$.
 
 \begin{remark}
-    In fact, $r=|E(\mathbb{F}_{p^m})|$ can be computed in polylogarithmic time
-    $O(\log^{\gamma}(p^m))$ for some $\gamma>1$. That being said, the number of
-    points can be computed efficiently even for fairly large primes $p$.
+    In fact, $\#E(\mathbb{F}_q)$ can be computed in polylogarithmic time
+    $O(\log^{\gamma}q)$ for some $\gamma>1$ (see, \textit{e.g.}, Schoof's algorithm~\cite{Schoof1995}). That being said, the number of
+    points can be computed efficiently even for fairly large primes $q$.
 \end{remark}
 
-Finally, let us define the scalar multiplication operation. 
-
-\begin{definition}
-    Let $P \in E(\mathbb{F}_{p^m})$ and $\alpha \in \mathbb{Z}_r$. Define the scalar multiplication $[\alpha]P$ as:
-    \begin{xequation}
-        [\alpha]P = \underbrace{P \oplus P \oplus \cdots \oplus P}_{\alpha \text{ times}}.
-    \end{xequation}
-\end{definition}
-
-\textbf{Question.} Why do we restrict $\alpha$ to $\mathbb{Z}_r$ and not to $\mathbb{Z}$?
+\begin{remark}
+    Interestingly, \Cref{th:hasse} can be generalized for arbitrary curves.
+    Specifically, given a curve $C(\mathbb{F}_q)$ of so-called \emph{genus} $g$ over the finite field $\mathbb{F}_q$, we have
+    \begin{equation*}
+        \left| \#C(\mathbb{F}_q) - (q+1) \right| \leq 2g\sqrt{q}.
+    \end{equation*}
+    Since elliptic curves are curves of genus $1$, \Cref{th:hasse} is the particular case of this fact.
+    The definition of genus is well beyond the scope of this book.
+\end{remark}
 
 \subsection{Discrete Logarithm Problem on Elliptic Curves}
-Finally, as defined in the previous section, the \textbf{discrete logarithm}
-problem on the elliptic curve is the following: typically, $E(\mathbb{F}_p)$ is
+As defined in \Cref{section:security-analysis}, the \textbf{discrete logarithm}
+problem on the elliptic curve is defined as follows: typically, $E(\mathbb{F}_p)$ is
 cyclic, meaning there exist some point $G \in E(\mathbb{F}_p)$, called the
 \textbf{generator}, such that $\langle G \rangle = E(\mathbb{F}_p)$. Given $P
-\in E(\mathbb{F}_p)$, the problem consists in finding such a scalar $\alpha \in
+\in E(\mathbb{F}_p)$, the problem consists in finding a scalar $\alpha \in
 \mathbb{Z}_r$ such that $[\alpha]G = P$. 
 
 Now, if the curve is ``good'', then the discrete logarithm problem is hard. In fact, the best-known algorithms have a complexity $O(\sqrt{r})$. However, there are certain cases when the discrete log problem is much easier.
 \begin{enumerate}
     \item If $r$ is composite, and all its prime factors are less than some bound $r_{\max}$, then the discrete log problem can be solved in $O(\sqrt{r_{\max}})$. For this very reason, typically $r$ is prime.
-    \item If $|E(\mathbb{F}_p)|=p$, then the discrete logarithm can be solved in polynomial time. These curves are called \textbf{anomalous curves}.
+    \item If $\#E(\mathbb{F}_p)=p$, then the discrete logarithm can be solved in polynomial time. These curves are called \textbf{anomalous curves}.
     \item Suppose that there is some small integer $\tau>0$ such that $r \mid (p^{\tau}-1)$. The discrete log in that case reduces to the discrete log in the finite field $\mathbb{F}_{p^{\tau}}$, which is typically not hard for small enough $\tau$.
 \end{enumerate}
 
 \subsection{Relations}\label{section:relations}
 
-Before delving into the projective coordinates and further zero-knowledge topics, let us first discuss the concept of relations, which will be intensively used from now on. Now, what is a relation? The definition is incredibly concise.
+Before delving into the projective coordinates and further zero-knowledge topics, let us first discuss the concept of relations, which will be intensively used from now on. Now, what is a relation? The definition is concise.
 
 \begin{definition}
-    Let $\mathcal{X},\mathcal{Y}$ be some sets. Then, $\mathcal{R}$ is a \textbf{relation} if 
-    \begin{xequation}
-        \mathcal{R} \subset \mathcal{X} \times \mathcal{Y} = \{(x,y): x \in \mathcal{X}, y \in \mathcal{Y}\}
-    \end{xequation}
+    Let $\mathcal{X},\mathcal{Y}$ be some sets. $\mathcal{R}$ is a \textbf{relation} if $\mathcal{R} \subseteq \mathcal{X} \times \mathcal{Y}$.
 \end{definition}
 
-Interpretation is approximately the following: suppose we have sets $\mathcal{X}$ and $\mathcal{Y}$. Then, relation $\mathcal{R}$ gives a set of pairs $(x,y)$, telling that $x \in \mathcal{X}$ and $y \in \mathcal{Y}$ are \textit{related}.
+Interpretation is approximately the following: suppose we have sets $\mathcal{X}$ and $\mathcal{Y}$. Then, relation $\mathcal{R}$ gives a set of pairs $(x,y)$, telling that elements $x \in \mathcal{X}$ and $y \in \mathcal{Y}$ are \textit{related}.
 
 \begin{example}
-    Let $\mathcal{X} = \{\text{Oleksandr}, \;\; \text{Phat}, \;\; \text{Anton}\}$ and $\mathcal{Y} = \{\text{Backend}, \;\; \text{Frontend}, \;\; \text{Research}\}$. Define the following relation of ``person $x$ works in field $y$'':
+    Define two sets: 
+    \begin{align*}
+        \mathcal{X} &:= \{\text{Oleksandr}, \text{Phat}, \text{Anton}\}, \\
+        \mathcal{Y} &:= \{\text{Backend}, \text{Frontend}, \text{Research}\}.
+    \end{align*}
+
+    Define the following relation of ``person $x$ works in department $y$'':
     \begin{xequation*}
-        \mathcal{R} = \{(\text{Oleksandr}, \;\; \text{Research}), \;\; (\text{Phat}, \;\; \text{Frontend}), (\text{Anton}, \;\; \text{Backend})\}
+        \mathcal{R} = \{(\text{Oleksandr}, \text{Research}), (\text{Phat}, \text{Frontend}), (\text{Anton}, \text{Backend})\}.
     \end{xequation*}
-    Obviously, $\mathcal{R} \subset \mathcal{X} \times \mathcal{Y}$, so $\mathcal{R}$ is a relation.
+    Obviously, $\mathcal{R} \subseteq \mathcal{X} \times \mathcal{Y}$, so $\mathcal{R}$ is a relation.
 \end{example}
 
 \begin{remark}
@@ -186,30 +208,20 @@ Interpretation is approximately the following: suppose we have sets $\mathcal{X}
 \end{remark}
 
 \begin{example}
-    Let $E$ be a cyclic group of points on the Elliptic Curve of order $r \geq 2$ with a generator $\langle G \rangle = E$. Let $\mathcal{X} = \mathbb{Z}_r$ and $\mathcal{Y} = E$. Define a relation $\mathcal{R} \subset \mathcal{X} \times \mathcal{Y}$ by:
+    Let $E$ be a cyclic group of points on the Elliptic Curve of order $r \geq 2$ with a generator $\langle G \rangle = E$. Let $\mathcal{X} := \mathbb{Z}_r$ and $\mathcal{Y} := E$. Define a relation $\mathcal{R} \subseteq \mathcal{X} \times \mathcal{Y}$ by:
     \begin{xequation*}
-        \mathcal{R} = \{(\alpha, P) \in \mathbb{Z}_r \times E: [\alpha]G = P\}
+        \mathcal{R} = \{(\alpha, P) \in \mathbb{Z}_r \times E: [\alpha]G = P\}.
     \end{xequation*}
+
     Essentially, such a relation is a set of secret keys $\alpha$ and corresponding public keys $P$. In this case, for example, $0\mathcal{R}\mathcal{O}$ and $1\mathcal{R}G$ or $0 \sim \mathcal{O}$ and $1 \sim G$.
 \end{example}
 
 \begin{remark}
-    When we say that $\sim$ is a relation on a set $\mathcal{X}$, we mean that $\sim$ is a relation $\mathcal{R}$ on the following Cartesian product: $\mathcal{R} \subset \mathcal{X} \times \mathcal{X}$.
+    When we say that $\sim$ is a relation on a set $\mathcal{X}$, we mean that $\sim$ is a relation $\mathcal{R}$ on the following Cartesian product: $\mathcal{R} \subseteq \mathcal{X} \times \mathcal{X}$.
 \end{remark}
 
-\begin{remark}
-    The provided example is relevant in most cases (ecdsa, eddsa, schnorr signatures etc.). But for some algorithms, the relation between secret key $\alpha$ and public key $P$ can be defined as:
-    \begin{xequation*}
-        \mathcal{R} = \{(\alpha, P) \in \mathbb{Z}_r \times E: \ominus[\alpha]G = P\}
-    \end{xequation*} 
-    for DSTU 4145 standard or even:
-    \begin{xequation*}
-        \mathcal{R} = \{(\alpha, P) \in \mathbb{Z}_r \times E: [\alpha^{-1}]G = P\}
-    \end{xequation*}
-    for twisted ElGamal algorithm.
-\end{remark}
-
-Now, let us formally define the term \textbf{equivalence relation}.
+Commonly $\sim$ resembles properties of equality.
+Formally this is called an \textbf{equivalence relation}, which we define below.
 
 \begin{definition}
     Let $\mathcal{X}$ be a set. A relation $\sim$ on $\mathcal{X}$ is called an \textbf{equivalence relation} if it satisfies the following properties:
@@ -221,7 +233,7 @@ Now, let us formally define the term \textbf{equivalence relation}.
 \end{definition}
 
 \begin{example}
-    Let $\mathcal{X}$ be the set of all people. Define a relation $\sim$ on $\mathcal{X}$ by $x \sim y$ if $x,y \in \mathcal{X}$ have the same birthday. 
+    Let $\mathcal{X}$ be the set of all people. Define a relation $\sim$ on $\mathcal{X}$ by $x \sim y$ iff $x,y \in \mathcal{X}$ have the same birthday. 
     Then $\sim$ is an equivalence relation on $\mathcal{X}$. Let us demonstrate that:
     \begin{enumerate}
         \item \textbf{Reflexivity:} $x \sim x$ since $x$ has the same birthday as $x$.
@@ -239,28 +251,32 @@ Now, let us formally define the term \textbf{equivalence relation}.
     \end{enumerate}
 \end{example}
 
-The example below is less obvious with a bit more difficult proof, which we will skip. Yet, it is quite curious, so here it is.
-
 \begin{example}
     Let $\mathcal{G}$ be the set of all possible groups. Define a relation $\sim$ on $\mathcal{G}$ by $\mathbb{G} \sim \mathbb{H}$ if $\mathbb{G} \cong \mathbb{H}$ (in other words, $\mathbb{G}$ and $\mathbb{H}$ are isomorphic). Then $\sim$ is an equivalence relation.
 \end{example}
 
-Now, suppose I give you a set $\mathcal{X}$ with some equivalence relation $\sim$ (say, $\mathcal{X} = \mathbb{Z}$ and $a \equiv b \pmod{n}$). Notice that you can find some subset $\mathcal{X}' \subset \mathcal{X}$ in which all elements are equivalent (and any other element from $\mathcal{X} \setminus \mathcal{X}'$ is not). In the case of modulo relation above, $\mathcal{X}'$ could be the set of all integers that are congruent to $1$ modulo $n$, so $\mathcal{X}' = \{\dots,-n+1,1,n+1,2n+1,\dots\}$. This way, we can partition the set $\mathcal{X}$ into disjoint subsets, where all elements in each subset are equivalent. Such subsets are called \textbf{equivalence classes}. Now, let us give a formal definition.
+Now, suppose we are given a set $\mathcal{X}$ with some equivalence relation $\sim$ (say, $\mathcal{X} = \mathbb{Z}$ and $a \equiv b \pmod{n}$). Notice that you can find some subset $\mathcal{X}' \subset \mathcal{X}$ in which all elements are equivalent (and any other element from $\mathcal{X} \setminus \mathcal{X}'$ is not). In the case of modulo relation above, $\mathcal{X}'$ could be the set of all integers that are congruent to $1$ modulo $n$, so $\mathcal{X}' = \{\dots,-n+1,1,n+1,2n+1,\dots\}$. This way, we can partition the set $\mathcal{X}$ into disjoint subsets, where all elements in each subset are equivalent. Such subsets are called \textbf{equivalence classes}. Now, let us give a formal definition.
 
 \begin{definition}
     Let $\mathcal{X}$ be a set and $\sim$ be an equivalence relation on $\mathcal{X}$. For any $x \in \mathcal{X}$, the \textbf{equivalence class} of $x$ is the set
     \begin{xequation*}
-        [x] = \{y \in \mathcal{X}: x \sim y\}
+        [x] = \{y \in \mathcal{X}: x \sim y\}.
     \end{xequation*}
     The \textbf{set of all equivalence classes} is denoted by $\mathcal{X}/\text{$\sim$}$ (or, if the relation $\mathcal{R}$ is given explicitly, then $\mathcal{X}/\mathcal{R}$), which is read as ``$\mathcal{X}$ modulo relation $\sim$''.
 \end{definition}
 
 \begin{example}
-    Let $\mathcal{X} = \mathbb{Z}$ and $n$ be some fixed integer. Define $\sim$ on $\mathcal{X}$ by $x \sim y$ if $x \equiv y \pmod{n}$. Then the equivalence class of $x$ is the set
+    Let $\mathcal{X} = \mathbb{Z}$ and $n \in \mathbb{N}$. Define $\sim$ on $\mathcal{X}$ by $x \sim y$ iff $x \equiv y \pmod{n}$. Then the equivalence class of $x$ is the known to you set
     \begin{xequation*}
-        [x] = \{y \in \mathbb{Z}: x \equiv y \pmod{n}\}
+        [x]_n = \{y \in \mathbb{Z}: x \equiv y \pmod{n}\}.
     \end{xequation*}
-    For example, $[0] = \{\ldots,-2n,-n,0,n,2n,\ldots\}$ while $[1] = \{\ldots,-2n+1,-n+1,1,n+1,2n+1,\ldots\}$.
+
+    For example, 
+    \begin{align*}
+        [0]_n &= \{\ldots,-2n,-n,0,n,2n,\ldots\}, \\
+        [1]_n &= \{\ldots,-2n+1,-n+1,1,n+1,2n+1,\ldots\}.    
+    \end{align*}
+    
 \end{example}
 
 Now, as we have said before, a set of all equivalence classes form a partition of the set $\mathcal{X}$. This means that any element $x \in \mathcal{X}$ belongs to exactly one equivalence class. This is a very important property, which we will use in the next section. Formally, we have the following lemma.
@@ -300,7 +316,7 @@ The primary reason we considered equivalence relations is that we will define th
 Recall that we defined the elliptic curve as 
 
 \begin{xequation*}
-    E(\overline{\mathbb{F}}_p) := \{(x,y) \in \mathbb{A}^2(\overline{\mathbb{F}}_p): y^2 = x^3+ax+b\} \cup \{\mathcal{O}\}
+    E(\overline{\mathbb{F}}_p) := \{(x,y) \in \mathbb{A}^2(\overline{\mathbb{F}}_p): y^2 = x^3+ax+b\} \cup \{\mathcal{O}\}.
 \end{xequation*}
 
 \vspace{1mm}
@@ -322,21 +338,21 @@ Now, to the formal definition.
 \vspace{-1.5mm}
 
 \begin{definition}
-    \textbf{Projective coordinate}, denoted as $\mathbb{P}^2(\mathbb{K})$ (or sometimes simply $\mathbb{K}\mathbb{P}^2$) is a triple of elements $(X:Y:Z)$ from $\mathbb{A}^3(\overline{\mathbb{K}}) \setminus \{0\}$ modulo the equivalence relation\footnote{Although we specify the definition for $n=2$, the definition can be generalized to any $\mathbb{P}^n(\overline{\mathbb{K}})$.}:
-    \begin{xequation*}
-        \begin{aligned}
-            &(X_1:Y_1:Z_1) \sim (X_2:Y_2:Z_2) \;\; \text{if and only if exists such } \lambda \in \overline{\mathbb{K}} \text{ that } \\ 
-            &\text{the following holds } (X_1:Y_1:Z_1) = (\lambda X_2: \lambda Y_2: \lambda Z_2)            
-        \end{aligned}
-    \end{xequation*}
+    A \textbf{projective space}, denoted $\mathbb{P}^2(\mathbb{K})$, is a set $\mathbb{A}^3(\mathbb{K}) \setminus \{0\}$ modulo the following equivalence relation:
+    $(X_1:Y_1:Z_1) \sim (X_2:Y_2:Z_2)$ iff there exists $\lambda \in \mathbb{K}^{\times}$
+    such that $X_1=\lambda X_2, Y_1=\lambda Y_2, Z_1 = \lambda Z_2$.
 \end{definition}
+
+\begin{remark}
+    Although we specify the definition for $n=2$, the definition can be easily generalized to any $\mathbb{P}^n(\mathbb{K})$.
+\end{remark}
 
 \vspace{-1.5mm}
 
 This definition on itself might be a bit too abstract, so let us consider the concrete example for projective space $\mathbb{P}^2(\mathbb{R})$.
 
 \begin{example}
-    Consider the projective space $\mathbb{P}^2(\mathbb{R})$. Then, two points $(x_1,y_1,z_1),(x_2,y_2,z_2) \in \mathbb{R}^3$ are equivalent if there exists $\lambda \in \mathbb{R}$ such that $(x_1,y_1,z_1) = (\lambda x_2, \lambda y_2, \lambda z_2)$. For example, $(1,2,3) \sim (2,4,6)$ since $(1,2,3) = 0.5(2,4,6)$.
+    Consider the projective space $\mathbb{P}^2(\mathbb{R})$. Then, two points $(x_1,y_1,z_1),(x_2,y_2,z_2) \in \mathbb{R}^3$ are equivalent iff there exists a non-zero $\lambda \in \mathbb{R}^{\times}$ such that $(x_1,y_1,z_1) = (\lambda x_2, \lambda y_2, \lambda z_2)$. For example, $(1,2,3) \sim (2,4,6)$ since $(1,2,3) = 0.5 \cdot (2,4,6)$.
 \end{example}
 
 \vspace{-5mm}
@@ -360,13 +376,13 @@ This definition on itself might be a bit too abstract, so let us consider the co
 
     Here, the figure demonstrates three equivalence classes, being a set of points on the \textcolor{red}{\textbf{red}}, \textcolor{blue}{\textbf{blue}}, and \textcolor{green!60!black}{\textbf{green}} lines (except for the origin). 
     
-    The reason why geometrically the set of equivalence classes lie on the same line that passes through the origin is following: suppose we have a point $\vec{v}_0 = (x_0,y_0,z_0) \in \mathbb{R}^3$, represented as a vector. Then, the set of all points that are equivalent to $(x_0,y_0,z_0)$ is the set of all points $(\lambda x_0, \lambda y_0, \lambda z_0) = \lambda\vec{v}_0$ for $\lambda \in \mathbb{R}\setminus \{0\}$. So $\vec{v}_0$ is the representative of equivalence class $[\vec{v_0}] = \{\lambda\vec{v}_0: \lambda \in \mathbb{R},\lambda \neq 0\}$. Now notice, that this is a parametric equation of a line that passes through the origin and the point $\vec{v}_0$: notice that for $\lambda=0$ (if we assume that expression is also defined for zero $\lambda$) we have the origin $\vec{0}$, while for $\lambda=1$ we have the point $\vec{v}_0$. Then, any other values of $\lambda$ in-between $[0,1]$ or outside define the set of points lying on the same line.
+    The reason why, geometrically, each equivalence class lies on a line that passes through the origin is as follows: suppose we have a point $\mathbf{v}_0 = (x_0,y_0,z_0) \in \mathbb{R}^3$, represented as a vector. Then, the set of all points that are equivalent to $(x_0,y_0,z_0)$ is the set of all points $(\lambda x_0, \lambda y_0, \lambda z_0) = \lambda\mathbf{v}_0$ for $\lambda \in \mathbb{R}\setminus \{0\}$. So $\mathbf{v}_0$ is the representative of equivalence class $[\mathbf{v}_0] = \{\lambda\mathbf{v}_0: \lambda \in \mathbb{R},\lambda \neq 0\}$. Now notice that this is a parametric equation of a line that passes through the origin and the point $\mathbf{v}_0$: for $\lambda=0$ (if we assume the expression is also defined for zero $\lambda$) we have the origin $\mathbf{0}$, while for $\lambda=1$ we have the point $\mathbf{v}_0$. Then, any other values of $\lambda$ within $[0,1]$ or outside it give points lying on that same line.
 \end{example}
 
 Now, projective coordinates are not that useful unless we can come back to the affine space. This is done by defining the map $\phi: \mathbb{P}^2(\overline{\mathbb{K}}) \to \mathbb{A}^2(\overline{\mathbb{K}})$ as follows: $\phi: (X:Y:Z) \mapsto \left(X/Z, Y/Z\right)$. If, in turn, we want to go from the affine space to the projective space, we can define the map $\psi: \mathbb{A}^2(\overline{\mathbb{K}}) \to \mathbb{P}^2(\overline{\mathbb{K}})$ as follows: $\psi: (x,y) \mapsto (x:y:1)$. Geometrically, map $\phi$ means that we take a point $(X:Y:Z)$ and project it onto the plane $Z=1$.
 
 \begin{example}
-    Again, consider three lines from the previous example. Now, we additionally draw a plane $\pi: z=1$ in our 3-dimensional space (see Illustration below).
+    Again, consider three lines from the previous example. Now, we additionally draw a plane $\pi: z=1$ in the 3-dimensional space:
 
     \begin{center}
         \includegraphics[trim={100 100 100 200}, width=0.45\linewidth, clip]{contents/images/lecture_4/line_2.pdf}
@@ -376,7 +392,7 @@ Now, projective coordinates are not that useful unless we can come back to the a
 
     By using the map $(X:Y:Z) \mapsto (X/Z,Y/Z)$, all points on the line get mapped to the itersection of the line with the plane $\pi: z=1$. This way, for example, points on the \textcolor{red}{\textbf{red line}} $\ell_{\text{red}}$ get mapped to the point $A'=(2,3,1)$, corresponding to $(2,3)$ in affine coordinates. So, for example, point $(6,9,3) \in \ell_{\text{red}}$, lying on the same line, gets mapped to $(6/3,9/3) = (2,3)$.
 
-    Similarly, all \textcolor{blue}{\textbf{blue line}} points get mapped to the point $B'=(-2/3,1,1)$, while all \textcolor{green!60!black}{\textbf{green line}} points get mapped to the point $C'=(0.2,-0.4,1)$\footnote{One can verify that based on the equations provided from the previous example}.
+    Similarly, all \textcolor{blue}{\textbf{blue line}} points get mapped to the point $B'=(-2/3,1,1)$, while all \textcolor{green!60!black}{\textbf{green line}} points get mapped to the point $C'=(0.2,-0.4,1)$\footnote{One can verify that based on the equations provided from the previous example.}.
 \end{example}
 
 \subsubsection{Elliptic Curve Equation in Projective Form}
