@@ -89,12 +89,12 @@ does not exist for $A$.
     as a function $i(\omega) = e$ for any $\omega \in \Omega$ where $e$ is an
     identity element in $\mathbb{G}$. Then:
     \begin{equation*}
-        (f \star i)(\omega) = f(\omega) \times i(\omega) = f(\omega) \times e = f(\omega) \implies f \star i = f
+        (f \star i)(\omega) = f(\omega) \times i(\omega) = f(\omega) \times e = f(\omega) \Rightarrow f \star i = f
     \end{equation*}
     \item \textbf{Inverse:} Define inverse element for $f \in \mathcal{F}$ as 
     $g$ defined as $g := (f(\omega))^{-1}$ for every $\omega \in \Omega$. Then:
     \begin{equation*}
-        (f \star g)(\omega) = f(\omega) \times (f(\omega))^{-1} = e \; \forall \omega \in \Omega \implies f \star g = i
+        (f \star g)(\omega) = f(\omega) \times (f(\omega))^{-1} = e \; \forall \omega \in \Omega \Rightarrow f \star g = i
     \end{equation*}
     \item \textbf{Associativity:} Holds due to the associativity of $\times$.
     \item \textbf{Commutativity:} Holds due to the commutativity of $\times$.
@@ -142,7 +142,7 @@ Let us show it is a bijection. Suppose $\psi(a+bi)=\psi(c+di)$. Then:
         a & -b \\ b & a
     \end{bmatrix} = \begin{bmatrix}
         c & -d \\ d & c
-    \end{bmatrix} \implies a=c, b=d
+    \end{bmatrix} \Rightarrow a=c, b=d
 \end{equation*}
 
 Thus, $\psi$ is injective. To show the surjectivity notice that for any matrix
@@ -212,7 +212,7 @@ the probability of choosing a root is \emph{exactly} $d/p$. The probability
 that Alice fools Bob after $n$ rounds is then $(d/p)^n$.
 
 \textbf{Exercise 6. Answer: B.} According to the Schwartz-Zippel Lemma, we have
-$\text{Pr}[f(\mathbf{x})=0 \,|\, \mathbf{x} \xleftarrow{R} \mathbb{S}] \leq \deg
+$\text{Pr}[f(\mathbf{x})=0 \,|\, \mathbf{x} \leftarrowS \mathbb{S}] \leq \deg
 f/|\mathbb{S}|$, so we need to find the size $|\mathbb{S}|$. Our claim is that 
 the number of solutions to $x_1+\dots+x_n=1$ over $\mathbb{F}_p$ is exactly 
 $p^{n-1}$. Indeed, for any $p^{n-1}$ possible values of $(x_2,\dots,x_n)$ there 
@@ -252,6 +252,117 @@ parts are same and equal to $\xi$.
 a_0b_1j+a_1b_1j^2=a_1b_1\xi+a_0b_1j$. So the real part is thus $a_1b_1\xi$.
 
 \textbf{Exercise 9. Answer: B.} $z\overline{z}=(c_0+c_1j)(c_0-c_1j) = c_0^2-c_1^2j^2=c_0^2-\xi c_1^2$.
+
+\subsection*{Security Analysis}
+
+\subsection*{Solutions to Exercises}
+
+\textbf{Exercise 1. Answer: (D).} A function $\mu(\lambda)$ is negligible if $\lim_{\lambda \to \infty}\mu(\lambda)\lambda^{\gamma}=0$ for all $\gamma \in \mathbb{R}$. Options (A) ($\lambda^{-1024}$) and (B) ($\lambda^{-\log 5}$) decay polynomially. Option (C) fails the requirement for all sufficiently large $\lambda$ because it equals $\lambda^{-1000}$ on all odd integers. Option (D) ($\lambda^{100}e^{-\sqrt{\lambda}}$) decays exponentially.
+
+\textbf{Exercise 2. Answer: (A).} Yes. For any message $m \in \mathbb{Z}_p^\times$, when key $k$ is sampled uniformly at random from $\mathbb{Z}_p^\times$, the ciphertext $c = k \cdot m \pmod p$ is uniformly distributed over $\mathbb{Z}_p^\times$. Thus $\Pr[C = c \mid M = m] = 1/\#\mathbb{Z}_p^{\times} = \Pr[C = c]$.
+
+\textbf{Exercise 3. Answer: (A).} In the semantic security game, adversary $\mathcal{B}$ queries on $m_0$ (last bit 0) and $m_1$ (last bit 1). Upon receiving ciphertext $c_b$, $\mathcal{B}$ returns $\widehat{b} \gets f(c_b)$. Since $f$ correctly predicts the last bit with probability $\frac{1}{2}+\varepsilon$, we have $\Pr[\widehat{b} = b] = \frac{1}{2}+\varepsilon$. By definition:
+\begin{equation*}
+    \text{Adv}^{\text{SS}}_{\mathcal{B},\mathcal{E}} = \left| \Pr[\widehat{b} = b] - \frac{1}{2} \right| = \left| \left(\frac{1}{2}+\varepsilon\right) - \frac{1}{2} \right| = \varepsilon.
+\end{equation*}
+
+\textbf{Exercise 4. Answer: (A), (C), (D), (F).}
+\begin{itemize}
+    \item \textbf{(A)}: Secure. Prepending a constant bit $0$ preserves semantic security via a standard reduction.
+    \item \textbf{(B)}: Insecure. Appending $\text{parity}(m)$ directly leaks 1 bit of information about plaintext $m$.
+    \item \textbf{(C)}: Secure. Bit reversal is a deterministic bijection on $\{0,1\}^\lambda$, so any adversary breaking $E'$ breaks $E$.
+    \item \textbf{(D)}: Secure. Reversing the message prior to encryption is an injective transformation on $\{0,1\}^\lambda$, preserving semantic security.
+    \item \textbf{(E)}: Insecure. Appending $k$ to the ciphertext reveals the secret key entirely.
+    \item \textbf{(F)}: Secure. Encrypting $m$ under two independent keys $(k, k')$ is semantically secure.
+\end{itemize}
+
+\textbf{Exercise 5. Answer: (D).} If the DDH assumption holds in $\mathbb{G}$, then $(g^\alpha, g^\beta, g^{\alpha\beta})$ is computationally indistinguishable from a uniform random triple $(g^\alpha, g^\beta, g^\gamma) \in \mathbb{G}^3$, making $G$ a secure PRG. Neither DL nor CDH assumptions are sufficient because they only guarantee the hardness of computing $\alpha$ or $g^{\alpha\beta}$, not the indistinguishability of $g^{\alpha\beta}$ from a uniform group element.
+
+\textbf{Exercise 6. Answer: (B), (C), (D), (F).}
+\begin{itemize}
+    \item \textbf{(A)}: Insecure. Output always ends in $0$, allowing a statistical test checking the last bit to distinguish it with advantage $1/2$.
+    \item \textbf{(B)}: Secure. XORing two independent PRG outputs yields a secure PRG.
+    \item \textbf{(C)}: Secure. Bitwise XOR with $1^\lambda$ is a bijection on $\{0,1\}^\lambda$, preserving pseudorandomness.
+    \item \textbf{(D)}: Secure. Truncating the output of a secure PRG preserves pseudorandomness.
+    \item \textbf{(E)}: Insecure. Outputting two identical halves $G(s) \parallel G(s)$ is trivially distinguishable.
+    \item \textbf{(F)}: Secure. Since $s_1$ is uniform and independent of $s_2$, outputting $(s_1, G(s_2))$ gives independent uniform and pseudorandom strings.
+    \item \textbf{(G)}: Insecure. $G'(s) = G(0)$ is a constant function.
+\end{itemize}
+
+\textbf{Exercise 7. Answer: (A).} For statistical test $\mathcal{A}_0$, $\Pr_{k \leftarrowS \mathcal{K}}[\mathcal{A}_0(G(k))=1] = 0$ and $\Pr_{x \leftarrowS \{0,1\}^\lambda}[\mathcal{A}_0(x)=1] = 0$, giving advantage $|0 - 0| = 0$. Similarly, for $\mathcal{A}_1$, both probabilities equal $1$, giving $|1 - 1| = 0$.
+
+\textbf{Exercise 8. Answer: (E).} By the definition of test $\mathcal{A}$, $\Pr_{k \leftarrowS \mathcal{K}}[\mathcal{A}(G(k))=1] = \frac{2}{3}$. For a uniformly chosen $x \leftarrowS \{0,1\}^\lambda$, the last bit is $1$ with probability $\frac{1}{2}$. Thus,
+\begin{equation*}
+    \text{Adv}^{\text{PRG}}_{\mathcal{A},G} = \left| \frac{2}{3} - \frac{1}{2} \right| = \frac{1}{6}.
+\end{equation*}
+
+\textbf{Exercise 9. Answer: (D).} Because $G$ is a secure PRG, the first bit of $G(k_1)$ and $G(k_2)$ are each $1$ with probability $\frac{1}{2} \pm \text{negl}(\lambda)$. Since $k_1, k_2$ are independent, $\Pr[\mathcal{A}(G'(k_1, k_2))=1] \approx \frac{1}{2} \cdot \frac{1}{2} = \frac{1}{4}$. For a random string $x \leftarrowS \{0,1\}^\lambda$, $\Pr[\mathcal{A}(x)=1] = \frac{1}{2}$. Hence:
+\begin{equation*}
+    \text{Adv}^{\text{PRG}}_{\mathcal{A},G'} \approx \left| \frac{1}{4} - \frac{1}{2} \right| = \frac{1}{4}.
+\end{equation*}
+
+\textbf{Exercise 10. Answer: (C), (D), (E).} 
+\begin{enumerate}[(A)]
+    \item This is the DL problem, so it is not polynomially equivalent to CDH.
+    \item This problem is the DDH problem and is obviously not polynomially equivalent to CDH.
+    \item This is the so-called \textit{Square Computational Diffie-Hellman} (SCDH) and it is polynomially equivalent to CDH. Let's show this. \textbf{Step 1.}
+    $\textbf{CDH} \Rightarrow \textbf{SCDH}$. Suppose we can solve CDH using an oracle $\mathcal{O}_{\text{CDH}}: (g^{\alpha},g^{\beta})
+    \mapsto g^{\alpha\beta}$. Then to construct the mapping
+    $\mathcal{O}_{\text{SCDH}}: g^{\alpha} \mapsto g^{\alpha^2}$, we simply
+    compute $\mathcal{O}_{\text{CDH}}(g^{\alpha},g^{\alpha})$. \textbf{Step
+    2.} $\textbf{SCDH} \Rightarrow \textbf{CDH}$. To prove it in the other direction,
+    note that $(\alpha+\beta)^2=\alpha^2+2\alpha\beta+\beta^2$. If we need to
+    compute $g^{\alpha\beta}$ given $g^{\alpha}$, $g^{\beta}$, and the oracle
+    $\mathcal{O}_{\text{SCDH}}: g^{\alpha} \mapsto g^{\alpha^2}$, we perform the
+    following steps: 
+    \begin{itemize}
+        \item Compute $u = \mathcal{O}_{\text{SCDH}}(g^{\alpha})$.
+        \item Compute $v = \mathcal{O}_{\text{SCDH}}(g^{\beta})$.
+        \item Compute $w = \mathcal{O}_{\text{SCDH}}(g^{\alpha}g^{\beta})$.
+        \item Return $(w/uv)^{1/2}$ (the root is found efficiently).
+    \end{itemize}
+    \item This is the so-called \textit{Inverse Computational Diffie-Hellman} (ICDH),
+    and it is also equivalent to CDH. \textbf{Step 1.} $\textbf{ICDH} \Rightarrow
+    \textbf{CDH}$. Suppose we have an oracle $\mathcal{O}_{\text{ICDH}}: g^{\alpha}
+    \mapsto g^{1/\alpha}$. Then:
+    \begin{itemize}
+        \item Compute $u \gets \mathcal{O}_{\text{ICDH}}(g^{\alpha}/g) =
+        g^{1/(\alpha-1)}$.
+        \item Compute $v \gets \mathcal{O}_{\text{ICDH}}(g^{\alpha})=g^{1/\alpha}$.
+        \item Compute $w \gets u/v = g^{1/(\alpha^2-\alpha)}$.
+        \item Compute $h \gets \mathcal{O}_{\text{ICDH}}(w)=g^{\alpha^2-\alpha}$.
+        \item Return $t \gets h \cdot g^{\alpha} = g^{\alpha^2}$.
+    \end{itemize}
+    Thus, we have reduced the ICDH problem to the SCDH problem. But having SCDH, we already
+    know how to compute CDH. \textbf{Step 2.} $\textbf{CDH} \Rightarrow
+    \textbf{ICDH}$. The reduction of CDH to ICDH is also done through an intermediate
+    reduction of CDH to SCDH, and then SCDH to ICDH. The first is obviously obtained from
+    $\mathcal{O}_{\text{SCDH}}(g^{\alpha})=\mathcal{O}_{\text{CDH}}(g^{\alpha},
+    g^{\alpha})$. The second reduction is obtained from the fact that
+    $g^{1/{\alpha}}=g^{{\alpha}^{-1} \, \text{mod} \, r}=g^{\alpha^{r-2}}$, where
+    $r$ is the order of the group $\mathbb{G}$. From here we decompose $r-2$ into
+    $\sum_{i=0}^{n-1} 2^i r_i$, and then by applying the \textit{Double and
+    Add} algorithm, along with the oracles $\mathcal{O}_{\text{CDH}}$ (for addition) and
+    $\mathcal{O}_{\text{SCDH}}$ (for multiplication by two), we find
+    $g^{\alpha^{r-2}}$.
+    \item This problem is called the \textit{Divisible Computational Diffie-Hellman
+    Assumption} (DCDH), and it is again polynomially equivalent to CDH.
+    \textbf{Step 1.} $\textbf{DCDH} \Rightarrow \textbf{CDH}$. Suppose we have
+    an oracle $\mathcal{O}_{\text{DCDH}}: (g^{\alpha},g^{\beta}) \mapsto
+    g^{\alpha/\beta}$. To compute $\mathcal{O}_{\text{CDH}}$, we perform the following steps:
+    \begin{itemize}
+        \item Choose $a,b \leftarrowS \mathbb{F}_r$.
+        \item Compute $u \gets \mathcal{O}_{\text{DCDH}}(g^{\alpha},g^a) = g^{\alpha/a}$.
+        \item Compute $v \gets \mathcal{O}_{\text{DCDH}}(g^{\beta},g^b) = g^{\beta/b}$.
+        \item Compute $w \gets \mathcal{O}_{\text{DCDH}}(u,v) = g^{\alpha\beta/(ab)}$.
+        \item Return $t \gets w^{ab} = g^{\alpha\beta} =
+        \mathcal{O}_{\text{CDH}}(\alpha,\beta)$.
+    \end{itemize}
+    \textbf{Step 2.} $\textbf{CDH} \Rightarrow \textbf{DCDH}$. Since we
+    know how to compute CDH, we have access to the oracle
+    $\mathcal{O}_{\text{ICDH}}: g^{\alpha} \mapsto g^{1/\alpha}$. Then, return
+    $\mathcal{O}_{\text{CDH}}(g^{\alpha},\mathcal{O}_{\text{ICDH}}(g^{\beta}))$.
+\end{enumerate}
 
 \subsection*{Elliptic Curves and Pairing}
 
@@ -330,22 +441,6 @@ option (D) we indeed have $H(H(17, H(3,4)), 13) = 37$.
 \textbf{Exercise 4. Answer: C.} The quotient polynomial $q(x)$ must satisfy
 $q(x)\cdot (x-2)=p(x)$. It is easy to check that for $q(x)=x^2-8x+15$ we indeed
 have $(x^2-8x+15)(x-2) = x^3-10x^2+31x-30$.
-
-\subsection*{Security Analysis}
-
-\textbf{Exercise 1. Answer: B.} Adversary $\mathcal{A}$ can safely send two
-different messages $m_0$ and $m_1$ to the challenger with $\mathsf{lsb}(m_b)=b$
-for $b \in \{0,1\}$. Then, having received $c$, $\mathcal{A}$ can output $b'
-\gets \mathcal{O}_{\text{lsb}}(c)$ where $\mathcal{O}_{\text{lsb}}(c)$ is an
-oracle that returns the least significant bit of $m$. Thus,
-$\text{Pr}[b=\hat{b}] = 1$ and thus $\text{SSAdv}[\mathcal{A}]=1/2$.
-
-\textbf{Exercise 2. Answer: D.} The probability should be subtracted from 
-the probability of random guess. The random guess corresponds to the probability 
-$1/|\mathcal{M}|$, thus the answer.
-
-\textbf{Exercise 3. Answer: D.} Take $f=g$. Then, $f/g=1 \neq
-\text{negl}(\lambda)$.
 
 \subsection*{Introduction to Zero-Knowledge Proofs}
 

@@ -333,7 +333,6 @@
 \tcolorboxenvironment{theorem}{      breakable, boxrule=0pt, boxsep=0pt, colback={blue!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{blue},sharp corners,before skip=10pt,after skip=10pt}
 \tcolorboxenvironment{lemma}{        breakable, boxrule=0pt, boxsep=0pt, colback={Cyan!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{Cyan},sharp corners,before skip=10pt,after skip=10pt}
 \tcolorboxenvironment{corollary}{    breakable, boxrule=0pt, boxsep=0pt, colback={violet!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{violet},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{proof}{        breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{CadetBlue!80!white},left=8pt,right=8pt,sharp corners,before skip=10pt,after skip=10pt}
 \tcolorboxenvironment{remark}{       breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{Green},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
 \tcolorboxenvironment{remarks}{      breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{Green},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
 \tcolorboxenvironment{example}{      breakable, boxrule=0pt, boxsep=0pt, colback={Gray!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{Gray},sharp corners,before skip=10pt,after skip=10pt}
@@ -403,3 +402,22 @@
 \setlength{\parindent}{0.2in}
 \setlength{\parskip}{0pt}
 \setlength{\columnseprule}{0pt}
+
+% --- Nice comments ---
+\newcommand{\commentgray}[1]{%
+  \hspace{3px}%
+  {\textcolor{gray!70!black}{\small\textit{// #1}}}%
+}
+
+% --- Nice algorithmic enumerate lists ---
+\newlist{algoen}{enumerate}{1}
+\setlist[algoen]{
+    label=\textcolor{gray!90!black}{\arabic*:},
+    %font=\small,
+    align=right,
+    widest=0,
+    labelsep=0.75em,
+    leftmargin=2.0em,
+    labelindent=0.5em,
+    nosep
+}
