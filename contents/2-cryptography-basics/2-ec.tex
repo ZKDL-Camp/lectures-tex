@@ -279,7 +279,7 @@ Now, suppose we are given a set $\mathcal{X}$ with some equivalence relation $\s
     
 \end{example}
 
-Now, as we have said before, a set of all equivalence classes form a partition of the set $\mathcal{X}$. This means that any element $x \in \mathcal{X}$ belongs to exactly one equivalence class. This is a very important property, which we will use in the next section. Formally, we have the following lemma.
+Now, as we have said before, the set of all equivalence classes form a partition of the set $\mathcal{X}$. This means that any element $x \in \mathcal{X}$ belongs to exactly one equivalence class. This is a very important property, which we will use in the next section. Formally, we have the following lemma.
 \begin{lemma}
     Let $\mathcal{X}$ be a set and $\sim$ be an equivalence relation on $\mathcal{X}$. Then,
     \begin{enumerate}
@@ -390,7 +390,7 @@ Now, projective coordinates are not that useful unless we can come back to the a
         \small{\textbf{Illustration:} Geometric interpretation of converting projective to affine form.}
     \end{center}
 
-    By using the map $(X:Y:Z) \mapsto (X/Z,Y/Z)$, all points on the line get mapped to the itersection of the line with the plane $\pi: z=1$. This way, for example, points on the \textcolor{red}{\textbf{red line}} $\ell_{\text{red}}$ get mapped to the point $A'=(2,3,1)$, corresponding to $(2,3)$ in affine coordinates. So, for example, point $(6,9,3) \in \ell_{\text{red}}$, lying on the same line, gets mapped to $(6/3,9/3) = (2,3)$.
+    By using the map $(X:Y:Z) \mapsto (X/Z,Y/Z)$, all points on the line get mapped to the intersection of the line with the plane $\pi: z=1$. This way, for example, points on the \textcolor{red}{\textbf{red line}} $\ell_{\text{red}}$ get mapped to the point $A'=(2,3,1)$, corresponding to $(2,3)$ in affine coordinates. So, for example, point $(6,9,3) \in \ell_{\text{red}}$, lying on the same line, gets mapped to $(6/3,9/3) = (2,3)$.
 
     Similarly, all \textcolor{blue}{\textbf{blue line}} points get mapped to the point $B'=(-2/3,1,1)$, while all \textcolor{green!60!black}{\textbf{green line}} points get mapped to the point $C'=(0.2,-0.4,1)$\footnote{One can verify that based on the equations provided from the previous example.}.
 \end{example}
@@ -420,7 +420,7 @@ Well, notice the following observation: all points $(0:\lambda:0)$ always lie on
 Finally, let us summarize what we have observed so far.
 
 \begin{definition}
-    The \textbf{homogenous projective form of the elliptic curve} $E_{\mathbb{P}}(\overline{\mathbb{F}}_p)$ is defined as the set of all points $(X:Y:Z) \in \mathbb{P}^2(\overline{\mathbb{F}}_p)$ in the projective space that satisfy the equation
+    The \textbf{homogeneous projective form of the elliptic curve} $E_{\mathbb{P}}(\overline{\mathbb{F}}_p)$ is defined as the set of all points $(X:Y:Z) \in \mathbb{P}^2(\overline{\mathbb{F}}_p)$ in the projective space that satisfy the equation
     \begin{xequation*}
         E_{\mathbb{P}}(\overline{\mathbb{F}}_p): Y^2Z = X^3 + aXZ^2 + bZ^3, \;\; a,b \in \overline{\mathbb{F}}_p,
     \end{xequation*}
@@ -442,7 +442,7 @@ Finally, let us summarize what we have observed so far.
 \end{example}
 
 \subsubsection{General Projective Coordinates}
-Hold on, but why did we use the term \textit{homogenous}? The reason why is because we defined equivalence as follows: $(X:Y:Z) \sim (\lambda X: \lambda Y: \lambda Z)$ for some $\lambda \in \overline{\mathbb{K}}$, called \textbf{homogenous coordinates}. However, this is not the only way to define equivalence. Consider a more general form of equivalence relation:
+Hold on, but why did we use the term \textit{homogeneous}? The reason why is because we defined equivalence as follows: $(X:Y:Z) \sim (\lambda X: \lambda Y: \lambda Z)$ for some $\lambda \in \overline{\mathbb{K}}$, called \textbf{homogeneous coordinates}. However, this is not the only way to define equivalence. Consider a more general form of equivalence relation:
 \begin{xequation*}
     (X:Y:Z) \sim (X':Y':Z') \;\; \text{iff} \;\; \exists \lambda \in \overline{\mathbb{K}}: (X,Y,Z) = (\lambda^n X', \lambda^m Y', \lambda Z')
 \end{xequation*}
@@ -479,7 +479,7 @@ Let us come back to the affine case and assume that the underlying field is the 
     x_R \gets \left(\frac{y_Q-y_P}{x_Q-x_P}\right)^2 - x_P - x_Q, \;\;\; y_R \gets \left(\frac{y_Q-y_P}{x_Q-x_P}\right)(x_P-x_R) - y_P
 \end{equation*}
 
-Denote by $\textcolor{blue}{\mathsf{M}}$ the cost of multiplication, by $\textcolor{green!60!black}{\mathsf{S}}$ the cost of squaring, and by $\textcolor{red}{\mathsf{I}}$ the cost of inverse operation in $\mathbb{F}_p$. Note that we do not count addition/inverse costs as they are significantly lower than operations listed. Then, the cost of additing two points using above formula is $2\textcolor{blue}{\mathsf{M}} + 1\textcolor{green!60!black}{\mathsf{S}} + 1\textcolor{red}{\mathsf{I}}$. Indeed, our computation can proceed as follows:
+Denote by $\textcolor{blue}{\mathsf{M}}$ the cost of multiplication, by $\textcolor{green!60!black}{\mathsf{S}}$ the cost of squaring, and by $\textcolor{red}{\mathsf{I}}$ the cost of inverse operation in $\mathbb{F}_p$. Note that we do not count addition/inverse costs as they are significantly lower than operations listed. Then, the cost of adding two points using above formula is $2\textcolor{blue}{\mathsf{M}} + 1\textcolor{green!60!black}{\mathsf{S}} + 1\textcolor{red}{\mathsf{I}}$. Indeed, our computation can proceed as follows:
 \begin{enumerate}
     \item Calculate $t_1 \gets (x_Q-x_P)^{-1}$, costing $1\textcolor{red}{\mathsf{I}}$.
     \item Calculate $\lambda \gets (y_Q-y_P)t_1$, costing $1\textcolor{blue}{\mathsf{M}}$.
@@ -492,9 +492,9 @@ Well, there are just 4 operations in total, so what can go wrong? The problem is
 
 Now imagine we want to add 4 points, say $P_1 \oplus P_2 \oplus P_3 \oplus P_4$: this costs $6\textcolor{blue}{\mathsf{M}} + 3\textcolor{green!60!black}{\mathsf{S}} + 3\textcolor{red}{\mathsf{I}}$. Now we have 3 inverses, which is a lot. Finally, if we are to add much larger number of points (for example, when finding the scalar product), this gets even worse. 
 
-Projective coordinates is a way to solve this problem. The idea is to represent points in the projective form $(X:Y:Z)$, so when adding two numbers in projective form, you still get a point in a form $(X:Y:Z)$. Then, after conducting a series of additions, you can convert the point back to the affine form. 
+Projective coordinates is a way to solve this problem. The idea is to represent points in the projective form $(X:Y:Z)$, so when adding two points in projective form, you still get a point in a form $(X:Y:Z)$. Then, after conducting a series of additions, you can convert the point back to the affine form. 
 
-But why adding two points, say, $(X_P:Y_P:Z_P)$ and $(X_Q:Y_Q:Z_Q)$, in the projective form is more efficient? We will not derive the formulas, but trust us that they have the following form:
+But why is adding two points, say, $(X_P:Y_P:Z_P)$ and $(X_Q:Y_Q:Z_Q)$, in the projective form more efficient? We will not derive the formulas, but trust us that they have the following form:
 \begin{xequation*}
     \scalebox{0.9}{$
     \begin{aligned}
@@ -505,7 +505,7 @@ But why adding two points, say, $(X_P:Y_P:Z_P)$ and $(X_Q:Y_Q:Z_Q)$, in the proj
     $}
 \end{xequation*}
 
-Do not be afraid, you do not need to understand how this formula is derived. But notice that despite the very scary look, there is no inversions involved! Moreover, this formula can be calculated in only $12\textcolor{blue}{\mathsf{M}}+2\textcolor{green!60!black}{\mathsf{S}}$! So all in all, this is much more effective than $2\textcolor{blue}{\mathsf{M}} + 1\textcolor{green!60!black}{\mathsf{S}} + 1\textcolor{red}{\mathsf{I}}$.
+Do not be afraid, you do not need to understand how this formula is derived. But notice that despite the very scary look, there is no inversions involved! Moreover, this formula can be calculated in only $12\textcolor{blue}{\mathsf{M}}+2\textcolor{green!60!black}{\mathsf{S}}$! So all in all, this is much more efficient than $2\textcolor{blue}{\mathsf{M}} + 1\textcolor{green!60!black}{\mathsf{S}} + 1\textcolor{red}{\mathsf{I}}$.
 
 The only inversion which is unavoidable in the projective form is the inversion of $Z$ since after all additions (and doublings) have been made, we need to use map $(X:Y:Z) \mapsto (X/Z,Y/Z)$ to return back to the affine form. However, this inversion is done only once at the end of the computation, so it is not that costly.
 
@@ -514,7 +514,7 @@ The only inversion which is unavoidable in the projective form is the inversion 
 \begin{proposition}
     To conclude, typically, when working with elliptic curves, one uses the following strategy:
     \begin{enumerate}
-        \item Convert affine points to projective form using the map $(x,y) \mapsto (x,y,1)$.
+        \item Convert affine points to projective form using the map $(x,y) \mapsto (x:y:1)$.
         \item Perform all operations in the projective form, which do not involve inversions.
         \item Convert the result back to the affine form using the map $(X:Y:Z) \mapsto (X/Z,Y/Z)$.
     \end{enumerate}
@@ -531,11 +531,11 @@ The only inversion which is unavoidable in the projective form is the inversion 
 
 Now, the question is: how do we implement the scalar multiplication $[k]P$ for the given scalar $k \in \mathbb{Z}_r$ and point $P \in E(\overline{\mathbb{F}}_q)$? 
 
-First idea: let us simply add $P$ to itself $k$ times. Well, the complexity would be $O(k)$ in this case, which is even harder than solving the discrete logarithm problem (recall that the discrete logarithm problem has a complexity of $O(\sqrt{k})$). Yikes.
+First idea: let us simply add $P$ to itself $k$ times. Well, the complexity would be $O(k)$ in this case, which is even harder than solving the discrete logarithm problem (recall that the discrete logarithm problem has a complexity of $O(\sqrt{k})$).
 
 So there should be a better way. In this section we will limit ourselves to the double-and-add method, but the curious reader can look up the NAF (Non-Adjacent Form) method, windowed methods, GLV scalar decomposition and many other methods, which we are not going to cover in this course.
 
-The idea of the double-and-add method is following: we represent the $N$-bit scalar $k$ in binary form, say $k = (k_{N-1},k_{N-2},\dots,k_0)_2$, then we calculate $P, [2]P, [4]P, [8]P, \dots, [2^{N-1}]P$ (which is simply applying the doubling multple times) and then add the corresponding points (corresponding to positions where $k_i=1$) to get the result. Formally, we specify the \Cref{alg:double_and_add}.
+The idea of the double-and-add method is following: we represent the $N$-bit scalar $k$ in binary form, say $k = (k_{N-1},k_{N-2},\dots,k_0)_2$, then we calculate $P, [2]P, [4]P, [8]P, \dots, [2^{N-1}]P$ (which is simply applying the doubling multiple times) and then add the corresponding points (corresponding to positions where $k_i=1$) to get the result. Formally, we specify the \Cref{alg:double_and_add}.
 
 \begin{algorithm}[H]
     \caption{Double-and-add method for scalar multiplication}\label{alg:double_and_add}
@@ -559,8 +559,8 @@ The idea of the double-and-add method is following: we represent the $N$-bit sca
     \Return{Point $R$}
 \end{algorithm}    
 
-Good news: now we have a complexity of $O(N)=O(\log k)$, which is way much better that a linear one. In fact, many more optimized methods have the same assymptotic complexity (meaning, a logarithmic one), so it turns out that 
-we cannot do much better than that. However, the main advantages of other, more optimized methods is that we can avoid making too many additions (here, in the worst case, we have to make $N$ additions), which is a costly operation (and more expensive than doubling).
+Good news: now we have a complexity of $O(N)=O(\log k)$, which is way much better than a linear one. In fact, many more optimized methods have the same assymptotic complexity (meaning, a logarithmic one), so it turns out that 
+we cannot do much better than that. However, the main advantage of other, more optimized methods is that we can avoid making too many additions (here, in the worst case, we have to make $N$ additions), which is a costly operation (and more expensive than doubling).
 
 Moreover, here we can use projective coordinates to make the addition and doubling operation more efficient! After all, typically the number of operations is even more than $300$, so making $300$ inversions in affine form is not an option.
 
@@ -575,7 +575,7 @@ constructions, and other cryptographic applications.
 
 Consider the \textit{Decisional Diffie-Hellman problem} which we described in \Cref{section:security-analysis} 
 (based on $g^{\alpha},g^{\beta}$ and $g^{\gamma}$, decide whether $\gamma = \alpha\beta$). Turns out that for curves 
-where the so-called \textit{embedding degree}\footnote{We will mention what that is is later, but still this term is 
+where the so-called \textit{embedding degree}\footnote{We will mention what that is later, but still this term is 
 quite hard to define.} is small enough, this problem is easy to solve. This might sound like a quite bad thing, but 
 it turns out that although some information about the discrete logarithm is leaked, it is not enough to break the 
 security of the system (basically, solve the \textit{Computational Diffie-Hellman problem}). Pairings is the exact 
@@ -639,7 +639,7 @@ So what is pairing?
 \end{example}
 
 \begin{remark}
-    One might a reasonable question: where does this $12$ come from? The answer is following: the so-called \textbf{embedding degree} of BN254 curve is $k=12$. This number is the key to understanding why we are working over such large extensions when calculating the pairing. The formal description is quite hard, but the intuition is following: the embedding degree is the smallest number $k$ such that all the $r$th roots of unity lie inside the extended field $\mathbb{F}_{p^k}$. If $k$ was smaller, the output of pairing would contain less that $r$ points and some points would be missing, which would make the pairing more trivial. For that reason, we need to have $\Omega_r \subset \mathbb{F}_{p^k}$.
+    One might a reasonable question: where does this $12$ come from? The answer is following: the so-called \textbf{embedding degree} of BN254 curve is $k=12$. This number is the key to understanding why we are working over such large extensions when calculating the pairing. The formal description is quite hard, but the intuition is following: the embedding degree is the smallest number $k$ such that all the $r$th roots of unity lie inside the extended field $\mathbb{F}_{p^k}$. If $k$ was smaller, the output of pairing would contain fewer than $r$ points and some points would be missing, which would make the pairing more trivial. For that reason, we need to have $\Omega_r \subset \mathbb{F}_{p^k}$.
 \end{remark}
 
 \begin{definition}
@@ -711,7 +711,7 @@ This scheme is also quite famous for its aggregation properties, which we are no
 \end{example}
 
 \begin{example}
-    Well, now suppose I make the problem just a bit more complicated: Alice wants to convince that she knows $\alpha,\beta$ such that $\alpha\beta=2$. And it turns out that elliptic curve points on their own are not enough to verify this. However, using pairings, we can do the following trick: assume we have a pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$, where $\mathbb{G}_1$ is generated by $G_1$ and $\mathbb{G}_2$ is generated by $G_2$. Then, Alice can do the following:
+    Well, now suppose we make the problem just a bit more complicated: Alice wants to convince that she knows $\alpha,\beta$ such that $\alpha\beta=2$. And it turns out that elliptic curve points on their own are not enough to verify this. However, using pairings, we can do the following trick: assume we have a pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$, where $\mathbb{G}_1$ is generated by $G_1$ and $\mathbb{G}_2$ is generated by $G_2$. Then, Alice can do the following:
     \begin{enumerate}
         \item Alice computes $P \gets [\alpha]G_1 \in \mathbb{G}_1, Q \gets [\beta]G_2 \in \mathbb{G}_2$ --- points on two curves.
         \item Alice sends $(P,Q) \in \mathbb{G}_1 \times \mathbb{G}_2$ to Bob.
