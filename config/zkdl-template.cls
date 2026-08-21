@@ -62,6 +62,7 @@
 \RequirePackage{arydshln}
 \RequirePackage{makecell}
 \RequirePackage{subcaption}
+\RequirePackage{titlesec}
 \RequirePackage[labelfont=bf]{caption}
 \setlength{\belowcaptionskip}{0mm}
 \setlength{\textfloatsep}{1mm}
@@ -95,25 +96,42 @@
 
 % --- Table of contents must display hidden sections ---
 \makeatletter
-\newcommand{\current@secname}{section}
-
-% 1. Capture the section level name (section, subsection, subsubsection)
-\let\old@startsection\@startsection
-\def\@startsection#1#2#3#4#5#6{%
-  \gdef\current@secname{#1}%
-  \old@startsection{#1}{#2}{#3}{#4}{#5}{#6}%
+\let\old@section\section
+\RenewDocumentCommand{\section}{s o m}{%
+  \IfBooleanTF{#1}{%
+    \old@section*{#3}%
+    \phantomsection
+    \addcontentsline{toc}{section}{#3}%
+    \markboth{#3}{#3}% Updates footer mark ONLY for sections
+  }{%
+    \IfValueTF{#2}{\old@section[#2]{#3}}{\old@section{#3}}%
+  }%
 }
 
-% 2. Dynamically pass \current@secname to \addcontentsline
-\let\old@ssect\@ssect
-\def\@ssect#1#2#3#4#5{%
-  \old@ssect{#1}{#2}{#3}{#4}{#5}%
-  \phantomsection
-  \addcontentsline{toc}{\current@secname}{#5}%
+\let\old@subsection\subsection
+\RenewDocumentCommand{\subsection}{s o m}{%
+  \IfBooleanTF{#1}{%
+    \old@subsection*{#3}%
+    \phantomsection
+    \addcontentsline{toc}{subsection}{#3}%
+  }{%
+    \IfValueTF{#2}{\old@subsection[#2]{#3}}{\old@subsection{#3}}%
+  }%
+}
+
+\let\old@subsubsection\subsubsection
+\RenewDocumentCommand{\subsubsection}{s o m}{%
+  \IfBooleanTF{#1}{%
+    \old@subsubsection*{#3}%
+    \phantomsection
+    \addcontentsline{toc}{subsubsection}{#3}%
+  }{%
+    \IfValueTF{#2}{\old@subsubsection[#2]{#3}}{\old@subsubsection{#3}}%
+  }%
 }
 \makeatother
 
-% 3. Ensure the ToC depth includes subsubsections (level 3)
+% Ensure the ToC depth includes subsubsections (level 3)
 \setcounter{tocdepth}{3}
 
 % --- Tikz settings ---
@@ -436,7 +454,6 @@
 \newcommand{\headingfont}{\color{black}\bfseries\fontsize{13}{14}\selectfont}
 
 % --- Part pages: "Part I: Title" on one line, centered, with a rule below ---
-\RequirePackage{titlesec}
 \titleformat{\part}[block]
   {\centering\headingfont}
   {\partname~\thepart:}
