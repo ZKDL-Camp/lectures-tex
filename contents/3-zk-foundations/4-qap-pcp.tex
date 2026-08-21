@@ -18,18 +18,18 @@ constraints, sometimes even millions. The Quadratic Arithmetic Program (QAP) can
 
 To define a constraint in the R1CS we need four vectors: three coefficient
 vectors ($\boldsymbol{\ell}$, $\boldsymbol{r}$, and $\boldsymbol{o}$) and the
-witness one --- $\mathbf{z}$. And that's just for one constraint. As you can
+witness one --- $\mathbf{z}$. And that is just for one constraint. As you can
 imagine, many of the values in these vectors are zeros. In circuits with
 thousands of inputs, outputs, and auxiliary variables, where there are also
-thousands of constraints, you could end up with a millions of zeroes.
+thousands of constraints, you could end up with millions of zeroes.
 
 \begin{remark}
-    A matrix in which most of the elements are zero in numerical analysis is
-    usually called \textbf{sparse matrix}.
+    In numerical analysis, a matrix in which most of the elements are zero is
+    called a \textbf{sparse matrix}.
 \end{remark}
 
-So, we need to change the way how we manage coefficients and make the
-representation of such matrices and vectors succint (as required by the
+So, we need to change the way we manage coefficients and make the
+representation of such matrices and vectors succinct (as required by the
 definition of SNARK).
 
 \begin{theorem}[R1CS in the Matrix Form]
@@ -131,7 +131,7 @@ Therefore, $L\mathbf{z} \odot R\mathbf{z} = O\mathbf{z}$ is equivalent to the sy
 Now is the time to define how we are going to build polynomials! Notice that the
 columns of these matrices (say, column $(\ell_{1,i},\ell_{2,i},\ell_{3,i},\ell_{4,i})$ in
 matrix $L$ from example above) represent the mappings from constraint number $i$
-to the corresponding coefficient of the $j$ element in the witness vector!
+to the corresponding coefficient of the $j$-th element in the witness vector!
 
 \begin{example}
     Consider the witness from the previous examples: 
@@ -139,7 +139,7 @@ to the corresponding coefficient of the $j$ element in the witness vector!
         \mathbf{z} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult})
     \end{equation*}
     For element $x_1$ we are interested in the third columns of the $L$, $R$ and $O$ matrices, as
-    it's placed on the third position in the witness vector, so $j = 3$.\\
+    it is in the third position in the witness vector, so $j = 3$.\\
     For matrix $L$:
     \begin{center}
         \begin{tikzpicture}
@@ -176,7 +176,7 @@ Good, so now we know that for the $j$th element in the witness vector there are 
 As we know from the previous chapters, such a mapping in math can be built using the Lagrange polynomial interpolation.
 
 \begin{remark}
-    As a remainder, the Lagrange interpolation polynomial $f(X) \in
+    As a reminder, the Lagrange interpolation polynomial $f(X) \in
     \mathbb{F}^{\leq n}[X]$ for a given set of points
     $\{(x_0,y_0),(x_1,y_1),\dots,(x_n,y_n)\} \subseteq \mathbb{F} \times
     \mathbb{F}$ such that $f(x_i)=y_i$ can be built with the following formula:
@@ -280,7 +280,7 @@ coefficients matrices:
 \end{example}
 
 \begin{remark}
-    One might a reasonable question: why do we choose $x$-coordinates to be the
+    One might ask a reasonable question: why do we choose $x$-coordinates to be the
     indeces of the corresponding constraints? Actually, just for convenience
     purposes. We could have assigned any \textit{unique} index from $\mathbb{F}$
     to each constraint (say, $t_i$ for each $i \in [m]$) and interpolate through
@@ -295,7 +295,7 @@ coefficients matrices:
 \end{remark}
 
 
-\subsection{Putting All Together!}
+\subsection{Putting It All Together!}
 
 Now, using coefficients encoded with polynomials, a constraint number $h \in
 [m]$, from a constraint system with a witness vector $\mathbf{z}$ can be built
@@ -382,14 +382,14 @@ We have managed to encode our computation to a single polynomial!
 \subsection{Probabilistically Checkable Proofs}
 
 Before going further we should get acquainted with one more concept from the computational 
-complexity theory, that have an important application in zk-SNARK and provides the theoretical 
+complexity theory, that has an important application in zk-SNARK and provides the theoretical 
 backbone. 
 
-L Probabilistically Checkable Proof (PCP) is a type of proof system where the verifier can 
+A Probabilistically Checkable Proof (PCP) is a type of proof system where the verifier can 
 efficiently check the correctness of a proof by examining only a small, random portion of it, rather
 than verifying it entirely. 
 \begin{definition}
-    L language $\mathcal{L} \subseteq \Sigma^*$ (for some given alphabet
+    A language $\mathcal{L} \subseteq \Sigma^*$ (for some given alphabet
     $\Sigma$) is in the class $\mathsf{PCP}(r,q)$ (\textbf{probabilistically
     checkable proofs}), where $r$ is the \emph{randomness complexity} and $q$ is
     the \emph{query complexity}, if for a given pair of algorithms
@@ -412,14 +412,14 @@ than verifying it entirely.
         \item \textbf{Soundness}: If $\mathbbm{x} \notin \mathcal{L}$, then for
         any possible (malicious) proof $\pi^*$, 
         \begin{equation*}
-            \Pr[\mathcal{V}^{\pi^*}(\mathbbm{x}) = 1] = \mathsf{negl}(\lambda).
+            \Pr[\mathcal{V}^{\pi^*}(\mathbbm{x}) = 1] \leq \mathsf{negl}(\lambda).
         \end{equation*}
     \end{itemize}
 \end{definition}
 This allows a verification of huge statements with high confidence while using
 limited computational resources. See \Cref{fig:pcp}.
 
-\begin{theorem}{\textbf{PCP theorem (PCP characterization theorem)}\\} Any
+\begin{theorem}[\textbf{PCP theorem (PCP characterization theorem)}] Any
     decision problem in $\mathsf{NP}$ has a PCP verifier that uses logarithmic
     randomness $O(\log n)$ and a constant number of queries $O(1)$, independent
     of $n$.
@@ -530,7 +530,7 @@ While IOPs will be later used for PLONK and zk-STARKs, we will focus on Linear
 PCPs in the context of Groth16 zk-SNARK. Let us define it below.
 
 \begin{definition}[Linear PCP]
-    L \textbf{Linear PCP} is a PCP where the prover commits to a linear function
+    A \textbf{Linear PCP} is a PCP where the prover commits to a linear function
     $\boldsymbol{\pi} = (\pi_1,\dots,\pi_k)$ and the verifier queries the
     function at specific points $\boldsymbol{q}_1,\dots,\boldsymbol{q}_r$. Then,
     the prover responds with the values of the function at these points:

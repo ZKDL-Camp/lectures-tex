@@ -98,7 +98,7 @@ the following lemma, briefly mentioned in
     if and only if $N \mid (p-1)$. 
 \end{lemma}
 What is so special about the set $\Omega$? The magic of $\Omega$ is that it
-allows to compute certain polynomial operations (such as interpolation or
+allows one to compute certain polynomial operations (such as interpolation or
 multiplication) using the \textbf{Discrete Fourier Transform} (DFT) or, 
 equivalently, the \textbf{Number Theoretic Transform} (NTT) algorithm. 
 Consider the first central lemma.
@@ -182,13 +182,13 @@ $O(N \log N)$ operations. Let us emphasize this in the following lemma.
 \begin{lemma}
     The \textbf{Number Theoretic Transform} (NTT) of a polynomial $p(x)$ can be
     computed in $O(N \log N)$ operations using the $N$th roots of unity. This is
-    possible only if the prime field $\mathbb{F}_p$ allows to find the primitive
+    possible only if the prime field $\mathbb{F}_p$ contains a primitive
     $2^k$ root of unity for $k \in [m]$ with large enough $m$. Equivalently, 
     $2^k \mid (p-1)$ for $k \in [m]$.
 \end{lemma}
 
 To show this lemma is true, let us develop the concrete algorithm. Notice that 
-our task consists in computing:
+our task is to compute:
 \begin{equation*}
     p(\omega^i) = \sum_{j \in [N]} p_j (\omega^i)^j = \sum_{j \in [N]} p_j \omega^{ij} \; \text{for each} \; i \in [N]
 \end{equation*}
@@ -403,7 +403,7 @@ We might visualize the execution trace table $T$ for the example program as foll
 
 Notice how the last row has no value in $\mathbf{B}$ column (marked by \xmark)
 --- this is reasoned by the fact it is not a variable, but rather a constant,
-meaning it doesn't depend on execution. Also note that the number of gates in 
+meaning it does not depend on execution. Also note that the number of gates in 
 this particular circuit is $N=3$.
 \end{example}
 
@@ -679,7 +679,7 @@ The matrix $T$ with columns $\mathbf{A}$, $\mathbf{B}$ and $\mathbf{C} \in \math
 
 \subsubsection{Matrices to Polynomials}
 
-\textcolor{blue!80!black}{\textbf{Gates Satisfability}.} Now we can traduce the
+\textcolor{blue!80!black}{\textbf{Gates Satisfiability}.} Now we can reduce the
 sets of constraints on matrices to just a few equations on polynomials, as we
 have already done for Groth16. Let $\omega$ be a primitive $N$-th root of
 unity\footnote{Suppose such $\omega$ exists, then $\omega^N = 1$ and $\omega^j
@@ -722,7 +722,7 @@ following proposition.
     where $z_{\Omega}(x)$ is the vanishing polynomial $x^N - 1$.
 \end{proposition}
 
-\textcolor{purple}{\textbf{Wiring Satisfability}.} The next step is to shrink the second condition imposed by the $V$ matrix. This
+\textcolor{purple}{\textbf{Wiring Satisfiability}.} The next step is to shrink the second condition imposed by the $V$ matrix. This
 may be achieved by introducing the concept of permutation. 
 
 \begin{remark}
@@ -817,7 +817,7 @@ interpolate at $\Omega$ as follows:
 
 Then, \(\prod_{i=0}^{k-1} (a_i + \gamma) = \prod_{i=0}^{k-1} (b_i + \gamma)\) holds if and only if there is a polynomial $Z \in \mathbb{F}[X]$ such that for all $h \in \Omega$ we have $Z(\omega^{0}) = 1$ and $Z(h)f(h) = g(h)Z(\omega h)$.
 
-Now that we can encode equality of sets of field elements, let's expand this to sets of tuples of field elements. Let \(A = \{(a_0, a_1), (a_2, a_3)\}\) and \(B = \{(b_0, b_1), (b_2, b_3)\}\). Then, similarly, if
+Now that we can encode equality of sets of field elements, let us expand this to sets of tuples of field elements. Let \(A = \{(a_0, a_1), (a_2, a_3)\}\) and \(B = \{(b_0, b_1), (b_2, b_3)\}\). Then, similarly, if
 \[A' = \{a_0 + a_1Y + X, a_2 + a_3Y + X\}, \quad B' = \{b_0 + b_1Y + X, b_2 + b_3Y + X\},\]
 
 then $A=B$ if and only if $A'=B'$. As before, we can leverage Schwartz-Zippel lemma to reduce this down into sampling two random $\beta$ and $\gamma \leftarrowS \mathbb{F}$ and checking equality of:
@@ -923,7 +923,7 @@ Let $\alpha$ be a random field element, then:
 \]
 
 The transition between second and third line is very unobvious and requires a 
-bit of algebraic manipulation. Don't worry if you don't see it immediately.
+bit of algebraic manipulation. Do not worry if you do not see it immediately.
 \end{remark}
 
 

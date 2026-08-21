@@ -6,7 +6,7 @@
 
 \subsubsection{Informal Overview}
 
-Finally, we've reached the most interesting part of the course, where we will consider various zk-SNARK constructions we are using on the daily basis. Again, recall that we have the presence of two parties:
+Finally, we have reached the most interesting part of the course, where we will consider various zk-SNARK constructions we are using on the daily basis. Again, recall that we have the presence of two parties:
 \begin{itemize}
     \item \textbf{Prover} $\mathcal{P}$ --- the party who knows the data that resolves the given problem.
     \item \textbf{Verifier} $\mathcal{V}$ --- the party that wants to verify the given proof.
@@ -18,13 +18,13 @@ Here, the prover wants to convince the verifier that they know the data that res
     \textbf{zk-SNARK} --- Zero-Knowledge \textbf{Succinct} Non-interactive ARgument of Knowledge.
 \end{definition}
 
-Again, since this is a central question considered, we need to recall what do terms like ``argument of knowledge``, ``succinct``, ``non-interactive``, and 
+Again, since this is a central question considered, we need to recall what terms like ``argument of knowledge``, ``succinct``, ``non-interactive``, and 
 ``zero-knowledge`` mean in this context:
 
 \begin{itemize}
     \item \textbf{Argument of Knowledge} --- a proof that the prover knows the data (witness) that resolves a certain
     problem, and this knowledge can be ``extracted''.
-    \item \textbf{Succinctness} --- the proof size and verification time is relatively small relative to the computation size and sometimes even does not depend on the size of 
+    \item \textbf{Succinctness} --- the proof size and verification time is relatively small compared to the computation size and sometimes even does not depend on the size of 
     the data or statement. This will be explained with examples later.
     \item \textbf{Non-interactiveness} --- to produce the proof, the prover does not need any interaction
     with the verifier.
@@ -37,13 +37,13 @@ any information about the value itself, and do so with a proof that is both very
 verify. This makes zk-SNARKs a powerful tool for maintaining privacy and efficiency in various 
 cryptographic applications.
 
-This is pretty wide defined and maybe not so obvious if you do not have any background. Let us take a
+This is defined quite broadly and maybe not so obvious if you do not have any background. Let us take a
 look at the example.
 
 \begin{example}
-    Imagine you are the part of a treasure hunt, and you've found a hidden treasure chest. You want to 
+    Imagine you are the part of a treasure hunt, and you have found a hidden treasure chest. You want to 
     prove to the treasure hunt organizer that you know where the chest is hidden without revealing
-    its location. Here's how zk-SNARKs can be used in this context: \\
+    its location. Here is how zk-SNARKs can be used in this context: \\
 
     \textbf{The problem}: you have found a hidden treasure chest (the secret data), and you want to
     prove to the organizer (the verifier) that you know its location without actually revealing 
@@ -55,14 +55,14 @@ look at the example.
         \item \textbf{Argument of Knowledge}: You create a proof that demonstrates you know the exact
         location of the treasure chest. This proof convinces the organizer that you have this 
         knowledge.
-        \item \textbf{Succinctness}: The proof you provide is very small and concise. It doesn't matter how
+        \item \textbf{Succinctness}: The proof you provide is very small and concise. It does not matter how
         large the treasure map is or how many steps it took you to find the chest, the proof remains
         compact and easy to check.
-        \item \textbf{Non-interactiveness}: You don't need to have a back-and-forth conversation with the 
+        \item \textbf{Non-interactiveness}: You do not need to have a back-and-forth conversation with the 
         organizer to create this proof. You prepare it once. The organizer can verify it without 
         needing to ask you any questions.
-        \item \textbf{Zero-Knowledge}: The proof doesn't reveal any information about the actual location of
-        the treasure chest. The organizer knows you found it, but they don't learn anything about 
+        \item \textbf{Zero-Knowledge}: The proof does not reveal any information about the actual location of
+        the treasure chest. The organizer knows you found it, but they do not learn anything about 
         where it is hidden. \\
     \end{itemize}
 
@@ -159,7 +159,7 @@ problems, we introduce the \textbf{zk-SNARK} by adding the \textbf{succinctness}
 property.
 
 \begin{definition}
-    A \textbf{zk-SNARK} (Succint NARK) is a preprocessing NARK, where the
+    A \textbf{zk-SNARK} (Succinct NARK) is a preprocessing NARK, where the
     proof's length $|\pi|$ and verification time $T_{\mathcal{V}}$ are short:
     the verification time is sublinear in the size of the computation $C$
     (denoted by $|C|$), while the proof size is sublinear in the witness size
@@ -219,7 +219,7 @@ zk-SNARKs used in practice.
 
 \subsection{Arithmetic Circuits}
 
-\subsubsection{What is Arithmetic Circuit?}
+\subsubsection{What is an Arithmetic Circuit?}
 The cryptographic tools we have learned in the previous lectures operate with
 numbers or certain primitives above them (like finite field extensions or
 elliptic curves), so the first question is: how do we convert a program into a
@@ -230,11 +230,11 @@ $\Sigma$-protocols considered in the previous lecture).
 
 The \textbf{Arithmetic Circuits} can help us with these problems. Similar to
 \textbf{Boolean Circuits}, they consist of \textbf{gates} and \textbf{wires}:
-gates represent operations acting all elements, connected by wires (see figure
+gates represent operations acting on all elements, connected by wires (see figure
 below for details). Yet, instead of operations $\mathtt{AND}$, $\mathtt{OR}$,
 $\mathtt{NOT}$ and such, in arithmetic circuits only
 multiplication/addition/subtraction operations are allowed. Additionally,
-arithmetic circuits manipulate over elements from some finite field $\mathbb{F}$
+arithmetic circuits operate on elements from some finite field $\mathbb{F}$
 (see right figure below).
 
 % --- Writing diagrams ---
@@ -426,7 +426,7 @@ assume that the $a$ and $b$ are input values.
 We can think of the ``=`` in the gate as an assertion, meaning that if $a \times b$ does not equal
 $r$, the assertion fails, and the input values do not resolve the circuit.
 
-Good, but this one is quite trivial. Let's consider a more complex example.
+This example is trivial; let us consider a more complex one.
 
 \textbf{Example 2: Multivariate Polynomial.} Now, suppose we want to implement the evaluation of the polynomial $Q(x_1,x_2) = x_1^3 + x_2^2 \in \mathbb{F}[X_1,X_2]$ using arithmetic circuits. The corresponding program is as follows:
 \begin{lstlisting}[language=Python,numbers=none]
@@ -434,7 +434,7 @@ Good, but this one is quite trivial. Let's consider a more complex example.
         return x1**3 + x2**2
 \end{lstlisting}
 
-Looks easy, right? But the circuit is now much less trivial. Consider \Cref{fig:multivariate-polynomial-circuit}. Notice that to calculate $x_1^3$ we cannot use the single gate: we need to multiply $x_1$ by itself two times. For that reason, we need three multiplication and one addition gate to represent $Q(x_1,x_2)$ calculation.
+But the circuit is now much less trivial. Consider \Cref{fig:multivariate-polynomial-circuit}. Notice that to calculate $x_1^3$ we cannot use the single gate: we need to multiply $x_1$ by itself two times. For that reason, we need three multiplication and one addition gate to represent $Q(x_1,x_2)$ calculation.
 \begin{figure}[h!]
     \centering
     \scalebox{0.75}{
@@ -491,7 +491,7 @@ Now, what is the witness vector in this case? One might assume that $\mathbf{z} 
 But, we need to verify all the intermediate steps! This can be achieved by transforming the above
 equation using the simplest terms (the gates), ensuring the correctness of each step in the program.
 
-Below, we show to visualize the arithmetic circuit for the \texttt{if} statement example.
+Below, we show how to visualize the arithmetic circuit for the \texttt{if} statement example.
 
 \begin{figure}[h!]
     \centering
@@ -563,7 +563,7 @@ Corresponding equations for the circuit are:
 
 With the witness vector: $\mathbf{z} = (r, r_1, r_2, r_3, r_4, r_5, a , b, c)$. One example of a valid witness is $(6, 6, 5, 0, 6, 0, 1, 2, 3)$.
 
-\subsubsection{Circuit Satisfability Problem}
+\subsubsection{Circuit Satisfiability Problem}
 
 Now, let us generalize what we have constructed so far. First, we begin with the arithmetic circuit.
 
@@ -602,7 +602,7 @@ circuit. Resolving in this context means that the output of the circuit is zero.
 
 Let us consider some concrete example of the Circuit Satisfiability Problem.
 \begin{example}
-    Suppose our problem (as a prover) is to prove the verifier that we know the
+    Suppose our problem (as a prover) is to prove to the verifier that we know the
     point on the circle of ``radius $\sqrt{\rho}$``, but over the
     finite field $\mathbb{F}$. More formally, suppose we want to claim that for
     the given $\rho$, we have $x_1,x_2 \in \mathbb{F}$ such that:
@@ -683,8 +683,8 @@ Proposition above motivates us to look for more advanced techniques to prove the
 \subsection{Rank-1 Constraint System}
 
 Almost any program written in high-level programming language can be translated (compiled) into
-arithmetic circuits, that are really powerfull tool. But for the ZK proof we need slightly different
-format of it --- \textbf{Rank-1 Constraint System}, where the simpliest term is \textbf{constraint}. 
+arithmetic circuits, which are really powerfull tool. But for the ZK proof we need slightly different
+format of it --- \textbf{Rank-1 Constraint System}, where the simplest term is \textbf{constraint}. 
 This offers a more flexible and general way to describe these parts.
 
 \subsubsection{Constraint Definition}
@@ -737,7 +737,7 @@ the gate input variable.
     that something else is being computed instead of the desired program. Since we need to add a
     restriction for $x_1$: $x_1 \times (1 - x_1) = 0$, this effectively checks that $x_1$ is binary.
 
-    The next constraints can be build:
+    The following constraints can be built:
     \begin{align*}
         x_1 \times x_1 &= x_1 \quad \text{(binary check)} \tag{1} \\
         x_2 \times x_3 &= \mathsf{mult} \tag{2} \\
@@ -745,7 +745,7 @@ the gate input variable.
         (1 - x_1) \times (x_2 + x_3) &= r - \mathsf{selectMult} \tag{4}
     \end{align*}
 
-    For every constraint we need the coefficients vectors $a_i$, $b_i$, $c_i$, but all of them have
+    For every constraint we need the coefficient vectors $a_i$, $b_i$, $c_i$, but all of them have
     the same witness vector $\mathbf{z}$.
     \[ \mathbf{z} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult}) \]
     The coefficients vectors:
