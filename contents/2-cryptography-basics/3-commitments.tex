@@ -27,7 +27,7 @@ At the same time, your friend cannot access the letter since they do not have th
 
     \begin{enumerate}
 
-        \item $\mathsf{Setup} (1^{\lambda})$: returns public parameter $\mathsf{pp}$ for both comitter and verifier;
+        \item $\mathsf{Setup} (1^{\lambda})$: returns public parameter $\mathsf{pp}$ for both committer and verifier;
 
         \item  $\mathsf{Commit} (\mathsf{pp}, m)$: returns a commitment $c$ to the message $m$ using public parameters $\mathsf{pp}$ and, optionally, a secret opening hint $r$;
 
@@ -35,15 +35,15 @@ At the same time, your friend cannot access the letter since they do not have th
     \end{enumerate}
 \end{definition}
 
-\begin{definition}[Commitment Scheme]
+\begin{definition}[Commitment Scheme properties]
     Properties of commitment schemes:
     \begin{enumerate}
         \item \textit{Hiding: } verifier should not learn any information about the message given only the commitment $c$. To put it formally, we define a game:
         \begin{enumerate}
-            \item Adversary chooses two messages $m_1,m_2$ and sends to the challenger.
+            \item Adversary chooses two messages $m_0,m_1$ and sends to the challenger.
             \item Challenger chooses a random bit $b$, commits to both messages: 
             
-                $c_1 \gets \mathsf{Commit}(pp, m_1), c_2 \gets \mathsf{Commit}(pp,m_2)$, 
+                $c_0 \gets \mathsf{Commit}(pp, m_0), c_1 \gets \mathsf{Commit}(pp,m_1)$, 
                     and sends $c_b$ to the adversary.
             \item Adversary guesses a bit $\hat{b}$.
         \end{enumerate}
@@ -54,7 +54,7 @@ At the same time, your friend cannot access the letter since they do not have th
         \end{equation*}
         We say that the commitment scheme $\Pi_{\text{commitment}}$ is \textit{hiding} if for any adversary, the aforementioned advantage is negligible.
         
-        \item \textit{Binding: } prover could not find another message $m_1$ and open the commitment $c$ without revealing the commited message $m$.
+        \item \textit{Binding: } prover could not find another message $m_1$ and open the commitment $c$ without revealing the committed message $m$.
         To put it formally, we define a game:
         
         \begin{enumerate}
@@ -81,7 +81,7 @@ As the name implies, we are using a cryptographic hash function \(H\) in such sc
     \item Prover selects a message $m$ from a message space $M$ which he wants to commit to:
         $m \leftarrow \mathbb{M}$
 
-    \item Prover samples random value $r$ (usually called blinding factor) from a challange space $\mathcal{C} \subset \mathbb{Z}$:
+    \item Prover samples random value $r$ (usually called blinding factor) from a challenge space $\mathcal{C} \subset \mathbb{Z}$:
         $r \leftarrowS \mathcal{C}$
     
     \item Both values will be concatenated and hashed with the hash function $H$ to produce the commitment:
@@ -100,11 +100,11 @@ Because the \textit{Verifier} knows the hash function digest $c$ before the \tex
 the \textit{Prover} would need to find a collision $H(m' \parallel r') = H(m \parallel r)$ to be able to convince the \textit{Verifier}
 that $m'$ value was committed.
 
-However, due to the collision resistance, finding such $m'$ and $r'$ is computationally infeasible. Which means the \textit{Prover}
-won't be able to convince the \textit{Verifier} that the commitment was done to another value providing a \textit{binding} property.
+However, due to the collision resistance, finding such $m'$ and $r'$ is computationally infeasible. This means the \textit{Prover}
+cannot convince the \textit{Verifier} that the commitment was made to another value providing a \textit{binding} property.
 
 A cryptographically secure hash function is a one-way function, which means that finding the hash preimage is almost as hard as bruteforcing
-all possibile input values. Given large challenge space, the probability of the \textit{Verifier} of finding $(m, r)$ such that
+all possible input values. Given a large challenge space, the probability of the \textit{Verifier} of finding $(m, r)$ such that
 $H(m, r) = c$ is negligible, which ensures \textit{hiding} property of the commitment scheme. 
 
 
@@ -121,7 +121,7 @@ EC point $U$ is chosen randomly using ``Nothing-up-my-sleeve`` to assure no one 
 
 Pedersen commitment scheme algorithm:
 \begin{enumerate}
-    \item Prover and Verifier agrees on $G$ and $U$ points in a elliptic curve point group $\mathbb{G}$, $q$ is the order of the group.
+    \item Prover and Verifier agree on $G$ and $U$ points in an elliptic curve point group $\mathbb{G}$, $q$ is the order of the group.
     \item Prover selects a value $m$ to commit and a blinder factor $r$:
             $m \leftarrow \mathbb{Z}_q$,
             $r \leftarrowS \mathbb{Z}_q$
@@ -152,12 +152,12 @@ If $c_1 = c$, prover has revealed the correct pair $(m, r)$.
 
 \textbf{Commitment aggregation}
 
-Pedersen commitment have some advantages compared to hash-based commitments.
-Additively homomorphic property allows to accumulate multiple commitments into one.
+Pedersen commitments have some advantages compared to hash-based commitments.
+Additively homomorphic property allow us to accumulate multiple commitments into one.
 Consider two pairs: $(m_1, r_1), (m_2, r_2)$.
 
 \begin{center}
-    $c_2 = [m_1]G + [r_1]U$,
+    $c_1 = [m_1]G + [r_1]U$,
 
     $c_2 = [m_2]G + [r_2]U$,
 
@@ -170,7 +170,7 @@ This is achieved by disclosing the sum of the balances and the corresponding sum
 
 \subsection{Vector commitments}
 
-Vector commitment schemes allows to commit to a vector of values rather than a value and a blinding term.
+Vector commitment schemes allow to commit to a vector of values rather than a value and a blinding term.
 
 \textbf{Pedersen Vector Commitments}
 
@@ -188,7 +188,7 @@ Prover can later open the commitment by revealing the vector $(m_1, m_2 \ldots m
 
 \textbf{Merkle Tree based Vector Commitments}
 
-A naive approach for a vector commitment would be hash the whole vector. More sophisticated scheme uses divide-and-conquer approach by building a binary tree out of vector elements.
+A naive approach for a vector commitment would be to hash the whole vector. A more sophisticated scheme uses divide-and-conquer approach by building a binary tree out of vector elements.
 
 \begin{figure}[H]
     \centering\includegraphics[width=0.9\linewidth, clip]{contents/images/lecture_5/MerkleTree.png}
@@ -196,9 +196,9 @@ A naive approach for a vector commitment would be hash the whole vector. More so
     \caption{Merkle Tree structure}
 \end{figure}
 
-A Merkle Tree is a data structure to efficiently and securely verify the commiments to a vector of data. It is a binary tree where each leaf node represents a hash of a data block, and each non-leaf node is a hash of its child nodes' concatenated hashes. The top node, called the root hash or Merkle root, uniquely represents the entire data set. By comparing this root with a known valid root, one can quickly verify the authenticity and integrity of the data without needing to examine the entire dataset. 
+A Merkle Tree is a data structure to efficiently and securely verify the commitments to a vector of data. It is a binary tree where each leaf node represents a hash of a data block, and each non-leaf node is a hash of its child nodes' concatenated hashes. The top node, called the root hash or Merkle root, uniquely represents the entire data set. By comparing this root with a known valid root, one can quickly verify the authenticity and integrity of the data without needing to examine the entire dataset. 
 
-To prove the inclusion of element into the tree, a corresponding Merkle Branch is used. On the example below, $M_1$ inclusion is proved, and 
+To prove the inclusion of an element in the tree, a corresponding Merkle Branch is used. In the example below, $M_1$ inclusion is proved, and 
 $(M_2, H(M_3 \parallel M_4), H(H(M_5 \parallel M_6) \parallel H(M_7 \parallel M_8)))$ is an inclusion branch vector.
 
 \begin{figure}[H]
@@ -207,26 +207,26 @@ $(M_2, H(M_3 \parallel M_4), H(H(M_5 \parallel M_6) \parallel H(M_7 \parallel M_
     \caption{Merkle Tree inclusion proof branch}
 \end{figure}
 
-One of Merkle tree key advantages is that it allows for the selective disclosure of specific elements within the data set without revealing the rest. 
+One of the key advantages of a Merkle tree is that it allows for the selective disclosure of specific elements within the data set without revealing the rest. 
 
 \subsection{Polynomial commitment}
 
-Polynomial commitment can be used to prove that the commited polynomial satisfies certain properties $P(x_1, x_2, \ldots, x_n) = y$, without revealing what the polynomial is.
-The commitment is generally succint, which means that it is much smaller than the polynomial it represents. Typically, polynomial commiment scheme is a heart of any complex \textit{zero-knowledge} proof system.
+Polynomial commitment can be used to prove that the committed polynomial satisfies certain properties $P(x_1, x_2, \ldots, x_n) = y$, without revealing what the polynomial is.
+The commitment is generally succinct, which means that it is much smaller than the polynomial it represents. Typically, polynomial commitment scheme is a heart of any complex \textit{zero-knowledge} proof system.
 
 \subsubsection{Pedersen polynomial commitment scheme}
 
-Let prover $\mathcal{P}$ wants to convince verifier $\mathcal{V}$ that he knows evaluation of polynomial $p(x) = a_d x^{d} + \dots + a_1 x + a_0 \in \mathbb{F}_{q}[x]$ at some $u \in \mathbb{F}_q$: $p(u) = y$ without revealing anything about $p(x)$. Let $\mathbb{G}$ - cyclic additive group of order $q$ where \textit{discrete logarithm} problem is hard. $G, H \in \mathbb{G}$ - points with unknown discrete logarithms between them.
+Suppose prover $\mathcal{P}$ wants to convince verifier $\mathcal{V}$ that he knows evaluation of polynomial $p(x) = a_d x^{d} + \dots + a_1 x + a_0 \in \mathbb{F}_{q}[x]$ at some $u \in \mathbb{F}_q$: $p(u) = y$ without revealing anything about $p(x)$. Let $\mathbb{G}$ be a cyclic additive group of order $q$ where \textit{discrete logarithm} problem is hard. $G, H \in \mathbb{G}$ -- points with unknown discrete logarithms between them.
 
 \textbf{Simple polynomial commitment scheme}
 \begin{enumerate}
-    \item \textit{Commit to polynomial}. Prover selects random $\gamma_i \xleftarrow{R} \mathbb{F}_q$ for all $i \in [d]$, computes Pedersen commitments for each coefficent: $\forall i \in [d]: C_i = [a_i]G + [\gamma_i]H$ and sends them to Verifier.
+    \item \textit{Commit to polynomial}. Prover selects random $\gamma_i \xleftarrow{R} \mathbb{F}_q$ for all $i \in [d]$, computes Pedersen commitments for each coefficient: $\forall i \in [d]: C_i = [a_i]G + [\gamma_i]H$ and sends them to Verifier.
     \item \textit{Challenge}. Verifier samples random $u \xleftarrow{R} \mathbb{F}_q$ and sends it to Prover
     \item \textit{Proof of evaluation}. Prover evaluates blinded polynomial $h(x) = \gamma_d x^{d} + \dots + \gamma_1 x + \gamma_0$ at $u$: $\pi = h(u)$, original polynomial at $u$: $y = p(u)$ and sends pair $(y, \pi)$ to Verifier.
     \item \textit{Verify the proof}. Verifier performs check $$[u^d]C_d + \dots + [u]C_1 + C_0 \stackrel{?}{=} [y]G + [\pi]H$$
 \end{enumerate}
 
-Due to Schwartz-Zippel lemma, the probability that Prover can cheat and convince Vertifier that he knows valid evaluation to not-commited polynomial is at most $\frac{1}{q}$, hence the scheme is sound.
+Due to Schwartz-Zippel lemma, the probability that Prover can cheat and convince Verifier that he knows valid evaluation to not-commited polynomial is at most $\frac{1}{q}$, hence the scheme is sound.
 However, the scheme is not succinct, as the size of the commitment grows linearly with the degree of the polynomial.
 
 \subsubsection{The KZG polynomial commitment scheme}
@@ -273,7 +273,7 @@ The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
 
     \vspace{-1mm}
 
-    Polynomial $q(x)$ is called ``quotient polynomial`` and only exists if and only if $p(x_0) = y_0$:
+    Polynomial $q(x)$ is called ``quotient polynomial`` and exists if and only if $p(x_0) = y_0$:
     \begin{enumerate}
         \item If $p(x_0) = y_0$, we define $r(x) := p(x) - y_0$;
         \item $r(x)$ has $x_0$ as a root, as $r(x_0) = 0$ by the definition. 
@@ -281,7 +281,7 @@ The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
         \item Hence, the expression $q(x) = \frac{p(x) - y_0}{x-x_0}$ is a polynomial.
     \end{enumerate}
     
-    The existance of this quotient polynomial serves
+    The existence of this quotient polynomial serves
     as a proof of the evaluation. \textit{Prover} calculates proof $\pi = [q(\tau)]G$ and sends it to the \textit{Verifier}.
 
     \item \textit{Verify the proof}. Given a commitment $c = [p(\tau)]G$, an evaluation $p(x_0) = y_0$ and a proof $[q(\tau)]G$, we need to
@@ -295,8 +295,8 @@ The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
     
     \vspace{-1.5mm}
 
-    Polynomial commiment schemes such as KZG are used in zero knowledge proof system to encode circuit constraints as a polynomial, 
-    so that verifier could check random points to ensure that the constraints are met.
+    Polynomial commitment schemes such as KZG are used in zero-knowledge proof system to encode circuit constraints as a polynomial, 
+    so that the verifier can check random points to ensure that the constraints are met.
 
 \end{enumerate}
 
@@ -315,7 +315,7 @@ The KZG (Kate-Zaverucha-Goldberg) is a polynomial commitment scheme:
     We define a dummy hash function $H: \mathbb{Z} \to \mathbb{F}_{41}$ as $H(x)
     = 13x+17$. Dmytro used a \textit{hash-based commitment} and $H$ as a hash
     function. The set of race horse numbers is $\{3, 5, 8, 15\}$. Help Denis to
-    find out the horse number Dmytro have made a commitment to, if the
+    find out the horse number Dmytro has made a commitment to, if the
     commitment equals $C = 39$.}
     {4}
     {
