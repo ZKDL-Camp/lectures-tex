@@ -200,15 +200,13 @@ whether the inverse element is unique for each group element. For that reason, w
 
 Since this guide is not a textbook on abstract algebra, we will not prove all the statements. However, we will prove the first and second one to show the nature of the proofs in abstract algebra.
 
-\textbf{Proof (first statement).}
-$\blacktriangleright$ Suppose we have two identity elements $e_1, e_2 \in
+\begin{proof}
+\textit{Statement (i).} Suppose we have two identity elements $e_1, e_2 \in
 \mathbb{G}$. Consider their product $e_1e_2$. By the identity element
 definition, we know that $e_1e_2 = e_1$ and $e_1e_2 = e_2$. It follows
-immediately that $e_1=e_2$. $\blacktriangleleft$
+immediately that $e_1=e_2$.
 
-\textbf{Proof (second statement).} 
-$\blacktriangleright$ 
-Take some element $g \in \mathbb{G}$ and suppose $a, b \in \mathbb{G}$ are both inverses of $g$. 
+\textit{Statement (ii).} Take some element $g \in \mathbb{G}$ and suppose $a, b \in \mathbb{G}$ are both inverses of $g$. 
 By the inverse element definition, we have
 \begin{xequation}
     ag = ga = e, \quad bg = gb = e.
@@ -218,7 +216,7 @@ Now, notice the following:
     a = ae = a (gb) = (a g) b = e b = b
 \end{xequation}
 Thus, we have proven that $a = b$.
-$\blacktriangleleft$
+\end{proof}
 
 \begin{exercise}
     Prove the third and fourth statements.
@@ -486,27 +484,28 @@ Note that in a commutative group, left and right cosets are always identical, so
 Finally, we are ready for Lagrange's Theorem. This is a fundamental result in group
  theory, crucial for understanding the structure of finite groups.
 
-\begin{theorem} [Lagrange]
+\begin{theorem}[Lagrange]
     If $\mathbb{H}$ is a subgroup of any finite group $\mathbb{G}$, 
     then $\left| \mathbb{G} \right| = \left[ \mathbb{G} : \mathbb{H} \right] \left| \mathbb{H} \right|$.
 \end{theorem}
 
-\textbf{Proof.} 
-$\blacktriangleright$ 
+\begin{proof}
 The group $\mathbb{G}$ is partitioned into $\left[ \mathbb{G} : \mathbb{H} \right]$ distinct left cosets.
 Each left coset has $\left| \mathbb{H} \right|$ elements, therefore 
 $\left|\mathbb{G}\right| = \left[ \mathbb{G} : \mathbb{H} \right] \left| \mathbb{H} \right|$.
-$\blacktriangleleft$.
+\end{proof}
 
 \begin{corollary}
     Suppose $\mathbb{H}$ is subgroup of a finite group $\mathbb{G}$, 
     then $\#\mathbb{H} \mid \#\mathbb{G}$.
 \end{corollary}
 
-\textbf{Proof.} $\blacktriangleright$ By Lagrange's theorem, the order of the group $\mathbb{G}$ 
+\begin{proof}
+By Lagrange's theorem, the order of the group $\mathbb{G}$ 
 decomposes as the product of the index $\left[ \mathbb{G} : \mathbb{H} \right]$ and the order of the 
 subgroup $\mathbb{H}$. Therefore, by the definition of divisibility (see \Cref{def:divisibility}), 
-it follows directly that $\left| \mathbb{H} \right|$ divides $\left| \mathbb{G} \right|$ $\blacktriangleleft$.
+it follows directly that $\left| \mathbb{H} \right|$ divides $\left| \mathbb{G} \right|$.
+\end{proof}
 
 \begin{corollary}
     Let $\mathbb{G}$ be a finite group and $g \in \mathbb{G}$, 

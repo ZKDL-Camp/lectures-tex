@@ -572,16 +572,14 @@ before, we make this precise via a game.
     }
 \end{xexercise}
 
-\begin{tcolorbox}
-[ colback=blue!5!white, fonttitle=\bfseries, colframe=blue!80!white,
-    title=Exercises 7--9. PRG Security through Statistical Tests]
-    In this small paragraph, we give an alternative definition of PRG security that one might encounter in different sources. 
-    Let $G: \mathcal{K} \to \{0,1\}^{\lambda}$ be a pseudorandom generator. We want to test if $G$ is secure using a function $\mathcal{A}: \{0,1\}^{\lambda} \to \{0,1\}$, which we call a \textit{statistical test}. The advantage of $\mathcal{A}$ is defined as:
+\begin{exbox}{Exercises 7--9. PRG Security through Statistical Tests}
+In this small paragraph, we give an alternative definition of PRG security that one might encounter in different sources. 
+Let $G: \mathcal{K} \to \{0,1\}^{\lambda}$ be a pseudorandom generator. We want to test if $G$ is secure using a function $\mathcal{A}: \{0,1\}^{\lambda} \to \{0,1\}$, which we call a \textit{statistical test}. The advantage of $\mathcal{A}$ is defined as:
 \begin{equation*}
     \text{Adv}^{\text{PRG}}_{\mathcal{A},G}(\lambda) := \left|\underset{k \leftarrowS \mathcal{K}}{\text{Pr}}[\mathcal{A}(G(k))=1] - \underset{x \leftarrowS \{0,1\}^{\lambda}}{\text{Pr}}[\mathcal{A}(x)=1]\right|
 \end{equation*}
 We naturally require $\text{Adv}^{\text{PRG}}_{\mathcal{A},G}(\lambda)$ to be negligible for all efficient $\mathcal{A}$.
-\end{tcolorbox}
+\end{exbox}
 
 \begin{xexercise}
     {Exercise 7.}

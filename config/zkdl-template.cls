@@ -35,14 +35,14 @@
     paperwidth=145mm,
     paperheight=215mm,
     top=5mm,
-    bottom=12mm, 
+    bottom=16mm, 
     left=15mm, 
     right=15mm, 
     includehead,
     headheight=5mm,
     headsep=2mm,
     includefoot,
-    footskip=4mm
+    footskip=8mm
 ]{geometry}
 \RequirePackage{indentfirst}
 \RequirePackage{multicol}
@@ -70,6 +70,7 @@
 % --- Lists, Footnotes, and Utilities ---
 \RequirePackage[inline,shortlabels]{enumitem}
 \setlist{topsep=2pt,itemsep=2pt,parsep=0pt,partopsep=0pt}
+\setlist[enumerate]{label=\textit{(\roman*)}, ref=(\roman*)}
 \RequirePackage[bottom,multiple]{footmisc}
 \RequirePackage{subfiles}
 \RequirePackage{pifont}
@@ -182,15 +183,53 @@
 }
 \usemintedstyle{colorful}
 
+% --- Section numbering format: "Section 11: Title" instead of bare "11" ---
+% Only \section gets the "Section N:" prefix; \subsection, \subsubsection, etc.
+% keep the normal numeric format (e.g. "11.2") via the \@ifundefined fallback.
+\makeatletter
+\def\@seccntformat#1{%
+  \@ifundefined{#1cntformat}
+    {\csname the#1\endcsname\quad}%
+    {\csname #1cntformat\endcsname}%
+}
+\newcommand{\sectioncntformat}{{\Huge\thesection}\hspace{5px}\ }
+\makeatother
+
 % --- Headers and Footers ---
 \RequirePackage{fancyhdr}
 \pagestyle{fancy}
 \fancyhf{}
 \lhead{}
 \rhead{}
-\cfoot{\thepage}
+
+% Capture the current section (number + title) so it can appear in the footer,
+% matching the "Section N: Title" format used in the body headings
+\makeatletter
+\@ifundefined{sectionmark}
+  {\newcommand{\sectionmark}[1]{\markboth{Section~\thesection: #1}{Section~\thesection: #1}}}
+  {\renewcommand{\sectionmark}[1]{\markboth{Section~\thesection: #1}{Section~\thesection: #1}}}
+\makeatother
+
+% Book-style footer: page number on the outer edge, running section title
+% toward the spine, with a thin hairline separating it from the body text
+\fancyfoot[L]{%
+  \footerfont
+  \ifodd\value{page}
+    \itshape\nouppercase{\leftmark}%
+  \else
+    \thepage%
+  \fi
+}
+\fancyfoot[R]{%
+  \footerfont
+  \ifodd\value{page}
+    \thepage%
+  \else
+    \itshape\nouppercase{\leftmark}%
+  \fi
+}
 \renewcommand{\headrulewidth}{0.0mm}
-\renewcommand{\footrulewidth}{0.0mm}
+\renewcommand{\footrulewidth}{0.3pt}
 
 % --- Shortcuts ---
 
@@ -293,6 +332,11 @@
 \newtheorem{example}{Example}[section]
 \newtheorem{examples}{Examples}[section]
 
+% For a range of exercises
+\newenvironment{exbox}[1]{%
+  \par\noindent{\bfseries#1}\par\nobreak\smallskip\noindent\ignorespaces
+}{\par}
+
 \theoremstyle{definition}
 \newtheorem*{exercise}{Exercise}
 
@@ -328,16 +372,18 @@
 % --- Box styles using tcolorbox ---
 \RequirePackage[most]{tcolorbox}
 
-\tcolorboxenvironment{definition}{   breakable, boxrule=0pt, boxsep=0pt, colback={blue!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{blue},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{proposition}{  breakable, boxrule=0pt, boxsep=0pt, colback={Orange!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{Orange},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{theorem}{      breakable, boxrule=0pt, boxsep=0pt, colback={blue!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{blue},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{lemma}{        breakable, boxrule=0pt, boxsep=0pt, colback={Cyan!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{Cyan},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{corollary}{    breakable, boxrule=0pt, boxsep=0pt, colback={violet!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{violet},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{remark}{       breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{Green},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{remarks}{      breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{Green},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{example}{      breakable, boxrule=0pt, boxsep=0pt, colback={Gray!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{Gray},sharp corners,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{definition}{   breakable, boxrule=0pt, boxsep=0pt, colback={oc-indigo-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-indigo-7},sharp corners,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{proposition}{  breakable, boxrule=0pt, boxsep=0pt, colback={oc-orange-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-orange-7},sharp corners,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{theorem}{      breakable, boxrule=0pt, boxsep=0pt, colback={oc-indigo-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-indigo-7},sharp corners,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{lemma}{        breakable, boxrule=0pt, boxsep=0pt, colback={oc-blue-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-blue-7},sharp corners,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{corollary}{    breakable, boxrule=0pt, boxsep=0pt, colback={oc-violet-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-violet-7},sharp corners,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{remark}{       breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{oc-green-7},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{remarks}{      breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{oc-green-7},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{example}{      breakable, boxrule=0pt, boxsep=0pt, colback={oc-gray-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-gray-7},sharp corners,before skip=10pt,after skip=10pt}
 \tcolorboxenvironment{examples}{     breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{Black},left=8pt,right=8pt,sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{cthm}{         breakable, boxrule=0pt, boxsep=0pt, colback={gray!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{gray},sharp corners,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{cthm}{         breakable, boxrule=0pt, boxsep=0pt, colback={oc-gray-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-gray-7},sharp corners,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{exercise}{     breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{oc-pink-7},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
+\tcolorboxenvironment{exbox}{        breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{oc-pink-7},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
 
 % --- Algorithm packages ---
 \RequirePackage[titlenumbered,linesnumbered,ruled]{algorithm2e}
@@ -385,10 +431,19 @@
 \newcommand{\keywordsfont}{\itshape\linespread{1.2}\fontsize{11}{12}\selectfont}
 \newcommand{\copyrightfont}{\normalfont\fontsize{7}{9}\selectfont}
 % \newcommand{\footerfont}{\color{black}\normalfont\fontsize{10}{10}\selectfont}
-\newcommand{\footerfont}{\color{black}\normalfont\fontsize{11}{12}\selectfont}
+\newcommand{\footerfont}{\color{black}\normalfont\fontsize{9}{11}\selectfont}
 \newcommand{\subjectfont}{\color{white}\bfseries\fontsize{10}{12}\selectfont}
 \newcommand{\headingfont}{\color{black}\bfseries\fontsize{13}{14}\selectfont}
 
+% --- Part pages: "Part I: Title" on one line, centered, with a rule below ---
+\RequirePackage{titlesec}
+\titleformat{\part}[block]
+  {\centering\headingfont}
+  {\partname~\thepart:}
+  {0.5em}
+  {}
+  [\vspace{4pt}\titlerule]
+\titlespacing*{\part}{0pt}{0pt}{4ex}
 
 \let\oldsection\section
 \renewcommand{\section}{\clearpage\oldsection}

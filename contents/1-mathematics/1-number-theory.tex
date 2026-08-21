@@ -465,7 +465,7 @@ The next theorem settles this question.
     there exists a prime number $p'$ such that $p' \notin P$.
 \end{theorem}
 
-\textbf{Proof Idea.} We can set $p' := \prod_{p \in P}p + 1$. Although it is 
+\textbf{Proof sketch.} We can set $p' := \prod_{p \in P}p + 1$. Although it is 
 intuitively clear that $p'$ is not divisible by any prime number in $P$, the
 formal proof requires a bit more effort.
 
@@ -485,7 +485,7 @@ method is brute-force division, though it is impractical for large numbers.
 Probabilistic tests provide a more feasible alternative, though they introduce a
 small probability of error. In 2003, a significant breakthrough was made with
 the discovery of a deterministic primality test, which placed the problem within
-the $P$ complexity class.
+the $\mathsf{P}$ complexity class.
 
 It is also important to note that various types of prime numbers have
 applications in different fields. Examples include Mersenne primes, factorial
@@ -544,12 +544,11 @@ Before formulating the Fundamental Theorem of Arithmetic, let us consider the au
 
 As an exercise and to show where Bezout coefficients are used, let us prove both this lemma and the subsequent theorem.
 
-\textbf{Proof.} 
-$\blacktriangleright$
+\begin{proof}
 Let $p \mid ab$, but $ p \nmid a$, then $\gcd(a, p) = 1$ because there are no common divisors.
 In which case, by Bezout identity \Cref{lemma:bezout_identity}, there exist such $u, v \in \mathbb{Z}$ that $au + pv = 1$.
 Let's multiply the left and right sides by $b$: $abu + pbv = b$, but $p \mid ab$ and $p \mid pb$, therefore their sum is also divisible by $p \mid abu + pbv$. 
-$\blacktriangleleft$
+\end{proof}
 
 Now, we are ready to introduce the central Number Theory theorem --- Fundamental
 Theorem of Arithmetic.
@@ -562,13 +561,12 @@ Theorem of Arithmetic.
     where $p_1,\dots,p_t$ are prime numbers and $\alpha_1,\dots,\alpha_t \in \mathbb{N}$.
 \end{theorem}
 
-\textbf{Proof.} 
-$\blacktriangleright$  
+\begin{proof}
 We need to prove both existence and uniqueness. Since the existence is
 easy to prove, let us make the small exception and show it. For other proves (in
 particular, for the uniqueness case), see the literature provided.
 
-\textcolor{green!60!black}{\textbf{Existence}}. Suppose the theorem statement is
+\textcolor{oc-green-8}{\textbf{Existence}}. Suppose the theorem statement is
 false and there exists $n$ that does not have such a representation. Let $n_0$ be
 the smallest of them. If $n_0$ is prime, it can be represented as $p_1=n_0$,
 $\alpha_1=1$, which satisfies the representation. Therefore, $n_0$ must be
@@ -583,7 +581,8 @@ then $a$ and $b$ can be represented as
 \end{xequation*}
 Therefore, $n_0 = ab=p_{1}^{\alpha_{1}} \dots p_{t}^{\alpha_{t}}
 q_{1}^{\beta_{1}} \dots q_{k}^{\beta_{k}}$. Thus, the contradiction, as $n_0$ is
-represented as the product of primes. $\blacktriangleleft$  
+represented as the product of primes.
+\end{proof}
 
 \begin{corollary}
     Suppose $n$ is decomposed as in \Cref{th:fundamental_arithmetic}. Then,
@@ -600,8 +599,8 @@ The implications and applications of the Fundamental Theorem of Arithmetic are
 large and important, and the number of ``obvious'' ones are listed above. 
 \begin{remark}
     Note that the problem of factorization, i.e., finding the decomposition of a
-number into prime factors, is in the $NP$ class (of complexity) and is the basis
-of certain cryptosystems such as RSA. For stricter $P$/$NP$ definitions, see 
+number into prime factors, is in the $\mathsf{NP}$ class (of complexity) and is the basis
+of certain cryptosystems such as RSA. For stricter $\mathsf{P}$ and $\mathsf{NP}$ definitions, see 
 \Cref{section:intro-zk}.
 \end{remark}
 
@@ -729,7 +728,7 @@ notation $n\mathbb{Z}$ to denote the set of all multiples of $n$.
     The \textbf{complete residue system modulo} $n$ (or residue ring) is a set of integers, 
     where every integer is congruent to a unique member of the set modulo $n$, usually 
     denoted as $\mathbb{Z}_n = \{0, 1, 2, \dots, n-1\}$. 
-    In more formal literature, the set is often denoted as $\mathbb{Z}/n\mathbb{Z} = \{ [0], [1], \ldots, [n-1] \}$.
+    In more formal literature, the set is often denoted as $\mathbb{Z}/n\mathbb{Z} = \{ [0], [1], \ldots, [n-1] \}$ (in \Cref{section:relations} we will give one way to understand the quotient sign $\star/\star$).
 \end{definition}
 
 \begin{example}
@@ -843,7 +842,7 @@ the following example.
 \end{remark}
 
 \begin{definition}
-    The \textbf{multiplicative group of integers} modulo $n$, denoted as $\mathbb{Z}_n^{\times}$, is a set of natural numbers that are coprime to $n$ and less than $n$. In other words, $\mathbb{Z}_n^{\times} = \{a \in \mathbb{N}: a<n \wedge \gcd(a, n) = 1\}$.
+    The \textbf{multiplicative group of integers} modulo $n$, denoted as $\mathbb{Z}_n^{\times}$, is a set of natural numbers that are coprime to $n$ and less than $n$. In other words, $\mathbb{Z}_n^{\times} := \{a \in \mathbb{N}: a<n \; \text{and} \; \gcd(a, n) = 1\}$.
 \end{definition}
 
 \begin{example}
@@ -861,7 +860,7 @@ elements of $\mathbb{Z}_n^{\times}$ has the special name, which we define below.
 
 \begin{definition} \label{def:euler_totient_function}
     \textbf{Euler's Totient Function} $\varphi(n)$ is the cardinality of the multiplication 
-    group of integers $\mathbb{Z}_n^{\times}$. In other words, $\varphi(n) = \#\mathbb{Z}_n^{\times}$.
+    group of integers $\mathbb{Z}_n^{\times}$. In other words, $\varphi(n) := \#\mathbb{Z}_n^{\times}$.
 \end{definition}
 
 \begin{remark}
@@ -988,9 +987,10 @@ $\blacktriangleright$ To prove this fact, we prove the following auxiliary lemma
     permutes the elements of $\mathbb{Z}_n^{\times}$.
 \end{lemma}
 
-\textbf{Proof.} $\blacktriangleright$ Our statement is equivalent to claiming that the 
+\begin{proof}
+Our statement is equivalent to claiming that the 
 function $f: \mathbb{Z}_n^{\times} \to a\mathbb{Z}_n^{\times}$ defined 
-as $f(x) = ax \pmod{n}$ is a \textbf{bijection}. To show this, we need to prove the following 
+as $f(x) = ax \pmod{n}$ is a \emph{bijection}. To show this, we need to prove the following 
 three staments:
 \begin{enumerate}
     \item \textbf{Correctness} is obvious since $ax$ is in $a\mathbb{Z}_n^{\times}$ if $x$ is in $\mathbb{Z}_n^{\times}$.
@@ -1005,9 +1005,8 @@ three staments:
 \end{enumerate}
 
 Therefore, $f$ is bijective and thus $\mathbb{Z}_n^{\times} = a\mathbb{Z}_n^{\times}$.
-$\blacktriangleleft$
 
-So we know, $a\mathbb{Z}_n^{\times} = \mathbb{Z}_n^{\times}$, how do we proceed? Notice, from the 
+So given $a\mathbb{Z}_n^{\times} = \mathbb{Z}_n^{\times}$, how do we proceed? Notice, from the 
 set equality follows the equality of the products of all elements. Let us write this down:
 \begin{equation*}
     \prod_{i = 1}^{\varphi(n)} x_i \equiv \prod_{i = 1}^{\varphi(n)} a x_i \pmod{n} \implies \prod_{i = 1}^{\varphi(n)} x_i \equiv a^{\varphi(n)} \prod_{i = 1}^{\varphi(n)} x_i \pmod{n}
@@ -1015,7 +1014,7 @@ set equality follows the equality of the products of all elements. Let us write 
     
 Since all $x_i$ are coprime to $n$ by definition, we can cancel out the product
 of all $x_i$ from both sides, leading to the conclusion of Euler's theorem.
-$\blacktriangleleft$
+\end{proof}
 
 \begin{example}
     Let us consider how Euler's Theorem works by computing expression 
@@ -1147,16 +1146,15 @@ print(inverse(8, 17)) # Output: 15
     }
 \end{xexercise}
 
-\begin{tcolorbox}
-[ colback=blue!5!white, fonttitle=\bfseries, colframe=blue!80!white,
-    title=Exercises 7-9. Tau Function] Define function $\tau(n) := \{\text{\#
-    of positive divisors of}\; n\}$. For example, the number $12$ has 6 divisors:
-    $1,2,3,4,6,12$, so $\tau(12)=6$. In fact, following
-    \Cref{th:fundamental_arithmetic} notation, if $n=\prod_{j=1}^r
-    p_j^{\alpha_j}$, then the following holds: $\tau(n) =
-    \prod_{j=1}^r(\alpha_j + 1)$. For example, since $12=2^2 \cdot 3^1$ we have
-    $\alpha_1=2,\alpha_2=1$ and therefore $\tau(12)=(2+1)\cdot (1+1)=6$. 
-\end{tcolorbox}
+\begin{exbox}{Exercises 7--9. Tau Function.}
+Define function $\tau(n) := \{\text{\#
+of positive divisors of}\; n\}$. For example, the number $12$ has 6 divisors:
+$1,2,3,4,6,12$, so $\tau(12)=6$. In fact, following
+\Cref{th:fundamental_arithmetic} notation, if $n=\prod_{j=1}^r
+p_j^{\alpha_j}$, then the following holds: $\tau(n) =
+\prod_{j=1}^r(\alpha_j + 1)$. For example, since $12=2^2 \cdot 3^1$ we have
+$\alpha_1=2,\alpha_2=1$ and therefore $\tau(12)=(2+1)\cdot (1+1)=6$. 
+\end{exbox}
 
 \begin{xexercise}
     {Exercise 7.}
