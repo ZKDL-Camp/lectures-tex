@@ -4,13 +4,13 @@
 
 \subsection{General Definition}
 
-Previously, our discussion resolved around the finite field $\mathbb{F}_p$ for a prime $p$. However, many protocols
+Previously, our discussion revolved around the finite field $\mathbb{F}_p$ for a prime $p$. However, many protocols
 need more than just a prime field. For example, elliptic curve pairings and certain STARK constructions require
 extending $\mathbb{F}_p$ to, in a sense, the analogue of complex numbers. 
 
 From school and, possibly, university, you might remember how complex numbers $\mathbb{C}$ are constructed. You take two real numbers, say, $x,y \in \mathbb{R}$, introduce a new
 symbol $i$ satisfying $i^2 = -1$, and define the complex number as $z = x + iy$. In certain cases, one might encounter a bit more rigorous and abstract definition of complex numbers as
-the set of pairs $(x,y) \in \mathbb{R}^2$ where addition in naturally defined as $(x_1,y_1)+(x_2,y_2)=(x_1+x_2,y_1+y_2)$, and the multiplication is:
+the set of pairs $(x,y) \in \mathbb{R}^2$ where addition is naturally defined as $(x_1,y_1)+(x_2,y_2)=(x_1+x_2,y_1+y_2)$, and the multiplication is:
 \begin{xequation*}
     (x_1,y_1) \cdot (x_2,y_2) = (x_1x_2-y_1y_2,x_1y_2+x_2y_1)\footnote{Notice that $(x_1+iy_1)(x_2+iy_2) = x_1x_2+iy_2x_1+iy_1x_2+i^2y_1y_2 = (x_1x_2-y_1y_2) + (x_1y_2+x_2y_1)i$.}.
 \end{xequation*}
@@ -65,82 +65,84 @@ Despite just a simplicity of the definition, the field extensions are a very pow
 
 \subsection{Polynomial Quotient Ring}
 
-Now, we present a more general way to construct field extensions. Notice that when constructing $\mathbb{C}$, we used the magical element $i$ that satisfies $i^2=-1$. But here is another way how to think of it.
+Now, we present a more general way to construct field extensions. Notice that when constructing $\mathbb{C}$, we used the magical element $i$ that satisfies $i^2=-1$. But here is another way to think of it.
 
-Consider the set of polynomials $\mathbb{R}[x]$, then we pick $p(x):=x^2+1 \in \mathbb{R}[x]$ and ask you to find roots of $p(x)$. Of course, you would claim ``hey, this equation has no solutions over $\mathbb{R}$'' and that is totally true. That is why mathematicians introduced a new element $i$ that we formally called the root of $x^2+1$. Note however, that $i$ is not a number in the traditional sense, but rather a fictional symbol that we artificially introduced to satisfy the equation.
+Consider the set of polynomials $\mathbb{R}[T]$, then we pick $p(T):=T^2+1 \in \mathbb{R}[T]$ and ask you to find roots of $p(T)$. Of course, you would claim that this equation has no solutions over $\mathbb{R}$ and that is totally true. 
+This is why mathematicians introduced a new element $i$ that we formally called the root of $T^2+1$. Note however, that $i$ is not a number in the traditional sense, but rather a fictional symbol that we artificially introduced to satisfy the equation.
 
-Now, could we have picked another polynomial, say, $q(x) = x^2+4$? Sure! As long as its roots cannot be found in $\mathbb{R}$, we are good to go.
+Now, could we have picked another polynomial, say, $q(T) = T^2+4$? Sure! As long as its roots cannot be found in $\mathbb{R}$, we are good to go.
 
 \begin{example}
-    Suppose $\beta$ is the root of $q(x):=x^2+4$. Then we could have defined complex numbers as a set of $x+y\beta$ for $x,y \in \mathbb{R}$. In this case, multiplication, for example, would be defined a bit differently than in the case of $\mathbb{C}$:
+    Suppose $\beta$ is the root of $q(T):=T^2+4$. Then we could have defined complex numbers as a set of $x+y\beta$ for $x,y \in \mathbb{R}$. In this case, multiplication, for example, would be defined a bit differently than in the case of $\mathbb{C}$:
     \begin{xequation}
         (x_1+y_1\beta) \cdot (x_2+y_2\beta) = (x_1x_2-4y_1y_2) + (x_1y_2+x_2y_1)\beta.
     \end{xequation}
 \end{example}
 
-We shifted to the polynomial consideration for a reason: now, instead of considering the complex number $\mathbb{C}$ as ``some'' tuple of real numbers $(c_0,c_1)$, now let us view it as a polynomial $c_0+c_1x$ modulo polynomial $x^2+1$. 
+We shifted to the polynomial consideration for a reason: now, instead of considering the complex number $\mathbb{C}$ as ``some'' tuple of real numbers $(c_0,c_1)$, now let us view it as a polynomial $c_0+c_1T$ modulo polynomial $T^2+1$. 
 
 \begin{example}
-    Indeed, take, for example, $p_1(x) := 1+2x$ and $p_2(x) := 2+3x$. Addition is performed as we are used to:
+    Indeed, take, for example, $p_1(T) := 1+2T$ and $p_2(T) := 2+3T$. Addition is performed as we are used to:
     \begin{xequation*}
-        p_1 + p_2 = (1+2x) + (2+3x) = 3+5x,
+        p_1 + p_2 = (1+2T) + (2+3T) = 3+5T,
     \end{xequation*}
 
     but multiplication is a bit different:
     \begin{xequation*}
-        p_1p_2 = (1+2x) \cdot (2+3x) = 2 + 3x + 4x + 6x^2 = 6x^2 +7x + 2.
+        p_1p_2 = (1+2T) \cdot (2+3T) = 2 + 3T + 4T + 6T^2 = 6T^2 +7T + 2.
     \end{xequation*}
 
-    Well, and what next? Recall that we are doing arithmetic modulo $x^2+1$ and for that reason, we divide the polynomial by $x^2+1$:
+    Well, and what next? Recall that we are doing arithmetic modulo $T^2+1$ and for that reason, we divide the polynomial by $T^2+1$:
     \begin{align*}
-        &6x^2+7x+2 = 6(x^2+1) + 7x - 4 \\
-        &\implies (6x^2+7x+2) \,\text{mod}\, (x^2+1) = 7x-4,
+        &6T^2+7T+2 = 6(T^2+1) + 7T - 4 \\
+        &\implies (6T^2+7T+2) \,\text{mod}\, (T^2+1) = 7T-4,
     \end{align*}
 
-    meaning that $p_1p_2 = 7x-4$. Now let us come back to our regular complex number representation and multiply $(1+2i)(2+3i)$. We get $2+3i+4i+6i^2=-4+7i$. 
-    That is exactly the same result if we change $x$ to $i$ above! In fact, what we have observed is the fact that our polynomial quotient ring $\mathbb{R}[x]/(x^2+1)$ is \emph{isomorphic} to $\mathbb{C}$.
+    meaning that $p_1p_2 = 7T-4$. Now let us come back to our regular complex number representation and multiply $(1+2i)(2+3i)$. We get $2+3i+4i+6i^2=-4+7i$. 
+    That is exactly the same result if we change $T$ to $i$ above! In fact, what we have observed is the fact that our polynomial quotient ring $\mathbb{R}[T]/(T^2+1)$ is \emph{isomorphic} to $\mathbb{C}$.
 \end{example}
 
-So, let us generalize this observation to any field $\mathbb{F}$ and any irreducible polynomial $\mu(x) \in \mathbb{F}[x]$.
+So, let us generalize this observation to any field $\mathbb{F}$ and any irreducible polynomial $\mu \in \mathbb{F}[T]$.
 
-\begin{theorem}
-    Let $\mathbb{F}$ be a field and $\mu(x)$ --- irreducible polynomial over $\mathbb{F}$ (sometimes called a \textbf{reduction polynomial}). Consider a set of polynomials over $\mathbb{F}[x]$ modulo $\mu(x)$, formally denoted as $\mathbb{F}[x]/(\mu)$. Then, $\mathbb{F}[x]/(\mu)$ is a field.
+\begin{theorem}\label{th:quotient-ring}
+    Let $\mathbb{F}$ be a field and $\mu(T)$ --- irreducible polynomial over $\mathbb{F}$ (sometimes called a \textbf{reduction polynomial}). 
+    Consider a set of polynomials over $\mathbb{F}[T]$ modulo $\mu$, formally denoted as $\mathbb{F}[T]/(\mu)$. Then, $\mathbb{F}[T]/(\mu)$ is a field.
 \end{theorem}
 
 \begin{example}
-    As we considered above, let $\mathbb{F}=\mathbb{R}$, $\mu(x)=x^2+1$, then $\mathbb{R}[x]/(x^2+1)$ (a set of polynomials modulo $x^2+1$) is a field.
+    As we considered above, let $\mathbb{F}=\mathbb{R}$, $\mu(T)=T^2+1$, then $\mathbb{R}[T]/(T^2+1)$ (a set of polynomials modulo $T^2+1$) is a field.
 \end{example}
+
 \begin{example}
-    Suppose $\mathbb{F}=\mathbb{Q}$ and $\mu(x) := x^2-2$. Then, $\mathbb{Q}[x]/(x^2-2)$ is a field isomorphic to $\mathbb{Q}(\sqrt{2})$, considered above.
-\end{example}
-\begin{example}
-    Suppose $\mathbb{F}=\mathbb{Q}$ and $\mu(x) := (x^2+1)(x^2-2)=x^4-x^2-2$. Then, $\mathbb{Q}[x]/(x^4-x^2-2)$ is a field isomorphic to $\mathbb{Q}(\sqrt{2},i)$.
+    Suppose $\mathbb{F}=\mathbb{Q}$ and $\mu(T) := T^2-2$. Then, $\mathbb{Q}[T]/(T^2-2)$ is a field isomorphic to $\mathbb{Q}(\sqrt{2})$, considered above.
 \end{example}
 
 \begin{remark}
     Although we have not defined the isomorphism between two rings/fields, it is defined similarly to group isomorphism. Suppose we have fields $(\mathbb{F},+,\times)$ and $(\mathbb{K}, \oplus, \otimes)$. Bijective function $\phi: \mathbb{F} \to \mathbb{K}$ is called an isomorphism if it preserves additive and multiplicative structures, that is for all $a,b \in \mathbb{F}$:
-    \begin{xequation}
+    \begin{equation*}
         \begin{aligned}
             \phi(a+b) = \phi(a) \oplus \phi(b), \quad \phi(a\times b) = \phi(a) \otimes \phi(b), \quad \phi(1_{\mathbb{F}}) = 1_{\mathbb{K}}.
         \end{aligned}
-    \end{xequation}
+    \end{equation*}
 \end{remark}
 
-This theorem (aka definition) corresponds to viewing complex numbers as a polynomial quotient ring $\mathbb{R}[x]/(x^2+1)$. But, we can give a theorem (aka definition) for our classical representation via magical root $i$ of $x^2+1$.
+\Cref{th:quotient-ring} corresponds to viewing complex numbers as a polynomial quotient ring $\mathbb{R}[T]/(T^2+1)$. But, we can give a theorem (aka definition) for our classical representation via magical root $i$ of $T^2+1$.
 
 \begin{theorem}
-    Let $\mathbb{F}$ be a field and $\mu \in \mathbb{F}[x]$ be an irreducible polynomial of degree $n$ and let $\mathbb{K} := \mathbb{F}[x]/(\mu)$. Let $\theta \in \mathbb{K}$ be the root of $\mu$ over $\mathbb{K}$. Then,
-    \begin{xequation}
+    Let $\mathbb{F}$ be a field and $\mu \in \mathbb{F}[T]$ be an irreducible polynomial of degree $n$ and let $\mathbb{K} := \mathbb{F}[T]/(\mu)$. Let $\theta \in \mathbb{K}$ be the root of $\mu$ over $\mathbb{K}$. Then,
+    \begin{equation*}
         \mathbb{K} = \{c_0+c_1\theta+\cdots+c_{n-1}\theta^{n-1}: c_0,\dots,c_{n-1} \in \mathbb{F}\}.
-    \end{xequation}
+    \end{equation*}
 \end{theorem}
 
 Although this definition is quite useful, we will mostly rely on the polynomial quotient ring definition. Let us define the \textbf{prime field extension}.
 
 \begin{definition}
-    Suppose $p$ is prime and $m \geq 2$. Let $\mu \in \mathbb{F}_p[x]$ be an irreducible polynomial of degree $m$. Then, elements of $\mathbb{F}_{p^m}$ are polynomials in $\mathbb{F}_p[x]^{\leq m}$. In other words,
+    Suppose $p$ is prime and $m \geq 2$. 
+    Let $\mu \in \mathbb{F}_p[T]$ be an irreducible polynomial of degree $m$. 
+    Then, elements of $\mathbb{F}_{p^m}$ are polynomials in $\mathbb{F}_p[T]^{\leq m}$. In other words,
     \begin{xequation*}
-        \mathbb{F}_{p^m} = \{c_0+c_1x+\cdots+c_{m-1}x^{m-1}: c_0,\dots,c_{m-1} \in \mathbb{F}_p\},
+        \mathbb{F}_{p^m} = \{c_0+c_1T+\cdots+c_{m-1}T^{m-1}: c_0,\dots,c_{m-1} \in \mathbb{F}_p\},
     \end{xequation*}
     where all operations are performed modulo $\mu$.
 \end{definition}
@@ -151,27 +153,27 @@ Again, let us consider a few examples.
     Consider the $\mathbb{F}_{2^4}$. Then, there are $16$ elements in this set:
     \begin{xequation*}
         \begin{aligned}
-            &0, 1, x, x+1,\\ &x^2, x^2+1, x^2+x, x^2+x+1,\\
-            &x^3, x^3+1, x^3+x, x^3+x+1,\\ &x^3+x^2, x^3+x^2+1, x^3+x^2+x, x^3+x^2+x+1.
+            &0, 1, T, T+1,\\ &T^2, T^2+1, T^2+T, T^2+T+1,\\
+            &T^3, T^3+1, T^3+T, T^3+T+1,\\ &T^3+T^2, T^3+T^2+1, T^3+T^2+T, T^3+T^2+T+1.
         \end{aligned}
     \end{xequation*}
 
-    One might choose the following reduction polynomial: $\mu(x)=x^4+x+1$ (of degree $4$). Then, operations are performed in the following manner:
+    One might choose the following reduction polynomial: $\mu(T)=T^4+T+1$ (of degree $4$). Then, operations are performed in the following manner:
     \begin{itemize}
-        \item Addition: $(x^3+x^2+1)+(x^2+x+1) = x^3+x$.
-        \item Subtraction: $(x^3+x^2+1)-(x^2+x+1) = x^3+x$.
-        \item Multiplication: $(x^3+x^2+1)\cdot(x^2+x+1)=x^2+1$ since:
+        \item Addition: $(T^3+T^2+1)+(T^2+T+1) = T^3+T$.
+        \item Subtraction: $(T^3+T^2+1)-(T^2+T+1) = T^3+T$.
+        \item Multiplication: $(T^3+T^2+1)\cdot(T^2+T+1)=T^2+1$ since:
         \begin{xequation*}
-            (x^3+x^2+1)\cdot(x^2+x+1) = x^5+x+1 \; \text{mod} \; (x^4+x+1) = x^2+1
+            (T^3+T^2+1)\cdot(T^2+T+1) = T^5+T+1 \; \text{mod} \; (T^4+T+1) = T^2+1
         \end{xequation*}
-        \item Inversion: $(x^3+x^2+1)^{-1}=x^2$ since $(x^3+x^2+1)\cdot x^2 \; \text{mod} \; (x^4+x+1) = 1$.
+        \item Inversion: $(T^3+T^2+1)^{-1}=T^2$ since $(T^3+T^2+1)\cdot T^2 \; \text{mod} \; (T^4+T+1) = 1$.
     \end{itemize}
 \end{example}
 
-Now, in the subsequent sections, we would need to extend $\mathbb{F}_p$ at least to $\mathbb{F}_{p^2}$. A convenient choice, similarly to the complex numbers, is to take $\mu(x)=x^2+1$. However, in contrast to $\mathbb{R}$, equation $x^2=-1 \pmod{p}$ might have solutions over certain prime numbers $p$. Thus, we consider proposition below.
+Now, in the subsequent sections, we would need to extend $\mathbb{F}_p$ at least to $\mathbb{F}_{p^2}$. A convenient choice, similarly to the complex numbers, is to take $\mu(T)=T^2+1$. However, in contrast to $\mathbb{R}$, equation $T^2=-1 \pmod{p}$ might have solutions over certain prime numbers $p$. Thus, we consider proposition below.
 
 \begin{proposition}
-    Let $p$ be an odd prime. Then $x^2+1$ is irreducible in $\mathbb{F}_p[x]$ if and only if $p \equiv 3 \pmod{4}$.
+    Let $p$ be an odd prime. Then $T^2+1$ is irreducible in $\mathbb{F}_p[T]$ if and only if $p \equiv 3 \pmod{4}$.
 \end{proposition}
 
 \begin{corollary}
@@ -218,23 +220,23 @@ Note that such $\omega$ exists if and only if $n \mid (p-1)$.
 
 \subsection{Algebraic Closure}
 
-Consider the following interesting question: suppose we have a field $\mathbb{F}$. Is there an extension $\mathbb{K}/\mathbb{F}$ such that $\mathbb{K}$ contains all roots of any polynomial in $\mathbb{F}[x]$? The answer is yes, and such a field is called the \textbf{algebraic closure} of $\mathbb{F}$, although not always this algebraic closure has a nice form. But first, let us define what it means for field $\mathbb{F}$ to be algebraically closed.
+Consider the following interesting question: suppose we have a field $\mathbb{F}$. Is there an extension $\mathbb{K}/\mathbb{F}$ such that $\mathbb{K}$ contains all roots of any polynomial in $\mathbb{F}[T]$? The answer is yes, and such a field is called the \textbf{algebraic closure} of $\mathbb{F}$, although not always this algebraic closure has a nice form. But first, let us define what it means for field $\mathbb{F}$ to be algebraically closed.
 
 \vspace{-0.75em}
 
 \begin{definition}
-    A field $\mathbb{F}$ is called \textbf{algebraically closed} if every non-constant polynomial $p(x) \in \mathbb{F}[x]$ has a root in $\mathbb{F}$.
+    A field $\mathbb{F}$ is called \textbf{algebraically closed} if every non-constant polynomial $p \in \mathbb{F}[T]$ has a root in $\mathbb{F}$.
 \end{definition}
 
 \begin{example}
-    $\mathbb{R}$ is not algebraically closed since $x^2+1$ has no roots in $\mathbb{R}$. However, $\mathbb{C}$ is algebraically closed, which follows from the fundamental theorem of algebra. Since $\mathbb{C}$ is a field extension of $\mathbb{R}$, it is also an algebraic closure of $\mathbb{R}$. This is commonly denoted as $\overline{\mathbb{R}} = \mathbb{C}$.
+    $\mathbb{R}$ is not algebraically closed since $T^2+1$ has no roots in $\mathbb{R}$. However, $\mathbb{C}$ is algebraically closed, which follows from the fundamental theorem of algebra. Since $\mathbb{C}$ is a field extension of $\mathbb{R}$, it is also an algebraic closure of $\mathbb{R}$. This is commonly denoted as $\overline{\mathbb{R}} = \mathbb{C}$.
 \end{example}
 
 \begin{definition}
     A field $\mathbb{K}$ is called an \textbf{algebraic closure} of $\mathbb{F}$ if $\mathbb{K}/\mathbb{F}$ is algebraically closed. This is denoted as $\overline{\mathbb{F}} = \mathbb{K}$.
 \end{definition}
 
-Since we are doing cryptography and not mathematics, we are interested in the algebraic closure of $\mathbb{F}_p$. Well, we have two news for you (as always, one is good and one is bad). The good news is that any finite field $\mathbb{F}_{p^m}$ has an algebraic closure. The bad news is that it does not have a form $\mathbb{F}_{p^k}$ for $k>m$ and there are infinitely many elements in it (so in other words, the algebraic closure of a finite field is not finite). This is due to the following theorem.
+Since we are doing cryptography and not mathematics, we are interested in the algebraic closure of $\mathbb{F}_p$. Well, we have two pieces of news for you (as always, one is good and one is bad). The good news is that any finite field $\mathbb{F}_{p^m}$ has an algebraic closure. The bad news is that it does not have a form $\mathbb{F}_{p^k}$ for $k>m$ and there are infinitely many elements in it (so in other words, the algebraic closure of a finite field is not finite). This is due to the following theorem.
 
 \begin{theorem}
     No finite field $\mathbb{F}$ is algebraically closed.
@@ -242,10 +244,10 @@ Since we are doing cryptography and not mathematics, we are interested in the al
 
 \textbf{Proof.} Suppose $f_1,f_2,\dots,f_n \in \mathbb{F}$ are all elements of $\mathbb{F}$. Consider the following polynomial:
 \begin{xequation*}
-    p(x) = \prod_{i=1}^n (x-f_i)+1 = (x-f_1)(x-f_2)\cdots(x-f_n)+1.
+    F(T) = \prod_{i=1}^n (T-f_i)+1 = (T-f_1)(T-f_2)\cdots(T-f_n)+1.
 \end{xequation*}
 
-Clearly, $p(x)$ is a non-constant polynomial and has no roots in $\mathbb{F}$, since for any $f \in \mathbb{F}$, one has $p(f)=1$. $\blacksquare$
+Clearly, $F$ is a non-constant polynomial and has no roots in $\mathbb{F}$, since for any $f \in \mathbb{F}$, one has $F(f)=1$. $\blacksquare$
 
 But what form does the $\overline{\mathbb{F}}_{p}$ have? Well, it is a union of all $\mathbb{F}_{p^k}$ for $k \geq 1$. This is formally written as:
 \begin{equation*}
@@ -255,7 +257,7 @@ But what form does the $\overline{\mathbb{F}}_{p}$ have? Well, it is a union of 
 \vspace{-4mm}
 
 \begin{remark}
-    This definition might rightfully seem counterintuitive. So here is how we usually interpret it. Suppose I tell you that polynomial $q(x)$ has a root in $\overline{\mathbb{F}}_p$. What that means is that there exists some extension $\mathbb{F}_{p^m}$ such that for some $\alpha \in \mathbb{F}_{p^m}$, $q(\alpha)=0$. We do not know how large this $m$ is, but we know that it exists. For that reason, $\overline{\mathbb{F}}_p$ is defined as an infinite union of all possible field extensions.
+    This definition might rightfully seem counterintuitive. So here is how we usually interpret it. Suppose I tell you that polynomial $q(T)$ has a root in $\overline{\mathbb{F}}_p$. What that means is that there exists some extension $\mathbb{F}_{p^m}$ such that for some $\alpha \in \mathbb{F}_{p^m}$, $q(\alpha)=0$. We do not know how large this $m$ is, but we know that it exists. For that reason, $\overline{\mathbb{F}}_p$ is defined as an infinite union of all possible field extensions.
 \end{remark}
 
 \subsection{Exercises}
@@ -303,10 +305,10 @@ But what form does the $\overline{\mathbb{F}}_{p}$ have? Well, it is a union of 
     \textit{You are given the passage explaining the topic of tower of extensions. The text has gaps that you need to fill in with the correct statement among the provided choices.}
     \vspace{5px}
     
-    This question demonstrates the concept of the so-called \textbf{tower of extensions}. Suppose we want to build an extension field $\mathbb{F}_{p^4}$. Of course, we can find some irreducible polynomial $p(x)$ of degree $4$ over $\mathbb{F}_p$ and build $\mathbb{F}_{p^4}$ as $\mathbb{F}_p[x]/(p(X))$. However, this method is very inconvenient since implementing the full $4$-degree polynomial arithmetic is cumbersome. Moreover, if we were to implement arithmetic over, say, $\mathbb{F}_{p^{24}}$, that would make matters worse. For this reason, we will build $\mathbb{F}_{p^4}$ as $\mathbb{F}_{p^2}[j]/(q(j))$ where $q(j)$ is an irreducible polynomial of degree $2$ over $\mathbb{F}_{p^2}$, which itself is represented as $\mathbb{F}_p[i]/(r(i))$ for some suitable irreducible quadratic polynomial $r(i)$. This way, we can first implement $\mathbb{F}_{p^2}$, then $\mathbb{F}_{p^4}$, relying on the implementation of $\mathbb{F}_{p^2}$.
+    This question demonstrates the concept of the so-called \textbf{tower of extensions}. Suppose we want to build an extension field $\mathbb{F}_{p^4}$. Of course, we can find some irreducible polynomial $f$ of degree $4$ over $\mathbb{F}_p$ and build $\mathbb{F}_{p^4}$ as $\mathbb{F}_p[T]/(f)$. However, this method is very inconvenient since implementing the full $4$-degree polynomial arithmetic is cumbersome. Moreover, if we were to implement arithmetic over, say, $\mathbb{F}_{p^{24}}$, that would make matters worse. For this reason, we will build $\mathbb{F}_{p^4}$ as $\mathbb{F}_{p^2}[j]/(q(j))$ where $q(j)$ is an irreducible polynomial of degree $2$ over $\mathbb{F}_{p^2}$, which itself is represented as $\mathbb{F}_p[i]/(r(i))$ for some suitable irreducible quadratic polynomial $r(i)$. This way, we can first implement $\mathbb{F}_{p^2}$, then $\mathbb{F}_{p^4}$, relying on the implementation of $\mathbb{F}_{p^2}$.
     \vspace{5px}
 
-    For illustration purposes, let us pick $p:=5$. As noted above, we want to build $\mathbb{F}_{5^2}$ first. A valid way to represent $\mathbb{F}_{5^2}$ would be to set $\mathbb{F}_{5^2} := \boxed{\textcolor{oc-pink-7}{\textbf{4}}}$. Given this representation, the zero of a linear polynomial $f(x) = ix - (i+3)$, defined over $\mathbb{F}_{5^2}$, is $\boxed{\textcolor{oc-pink-7}{\textbf{5}}}$.
+    For illustration purposes, let us pick $p:=5$. As noted above, we want to build $\mathbb{F}_{5^2}$ first. A valid way to represent $\mathbb{F}_{5^2}$ would be to set $\mathbb{F}_{5^2} := \boxed{\textcolor{oc-pink-7}{\textbf{4}}}$. Given this representation, the zero of a linear polynomial $f(T) = iT - (i+3)$, defined over $\mathbb{F}_{5^2}$, is $\boxed{\textcolor{oc-pink-7}{\textbf{5}}}$.
     \vspace{5px}
 
     Now, assume that we represent $\mathbb{F}_{5^4}$ as $\mathbb{F}_{5^2}[j]/(j^2-\xi)$ for $\xi = i+1$. Given such representation, the value of $j^4$ is $\boxed{\textcolor{oc-pink-7}{\textbf{6}}}$. Finally, given $c_0+c_1j \in \mathbb{F}_{5^4}$ we call $c_0 \in \mathbb{F}_{5^2}$ a \textbf{real part}, while $c_1 \in \mathbb{F}_{5^2}$ an \textbf{imaginary part}. For example, the imaginary part of number $j^3+2i^2\xi$ is $\boxed{\textcolor{oc-pink-7}{\textbf{7}}}$, while the real part of $(a_0+a_1j)b_1j$ is $\boxed{\textcolor{oc-pink-7}{\textbf{8}}}$. Similarly to complex numbers, it motivates us to define the number's \textbf{conjugate}: for $z = c_0+c_1j$, define the conjugate as $\overline{z} := c_0-c_1j$. The expression $z\overline{z}$ is then $\boxed{\textcolor{oc-pink-7}{\textbf{9}}}$.

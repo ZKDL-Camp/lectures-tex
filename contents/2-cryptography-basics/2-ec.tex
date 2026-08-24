@@ -22,7 +22,7 @@ So, let us formally define what an elliptic curve is. Further assume that, when 
 \end{definition}
 
 \begin{remark}
-    One might rightfully ask why do we require $4a^3+27b^2 \neq 0$. This is due to the fact that the curve $y^2=x^3+ax+b$ might have certain degeneracies and special points (namely, \textit{singular} points), which are not desirable for us. So we require this condition to make $E/\mathbb{K}$ ``smooth enough''.
+    One might rightfully ask why do we require $4a^3+27b^2 \neq 0$. This is due to the fact that the curve $y^2=x^3+ax+b$ might have certain degeneracies and special points (namely, \textit{singular} points). So we require this condition to make $E/\mathbb{K}$ ``smooth enough''.
 \end{remark}
 
 \begin{definition}
@@ -120,7 +120,7 @@ Further, we denote the group multiplication by $[\alpha]P$ for $\alpha \in \math
     \begin{figure}[H]
         \centering
         \includegraphics[width=0.4\textwidth]{contents/images/lecture_3/ec_illustration_2.pdf}
-        \caption{Illustration of the group law on the elliptic curve $E/\mathbb{R}: y^2=x^3-2x$. In \textcolor{oc-red-7}{red} we marked points lying on the line $\ell: y=x$. In \textcolor{oc-red-7}{dashed red}, we marked the line $\ell$, while in \textcolor{oc-green-7}{dashed green} --- the tangent line $\ell'$ at $(-1,-1)$, which is used to calculate $[2](-1,1)$.}
+        \caption{Illustration of the group law on the elliptic curve $E/\mathbb{R}: y^2=x^3-2x$. In \textcolor{oc-red-8}{red} we marked points lying on the line $\ell: y=x$. In \textcolor{oc-red-8}{dashed red}, we marked the line $\ell$, while in \textcolor{oc-green-7}{dashed green} --- the tangent line $\ell'$ at $(-1,-1)$, which is used to calculate $[2](-1,1)$.}
         \label{fig:ec_2}
     \end{figure}
 \end{example}
@@ -147,7 +147,7 @@ The following theorem is the central tool for estimating the number of points on
 A bit more intuitive explanation of above theorem: the number of points on an elliptic curve defined over the large finite field $\mathbb{F}_q$ is very close to $q$.
 
 \begin{remark}
-    In fact, $\#E(\mathbb{F}_q)$ can be computed in polylogarithmic time
+    $\#E(\mathbb{F}_q)$ can be computed in polylogarithmic time
     $O(\log^{\gamma}q)$ for some $\gamma>1$ (see, \textit{e.g.}, Schoof's algorithm~\cite{Schoof1995}). That being said, the number of
     points can be computed efficiently even for fairly large primes $q$.
 \end{remark}
@@ -255,7 +255,7 @@ Formally this is called an \textbf{equivalence relation}, which we define below.
     Let $\mathcal{G}$ be the set of all possible groups. Define a relation $\sim$ on $\mathcal{G}$ by $\mathbb{G} \sim \mathbb{H}$ if $\mathbb{G} \cong \mathbb{H}$ (in other words, $\mathbb{G}$ and $\mathbb{H}$ are isomorphic). Then $\sim$ is an equivalence relation.
 \end{example}
 
-Now, suppose we are given a set $\mathcal{X}$ with some equivalence relation $\sim$ (say, $\mathcal{X} = \mathbb{Z}$ and $a \equiv b \pmod{n}$). Notice that you can find some subset $\mathcal{X}' \subset \mathcal{X}$ in which all elements are equivalent (and any other element from $\mathcal{X} \setminus \mathcal{X}'$ is not). In the case of modulo relation above, $\mathcal{X}'$ could be the set of all integers that are congruent to $1$ modulo $n$, so $\mathcal{X}' = \{\dots,-n+1,1,n+1,2n+1,\dots\}$. This way, we can partition the set $\mathcal{X}$ into disjoint subsets, where all elements in each subset are equivalent. Such subsets are called \textbf{equivalence classes}. Now, let us give a formal definition.
+Now, suppose we are given a set $\mathcal{X}$ with some equivalence relation $\sim$ (say, $\mathcal{X} = \mathbb{Z}$ and $a \equiv b \pmod{n}$). Notice that you can find some subset $\mathcal{X}' \subseteq \mathcal{X}$ in which all elements are equivalent (and any other element from $\mathcal{X} \setminus \mathcal{X}'$ is not). In the case of modulo relation above, $\mathcal{X}'$ could be the set of all integers that are congruent to $1$ modulo $n$, so $\mathcal{X}' = \{\dots,-n+1,1,n+1,2n+1,\dots\}$. This way, we can partition the set $\mathcal{X}$ into disjoint subsets, where all elements in each subset are equivalent. Such subsets are called \textbf{equivalence classes}. Now, let us give a formal definition.
 
 \begin{definition}
     Let $\mathcal{X}$ be a set and $\sim$ be an equivalence relation on $\mathcal{X}$. For any $x \in \mathcal{X}$, the \textbf{equivalence class} of $x$ is the set
@@ -369,12 +369,12 @@ This definition on itself might be a bit too abstract, so let us consider the co
             \centering\includegraphics[trim={100 100 100 200}, width=0.47\linewidth, clip]{contents/images/lecture_4/line_1_view_2.pdf}
         \end{tabular}
         }
-        {\textbf{Illustration:} Geometric interpretation of $\mathbb{P}^2(\mathbb{R})$, the same scene from different perspectives. The \textcolor{red}{\textbf{red}} line is represented by equation $(2t,3t,t)$, \textcolor{blue}{\textbf{blue}} line by $(-2t,3t,3t)$, and \textcolor{green!60!black}{\textbf{green}} line is represented by $(t,-2t,5t)$ for parameter $t \in \mathbb{R}$.}
+        {\textbf{Illustration:} Geometric interpretation of $\mathbb{P}^2(\mathbb{R})$, the same scene from different perspectives. The \textcolor{oc-red-8}{\textbf{red}} line is represented by equation $(2t,3t,t)$, \textcolor{oc-blue-7}{\textbf{blue}} line by $(-2t,3t,3t)$, and \textcolor{green!60!black}{\textbf{green}} line is represented by $(t,-2t,5t)$ for parameter $t \in \mathbb{R}$.}
     \end{center}
 
     \vspace{-2mm}
 
-    Here, the figure demonstrates three equivalence classes, being a set of points on the \textcolor{red}{\textbf{red}}, \textcolor{blue}{\textbf{blue}}, and \textcolor{green!60!black}{\textbf{green}} lines (except for the origin). 
+    Here, the figure demonstrates three equivalence classes, being a set of points on the \textcolor{oc-red-8}{\textbf{red}}, \textcolor{oc-blue-7}{\textbf{blue}}, and \textcolor{green!60!black}{\textbf{green}} lines (except for the origin). 
     
     The reason why, geometrically, each equivalence class lies on a line that passes through the origin is as follows: suppose we have a point $\mathbf{v}_0 = (x_0,y_0,z_0) \in \mathbb{R}^3$, represented as a vector. Then, the set of all points that are equivalent to $(x_0,y_0,z_0)$ is the set of all points $(\lambda x_0, \lambda y_0, \lambda z_0) = \lambda\mathbf{v}_0$ for $\lambda \in \mathbb{R}\setminus \{0\}$. So $\mathbf{v}_0$ is the representative of equivalence class $[\mathbf{v}_0] = \{\lambda\mathbf{v}_0: \lambda \in \mathbb{R},\lambda \neq 0\}$. Now notice that this is a parametric equation of a line that passes through the origin and the point $\mathbf{v}_0$: for $\lambda=0$ (if we assume the expression is also defined for zero $\lambda$) we have the origin $\mathbf{0}$, while for $\lambda=1$ we have the point $\mathbf{v}_0$. Then, any other values of $\lambda$ within $[0,1]$ or outside it give points lying on that same line.
 \end{example}
@@ -390,9 +390,9 @@ Now, projective coordinates are not that useful unless we can come back to the a
         \small{\textbf{Illustration:} Geometric interpretation of converting projective to affine form.}
     \end{center}
 
-    By using the map $(X:Y:Z) \mapsto (X/Z,Y/Z)$, all points on the line get mapped to the intersection of the line with the plane $\pi: z=1$. This way, for example, points on the \textcolor{red}{\textbf{red line}} $\ell_{\text{red}}$ get mapped to the point $A'=(2,3,1)$, corresponding to $(2,3)$ in affine coordinates. So, for example, point $(6,9,3) \in \ell_{\text{red}}$, lying on the same line, gets mapped to $(6/3,9/3) = (2,3)$.
+    By using the map $(X:Y:Z) \mapsto (X/Z,Y/Z)$, all points on the line get mapped to the intersection of the line with the plane $\pi: z=1$. This way, for example, points on the \textcolor{oc-red-8}{\textbf{red line}} $\ell_{\text{red}}$ get mapped to the point $A'=(2,3,1)$, corresponding to $(2,3)$ in affine coordinates. So, for example, point $(6,9,3) \in \ell_{\text{red}}$, lying on the same line, gets mapped to $(6/3,9/3) = (2,3)$.
 
-    Similarly, all \textcolor{blue}{\textbf{blue line}} points get mapped to the point $B'=(-2/3,1,1)$, while all \textcolor{green!60!black}{\textbf{green line}} points get mapped to the point $C'=(0.2,-0.4,1)$\footnote{One can verify that based on the equations provided from the previous example.}.
+    Similarly, all \textcolor{oc-blue-7}{\textbf{blue line}} points get mapped to the point $B'=(-2/3,1,1)$, while all \textcolor{green!60!black}{\textbf{green line}} points get mapped to the point $C'=(0.2,-0.4,1)$\footnote{One can verify that based on the equations provided from the previous example.}.
 \end{example}
 
 \subsubsection{Elliptic Curve Equation in Projective Form}
@@ -415,7 +415,7 @@ This is an equation of the elliptic curve in \textbf{projective form}.
 
 Now, one of the motivations to work with the projective form was to unify affine points $E_{\mathbb{A}}/\overline{\mathbb{F}}_p$ and the point at infinity $\mathcal{O}$, which acted as an identity element in the group $E_{\mathbb{A}}(\overline{\mathbb{F}}_p)$. So how do we encode the point at infinity in the projective form?
 
-Well, notice the following observation: all points $(0:\lambda:0)$ always lie on the curve $E_{\mathbb{P}}(\overline{\mathbb{F}}_p)$. Moreover, the map from the projective form to the affine form is ill-defined for such points, since we would need to divide by zero. So, we can naturally make the points $(0:\lambda:0)$ to be the set of points at infinity. This way, we can define the point at infinity as $\mathcal{O} = (0:1:0)$.
+Observe the following: all points $(0:\lambda:0)$ always lie on the curve $E_{\mathbb{P}}(\overline{\mathbb{F}}_p)$. Moreover, the map from the projective form to the affine form is ill-defined for such points, since we would need to divide by zero. So, we can naturally make the points $(0:\lambda:0)$ to be the set of points at infinity. This way, we can define the point at infinity as $\mathcal{O} = (0:1:0)$.
 
 Finally, let us summarize what we have observed so far.
 
@@ -435,7 +435,7 @@ Finally, let us summarize what we have observed so far.
     \begin{center}
         \includegraphics[trim={275 100 225 100}, width=0.35\linewidth, clip]{contents/images/lecture_4/projective_ec.pdf}
         
-        {\textbf{Illustration:} BN254 Curve Elliptic Curve in Projective Form over $\mathbb{R}$. In \textcolor{black!80}{\textbf{gray}} is the surface, while \textcolor{red}{\textbf{red}} points are the points on the affine curve (lying on the plane $\pi: z=1$).}
+        {\textbf{Illustration:} BN254 Curve Elliptic Curve in Projective Form over $\mathbb{R}$. In \textcolor{black!80}{\textbf{gray}} is the surface, while \textcolor{oc-red-8}{\textbf{red}} points are the points on the affine curve (lying on the plane $\pi: z=1$).}
     \end{center}
 
     Points $P'\approx (0:2.165:1.25)$ and $P'' \approx (0:1.3:0.75)$ in projective form both lie on the curve and get mapped to the same point $P \approx (0,1.732)$ in affine coordinates.
@@ -466,7 +466,7 @@ In this case, to come back to the affine form, we need to use the map $\phi: (X:
     \begin{center}
         \includegraphics[trim={275 140 225 100}, width=0.3\linewidth, clip]{contents/images/lecture_4/projective_ec_jacobian.pdf}
         
-        {\textbf{Illustration:} BN254 Curve Elliptic Curve in Jacobian Projective Form over $\mathbb{R}$. In \textcolor{black!80}{\textbf{gray}} is the surface, while \textcolor{red}{\textbf{red}} points are the points on the affine curve (lying on the plane $\pi: z=1$).}
+        {\textbf{Illustration:} BN254 Curve Elliptic Curve in Jacobian Projective Form over $\mathbb{R}$. In \textcolor{black!80}{\textbf{gray}} is the surface, while \textcolor{oc-red-8}{\textbf{red}} points are the points on the affine curve (lying on the plane $\pi: z=1$).}
     \end{center}
 
     Notice that now, under the map $(X:Y:Z) \mapsto (X/Z^2,Y/Z^3)$, points in the same equivalence class (in $\mathbb{R}^3$) do not lie on the same line, but rather on the same \textit{curve}. Namely, equivalence class has a form $[(x_0,y_0,z_0)] = \{t^2x_0,t^3y_0,tz_0: t \in \mathbb{R} \setminus \{0\}\}$.
@@ -479,18 +479,18 @@ Let us come back to the affine case and assume that the underlying field is the 
     x_R \gets \left(\frac{y_Q-y_P}{x_Q-x_P}\right)^2 - x_P - x_Q, \;\;\; y_R \gets \left(\frac{y_Q-y_P}{x_Q-x_P}\right)(x_P-x_R) - y_P
 \end{equation*}
 
-Denote by $\textcolor{blue}{\mathsf{M}}$ the cost of multiplication, by $\textcolor{green!60!black}{\mathsf{S}}$ the cost of squaring, and by $\textcolor{red}{\mathsf{I}}$ the cost of inverse operation in $\mathbb{F}_p$. Note that we do not count addition/inverse costs as they are significantly lower than operations listed. Then, the cost of adding two points using above formula is $2\textcolor{blue}{\mathsf{M}} + 1\textcolor{green!60!black}{\mathsf{S}} + 1\textcolor{red}{\mathsf{I}}$. Indeed, our computation can proceed as follows:
+Denote by $\textcolor{oc-blue-7}{\mathsf{M}}$ the cost of multiplication, by $\textcolor{green!60!black}{\mathsf{S}}$ the cost of squaring, and by $\textcolor{oc-red-8}{\mathsf{I}}$ the cost of inverse operation in $\mathbb{F}_p$. Note that we do not count addition/inverse costs as they are significantly lower than operations listed. Then, the cost of adding two points using above formula is $2\textcolor{oc-blue-7}{\mathsf{M}} + 1\textcolor{green!60!black}{\mathsf{S}} + 1\textcolor{oc-red-8}{\mathsf{I}}$. Indeed, our computation can proceed as follows:
 \begin{enumerate}
-    \item Calculate $t_1 \gets (x_Q-x_P)^{-1}$, costing $1\textcolor{red}{\mathsf{I}}$.
-    \item Calculate $\lambda \gets (y_Q-y_P)t_1$, costing $1\textcolor{blue}{\mathsf{M}}$.
+    \item Calculate $t_1 \gets (x_Q-x_P)^{-1}$, costing $1\textcolor{oc-red-8}{\mathsf{I}}$.
+    \item Calculate $\lambda \gets (y_Q-y_P)t_1$, costing $1\textcolor{oc-blue-7}{\mathsf{M}}$.
     \item Calculate $t_2 \gets \lambda^2$, costing $1\textcolor{green!60!black}{\mathsf{S}}$.
     \item Calculate $x_R \gets t_2 - x_P - x_Q$, costing almost nothing.
-    \item Calculate $y_R \gets \lambda (x_P-x_R) - y_P$, costing $1\textcolor{blue}{\mathsf{M}}$.
+    \item Calculate $y_R \gets \lambda (x_P-x_R) - y_P$, costing $1\textcolor{oc-blue-7}{\mathsf{M}}$.
 \end{enumerate}
 
-Well, there are just 4 operations in total, so what can go wrong? The problem is that we need to calculate the inverse of $(x_Q-x_P)$, which is a very, very costly operation. In fact, typically $1\textcolor{red}{\mathsf{I}} \gg 20\textcolor{blue}{\mathsf{M}}$ or even worse, the ratio might reach $80$ in certain cases.
+Well, there are just 4 operations in total, so what can go wrong? The problem is that we need to calculate the inverse of $(x_Q-x_P)$, which is a very, very costly operation. In fact, typically $1\textcolor{oc-red-8}{\mathsf{I}} \gg 20\textcolor{oc-blue-7}{\mathsf{M}}$ or even worse, the ratio might reach $80$ in certain cases.
 
-Now imagine we want to add 4 points, say $P_1 \oplus P_2 \oplus P_3 \oplus P_4$: this costs $6\textcolor{blue}{\mathsf{M}} + 3\textcolor{green!60!black}{\mathsf{S}} + 3\textcolor{red}{\mathsf{I}}$. Now we have 3 inverses, which is a lot. Finally, if we are to add much larger number of points (for example, when finding the scalar product), this gets even worse. 
+Now imagine we want to add 4 points, say $P_1 \oplus P_2 \oplus P_3 \oplus P_4$: this costs $6\textcolor{oc-blue-7}{\mathsf{M}} + 3\textcolor{green!60!black}{\mathsf{S}} + 3\textcolor{oc-red-8}{\mathsf{I}}$. Now we have 3 inverses, which is a lot. Finally, if we are to add much larger number of points (for example, when finding the scalar product), this gets even worse. 
 
 Projective coordinates is a way to solve this problem. The idea is to represent points in the projective form $(X:Y:Z)$, so when adding two points in projective form, you still get a point in a form $(X:Y:Z)$. Then, after conducting a series of additions, you can convert the point back to the affine form. 
 
@@ -505,7 +505,7 @@ But why is adding two points, say, $(X_P:Y_P:Z_P)$ and $(X_Q:Y_Q:Z_Q)$, in the p
     $}
 \end{xequation*}
 
-Do not be afraid, you do not need to understand how this formula is derived. But notice that despite the very scary look, there is no inversions involved! Moreover, this formula can be calculated in only $12\textcolor{blue}{\mathsf{M}}+2\textcolor{green!60!black}{\mathsf{S}}$! So all in all, this is much more efficient than $2\textcolor{blue}{\mathsf{M}} + 1\textcolor{green!60!black}{\mathsf{S}} + 1\textcolor{red}{\mathsf{I}}$.
+Do not be afraid, you do not need to understand how this formula is derived. But notice that despite the very scary look, there is no inversions involved! Moreover, this formula can be calculated in only $12\textcolor{oc-blue-7}{\mathsf{M}}+2\textcolor{green!60!black}{\mathsf{S}}$! So all in all, this is much more efficient than $2\textcolor{oc-blue-7}{\mathsf{M}} + 1\textcolor{green!60!black}{\mathsf{S}} + 1\textcolor{oc-red-8}{\mathsf{I}}$.
 
 The only inversion which is unavoidable in the projective form is the inversion of $Z$ since after all additions (and doublings) have been made, we need to use map $(X:Y:Z) \mapsto (X/Z,Y/Z)$ to return back to the affine form. However, this inversion is done only once at the end of the computation, so it is not that costly.
 
@@ -514,9 +514,9 @@ The only inversion which is unavoidable in the projective form is the inversion 
 \begin{proposition}
     To conclude, typically, when working with elliptic curves, one uses the following strategy:
     \begin{enumerate}
-        \item Convert affine points to projective form using the map $(x,y) \mapsto (x:y:1)$.
+        \item Convert affine points to projective form using $(x,y) \mapsto (x:y:1)$.
         \item Perform all operations in the projective form, which do not involve inversions.
-        \item Convert the result back to the affine form using the map $(X:Y:Z) \mapsto (X/Z,Y/Z)$.
+        \item Convert the result back to affine form by $(X:Y:Z) \mapsto (X/Z,Y/Z)$.
     \end{enumerate}
 
     This is illustrated in the Figure below.
@@ -531,7 +531,7 @@ The only inversion which is unavoidable in the projective form is the inversion 
 
 Now, the question is: how do we implement the scalar multiplication $[k]P$ for the given scalar $k \in \mathbb{Z}_r$ and point $P \in E(\overline{\mathbb{F}}_q)$? 
 
-First idea: let us simply add $P$ to itself $k$ times. Well, the complexity would be $O(k)$ in this case, which is even harder than solving the discrete logarithm problem (recall that the discrete logarithm problem has a complexity of $O(\sqrt{k})$).
+First idea: let us simply add $P$ to itself $k$ times. However, the complexity would be $O(k)$ in this case, which is even harder than solving the discrete logarithm problem (recall that the discrete logarithm problem has a complexity of $O(\sqrt{k})$).
 
 So there should be a better way. In this section we will limit ourselves to the double-and-add method, but the curious reader can look up the NAF (Non-Adjacent Form) method, windowed methods, GLV scalar decomposition and many other methods, which we are not going to cover in this course.
 
@@ -548,7 +548,7 @@ The idea of the double-and-add method is following: we represent the $N$-bit sca
     
     $T \gets P$
     
-    \For{$i \in \{0,\dots,N-1\}$}{
+    \For{$i \in [N]$}{
         \If{$k_i = 1$}{
             $R \gets R \oplus T$
         }
@@ -561,8 +561,9 @@ The idea of the double-and-add method is following: we represent the $N$-bit sca
 
 Good news: now we have a complexity of $O(N)=O(\log k)$, which is way much better than a linear one. In fact, many more optimized methods have the same assymptotic complexity (meaning, a logarithmic one), so it turns out that 
 we cannot do much better than that. However, the main advantage of other, more optimized methods is that we can avoid making too many additions (here, in the worst case, we have to make $N$ additions), which is a costly operation (and more expensive than doubling).
+For a more comprehensive overview, the reader is encouraged to read~\cite{guide-to-ec}.
 
-Moreover, here we can use projective coordinates to make the addition and doubling operation more efficient! After all, typically the number of operations is even more than $300$, so making $300$ inversions in affine form is not an option.
+Moreover, here we can use projective coordinates to make the addition and doubling operation more efficient. After all, typically the number of operations is even more than $300$, so making $300$ inversions in affine form is not an option.
 
 \vspace{-0.15mm}
 
@@ -576,26 +577,24 @@ constructions, and other cryptographic applications.
 Consider the \textit{Decisional Diffie-Hellman problem} which we described in \Cref{section:security-analysis} 
 (based on $g^{\alpha},g^{\beta}$ and $g^{\gamma}$, decide whether $\gamma = \alpha\beta$). Turns out that for curves 
 where the so-called \textit{embedding degree}\footnote{We will mention what that is later, but still this term is 
-quite hard to define.} is small enough, this problem is easy to solve. This might sound like a quite bad thing, but 
+quite hard to define.} is small enough, this problem is easy to solve. This might sound like a significant security issue, but 
 it turns out that although some information about the discrete logarithm is leaked, it is not enough to break the 
-security of the system (basically, solve the \textit{Computational Diffie-Hellman problem}). Pairings is the exact 
-object that allows us to solve the Decisional Diffie-Hellman problem.
+security of the system (\textit{e.g.}, solve the \textit{Computational Diffie-Hellman problem}). Pairings is the exact 
+object that allows us to solve the Decisional DH problem.
 
 However, a more interesting use-case which we are going to use in SNARKs is that pairings allows us to check 
 \textbf{quadratic conditions} on scalars using their corresponding elliptic curve representation. For example, 
-just given $u=g^{\alpha},v=g^{\beta}$ we can check whether $\alpha\beta+5=0$ (which is impossible to check without 
+just given $u=g^{\alpha},v=g^{\beta}$ we can check whether $\alpha\beta+5=0$ (which is problematic to check without 
 having a pairing). 
 
-So what is pairing?
-
 \begin{definition}
-    \textbf{Pairing} is a bilinear, non-degenerate, efficiently computable map $e: \textcolor{red}{\mathbb{G}_1} \times \textcolor{blue}{\mathbb{G}_2} \to \textcolor{ForestGreen}{\mathbb{G}_T}$, where $\textcolor{red}{\mathbb{G}_1},\textcolor{blue}{\mathbb{G}_2}$ are two groups (typically, elliptic curve groups) and $\textcolor{ForestGreen}{\mathbb{G}_T}$ is a target group (typically, a set of scalars). Let us decipher the definition:
+    \textbf{Pairing} is a bilinear, non-degenerate, efficiently computable map $e: \textcolor{oc-red-8}{\mathbb{G}_1} \times \textcolor{oc-blue-7}{\mathbb{G}_2} \to \textcolor{oc-green-7}{\mathbb{G}_T}$, where $\textcolor{oc-red-8}{\mathbb{G}_1},\textcolor{oc-blue-7}{\mathbb{G}_2}$ are two groups (typically, elliptic curve groups) and $\textcolor{oc-green-7}{\mathbb{G}_T}$ is a target group (typically, a set of scalars). Let us decipher the definition:
     \begin{itemize}
-        \item \textbf{Bilinearity} means essentially the following:
+        \item \textbf{Bilinearity} means the following:
         \begin{xequation*}
-            e([a]\textcolor{red}{P},[b]\textcolor{blue}{Q}) = e([ab]\textcolor{red}{P},\textcolor{blue}{Q}) = e(\textcolor{red}{P},[ab]\textcolor{blue}{Q}) = e(\textcolor{red}{P},\textcolor{blue}{Q})^{ab}.        
+            e([a]\textcolor{oc-red-8}{P},[b]\textcolor{oc-blue-7}{Q}) = e([ab]\textcolor{oc-red-8}{P},\textcolor{oc-blue-7}{Q}) = e(\textcolor{oc-red-8}{P},[ab]\textcolor{oc-blue-7}{Q}) = e(\textcolor{oc-red-8}{P},\textcolor{oc-blue-7}{Q})^{ab}.        
         \end{xequation*}
-        \item \textbf{Non-degeneracy} means that $e(G_1,G_2) \neq 1$ (where $G_1,G_2$ are generators of $\textcolor{red}{\mathbb{G}_1},\textcolor{blue}{\mathbb{G}_2}$, respectively). This property basically says that the pairing is not trivial.
+        \item \textbf{Non-degeneracy} means that $e(G_1,G_2) \neq 1$ (where $G_1,G_2$ are generators of $\textcolor{oc-red-8}{\mathbb{G}_1},\textcolor{oc-blue-7}{\mathbb{G}_2}$, respectively). To put it more simply, this property says that the pairing is not trivial.
         \item \textbf{Efficient computability} means that the pairing can be computed in a reasonable time.
     \end{itemize}
 
@@ -618,20 +617,21 @@ So what is pairing?
     \begin{xequation*}
         e(x,y)= 2^{xy}
     \end{xequation*}
-    is pairing. Indeed, it is bilinear. For example, $e(ax,by) = 2^{abxy} = (2^{xy})^{ab} = e(x,y)^{ab}$ or $e(ax,by)=2^{abxy}=2^{(x)(aby)}=e(x,aby)$. Moreover, it is non-degenerate, since $e(1,1)=2 \neq 1$. And finally, it is obviously efficiently computable.
 
-    However, this is a quite trivial example since working over integers is typically not secure. For example, the discrete logarithm over $\mathbb{Z}_r$ can be solved in subexponential time. For that reason, we want to build pairings over elliptic curves.
+    is pairing. Indeed, it is bilinear. For example, $e(ax,by) = 2^{abxy} = (2^{xy})^{ab} = e(x,y)^{ab}$ or $e(ax,by)=2^{abxy}=2^{(x)(aby)}=e(x,aby)$. Moreover, it is non-degenerate, since $e(1,1)=2 \neq 1$. Finally, it is clearly efficiently computable.
+
+    However, this is a quite a trivial example since working over integers is typically not secure. For example, the discrete logarithm over $\mathbb{Z}_r$ can be solved in subexponential time. For that reason, we want to build pairings over elliptic curves.
 \end{example}
 
 \begin{example}
     \textbf{Pairing for BN254.} For BN254 (with equation $y^2=x^3+3$), the pairing function $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ is defined over the following groups:
     \begin{itemize}
-        \item $\textcolor{red}{\mathbb{G}_1}$ --- points on the regular curve $E(\mathbb{F}_p)$.
-        \item $\textcolor{blue}{\mathbb{G}_2}$ --- $r$-torsion points on the twisted curve $E'(\mathbb{F}_{p^2})$ over the field extension $\mathbb{F}_{p^2}$ (with equation $y^2 = x^3+\frac{3}{\xi}$ for $\xi=9+u \in \mathbb{F}_{p^2}$).
-        \item $\textcolor{ForestGreen}{\mathbb{G}_T}$ --- $r$th roots of unity $\Omega_r \subset \mathbb{F}_{p^{12}}^{\times}$.
+        \item $\textcolor{oc-red-8}{\mathbb{G}_1}$ --- points on the regular curve $E(\mathbb{F}_p)$.
+        \item $\textcolor{oc-blue-7}{\mathbb{G}_2}$ --- $r$-torsion points on the twisted curve $E'(\mathbb{F}_{p^2})$ over the field extension $\mathbb{F}_{p^2}$ (with equation $y^2 = x^3+\frac{3}{\xi}$ for $\xi=9+u \in \mathbb{F}_{p^2}$).
+        \item $\textcolor{oc-green-7}{\mathbb{G}_T}$ --- $r$th roots of unity $\Omega_r \subseteq \mathbb{F}_{p^{12}}^{\times}$.
     \end{itemize}
 
-    Well, this one is quite intense and even understanding the input and output parameters is quite hard. So let us decipher some components:
+    This definition is quite dense and even understanding the input and output parameters is quite hard. So let us decipher some components:
     \begin{itemize}
         \item \textbf{$r$-torsion subgroup on the curve $E(\mathbb{F}_{p^m})$} is simply a set of points, which multiplied by $r$ give the point at infinity (that is, $[r]P=\mathcal{O}$). Formally, $E(\mathbb{F}_{p^m})[r] = \{P \in E(\mathbb{F}_{p^m}): [r]P = \mathcal{O}\}$. Of course, for the curve $E(\mathbb{F}_p)$, the $r$-torsion subgroup is simply the whole curve, but that is generally not the case for the twisted curve over the extension field.
         \item \textbf{$r$th roots of unity} is a set of elements $\Omega_r = \{z \in \mathbb{F}_{p^{12}}^{\times}: z^r=1\}$. This is a group under multiplication, and it has exactly $r$ elements.
@@ -639,40 +639,46 @@ So what is pairing?
 \end{example}
 
 \begin{remark}
-    One might a reasonable question: where does this $12$ come from? The answer is following: the so-called \textbf{embedding degree} of BN254 curve is $k=12$. This number is the key to understanding why we are working over such large extensions when calculating the pairing. The formal description is quite hard, but the intuition is following: the embedding degree is the smallest number $k$ such that all the $r$th roots of unity lie inside the extended field $\mathbb{F}_{p^k}$. If $k$ was smaller, the output of pairing would contain fewer than $r$ points and some points would be missing, which would make the pairing more trivial. For that reason, we need to have $\Omega_r \subset \mathbb{F}_{p^k}$.
+    One might a reasonable question: where does this $12$ come from? The answer is following: the so-called \textbf{embedding degree} of BN254 curve is $k=12$. This number is the key to understanding why we are working over such large extensions when calculating the pairing. The formal description is quite hard, but the intuition is following: the embedding degree is the smallest number $k$ such that all the $r$th roots of unity lie inside the extended field $\mathbb{F}_{p^k}$. If $k$ was smaller, the output of pairing would contain fewer than $r$ points and some points would be missing, which would make the pairing more trivial. For that reason, we need to have $\Omega_r \subseteq \mathbb{F}_{p^k}$.
 \end{remark}
 
 \begin{definition}
     The following conditions are equivalent \textbf{definitions} of an embedding degree $k$ of an elliptic curve $E(\overline{\mathbb{F}}_p)$:
     \begin{itemize}
         \item $k$ is the smallest positive integer such that $r \mid (p^k-1)$.
-        \item $k$ is the smallest positive integer such that $\mathbb{F}_{p^k}$ contains all of the $r$-th roots of unity in $\overline{\mathbb{F}}_p$, that is $\Omega_r \subset \mathbb{F}_{p^k}$.
-        \item $k$ is the smallest positive integer such that $E(\overline{\mathbb{F}}_p)[r] \subset E(\mathbb{F}_{p^k})$
+        \item $k$ is the smallest positive integer such that $\mathbb{F}_{p^k}$ contains all of the $r$-th roots of unity in $\overline{\mathbb{F}}_p$, that is $\Omega_r \subseteq \mathbb{F}_{p^k}$.
+        \item $k$ is the smallest positive integer such that $E(\overline{\mathbb{F}}_p)[r] \subseteq E(\mathbb{F}_{p^k})$
     \end{itemize}
 \end{definition}
 
-Pretty obvious observation: lower embedding degree is faster to work with, since it allows us to work over smaller fields. But usually, this embedding degree is quite large and we need to craft elliptic curves specifically to have a small embedding degree. For example, a pretty famous curve \texttt{secp256k1} has an embedding degree
-\begin{xequation*}
+Notice the following fact: lower embedding degree is faster to work with, since it allows us to work over smaller fields. 
+However, for arbitrary randomly chosen elliptic curves, this embedding degree is typically too large for practical applications. 
+Consequently, one needs to craft elliptic curves specifically to have a small embedding degree. 
+For example, a famous \texttt{secp256k1} curve has an embedding degree
+\begin{equation*}
     k = \scalebox{0.95}{$\mathsf{0x2aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa74727a26728c1ab49ff8651778090ae0}$},
-\end{xequation*}
+\end{equation*}
 which is 254-bit long. For that reason, it is natural to define the term \textit{pairing-friendly elliptic curve}.
 \begin{definition}
     An elliptic curve is called \textbf{pairing-friendly} if it has a relatively small embedding degree $k$ (typically, $k \leq 16$).
 \end{definition}
 
 \begin{remark}
-    One might ask why usually, when dealing with pairings, we do not get to work with field extensions that much (most likely, if you were to write \texttt{groth16} from scratch using some mathematical libraries, you will not need to work with $\mathbb{F}_{p^{12}}$ arithmetic specifically). The reason is that typically, libraries implement the following abstraction: given a set of points $\{(P_i,Q_i)\}_{i=1}^n \subset \mathbb{G}_1^n \times \mathbb{G}_2^n$, the function checks whether
+    One might ask why usually, when dealing with pairings, we do not get to work with field extensions that much in practice; for instance, if you were to write \texttt{groth16} from scratch using some mathematical libraries, you will not need to work with $\mathbb{F}_{p^{12}}$ arithmetic specifically. The reason is that mathematical libraries usually implement the following abstraction: given a set of points $\{(P_i,Q_i)\}_{i=1}^n \subseteq \mathbb{G}_1^n \times \mathbb{G}_2^n$, the function checks whether
     \begin{xequation*}
-        \prod_{i=1}^n e(P_i,Q_i) = 1
+        \prod_{i=1}^n e(P_i,Q_i) = 1.
     \end{xequation*}
+    
     Note that in this case, we do not need to work with $\mathbb{F}_{p^{12}}$ arithmetic, but rather checking the equality in the target group $\mathbb{G}_T$. 
 
-    \textbf{Interesting fact:} this condition is specified in the \texttt{ecpairing} precompile standard used in Ethereum.
+    \textbf{Interesting fact:} this condition is specified in the \texttt{ecpairing} precompile standard used in \textit{Ethereum}: see for example \url{https://www.evm.codes/precompiled?fork=osaka#0x08} for details.
 \end{remark}
 
 \subsubsection{Case Study: BLS Signature}
 
-One of the most elegant applications of pairings is the BLS Signature scheme. Compared to ECDSA or other signature schemes, BLS can be formulated in three lines.
+One of the most elegant applications of pairings is the BLS Signature scheme. 
+Compared to ECDSA or other signature schemes, BLS can be formulated in three lines.
+The main reason why it is attractive for practitioners is that it is succinct and enables efficient non-interactive aggregation.
 
 Suppose we have pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ (with generators $G_1,G_2$, respectively), and a hash function $\mathsf{H}$, mapping message space $\mathcal{M}$ to $\mathbb{G}_1$.
 \begin{definition}
@@ -685,17 +691,15 @@ Suppose we have pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$ (
 \end{definition}
         
 Let us check the correctness:
-\begin{xequation*}
-    e(\sigma,G_2) = e(\textcolor{blue}{[\mathsf{sk}]}\mathsf{H}(m),G_2) = e(\mathsf{H}(m), \textcolor{blue}{[\mathsf{sk}]}G_2) = e(\mathsf{H}(m), \mathsf{pk})
-\end{xequation*}
+\begin{equation*}
+    e(\sigma,G_2) = e(\textcolor{oc-blue-7}{[\mathsf{sk}]}\mathsf{H}(m),G_2) = e(\mathsf{H}(m), \textcolor{oc-blue-7}{[\mathsf{sk}]}G_2) = e(\mathsf{H}(m), \mathsf{pk})
+\end{equation*}
 
 As we see, the verification equation holds. 
     
 \begin{remark}
     $\mathbb{G}_1$ and $\mathbb{G}_2$ might be switched: public keys might live instead in $\mathbb{G}_1$ while signatures in $\mathbb{G}_2$.        
 \end{remark}
-
-This scheme is also quite famous for its aggregation properties, which we are not going to consider today.
 
 \subsubsection{Case Study: Verifying Quadratic Equations}
 
@@ -711,7 +715,7 @@ This scheme is also quite famous for its aggregation properties, which we are no
 \end{example}
 
 \begin{example}
-    Well, now suppose we make the problem just a bit more complicated: Alice wants to convince that she knows $\alpha,\beta$ such that $\alpha\beta=2$. And it turns out that elliptic curve points on their own are not enough to verify this. However, using pairings, we can do the following trick: assume we have a pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$, where $\mathbb{G}_1$ is generated by $G_1$ and $\mathbb{G}_2$ is generated by $G_2$. Then, Alice can do the following:
+    Now suppose we make the problem just a bit more complicated: Alice wants to convince that she knows $\alpha,\beta$ such that $\alpha\beta=2$. And it turns out that elliptic curve points on their own are not enough to verify this. However, using pairings, we can do the following trick: assume we have a pairing $e: \mathbb{G}_1 \times \mathbb{G}_2 \to \mathbb{G}_T$, where $\mathbb{G}_1$ is generated by $G_1$ and $\mathbb{G}_2$ is generated by $G_2$. Then, Alice can do the following:
     \begin{enumerate}
         \item Alice computes $P \gets [\alpha]G_1 \in \mathbb{G}_1, Q \gets [\beta]G_2 \in \mathbb{G}_2$ --- points on two curves.
         \item Alice sends $(P,Q) \in \mathbb{G}_1 \times \mathbb{G}_2$ to Bob.

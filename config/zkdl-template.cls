@@ -29,6 +29,7 @@
 \RequirePackage[makeroom]{cancel}
 \RequirePackage{extarrows}
 \RequirePackage{bbm}
+\RequirePackage{stmaryrd} % For fancy double brackets
 
 % --- Layout and Formatting ---
 \RequirePackage[
@@ -332,7 +333,32 @@
 \newcommand{\Circ}{\textit{\texttt{C}}}
 
 % --- Theorem environments ---
-% --- Theorem environments ---
+
+% Filled box (colored background)
+% --- Box styles using tcolorbox ---
+\RequirePackage{etoolbox}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{fontawesome5} % For nice icons
+
+\newcommand{\niceboxfilled}[3]{% #1 env, #2 back color, #3 border color
+  \tcolorboxenvironment{#1}{%
+    breakable, boxrule=0pt, boxsep=0pt,
+    colback={#2}, left=8pt, right=8pt,
+    enhanced jigsaw, borderline west={2.5pt}{0pt}{#3},
+    sharp corners, before skip=10pt, after skip=10pt,
+    drop fuzzy shadow={black!15}%
+  }%
+}
+
+% Plain box (border only, no fill)
+\newcommand{\niceboxplain}[2]{% #1 env, #2 border color
+  \tcolorboxenvironment{#1}{%
+    breakable, boxrule=0pt, boxsep=0pt, blanker,
+    borderline west={2.5pt}{0pt}{#2}, left=8pt, right=8pt,
+    sharp corners, before skip=10pt, after skip=10pt%
+  }%
+}
+
 \newtheoremstyle{mystyle}{}{}{}{}{\bfseries}{.}{ }{}
 \newtheoremstyle{cstyle}{}{}{}{}{\bfseries}{.}{ }{\thmnote{#3}}
 \makeatletter
@@ -345,18 +371,23 @@
 \newtheorem{theorem}{Theorem}[section]
 \newtheorem{lemma}{Lemma}[section]
 \newtheorem{corollary}{Corollary}[section]
-\newtheorem*{remark}{Remark}
-\newtheorem*{remarks}{Remarks}
+
+% Environments with inline icons embedded in their title
+\newtheorem*{remark}{{\small\textcolor{oc-green-7}{\faCommentDots}}\ Remark}
+\newtheorem*{remarks}{{\small\textcolor{oc-green-7}{\faCommentDots}}\ Remarks}
 \newtheorem{example}{Example}[section]
 \newtheorem{examples}{Examples}[section]
 
+\newtheorem{intuition}{{\small\textcolor{oc-yellow-7}{\faLightbulb}}\ Intuition}[section]
+\newtheorem{intuitions}{{\small\textcolor{oc-yellow-7}{\faLightbulb}}\ Intuitions}[section]
+
 % For a range of exercises
 \newenvironment{exbox}[1]{%
-  \par\noindent{\bfseries#1}\par\nobreak\smallskip\noindent\ignorespaces
+  \par\noindent{\bfseries{\small\textcolor{oc-pink-7}{\faPencil*}}\ #1}\par\nobreak\smallskip\noindent\ignorespaces
 }{\par}
 
 \theoremstyle{definition}
-\newtheorem*{exercise}{Exercise}
+\newtheorem*{exercise}{{\small\textcolor{oc-pink-7}{\faPencil*}}\ Exercise}
 
 \theoremstyle{cstyle}
 \newtheorem*{cthm}{}
@@ -374,6 +405,8 @@
 \Crefname{proposition}{Proposition}{Propositions}
 \crefalias{example}{example}
 \crefalias{examples}{example}
+\crefname{intuition}{intuition}{intuitions}
+\Crefname{intuition}{Intuition}{Intuitions}
 
 % Load custom environment 
 \input{config/x-environments.cls}
@@ -387,21 +420,34 @@
 \newcommand{\warningsign}[1]{\tikz[scale=#1,every node/.style={transform shape}]{\draw[-,line width={#1*0.8mm},red,fill=yellow,rounded corners={#1*2.5mm}] (0,0)--(1,{-sqrt(3)})--(-1,{-sqrt(3)})--cycle;
 \node at (0,-1) {\fontsize{48}{60}\selectfont\bfseries!};}}
 
-% --- Box styles using tcolorbox ---
-\RequirePackage[most]{tcolorbox}
+% Filling boxes for theorems/lemmas
+\niceboxfilled{definition}{oc-indigo-1}{oc-indigo-7}
+\niceboxfilled{theorem}{oc-indigo-1}{oc-indigo-7}
+\niceboxfilled{proposition}{oc-orange-1}{oc-orange-7}
+\niceboxfilled{lemma}{oc-blue-1}{oc-blue-7}
+\niceboxfilled{corollary}{oc-violet-1}{oc-violet-7}
+\niceboxfilled{cthm}{oc-gray-1}{oc-gray-7}
+\niceboxfilled{example}{oc-gray-1}{oc-gray-7}
 
-\tcolorboxenvironment{definition}{   breakable, boxrule=0pt, boxsep=0pt, colback={oc-indigo-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-indigo-7},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{proposition}{  breakable, boxrule=0pt, boxsep=0pt, colback={oc-orange-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-orange-7},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{theorem}{      breakable, boxrule=0pt, boxsep=0pt, colback={oc-indigo-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-indigo-7},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{lemma}{        breakable, boxrule=0pt, boxsep=0pt, colback={oc-blue-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-blue-7},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{corollary}{    breakable, boxrule=0pt, boxsep=0pt, colback={oc-violet-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-violet-7},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{remark}{       breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{oc-green-7},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{remarks}{      breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{oc-green-7},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{example}{      breakable, boxrule=0pt, boxsep=0pt, colback={oc-gray-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-gray-7},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{examples}{     breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{Black},left=8pt,right=8pt,sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{cthm}{         breakable, boxrule=0pt, boxsep=0pt, colback={oc-gray-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-gray-7},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{exercise}{     breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{oc-pink-7},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{exbox}{        breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{oc-pink-7},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
+\niceboxplain{examples}{Black}
+\niceboxplain{remark}{oc-green-7}
+\niceboxplain{remarks}{oc-green-7}
+\niceboxplain{exercise}{oc-pink-7}
+\niceboxplain{exbox}{oc-pink-7}
+\niceboxplain{intuition}{oc-yellow-7}
+
+% \tcolorboxenvironment{definition}{   breakable, boxrule=0pt, boxsep=0pt, colback={oc-indigo-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-indigo-7},sharp corners,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{proposition}{  breakable, boxrule=0pt, boxsep=0pt, colback={oc-orange-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-orange-7},sharp corners,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{theorem}{      breakable, boxrule=0pt, boxsep=0pt, colback={oc-indigo-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-indigo-7},sharp corners,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{lemma}{        breakable, boxrule=0pt, boxsep=0pt, colback={oc-blue-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-blue-7},sharp corners,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{corollary}{    breakable, boxrule=0pt, boxsep=0pt, colback={oc-violet-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-violet-7},sharp corners,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{remark}{       breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{oc-green-7},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{remarks}{      breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{oc-green-7},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{example}{      breakable, boxrule=0pt, boxsep=0pt, colback={oc-gray-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-gray-7},sharp corners,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{examples}{     breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{Black},left=8pt,right=8pt,sharp corners,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{cthm}{         breakable, boxrule=0pt, boxsep=0pt, colback={oc-gray-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-gray-7},sharp corners,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{exercise}{     breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{oc-pink-7},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{exbox}{        breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{oc-pink-7},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
 
 % --- Algorithm packages ---
 \RequirePackage[titlenumbered,linesnumbered,ruled]{algorithm2e}

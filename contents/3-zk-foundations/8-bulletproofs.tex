@@ -30,7 +30,7 @@ Let $a,b,c \in \mathbb{F}_p$. Here we build a zero-knowledge protocol for the re
 Consider the first-degree polynomials $l(x) = a + s_L x, r(x) = b + s_R x \in \mathbb{F}_p[x]$. Let $t(x) = l(x)r(x)$ and consider the relation
 $$\mathcal{R}_{mul} = \{ (\bot;l(x),r(x),t(x)) \vert t(x) = l(x)r(x)\}$$
 Firstly, observe that proving $t(x) = l(x)r(x)$ may be reduced to an evaluation check at some challenge point $u \in \mathbb{F}_p$: $t(u) = l(u)r(u)$, due to the \textit{Schwartz-Zippel lemma} (\Cref{lemma:one-sz}):
-$$\mathsf{Pr}[l(u)r(u) = t(u) \vert l(x)r(x) \neq t(x)] \le \frac{max(\deg(l(x)r(x)), \deg(t(x)))}{p} = \frac{2}{p}$$
+$$\mathsf{Pr}[l(u)r(u) = t(u) \vert l(x)r(x) \neq t(x)] \le \frac{\max(\deg(l(x)r(x)), \deg(t(x)))}{p} = \frac{2}{p}$$
 which is typically a negligible function of the security level, making this check \textit{sound}.
 
 \subsubsection{Naïve polynomial multiplication protocol}

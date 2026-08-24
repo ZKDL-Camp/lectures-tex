@@ -118,19 +118,19 @@ Now, notice that $e$ might not be included in the proof since the verifier can c
 
 \subsection{Schnorr's Signature Scheme}
 
-Now, turning the Schnorr's Identification Protocol into a signature scheme is quite straightforward. The only modification to the non-interactive proof described in the previous section is that we include the message $m \in \mathcal{M}$ instead of our statement $u \in \mathbb{G}$ in the computation of the challenge $e$. Additionally, suppose we use the hash function $H$ as a random oracle from the previous section. Now, let us give a formal definition.
+Now, turning the Schnorr's Identification Protocol into a signature scheme is quite straightforward. The only modification to the non-interactive proof described in the previous section is that we include the message $m \in \mathcal{M}$ instead of our statement $u \in \mathbb{G}$ in the computation of the challenge $e$. Additionally, suppose we use the hash function $\mathsf{H}$ as a random oracle from the previous section. Now, let us give a formal definition.
 
 \begin{definition}
     The \textbf{Schnorr Signature Scheme} $\Sigma_{\text{Sch}}$ \cite{schnorr1989} is a tuple of algorithms $(\mathsf{Gen}, \mathsf{Sign}, \mathsf{Verify})$, where:
     \begin{itemize}
         \item $\mathsf{Gen}(1^{\lambda})$: We take $\alpha \leftarrowS \mathbb{Z}_q$ and $u \gets g^{\alpha}$. The \textit{public key} is $\mathsf{pk} := u$, while the \textit{secret key} as $\mathsf{sk} := \alpha$.
-        \item $\mathsf{Sign}(m,\mathsf{sk})$: The signer computes $r \gets \mathbb{Z}_q^{\times}, a \gets g^{r}, e \gets H(m, a), \sigma \gets r + \alpha e$ and outputs the signature $(a,\sigma)$.
-        \item $\mathsf{Verify}((a, \sigma), m,\mathsf{pk})$: Verifier checks $g^{\sigma} = a \cdot u^e$ for $e \gets H(m, a)$.
+        \item $\mathsf{Sign}(m,\mathsf{sk})$: The signer computes $r \gets \mathbb{Z}_q^{\times}$, $a \gets g^{r}$, $e \gets \mathsf{H}(m, a)$, $\sigma \gets r + \alpha e$ and outputs the signature $(a,\sigma)$.
+        \item $\mathsf{Verify}((a, \sigma), m,\mathsf{pk})$: Verifier checks $g^{\sigma} = a \cdot u^e$ for $e \gets \mathsf{H}(m, a)$.
     \end{itemize}
 \end{definition}
 
 \begin{remark}
-    Typically, one also uses a so-called ``\textit{key-prefixed}'' variant of the scheme, where the challenge $e$ is computed as $e \gets H(\mathsf{pk}, m, a)$ for a random oracle $H: \mathbb{G} \times \mathcal{M} \times \mathbb{G} \to \mathbb{Z}_q$. It was argued that such variant has a better multi-user security bound than the classical one.
+    Typically, one also uses a so-called ``\textit{key-prefixed}'' variant of the scheme, where the challenge $e$ is computed as $e \gets \mathsf{H}(\mathsf{pk}, m, a)$ for a random oracle $\mathsf{H}: \mathbb{G} \times \mathcal{M} \times \mathbb{G} \to \mathbb{Z}_q$. It was argued that such variant has a better multi-user security bound than the classical one.
 \end{remark}
 
 \subsection{Sigma Protocols}
@@ -394,7 +394,7 @@ Now, we describe the algorithm.
 
 Now, let us implement the Okamoto Protocol from \Cref{section:okamoto_protocol} in SageMath! We propose to make the proof 
 over the secp256k1 curve, which is widely used in Bitcoin. We define it as follows (we shorten the curve parameters for brevity):
-\begin{lstlisting}[language=Python]
+\begin{minted}{python}
 p = 2**256-2**32-2**9-2**8-2**7-2**6-2**4-1
 Fp = GF(p)
 a = 0
@@ -405,44 +405,44 @@ G = E((55066...29240, 32670...82424))
 # Group order
 q = 115792...494337
 Fq = FiniteField(q)
-\end{lstlisting}
+\end{minted}
 
 Now, recall that the Okamoto protocol is used to prove the knowledge of a
 representation $u=g^{\alpha}h^{\beta}$ of a given $u \in \mathbb{G}$ relative to
 $g$ and $h$. This means that we also need to define the point $h \in \mathbb{G}$.
 Just for simplicity, let us take some random point on the curve:
-\begin{lstlisting}[language=Python]
+\begin{minted}{python}
 random_salt = 14159...44592
 H = random_salt * G
-\end{lstlisting}
+\end{minted}
 
 \subsubsection{Prover Implementation}
 
 Let us start from the prover's side. Let us first generate a random representation for him:
-\begin{lstlisting}[language=Python]
+\begin{minted}{python}
 alpha = Fq.random_element()
 beta = Fq.random_element()
 u = alpha * G + beta * H # This is the value we want to prove knowledge of
-\end{lstlisting}
+\end{minted}
 
 Now, the prover needs to generate the random commitment. This is done by choosing
 two random scalars $\alpha_r, \beta_r \leftarrowS \mathbb{Z}_q$ and computing
 $u_r = g^{\alpha_r}h^{\beta_r}$:
-\begin{lstlisting}[language=Python]
+\begin{minted}{python}
 # Next, we compute the commitment
 alpha_r = Fq.random_element()
 beta_r = Fq.random_element()
 u_r = alpha_r * G + beta_r * H
-\end{lstlisting}
+\end{minted}
 
 Next, we need to compute the challenge. The challenge is computed using 
 the Fiat-Shamir heuristic. We hash the commitment $u_r$ and the public
-parameter $u$ to get the challenge $c$: $c \gets H(u,u_r)$. The only 
+parameter $u$ to get the challenge $c$: $c \gets \mathsf{H}(u,u_r)$. The only 
 caveat, though, is that we need to implement the hash function 
-$H: \mathbb{G} \times \mathbb{G} \to \mathbb{Z}_q$. For simplicity, let us 
+$\mathsf{H}: \mathbb{G} \times \mathbb{G} \to \mathbb{Z}_q$. For simplicity, let us 
 take the hash function that concatenates the $x$-coordinates of the points
-and hashes the result: $H(u,u_r) = \mathsf{SHA256}(u_x \parallel (u_r)_x)$:
-\begin{lstlisting}[language=Python]
+and hashes the result: $\mathsf{H}(u,u_r) = \mathsf{SHA256}(u_x \parallel (u_r)_x)$:
+\begin{minted}{python}
 def compute_hash(u: E, u_r: E) -> Fq:
     """
     Given two points u and u_r, compute the hash
@@ -450,27 +450,28 @@ def compute_hash(u: E, u_r: E) -> Fq:
 
     result = str(u[0])+str(u_r[0]) # Concatenate x values
     hexdigest = result.encode('utf-8') # Compute the hash
-    return Fq('0x'+sha256(hexdigest).hexdigest()) # Return the result as an element of Fq
-\end{lstlisting}
+    # Return the result as an element of Fq
+    return Fq('0x'+sha256(hexdigest).hexdigest())
+\end{minted}
 
 So now we can compute the challenge $c$:
-\begin{lstlisting}[language=Python]
+\begin{minted}{python}
 # Next, we compute the challenge
 c = compute_hash(u, u_r)
-\end{lstlisting}
+\end{minted}
 
 Finally, the prover computes the response (as if he received the challenge $c$
 randomly from the verifier). It consists of two values: $\alpha_z \gets \alpha_r
 + \alpha c$ and $\beta_z \gets \beta_r + \beta c$. Finally, the proof is simply
 the tuple $\pi=(u_r,\alpha_z,\beta_z)$. Let us write this down:
-\begin{lstlisting}[language=Python]
+\begin{minted}{python}
 # Finally, we compute the response
 alpha_z = alpha_r + alpha * c
 beta_z = beta_r + beta * c
 
 # The proof is the tuple (u_r, alpha_z, beta_z)
 proof = (u_r, alpha_z, beta_z)
-\end{lstlisting}
+\end{minted}
 
 The prover is pretty much ready. The prover can publish these three values and anyone 
 can verify their correctness. An example proof can be seen below:
@@ -484,7 +485,7 @@ can verify their correctness. An example proof can be seen below:
         colback=purple!30!white,boxrule=1pt},
         top=-0.35cm,
         bottom=-0.35cm]
-        \begin{lstlisting}[language=JSON,numbers=none,basicstyle=\ttfamily\scriptsize]
+\begin{lstlisting}[language=JSON,numbers=none,basicstyle=\ttfamily\scriptsize]
 {
     "u": {
         "x": "11050591345070626365101441740
@@ -516,10 +517,10 @@ can verify their correctness. An example proof can be seen below:
 \subsubsection{Verifier Implementation}
 
 Finally, the verifier code is extremely simple. All the verifier has to do is to
-restore the challenge $c \gets H(u,u_r)$ from $u$ and $u_r$ values, specified in
+restore the challenge $c \gets \mathsf{H}(u,u_r)$ from $u$ and $u_r$ values, specified in
 proof $\pi$, and then check whether $g^{\alpha_z}h^{\beta_z}=u_ru^c$. Also assume 
 that the verifier can get these parameters by calling the method \texttt{read\_proof}.
-\begin{lstlisting}[language=Python]
+\begin{minted}{python}
 # Read the proof from the file
 (u, u_r, alpha_z, beta_z) = read_proof()
 
@@ -530,7 +531,7 @@ if check:
     print('Proof verified successfully!')
 else:
     print('Proof verification failed!')
-\end{lstlisting}
+\end{minted}
 
 The proof above passes perfectly.
 
@@ -648,11 +649,10 @@ protocols''.
     {}
     {2}
     {
-        \item $H: \mathbb{G}^3 \times \mathbb{G}^2 \to \mathcal{C}$
-        \item $H: \mathbb{G}^3 \times (\mathbb{G} \times \mathbb{Z}_q) \to \mathcal{C}$
-        \item $H: \mathbb{G}^3 \to \mathcal{C}$
-        \item $H: \mathbb{G}^3 \times \mathbb{Z}_q \to \mathcal{C}$
-        % \item $H: \mathbb{G}^2 \times \mathbb{Z}_q \to \mathcal{C}$
+        \item $\mathsf{H}: \mathbb{G}^3 \times \mathbb{G}^2 \to \mathcal{C}$
+        \item $\mathsf{H}: \mathbb{G}^3 \times (\mathbb{G} \times \mathbb{Z}_q) \to \mathcal{C}$
+        \item $\mathsf{H}: \mathbb{G}^3 \to \mathcal{C}$
+        \item $\mathsf{H}: \mathbb{G}^3 \times \mathbb{Z}_q \to \mathcal{C}$
     }
 \end{xexercise}
 
@@ -661,10 +661,10 @@ protocols''.
     {}
     {2}
     {
-        \item $H((u,v,w),(v_r,w_r))$
-        \item $H((u,v,w),(v_r,\beta_r))$
-        \item $H(u,v,w)$
-        \item $H((u,v,w),\beta_r)$
+        \item $\mathsf{H}((u,v,w),(v_r,w_r))$
+        \item $\mathsf{H}((u,v,w),(v_r,\beta_r))$
+        \item $\mathsf{H}(u,v,w)$
+        \item $\mathsf{H}((u,v,w),\beta_r)$
         % \item $H((v_r,w_r),\beta_r)$
     }
 \end{xexercise}

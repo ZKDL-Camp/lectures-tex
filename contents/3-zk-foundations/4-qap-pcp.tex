@@ -40,7 +40,7 @@ definition of SNARK).
     also be represented using the corresponding $m \times n$ matrices $L,R,O$
     such that all constraints can be reduced to the single equation:
     \begin{equation*}
-        L\mathbf{z} \odot R\mathbf{z} = O\mathbf{z}
+        L\mathbf{z} \odot R\mathbf{z} = O\mathbf{z}.
     \end{equation*}
     
     In this representation:
@@ -59,7 +59,7 @@ definition of SNARK).
         \boldsymbol{r}_1^{\top} \\ \boldsymbol{r}_2^{\top} \\ \vdots \\ \boldsymbol{r}_m^{\top}
     \end{bmatrix}, \quad O = \begin{bmatrix}
         \boldsymbol{o}_1^{\top} \\ \boldsymbol{o}_2^{\top} \\ \vdots \\ \boldsymbol{o}_m^{\top}
-    \end{bmatrix}
+    \end{bmatrix}.
 \end{equation*}
 
 Consider an expression $L\mathbf{z}$:
@@ -70,7 +70,7 @@ Consider an expression $L\mathbf{z}$:
         z_1 \\ z_2 \\ \vdots \\ z_n
     \end{bmatrix} = \begin{bmatrix}
         \boldsymbol{\ell}_1^{\top}\mathbf{z} \\ \boldsymbol{\ell}_2^{\top}\mathbf{z} \\ \vdots \\ \boldsymbol{\ell}_m^{\top}\mathbf{z}
-    \end{bmatrix}
+    \end{bmatrix}.
 \end{equation*}
 
 The last equality is a bit tricky to observe, so let us explain how we ended up with such expression. Notice that since $L \in \mathbb{F}^{m \times n}$ and $\mathbf{z} \in \mathbb{F}^n$, the product $L\mathbf{z}$ is a vector from $\mathbb{F}^m$. Now, for $j^{\text{th}}$ element of such vector, based on the matrix product definition, we have $(L\mathbf{z})_j = \sum_{\ell=1}^na_{j,\ell}z_{\ell}$ which is exactly an inner product between $\boldsymbol{\ell}_j$ and $\mathbf{z}$! Therefore, we have:
@@ -92,7 +92,7 @@ The last equality is a bit tricky to observe, so let us explain how we ended up 
         \langle \boldsymbol{o}_2, \mathbf{z}\rangle \\
         \vdots \\
         \langle \boldsymbol{o}_m, \mathbf{z}\rangle 
-    \end{bmatrix}
+    \end{bmatrix}.
 \end{equation*}
 
 Therefore, $L\mathbf{z} \odot R\mathbf{z} = O\mathbf{z}$ is equivalent to the system of $m$ constraints:
@@ -103,12 +103,12 @@ Therefore, $L\mathbf{z} \odot R\mathbf{z} = O\mathbf{z}$ is equivalent to the sy
 \begin{example}
     The vectors $\boldsymbol{\ell}_i$ from the previous examples have the form:
     \begin{align*}
-        \boldsymbol{\ell}_1 &= (0, 0, 1, 0, 0, 0, 0) \\
-        \boldsymbol{\ell}_2 &= (0, 0, 0, 1, 0, 0, 0) \\
-        \boldsymbol{\ell}_3 &= (0, 0, 1, 0, 0, 0, 0) \\
-        \boldsymbol{\ell}_4 &= (1, 0, -1, 0, 0, 0, 0)
+        \boldsymbol{\ell}_1 &= (0, 0, 1, 0, 0, 0, 0), \\
+        \boldsymbol{\ell}_2 &= (0, 0, 0, 1, 0, 0, 0), \\
+        \boldsymbol{\ell}_3 &= (0, 0, 1, 0, 0, 0, 0), \\
+        \boldsymbol{\ell}_4 &= (1, 0, -1, 0, 0, 0, 0).
     \end{align*}
-    This corresponds to $n = 7, m = 4$
+    This corresponds to $n = 7, m = 4$, and
     \begin{equation*}
         \scalebox{0.9}{$
         L = \begin{bmatrix}
@@ -121,7 +121,7 @@ Therefore, $L\mathbf{z} \odot R\mathbf{z} = O\mathbf{z}$ is equivalent to the sy
             0 & 0 & 0 & 1 & 0 & 0 & 0 \\
             0 & 0 & 1 & 0 & 0 & 0 & 0 \\
             1 & 0 & -1 & 0 & 0 & 0 & 0 
-        \end{bmatrix}
+        \end{bmatrix}.
         $}
     \end{equation*}
 \end{example}
@@ -136,7 +136,7 @@ to the corresponding coefficient of the $j$ element in the witness vector!
 \begin{example}
     Consider the witness from the previous examples: 
     \begin{equation*}
-        \mathbf{z} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult})
+        \mathbf{z} = (1, r, x_1, x_2, x_3, \mathsf{mult}, \mathsf{selectMult}).
     \end{equation*}
     For element $x_1$ we are interested in the third columns of the $L$, $R$ and $O$ matrices, as
     it's placed on the third position in the witness vector, so $j = 3$.\\
@@ -176,19 +176,19 @@ Good, so now we know that for the $j$th element in the witness vector there are 
 As we know from the previous chapters, such a mapping in math can be built using the Lagrange polynomial interpolation.
 
 \begin{remark}
-    As a remainder, the Lagrange interpolation polynomial $f(X) \in
-    \mathbb{F}^{\leq n}[X]$ for a given set of points
+    As a remainder, the Lagrange interpolation polynomial $f \in
+    \mathbb{F}^{\leq n}[T]$ for a given set of points
     $\{(x_0,y_0),(x_1,y_1),\dots,(x_n,y_n)\} \subseteq \mathbb{F} \times
     \mathbb{F}$ such that $f(x_i)=y_i$ can be built with the following formula:
     \begin{equation*}
-        f(X) = \sum_{i=0}^{n} y_i e_i(X), \quad e_i(X) = \prod_{j=0, j \neq i}^{n} \frac{X-x_j}{x_i-x_j}.
+        f(T) = \sum_{i=0}^{n} y_i e_i(T), \quad e_i(T) = \prod_{j=0, j \neq i}^{n} \frac{T-x_j}{x_i-x_j}.
     \end{equation*}  
 \end{remark}
 
 For a given column $j \in [n]$ in a matrix $L$ the set of points that define the
-variable polynomial $\ell_j(X)$ can be defined as $\{(i, L_{i,j})\}_{i \in
-[m]}$. In other words, we want to interpolate $n$ polynomials $\ell_j(X) \in
-\mathbb{F}[X]$ such that:
+variable polynomial $\ell_j(T)$ is $\{(i, L_{i,j})\}_{i \in
+[m]}$. In other words, we want to interpolate $n$ polynomials $\ell_j \in
+\mathbb{F}[T]$ such that:
 \begin{equation*}
     \ell_j(i) = L_{i,j}, \; i \in [m], \; j \in [n].
 \end{equation*}
@@ -196,9 +196,9 @@ variable polynomial $\ell_j(X)$ can be defined as $\{(i, L_{i,j})\}_{i \in
 The same is true for matrices $R$ and $O$, resulting in $3n$ polynomials, $n$ for each of the
 coefficients matrices:
 \begin{align*}
-    \ell_1(X), \ell_2(X), \dots, \ell_n(x), 
-    r_1(X), r_2(X), \dots, r_n(X),
-    o_1(X), o_2(X), \dots, o_n(X)
+    \ell_1(T), \ell_2(T), \dots, \ell_n(T), 
+    r_1(T), r_2(T), \dots, r_n(T),
+    o_1(T), o_2(T), \dots, o_n(T).
 \end{align*}
 
 \begin{example}
@@ -214,23 +214,23 @@ coefficients matrices:
     follows (for the demonstration purposes, assume we are working over
     $\mathbb{R}$):
     \begin{align*}
-        e_1(X) &= \frac{(X - 2)(X - 3)(X - 4)}{(1 - 2)(1 - 3)(1 - 4)} = -\frac{(X - 2)(X - 3)(X - 4)}{6}, \\
-        e_2(X) &= \frac{(X - 1)(X - 3)(X - 4)}{(2 - 1)(2 - 3)(2 - 4)} = \frac{(X - 1)(X - 3)(X - 4)}{2}, \\
-        e_3(X) &= \frac{(X - 1)(X - 2)(X - 4)}{(3 - 1)(3 - 2)(3 - 4)} = -\frac{(X - 1)(X - 2)(X - 4)}{2}, \\
-        e_4(X) &= \frac{(X - 1)(X - 2)(X - 3)}{(4 - 1)(4 - 2)(4 - 3)} = \frac{(X - 1)(X - 2)(X - 3)}{6}.
+        e_1(T) &= \frac{(T - 2)(T - 3)(T - 4)}{(1 - 2)(1 - 3)(1 - 4)} = -\frac{(T - 2)(T - 3)(T - 4)}{6}, \\
+        e_2(T) &= \frac{(T - 1)(T - 3)(T - 4)}{(2 - 1)(2 - 3)(2 - 4)} = \frac{(T - 1)(T - 3)(T - 4)}{2}, \\
+        e_3(T) &= \frac{(T - 1)(T - 2)(T - 4)}{(3 - 1)(3 - 2)(3 - 4)} = -\frac{(T - 1)(T - 2)(T - 4)}{2}, \\
+        e_4(T) &= \frac{(T - 1)(T - 2)(T - 3)}{(4 - 1)(4 - 2)(4 - 3)} = \frac{(T - 1)(T - 2)(T - 3)}{6}.
     \end{align*}
 
     Thus, the polynomial is given by:
     \begin{equation*}
         \begin{aligned}
-            \ell_1(X) &= 1 \cdot e_1(X) + 0 \cdot e_2(X) + 1 \cdot e_3(X) + (-1) \cdot e_4(X) \\
-            &= -\frac{(X - 2)(X - 3)(X - 4)}{6} - \frac{(X - 1)(X - 2)(X - 4)}{2} - \\ 
-            &- \frac{(X - 1)(X - 2)(X - 3)}{6} = -\frac{5}{6}X^3 + 6X^2 - \frac{79}{6}X + 9.
+            \ell_1(T) &= 1 \cdot e_1(T) + 0 \cdot e_2(T) + 1 \cdot e_3(T) + (-1) \cdot e_4(T) \\
+            &= -\frac{(T - 2)(T - 3)(T - 4)}{6} - \frac{(T - 1)(T - 2)(T - 4)}{2} - \\ 
+            &- \frac{(T - 1)(T - 2)(T - 3)}{6} = -\frac{5}{6}T^3 + 6T^2 - \frac{79}{6}T + 9.
         \end{aligned}
     \end{equation*}
     Therefore, the final Lagrange interpolation polynomial is:
     \begin{equation*}
-        \ell_1(X) = -\frac{5}{6}X^3 + 6X^2 - \frac{79}{6}X + 9
+        \ell_1(T) = -\frac{5}{6}T^3 + 6T^2 - \frac{79}{6}T + 9
     \end{equation*}
 
     As shown in Illustration below, the curve intersects all the given points.
@@ -242,8 +242,8 @@ coefficients matrices:
         \begin{tikzpicture}
             \begin{axis}[
                 axis lines = middle,
-                xlabel = {$X$},
-                ylabel = {$\ell_1(X)$},
+                xlabel = {$T$},
+                ylabel = {$\ell_1(T)$},
                 ymin = -2.99, ymax = 2.99,
                 xmin = -0.5, xmax = 4.99,
                 domain = 0:5,
@@ -314,42 +314,42 @@ Or, written more concisely:
 \end{equation*}
 
 \begin{remark}
-    Hold on, but why does it hold? Let us substitute any $X=j$ into this equation:
+    Hold on, but why does it hold? Let us substitute any $T=j$ into this equation:
     \begin{equation*}
-        \sum_{i \in [n]} z_i\ell_i(j) \cdot \sum_{i \in [n]} z_ir_i(j) = \sum_{i \in [n]} z_io_i(j) \; \forall j \in [m]
+        \sum_{i \in [n]} z_i\ell_i(j) \cdot \sum_{i \in [n]} z_ir_i(j) = \sum_{i \in [n]} z_io_i(j) \; \commentgray{for all $j \in [m]$.}
     \end{equation*}
 
     Recall that we interpolated polynomials to have $\ell_i(j) = L_{j,i}$.
     Therefore, the equation above can be reduced to:
     \begin{equation*}
-        \sum_{i \in [n]} z_iL_{j,i} \cdot \sum_{i \in [n]} z_iR_{j,i} = \sum_{i \in [n]} z_iO_{j,i} \; \forall j \in [m]
+        \sum_{i \in [n]} z_iL_{j,i} \cdot \sum_{i \in [n]} z_iR_{j,i} = \sum_{i \in [n]} z_iO_{j,i} \; \commentgray{for all $j \in [m]$.}
     \end{equation*}
 
-    But hold on again! Notice that $\sum_{i \in [n]} z_iL_{j,i} = \langle \mathbf{z}, \boldsymbol{\ell}_j \rangle$ and therefore we have:
+    Notice that $\sum_{i \in [n]} z_iL_{j,i} = \langle \mathbf{z}, \boldsymbol{\ell}_j \rangle$ and therefore we have:
     \begin{equation*}
-        \langle \mathbf{z}, \boldsymbol{\ell}_j \rangle \times \langle \mathbf{z}, \boldsymbol{r}_j \rangle = \langle \mathbf{z}, \boldsymbol{o}_j \rangle \; \forall j \in [m],
+        \langle \mathbf{z}, \boldsymbol{\ell}_j \rangle \times \langle \mathbf{z}, \boldsymbol{r}_j \rangle = \langle \mathbf{z}, \boldsymbol{o}_j \rangle \; \commentgray{for all $j \in [m]$,}
     \end{equation*}
     so we ended up with the initial $m$ constraint equations!
 \end{remark}
 
-Now let us define polynomials $\ell(X)$, $r(X)$, $o(X)$ for easier notation: 
+Now let us define polynomials $\ell(T)$, $r(T)$, $o(T)$ for easier notation: 
 \begin{equation*}
-    \ell(X) = \sum_{i \in [n]} z_i\ell_i(X), \quad r(X) = \sum_{i \in [n]} z_ir_i(X), \quad o(X) = \sum_{i \in [n]} z_io_i(X)
+    \ell(T) = \sum_{i \in [n]} z_i\ell_i(T), \quad r(T) = \sum_{i \in [n]} z_ir_i(T), \quad o(T) = \sum_{i \in [n]} z_io_i(T).
 \end{equation*}
 
 Therefore, our set of constraints can be rewritten simply as the single check
 $\ell(h)\cdot r(h) = o(h)$ for each $h \in [m]$ --- much less scary-looking than
 what we have written before. OK, but what does it give us? 
 
-Notice that if $\ell(X) \cdot r(X)=o(X)$ for all $h \in [m]$ then polynomial,
-defined as $m(X) := \ell(X) \cdot r(X) - o(X)$, has zeros at all elements from
+Notice that if $\ell(T) \cdot r(T)=o(T)$ for all $h \in [m]$ then polynomial,
+defined as $m(T) := \ell(T) \cdot r(T) - o(T)$, has zeros at all elements from
 the set $\Omega = [m]$. Define the so-called \textbf{vanishing polynomial} on
 $\Omega$ as:
 \begin{equation*}
-    z_{\Omega}(X) := \prod_{h \in \Omega} (X - h) = \prod_{i \in [m]} (X - i)
+    z_{\Omega}(T) := \prod_{h \in \Omega} (T - h) = \prod_{i \in [m]} (T - i).
 \end{equation*} 
 
-Now, if $m(X)$ vanishes on all points from $\Omega$, it means that $z_{\Omega}$
+Now, if $m(T)$ vanishes on all points from $\Omega$, it means that $z_{\Omega}$
 must divide $m$, so $z_{\Omega} \mid m$. But that means that $m$ can be divided
 by $z_{\Omega}$ without remainder! In other words, there exists some polynomial
 $h$ such that $m=z_{\Omega}h$. We further drop index $\Omega$ for simplicity. 
@@ -365,14 +365,14 @@ All in all, let us give the definition of a \textbf{Quadratic Arithmetic Program
     Then, the \textbf{Quadratic Arithmetic Program} consists of $3n$ polynomials
     $\ell_1,\dots,\ell_n$, $r_1,\dots,r_n$, $o_1,\dots,o_n$ such that:
     \begin{equation*}
-        \ell_j(i) = a_{i,j}, \; r_j(i) = b_{i,j}, \; o_j(i) = c_{i,j}, \; \forall i \in [m] \; \forall j \in [n]
+        \ell_j(i) = a_{i,j}, \; r_j(i) = b_{i,j}, \; o_j(i) = c_{i,j}, \; \commentgray{for all $i \in [m]$, $j \in [n]$.}
     \end{equation*}
 
     Then, $\mathbf{z} \in \mathbb{F}^n$ is a valid assignment for the given QAP
-    and \textbf{target polynomial} $z(X) = \prod_{i \in [m]} (X-i)$ if and only
-    if there exists such a polynomial $h(X)$ such that
+    and \textbf{target polynomial} $z(T) = \prod_{i \in [m]} (T-i)$ if and only
+    if there exists such a polynomial $h(T)$ such that
     \begin{equation*}
-        \sum_{i \in [n]} z_i\ell_i(X) \cdot \sum_{i \in [n]} z_ir_i(X) - \sum_{i \in [n]} z_io_i(X) = z(X)h(X)
+        \sum_{i \in [n]} z_i\ell_i(T) \cdot \sum_{i \in [n]} z_ir_i(T) - \sum_{i \in [n]} z_io_i(T) = z(T)h(T)
     \end{equation*}
 \end{definition}
 
@@ -542,20 +542,20 @@ PCPs in the context of Groth16 zk-SNARK. Let us define it below.
 \begin{example}[QAP as a Linear PCP]
     Recall that key QAP equation is:
     \begin{equation*}
-        \sum_{i \in [n]}z_i\ell_i(X) \cdot \sum_{i \in [n]}z_ir_i(X) - \sum_{i \in [n]}z_io_i(X) = z(X)h(X).
+        \sum_{i \in [n]}z_i\ell_i(T) \cdot \sum_{i \in [n]}z_ir_i(T) - \sum_{i \in [n]}z_io_i(T) = z(T)h(T).
     \end{equation*}
 
     Now, the notation might be confusing, but firstly, we denote vectors of polynomials: 
     \begin{align*}
-        \boldsymbol{\ell}(X) & = (\ell_1(X),\dots,\ell_n(X)), \\
-        \boldsymbol{r}(X) & = (r_1(X),\dots,r_n(X)), \\
-        \boldsymbol{o}(X) & = (o_1(X),\dots,o_n(X)).
+        \boldsymbol{\ell}(T) & = (\ell_1(T),\dots,\ell_n(T)), \\
+        \boldsymbol{r}(T) & = (r_1(T),\dots,r_n(T)), \\
+        \boldsymbol{o}(T) & = (o_1(T),\dots,o_n(T)).
     \end{align*}
     
     Now, consider the following \textbf{linear PCP for QAP}:
     \begin{enumerate}
         \item $\mathcal{P}$ commits to an extended witness $\mathbf{z}$ and
-        coefficients $\mathbf{h} = (h_1,\dots,h_n)$ of $h(X)$.
+        coefficients $\mathbf{h} = (h_1,\dots,h_n)$ of $h(T)$.
         \item $\mathcal{V}$ samples $\gamma \leftarrowS \mathbb{F}$ and sends
         query $\boldsymbol{\gamma} = (\gamma,\gamma^2,\dots,\gamma^n)$ to
         $\mathcal{P}$.
@@ -578,13 +578,13 @@ When constructing a Quadratic Arithmetic Program (QAP) for a circuit $\Circ$, we
 represented the whole circuit's computation using the following relation:
 $
 % \begin{equation*}
-    \ell(X)r(X) - o(X) = z(X)h(X),
+    \ell(T)r(T) - o(T) = z(T)h(T),
 % \end{equation*}
 $
-where by $\ell(X)$, $r(X)$, $o(X)$ we denote the polynomials that represent the
-left, right and output wires of the circuit, respectively. $z(X)$ is the target
-polynomial, while $h(X) := m(X)\big/z(X)$ for master polynomial $m(X) =
-\ell(X)r(X) - o(X)$ is the quotient polynomial.
+where by $\ell(T)$, $r(T)$, $o(T)$ we denote the polynomials that represent the
+left, right and output wires of the circuit, respectively. $z(T)$ is the target
+polynomial, while $h(T) := m(T)\big/z(T)$ for master polynomial $m(T) =
+\ell(T)r(T) - o(T)$ is the quotient polynomial.
 
 We effectively managed to transform all the circuit's constraints, and
 computations in the short form. It still allows one to verify that each
@@ -596,11 +596,11 @@ is enough to verify the circuit $\Circ$?
 
 \textbf{Informal Soundness Justification.} Why is it safe to use such a check?
 As it was said early, we perform all the computations in some finite field
-$\mathbb{F}$. The polynomials $\ell(X)$, $r(X)$ and $o(X)$ are interpolated
+$\mathbb{F}$. The polynomials $\ell(T)$, $r(T)$ and $o(T)$ are interpolated
 polynomials using $\left| \Circ \right|$ (number of gates) points, so
 $\deg(\ell), \deg(r), \deg(o) \leq \left|\Circ\right|$. Thus, using properties
-of polynomials' degrees, we can estimate the degree of polynomial $m(X) =
-\ell(X)r(X) - o(X)$: $\deg(m) \leq \max\{\deg(\ell) + \deg(r), \deg(o)\} \leq 2
+of polynomials' degrees, we can estimate the degree of polynomial $m(T) =
+\ell(T)r(T) - o(T)$: $\deg(m) \leq \max\{\deg(\ell) + \deg(r), \deg(o)\} \leq 2
 \left| \Circ \right|$. For that reason, when checking the equality
 $\ell(s)r(s)-o(s)=z(s)h(s)$ for randomly selected $s$, we can be sure that the
 left-hand side and right-hand side polynomials are the same with probability at

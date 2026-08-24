@@ -708,7 +708,7 @@ Let us now give a bit more general definition.
 \begin{remark}
     Although practically we will only encounter vector spaces of the form $\mathbb{F}^n$, the notion of vector space is very broad. For example, consider the following two sets:
     \begin{align*}
-        U_1 &:= \mathbb{R}[x]^{\leq n}, \; \textcolor{gray}{\textit{// polynomials in $\mathbb{R}$ of maximum degree $n$}} \\
+        U_1 &:= \mathbb{R}[T]^{\leq n}, \; \textcolor{gray}{\textit{// polynomials in $\mathbb{R}$ of maximum degree $n$}} \\
         U_2 &:= \{\text{all functions $f: [0,1] \to \mathbb{R}$ continuous over $[0,1]$}\}.
     \end{align*}
     One can check, that both $U_1$ and $U_2$ are in fact vector spaces over $\mathbb{R}$ with $U_1$ being of finite dimension while $U_2$ being infinitely-dimensional.
@@ -829,25 +829,25 @@ This definition requires some examples.
 \end{example}
 
 \begin{example}
-    Recall that $\mathbb{F}[x]^{\leq n}$ (the space of polynomials with a degree at most $n$) is a vector space over $\mathbb{F}$.
+    Recall that $\mathbb{F}[T]^{\leq n}$ (the space of polynomials with a degree at most $n$) is a vector space over $\mathbb{F}$.
     Its canonical basis can be described as:
     \begin{equation*}
-        e_1 = 1, \; e_2 = x, \; e_3 = x^2, \; \dots \; e_{n+1} = x^n.
+        e_1 = 1, \; e_2 = T, \; e_3 = T^2, \; \dots \; e_{n+1} = T^n.
     \end{equation*}
-    Indeed, $e_1,\dots,e_{n+1}$ are linearly independent (otherwise the equation $c_0+c_1x+\dots+c_nx^n=0$ could hold identically for some non-trivial choice of constants $c_0,\dots,c_n \in \mathbb{F}$).
-    Clearly these elements span the whole $\mathbb{F}[x]^{\leq n}$.
+    Indeed, $e_1,\dots,e_{n+1}$ are linearly independent (otherwise the equation $c_0+c_1T+\dots+c_nT^n=0$ could hold identically for some non-trivial choice of constants $c_0,\dots,c_n \in \mathbb{F}$).
+    Clearly these elements span the whole $\mathbb{F}[T]^{\leq n}$.
 \end{example}
 
 \begin{example}
     Again, we stress on the fact that the basis might not be unique.
-    For instance, for $\mathbb{F}_{5}[x]^{\leq 2}$, the basis could be 
+    For instance, for $\mathbb{F}_{5}[T]^{\leq 2}$, the basis could be 
     \begin{equation*}
-        e_1 = 3, \; e_2 = x + 2, \; e_3 = x^2 + 4.
+        e_1 = 3, \; e_2 = T + 2, \; e_3 = T^2 + 4.
     \end{equation*}
 \end{example}
 
 Notice that while the basis in not unique for the given vector space, the number of basis vectors was the same.
-This raises the natural question: can we find the basis $\mathbf{e}_1,\dots,\mathbf{e}_m$ for $\mathbb{F}^n$ or $\mathbb{F}[x]^{<n}$ with $m \neq n$?
+This raises the natural question: can we find the basis $\mathbf{e}_1,\dots,\mathbf{e}_m$ for $\mathbb{F}^n$ or $\mathbb{F}[T]^{<n}$ with $m \neq n$?
 The answer is no.
 
 \begin{lemma}
@@ -861,7 +861,7 @@ This motivates us to give the following definition.
 \end{definition}
 
 \begin{example}
-    As we have observed earlier, $\dim \mathbb{F}^n=\dim \mathbb{F}[x]^{\leq n-1} = n$.
+    As we have observed earlier, $\dim \mathbb{F}^n=\dim \mathbb{F}[T]^{\leq n-1} = n$.
 \end{example}
 
 \subsection{Matrix}
@@ -991,7 +991,7 @@ That is, for $A \in \mathbb{F}^{m \times n}$, let
         \mathbf{u}_1^{\top} \\
         \vdots \\
         \mathbf{u}_m^{\top}
-    \end{bmatrix} \; \text{for some} \; \mathbf{u}_1,\dots,\mathbf{u}_n \in \mathbb{F}^m.
+    \end{bmatrix} \; \text{for some} \; \mathbf{u}_1,\dots,\mathbf{u}_m \in \mathbb{F}^n.
 \end{equation*}
 
 Similarly, we might ask: what portion of $\mathbb{F}^n$ do $\mathbf{u}_1,\dots,\mathbf{u}_m$ span?
@@ -1215,12 +1215,12 @@ When is $V$ a linear subspace of $\mathbb{F}^n$?
     \item $27$.
 \end{enumerate}
 
-\textbf{Exercise 5*.} Recall that $V := \mathbb{R}[x]^{\leq 2}$ is a vector space over $\mathbb{R}$.
-Define the inner product over $V$ as follows\footnote{You might use the fact that $\int_0^1 \sum_{n=0}^N \alpha_nx^n = \sum_{n=0}^N \frac{\alpha_n}{n+1}$.}:
+\textbf{Exercise 5*.} Recall that $V := \mathbb{R}[T]^{\leq 2}$ is a vector space over $\mathbb{R}$.
+Define the inner product over $V$ as follows\footnote{You might use the fact that $\int_0^1 \sum_{n=0}^N \alpha_n\tau^nd\tau = \sum_{n=0}^N \frac{\alpha_n}{n+1}$.}:
 \begin{equation*}
-    \langle p,q \rangle := \int_0^1 p(x)q(x)dx, \quad p,q \in V.
+    \langle p,q \rangle := \int_0^1 p(\tau)q(\tau)d\tau, \quad p,q \in V.
 \end{equation*}
-Compute the ``length'' of the polynomial $x$ in $V$ (\textit{i.e.}, its norm $\|x\|$).
+Compute the ``length'' of the polynomial $T$ in $V$ (\textit{i.e.}, its norm $\|T\|$).
 \begin{enumerate}[(A)]
     \item $1/\sqrt{3}$.
     \item $1/\sqrt{2}$.
@@ -1228,8 +1228,8 @@ Compute the ``length'' of the polynomial $x$ in $V$ (\textit{i.e.}, its norm $\|
     \item $1$.
 \end{enumerate}
 
-\textbf{Exercise 6*.} Using $V$ and inner product from the previous exercise, find any polynomial $q \in V$ orthogonal to $x^2$.
+\textbf{Exercise 6*.} Using $V$ and inner product from the previous exercise, find any polynomial $q \in V$ orthogonal to $T^2$.
 
-\textit{Hint:} Let $q(x) := \alpha x+\beta$ for some $\alpha,\beta \in \mathbb{R}$. Is it possible for the identity $\langle q(x), x^2 \rangle=0$ to hold for some choice of $\alpha,\beta$?
+\textit{Hint:} Let $q(T) := \alpha T+\beta$ for some $\alpha,\beta \in \mathbb{R}$. Is it possible for the identity $\langle q(T), T^2 \rangle=0$ to hold for some choice of $\alpha,\beta$?
 
 \end{document}

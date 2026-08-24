@@ -36,11 +36,11 @@ will try to mitigate the following issues:
     proofs on-chain. Moreover, verification should be efficient as well.
 \end{itemize}
 
-\begin{example}
+\begin{intuition}
     Suppose, given a hash function\footnote{The notation $\{0,1\}^*$ means
-    binary strings of arbitrary length} $H: \{0,1\}^* \to \{0,1\}^{\lambda}$, the
+    binary strings of arbitrary length} $\mathsf{H}: \{0,1\}^* \to \{0,1\}^{\lambda}$, the
     prover $\mathcal{P}$ wants to convince the verifier $\mathcal{V}$ that he
-    knows the preimage $x \in \{0,1\}^*$ such that $H(x) = y$ for some given
+    knows the preimage $x \in \{0,1\}^*$ such that $\mathsf{H}(x) = y$ for some given
     public value $y \in \{0,1\}^{\lambda}$. The properties listed above are
     interpreted as follows:
     \begin{itemize}
@@ -62,7 +62,7 @@ will try to mitigate the following issues:
         n)^c)$ (polylogarithmic) is size! Moreover, verification time of such
         proof is also typically polylogarithmic (or even $O(1)$ in some cases).
     \end{itemize}
-\end{example}
+\end{intuition}
 
 \subsection{Relations and Languages}\label{section:relations_and_languages}
 Recall that \textbf{relation} $\mathcal{R}$ is just a subset of $\mathcal{X}
@@ -408,7 +408,7 @@ between $\mathcal{P}$ and $\mathcal{V}$.
     \caption{The interactive protocol between prover $\mathcal{P}$ and verifier $\mathcal{V}$. Prover's messages consist of messages $\{m_k\}_{k=1}^{\ell}$, verifier's messages consist of queries $\{q_k\}_{k=1}^{\ell}$, and additionally verifier samples random coins $\{r_k\}_{k=1}^{\ell}$.}
 \end{figure}
 
-\subsubsection{The Simulation Paradigm}
+\subsubsection{The Simulation Paradigm}\label{subsection:simulation}
 
 The key idea is the following: $\mathsf{view}_{\mathcal{V}}(\mathcal{V},
 \mathcal{P})[\mathbbm{x}]$ gives nothing new to the verifier $\mathcal{V}$ about
@@ -578,7 +578,7 @@ The oracle $\mathcal{O}_{\text{R}}$ does the following:
     function behaves like a random oracle.
 \end{remark}
 
-\subsubsection{Fiat-Shamir Transformation}
+\subsubsection{Fiat-Shamir Transformation}\label{subsection:fiat-shamir}
 
 Now, the main issue with the interactive proofs is that they are\ldots Well,
 \textit{interactive}. Ideally, we simply want to accumulate a proof $\pi$,
@@ -607,8 +607,8 @@ verifier got messages $m_1,m_2,\dots,m_{\ell'}$ ($\ell' \leq \ell$) from the
 prover. Then, instead of verifier sampling some random value $r_{\ell'}$, we can
 simply use the random oracle $\mathcal{O}_{\text{R}}$ as follows: $r_{\ell'}
 \gets \mathcal{O}_{\text{R}}(\mathbbm{x},m_1,m_2,\dots,m_{\ell'})$. Practically,
-instead of random oracle $\mathcal{O}_{\text{R}}$ we use the hash function $H$,
-and use: $r_{\ell'} \gets H(\mathbbm{x} \parallel m_1 \parallel m_2 \parallel \dots
+instead of random oracle $\mathcal{O}_{\text{R}}$ we use the hash function $\mathsf{H}$,
+and compute $r_{\ell'} \gets \mathsf{H}(\mathbbm{x} \parallel m_1 \parallel m_2 \parallel \dots
 \parallel m_{\ell'})$.
 
 \begin{remark}
