@@ -125,7 +125,7 @@ simplicity.
     In this case, $\mathcal{L}_{\mathcal{R}} = \{x \in \mathbb{Z}_N^{\times}: \exists w \in \mathbb{Z}_N^{\times} \; \text{such that} \; x \equiv w^2 \pmod{N}\}$. Here, our square root of $x$ modulo $N$, that is $w$, is the witness for the statement $x \in \mathcal{L}_{\mathcal{R}}$. For example, for $N=7$ we have $4 \in \mathcal{L}_{\mathcal{R}}$ since $5$ is a valid witness: $5^2 \equiv 4 \pmod{7}$, while $3 \not\in \mathcal{L}_{\mathcal{R}}$ since there is no valid witness for $3$.
 \end{example}
 
-However, we want to limit ourselves to languages that has reasonably efficient
+However, we want to limit ourselves to languages that have reasonably efficient
 verifier (since otherwise the problem is not really practical and therefore of
 little interest to us). For that reason, we define the notion of a \emph{NP
 Language} and from now on, we will be working with such languages.
@@ -178,7 +178,7 @@ probability of $1$). Let us consider the concrete example.
 
 Again, suppose for relation $\mathcal{R} = \{(x,w) \in (\mathbb{Z}_N^{\times})^2: x \equiv w^2 \pmod{N}\}$ and corresponding language $\mathcal{L}_{\mathcal{R}} = \{x \in \mathbb{Z}_N^{\times}: \exists w \in \mathbb{Z}_N^{\times} \; \text{such that} \; x \equiv w^2 \pmod{N}\}$ the prover $\mathcal{P}$ wants to convince the verifier that the given $x$ is in language $\mathcal{L}_{\mathcal{R}}$. Again, sending $w$ is not an option, as we want to avoid revealing the witness. So how can we proceed? The idea is that the prover $\mathcal{P}$ should prove that he \textit{could} prove it if he felt like it. 
 
-So here how it goes. The prover $\mathcal{P}$ can first sample a random $r \leftarrowS \mathbb{Z}_N^{\times}$, calculate $a \gets r^2 \pmod{N}$ and say to the verifier $\mathcal{V}$: 
+So here is how it goes. The prover $\mathcal{P}$ can first sample a random $r \leftarrowS \mathbb{Z}_N^{\times}$, calculate $a \gets r^2 \pmod{N}$ and say to the verifier $\mathcal{V}$: 
 \begin{itemize}
     \item Hey, I could give you the square roots of both $a$ and $ax \pmod{N}$ and that would convince you that the statement is true! But in this case, you would know $w$\footnote{If verifier gets both $r$ and $rw \pmod{N}$, he can divide the latter by former and get $w$}.
     \item So instead of providing both values simultaneously, you will choose which one you want to see: either $r$ or $r\times w\pmod{N}$. This way, after a couple of such rounds, you will not learn $w$ but you will be convinced that I know it.
@@ -285,7 +285,7 @@ the statement $\mathbbm{x}$, we use notation $\langle \mathcal{P}, \mathcal{V}
 
 \subsection{Zero-Knowledge}
 
-Turns out that defining the zero-knowledge to even such a simplistic interactive
+It turns out that defining zero-knowledge for even such a simplistic interactive
 proof system is not that easy. Informally, we give the following definition.
 
 \begin{definition}
@@ -306,7 +306,7 @@ proof system is not that easy. Informally, we give the following definition.
 
 Basically, the specified interaction is a \textbf{proof}! The prover
 $\mathcal{P}$ can convince the verifier $\mathcal{V}$ that the statement is true
-without revealing the witness -- that is what we need (quite of).
+without revealing the witness -- that is what we wanted.
 
 \vspace{-1mm}
 
@@ -368,7 +368,7 @@ between $\mathcal{P}$ and $\mathcal{V}$.
     Essentially, the view that you currently has witnessed is the same as one
     that $\mathcal{V}$ has seen. After this interaction, you have not learned
     anything about the witness $\mathbbm{w}$ that prover $\mathcal{P}$ knows and
-    which we, as of now, has not revealed to you.
+    which we, as of now, have not revealed to you.
 
     In fact, you can verify by yourself, that the witness was $\mathbbm{w} =
     3042517305$ and two randomnesses were $r_1 = 2606437826$ and $r_2 =
@@ -455,7 +455,7 @@ Finally, we are ready to define the \textbf{zero-knowledge}.
 However, the condition that verifier might be arbitrary is rather strong.
 Therefore, we introduce the notion of \textbf{honest-verifier zero-knowledge}.
 
-\begin{definition}{Honest-Verifier Zero-Knowledge (HVZK)}
+\begin{definition}[Honest-Verifier Zero-Knowledge (HVZK)]
     An interactive protocol $(\mathcal{P}, \mathcal{V})$ is
     \textbf{honest-verifier zero-knowledge} for a language
     $\mathcal{L}_{\mathcal{R}}$ if there exists a probabilistic poly-time
@@ -471,7 +471,7 @@ Therefore, we introduce the notion of \textbf{honest-verifier zero-knowledge}.
 
 Now, the main issue with the above definition is that \textit{we have proven the
 statement correctness, but we have not proven that the prover \textbf{knows} the
-witness}. These are completely two different things. Let us demonstrate why.
+witness}. These are two completely different things. Let us demonstrate why.
 
 \begin{example}
     Suppose that the prover $\mathcal{P}$ wants to convince the verifier that he
@@ -501,7 +501,7 @@ $\mathcal{P}$ as an oracle''. Now, let us move to the formal definition.
 
 \begin{definition}[Proof of Knowledge]
     The interactive protocol $(\mathcal{P}, \mathcal{V})$ is a \textbf{proof of
-    knowledge} for $\mathcal{L}_{\mathcal{R}}$ if exists a poly-time extractor
+    knowledge} for $\mathcal{L}_{\mathcal{R}}$ if there exists a poly-time extractor
     algorithm $\mathcal{E}$ such that for any valid statement $\mathbbm{x} \in
     \mathcal{L}_{\mathcal{R}}$, in expected poly-time
     $\mathcal{E}^{\mathcal{P}}(\mathbbm{x})$ outputs $\mathbbm{w}$ such that
@@ -515,7 +515,7 @@ $\mathcal{P}$ as an oracle''. Now, let us move to the formal definition.
 
 \textbf{Proof.} Let us define the extractor $\mathcal{E}$ for the statement $x$ as follows:
 \begin{enumerate}
-    \item Run the prover to receive $a \equiv r^2 \pmod{N}$ ($r$ is chosen randomly from $\mathbb{Z}_N^*$).
+    \item Run the prover to receive $a \equiv r^2 \pmod{N}$ ($r$ is chosen randomly from $\mathbb{Z}_N^{\times}$).
     \item Set verifier's message to $b=0$ to get $z_1 \gets r$.
     \item \textbf{Rewind} and set verifier's message to $b=1$ to get $z_2 \gets rw \pmod{N}$.
     \item Output $z_2/z_1 \pmod{N}$
@@ -593,7 +593,7 @@ popular methods (which, in particular, is used in STARKs) is the
 sending the challenges, we can replace them with the random oracle applied to
 all the previous messages.
 
-Here how it goes. Suppose we have an interactive protocol $(\mathcal{P},
+Here is how it goes. Suppose we have an interactive protocol $(\mathcal{P},
 \mathcal{V})$ for the statement $\mathbbm{x}$. As previously defined, the
 interaction between $\mathcal{P}$ and $\mathcal{V}$ consists of prover's
 messages $(m_1,m_2,\dots,m_{\ell})$, verifier's queries
@@ -783,7 +783,7 @@ Suppose we use the protocol $(\mathcal{P}, \mathcal{V}^*)$ where the ``broken'' 
     \item To give prover more power to extract randomness generated by the verifier.
 \end{enumerate}
 
-\textbf{Exercise 6.} What it means that the interactive protocol $(\mathcal{P}, \mathcal{V})$ is a zero-knowledge?
+\textbf{Exercise 6.} What does it mean that the interactive protocol $(\mathcal{P}, \mathcal{V})$ is a zero-knowledge?
 \begin{enumerate}[(A)]
     \item The verifier $\mathcal{V}$ cannot know whether the given statement is true or false.
     \item The verifier $\mathcal{V}$ cannot know whether the prover $\mathcal{P}$ knows the witness.

@@ -19,7 +19,7 @@
 
 Also, the \textbf{bulletproofs} \textbf{inner-product argument} could be used to build various polynomial commitment schemes -- a crucial building block of proving systems built with the \textit{IOP} framework (\textit{Halo, Nova, etc}).
 
-The main advantages of \textbf{bulletproofs} are the absence of a trusted setup and security that relies on the \textit{discrete-logarithm} assumption without any other auxiliary structures like bilinear pairings. It also has a quite fast prover for small circuits, making it practically useful for client-side proving. However, the main disadvantage of \textbf{bulletproofs} is that it isn't a classic \textit{SNARK} due to verification time linear in circuit size, though it is still very efficient for small circuits.
+The main advantages of \textbf{bulletproofs} are the absence of a trusted setup and security that relies on the \textit{discrete-logarithm} assumption without any other auxiliary structures like bilinear pairings. It also has a quite fast prover for small circuits, making it practically useful for client-side proving. However, the main disadvantage of \textbf{bulletproofs} is that it is not a classic \textit{SNARK} due to verification time linear in circuit size, though it is still very efficient for small circuits.
 
 \subsection{Notation}
 Let $\mathbb{G}$ be a cyclic group of prime order $p$ written additively, and $\mathbf{G} = (G_1, \dots, G_n), \mathbf{H} = (H_1, \dots, H_n) \in \mathbb{G}^n$ be vectors of independent generators. We denote by $\langle \mathbf{a,b} \rangle$ the inner product of vectors $\mathbf{a} = (a_1, \dots, a_n), \mathbf{b} = (b_1, \dots, b_n) \in \mathbb{F}_p^n$, and by $\langle \mathbf{a,G} \rangle = \sum_{i=1}^n [a_i] G_i \in \mathbb{G}$ the inner product of vector $\mathbf{a}$ with the vector of generators $\mathbf{G}$. Denote by $\mathbf{k}^n$ the vector of the first $n$ powers of $k$: $\mathbf{k}^n = (1, k, k^2, \dots, k^{n-1})$; for example, $\mathbf{0}^n, \mathbf{1}^n$ represent vectors of zeros and ones respectively, while $\mathbf{2}^{n} = (1, 2, 4, \dots, 2^{n-1})$
@@ -33,8 +33,8 @@ Firstly, observe that proving $t(x) = l(x)r(x)$ may be reduced to an evaluation 
 $$\mathsf{Pr}[l(u)r(u) = t(u) \vert l(x)r(x) \neq t(x)] \le \frac{\max(\deg(l(x)r(x)), \deg(t(x)))}{p} = \frac{2}{p}$$
 which is typically a negligible function of the security level, making this check \textit{sound}.
 
-\subsubsection{Naïve polynomial multiplication protocol}
-Let's describe a naïve unoptimized version of the \textbf{polynomial multiplication} protocol $\Pi'_{mul} = (\mathsf{Setup},\mathcal{P,V})$ for the relation $\mathcal{R}_{mul}$.
+\subsubsection{Naїve polynomial multiplication protocol}
+Let us describe a naїve unoptimized version of the \textbf{polynomial multiplication} protocol $\Pi'_{mul} = (\mathsf{Setup},\mathcal{P,V})$ for the relation $\mathcal{R}_{mul}$.
 During $\mathsf{Setup}$, parties agree on group elements $G,B \in \mathbb{G}$. After that, the parties engage in the following protocol:
 \begin{itemize}
     \item Prover $\mathcal{P}$ computes:
@@ -359,7 +359,7 @@ Recalling that $P_k = P'$, the final compressed statement asserting inner-produc
 
 \subsubsection{Proving $\mathcal{R}'_{ip}$}
 
-Let's describe the \textbf{inner-product} protocol $\Pi'_{ip}$ for relation $\mathcal{R}'_{ip}$. 
+Let us describe the \textbf{inner-product} protocol $\Pi'_{ip}$ for relation $\mathcal{R}'_{ip}$. 
 \begin{definition}
     The \textbf{inner-product} protocol $\Pi'_{ip} = (\mathcal{P}, \mathcal{V})$ for the relation $\mathcal{R}'_{ip} = \{ (\mathbf{G,H}, Q, P'; \mathbf{a,b}) \vert P' = \langle \mathbf{a,G} \rangle + \langle \mathbf{b,H} \rangle + [\langle \mathbf{a,b} \rangle]Q \}$, where all vectors have length $n=2^d$, with prover $\mathcal{P}$ and verifier $\mathcal{V}$, is defined as follows:
     \begin{itemize}
@@ -616,7 +616,7 @@ Here we describe one of the main theoretical applications of the \textit{inner-p
 
 \subsection{Range proofs}\label{subsection:bulletproofs-range-proofs}
 
-Let $G,B\in \mathbb{G}$ be independent group generators. Let's consider the relation:
+Let $G,B\in \mathbb{G}$ be independent group generators. Let us consider the relation:
 $$\mathcal{R}_{rp} = \{ (G, B, V, n; v, \gamma) \vert V = [v]G + [\gamma]B, v \in [0, 2^n) \}$$
 This relation is often called the \textbf{range proof} relation. It asserts that the committed value $v$ lies in the interval $[0, 2^n)$. Range proofs have very significant applications in various privacy \textit{blockchain} protocols, since they usually imply proving that transaction inputs or outputs are valid, e.g.\ have positive value or satisfy other relations between them.
 

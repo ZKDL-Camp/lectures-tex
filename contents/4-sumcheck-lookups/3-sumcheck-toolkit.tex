@@ -12,7 +12,7 @@ This subsection describes a transparent SNARK, which may be used for proving gra
 Without loss of generality, assume that $m$ is a power of $2$.
 We can think of $\mathbf{v}$ as a vector of evaluations of a $\log m$-variate multilinear polynomial $v(x)$ over 
 $\{0, 1\}^{\log m}$ in a natural fashion. We assume the prover first opens $p$ and then commits to $v(x)$; the 
-following protocol then verifies both the polynomial’s validity and the corresponding grand-product equality derived
+following protocol then verifies both the polynomial's validity and the corresponding grand-product equality derived
 from that commitment.
 
 \begin{lemma}
@@ -259,7 +259,7 @@ to collide on distinct sets.
 This protocol lets you, after doing a bunch of read/writes from an untrusted memory, verify in one quick
 algebraic step that every answer really came from the same original contents -- without re-running any reads.
 
-For the first time it's not so obvious, why we may need need such a protocol, so let's start with a simple 
+At first it is not obvious why we may need such a protocol, so let us start with a simple 
 example.
 \begin{example}
     Consider Alice, who stores two values on Bob's dedicated server at addresses $0$ and $1$.  Initially, 

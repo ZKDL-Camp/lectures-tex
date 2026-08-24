@@ -114,7 +114,7 @@ Now, notice that the provided protocol is a public-coin protocol. Therefore, we 
     \item The Fiat-Shamir channel outputs the proof $\pi = (a,e,\sigma)$, which the verifier can check via previously mentioned equation $g^{\sigma} = a \cdot u^e$.
 \end{enumerate}
 
-Now, notice that $e$ might not be included in the proof since the verifier can compute it by himself. Therefore, the final proof $\pi$ can be reduced to $(a,\sigma) \in \mathbb{G} \times \mathbb{Z}_q$ and its computation does not need any interaction with the verifier. Moreover, it is still complete, sound, and proof of knowledge due to the Fiat-Shamir transformation. It is also (not easy to prove) zero-knowledge.
+Now, notice that $e$ might not be included in the proof since the verifier can compute it by himself. Therefore, the final proof $\pi$ can be reduced to $(a,\sigma) \in \mathbb{G} \times \mathbb{Z}_q$ and its computation does not need any interaction with the verifier. Moreover, it is still complete, sound, and a proof of knowledge due to the Fiat-Shamir transformation. It is also (not easy to prove) zero-knowledge.
 
 \subsection{Schnorr's Signature Scheme}
 
@@ -262,7 +262,7 @@ In other words, here we have a witness $\beta \in \mathbb{Z}_q$, while the state
 \begin{definition}[Chaum-Pedersen Protocol]
     \textbf{Chaum-Pedersen Protocol} consists of two algorithms: $(\mathcal{P}, \mathcal{V})$, where the prover is assumed to know $(\beta,(u,v,w)) \in \mathcal{R}$ defined above. The protocol is defined as follows:
     \begin{enumerate}
-        \item $\mathcal{P}$ computes $\beta_r \leftarrowS \mathbb{Z}_q, \; v_r \leftarrowS g^{\beta_r}, \; w_r \gets u^{\beta_r}$ and sends commitment $(u_r,w_r)$ to $\mathcal{V}$.
+        \item $\mathcal{P}$ computes $\beta_r \leftarrowS \mathbb{Z}_q, \; v_r \gets g^{\beta_r}, \; w_r \gets u^{\beta_r}$ and sends commitment $(u_r,w_r)$ to $\mathcal{V}$.
         \item $\mathcal{V}$ samples the challenge $c \leftarrowS \mathbb{Z}_q$ and sends $c$ to $\mathcal{P}$.
         \item $\mathcal{P}$ computes $\beta_z \gets \beta_r + \beta c$ and sends $\beta_z$ to $\mathcal{V}$.
         \item $\mathcal{V}$ checks whether two conditions hold: $g^{\beta_z} = v_rv^c$ and $u^{\beta_z} = w_r w^c$, and accepts or rejects the proof accordingly.

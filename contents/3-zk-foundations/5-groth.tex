@@ -11,7 +11,7 @@ generator $g$. Typically, this is the group of points on an elliptic curve.
 Assume for simplicity that $e: \mathbb{G} \times \mathbb{G} \to \mathbb{G}_T$ is
 a symmetric pairing, where $(\mathbb{G}_T, \times)$ is a target group.
 
-Now, suppose during the setup phase, we have a trusted party that generated a random value $\tau \leftarrowS \mathbb{F}$ and public parameters $g^{\tau},g^{\tau^2},\dots,g^{\tau^{d}}$ for $d=2|\Circ|$ --- maximum degree of used polynomials (later we will use notation $\{g^{\tau^i}\}_{i \in [d]}$ for brevity). Then, party \textbf{deleted} $\tau$. This way, we can now find the KZG commitment for each polynomial (recall \Cref{def:kzg-com}). Indeed, for example,
+Now, suppose during the setup phase, we have a trusted party that generated a random value $\tau \leftarrowS \mathbb{F}$ and public parameters $g^{\tau},g^{\tau^2},\dots,g^{\tau^{d}}$ for $d=2|\Circ|$ --- maximum degree of used polynomials (later we will use notation $\{g^{\tau^i}\}_{i \in [d]}$ for brevity). The party then \textbf{deletes} $\tau$. This way, we can now find the KZG commitment for each polynomial. Indeed, for example,
 \begin{equation*}
     \mathsf{com}(\ell) \triangleq g^{\ell(\tau)} = g^{\sum_{i=0}^d \ell_i \tau^i} = \prod_{i=0}^d (g^{\tau^i})^{\ell_i},
 \end{equation*}
@@ -101,10 +101,10 @@ In this section, we introduce the \textbf{Proof of Exponent assumption} (PoE) wh
     \end{enumerate}
 \end{definition}
 
-The informal reason why it makes KZG commitment sound is following: suppose we have an adversary prover $\mathcal{P}^*$ that published commitment $c$ without knowing underlying polynomial $f(T)$. Now, there is no way for him to cheat the verifier. 
-Indeed, what $\mathcal{P}^*$ needs to do is calculating $c^{\alpha}$, but he does now know $\alpha$ since, similarly to $\tau$, it was deleted as a part of the toxic waste. Besides, he cannot obtain $\alpha$ for the same reason he cannot obtain $\tau$.
+The informal reason why this makes KZG commitment sound is the following: suppose we have an adversary prover $\mathcal{P}^*$ that published commitment $c$ without knowing underlying polynomial $f(T)$. Now, there is no way for him to cheat the verifier. 
+Indeed, what $\mathcal{P}^*$ needs to do is calculating $c^{\alpha}$, but he does not know $\alpha$ since, similarly to $\tau$, it was deleted as a part of the toxic waste. Besides, he cannot obtain $\alpha$ for the same reason he cannot obtain $\tau$.
 
-For that reason, we modify the SNARK protocol to include not only commitments to polynomials but also PoE for each of them. Let us see how it looks like.
+For that reason, we modify the SNARK protocol to include not only commitments to polynomials but also PoE for each of them. Let us see what it looks like.
 
 \begin{tcolorbox}[title=Attempt \#2: SNARK with PoE included,
     breakable,
@@ -282,7 +282,7 @@ Oof, that was a long fix! Let us come back to the new version of the SNARK proto
 \subsubsection{Attempt \#4: Splitting the Extended Witness}
 
 Now, recall that the actual circuit $\Circ$ is defined for some statement
-$\mathbbm{x}$ and witness $\mathbf{z}$. According to the Circuit Satisfability
+$\mathbbm{x}$ and witness $\mathbf{z}$. According to the Circuit Satisfiability
 Problem, the prover $\mathcal{P}$ wants to convince the verifier $\mathcal{V}$
 that he knows the witness $\mathbf{z}$ such that the circuit $\Circ(\mathbbm{x},
 \mathbbm{w}) = 0$. Up until now, we have been using the extended witness
@@ -292,7 +292,7 @@ intermediate witness that contains the private witness $\mathbf{z}$ and
 intermediate variables values, and the second part $\mathbf{z}_{\text{io}}$ ---
 input/output witness that contains public statement information (e.g.,
 $\mathbbm{x}$). Suppose for vector $\widetilde{\mathbf{z}} =
-(\widetilde{z}_1,\dots,\widetilde{z}_n)$ we pick out the set of indeces
+(\widetilde{z}_1,\dots,\widetilde{z}_n)$ we pick out the set of indices
 $\mathcal{I}_{\text{mid}} \subset [n]$ to represent the intermediate witness and
 $\mathcal{I}_{\text{io}} \subset [n]$ to represent the input/output witness (of
 course, $\mathcal{I}_{\text{mid}} \cap \mathcal{I}_{\text{io}} = \emptyset$ and
@@ -387,7 +387,7 @@ Finally, we came to the point where we need to make the protocol zero-knowledge.
 \begin{remark}
     Currently, you might have a reasonable question: the proof contains quantities such as $g^{\ell(\tau)}$, $g^{r(\tau)}$, $g^{o(\tau)}$ and variations of them. As long as discrete logarithm holds, there is no PPT adversary that would be able to extract coefficients of $\ell(T)$, $r(T)$, $o(T)$ from published KZG commitments (and respective PoE shifts and witness consistency proof). So what could be the issue?
 
-    This reasoning is correct. In other words, the adversary will not learn coefficients of polynomials and therefore will not be able to get the witness fully. However, the zero-knowledge property ensures that the adversary cannot draw conclusions based on proof $\boldsymbol{\pi}$. However, in our current version, we do have SNARK, but not zk-SNARK. For instance, currently anyone can check whether $\ell \equiv r$ (by checking $\pi_L = \pi_R$) or that $\ell \equiv 11r$ (by checking $\pi_L = \pi_R^{11}$).  
+    This reasoning is correct. In other words, the adversary will not learn coefficients of polynomials and therefore will not be able to get the witness fully. However, the zero-knowledge property ensures that the adversary cannot draw conclusions based on proof $\boldsymbol{\pi}$. However, in our current version, we do have a SNARK, but not a zk-SNARK. For instance, currently anyone can check whether $\ell \equiv r$ (by checking $\pi_L = \pi_R$) or that $\ell \equiv 11r$ (by checking $\pi_L = \pi_R^{11}$).  
 \end{remark}
 
 The main idea to make our protocol zero-knowledge is to ``shift'' our commitments by some random factor $\delta$. Of course, this ``shift'' $\delta$ must be different for each commitment and must be chosen by the prover $\mathcal{P}$. This way, we propose to modify the commitments as follows:
@@ -399,7 +399,7 @@ The main idea to make our protocol zero-knowledge is to ``shift'' our commitment
     \end{aligned}
 \end{equation*}
 
-for randomly selected $\delta_L, \delta_R, \delta_O \leftarrowS \mathbb{F}_q$. Good, we concealed all the information about the witness $\mathbbm{w}$ in the commitment. However, we need to make sure that the verifier $\mathcal{V}$ can still verify the proof, but without modifying the verification mechanism itself. Notice that PoE verifications are still valid, but we need to modify something to make polynomial equality test hold. This can be done by perturbating the polynomial $h(T)$ by some (currently) unknown value $\Delta_H$. Let us derive it from the polynomial equality test:
+for randomly selected $\delta_L, \delta_R, \delta_O \leftarrowS \mathbb{Z}_q$. Good, we concealed all the information about the witness $\mathbbm{w}$ in the commitment. However, we need to make sure that the verifier $\mathcal{V}$ can still verify the proof, but without modifying the verification mechanism itself. Notice that PoE verifications are still valid, but we need to modify something to make polynomial equality test hold. This can be done by perturbating the polynomial $h(T)$ by some (currently) unknown value $\Delta_H$. Let us derive it from the polynomial equality test:
 \begin{equation*}
     (\ell(T) + \delta_L z(T))(r(T) + \delta_R z(T)) = (h(T) + \Delta_H)z(T) + (o(T) + \delta_O z(T)), \\
 \end{equation*}
@@ -434,7 +434,7 @@ This can be done by changing it into:
 Oof. Finally, we also have a zero-knowledge property for our SNARK. Let us summarize what has changed for the prover $\mathcal{P}$.
 
 \begin{proposition}[Including ZK in general-purpose SNARK]
-    Now, the prover $\mathcal{P}$ samples random scalars $\delta_L, \delta_R, \delta_O \leftarrowS \mathbb{F}_q$ and calculates the following commitments:
+    Now, the prover $\mathcal{P}$ samples random scalars $\delta_L, \delta_R, \delta_O \leftarrowS \mathbb{Z}_q$ and calculates the following commitments:
     \begin{itemize}
         \item \textbf{Updated Commitments for $\ell,r,o$:} Now, the prover $\mathcal{P}$ needs to calculate the commitments $\pi_L,\pi_R,\pi_O$ with the additional $\delta$'s values to ensure zero-knowledge property:
         \begin{align*}
@@ -520,7 +520,7 @@ Let us now look at the final version of our basic SNARK protocol.
 
 \subsection{Real Protocols}
 
-While our built protocol is zk-SNARK, it is still not optimized for practical use. In fact, let us recap what is complexity of our protocol.
+While our built protocol is zk-SNARK, it is still not optimized for practical use. In fact, let us recap what the complexity of our protocol is.
 
 \begin{proposition}[Complexity of the Basic Protocol]
     Suppose circuit consists of $n$ gates. Then, the complexity of the basic protocol is as follows:
@@ -538,7 +538,7 @@ While our built protocol is zk-SNARK, it is still not optimized for practical us
     \end{itemize}
 \end{proposition}
 
-Now, this is not bad at all! In fact, this is already practical for many applications. However, we can do better by a more clever choice of constants and terms. This is exactly what is done by Bryan Parno and Craig Gentry in their research ``Pinocchio: Nearly Practical Verifiable Computation'' \cite{pinocchio}.
+Now, this is not bad at all! In fact, this is already practical for many applications. However, we can do better by a more clever choice of constants and terms. This is exactly what is done by Bryan Parno and Craig Gentry in their paper ``Pinocchio: Nearly Practical Verifiable Computation''~\cite{pinocchio}.
 
 \subsection{Pinocchio Protocol}
 

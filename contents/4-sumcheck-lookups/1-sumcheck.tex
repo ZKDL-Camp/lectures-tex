@@ -27,7 +27,7 @@ $\mathbb{F}[X_1,\dots,X_v]$ where $v$ is the number of variables.
     maximum degree has a monomial $X_1^2X_2^2$ which is $4$, thus $\deg(f) = 4$.
 \end{example}
 
-However, in cryptography, we won't work with arbitrary multivariate
+However, in cryptography, we will not work with arbitrary multivariate
 polynomials, compared to the univariate case. What we need is a 
 \textit{multilinear polynomial}.
 \begin{definition}
@@ -167,7 +167,7 @@ as it turns out many protocols can be reduced to the Sum-Check protocol,
 similarly how any NP statement can be encoded as a high-degree univariate
 polynomial check (see the lecture on QAP).
 
-\textbf{Why can't the verifier just compute the sum?} Typically, $v$ is a fairly
+\textbf{Why cannot the verifier just compute the sum?} Typically, $v$ is a fairly
 large number. According to the \Cref{lemma:multilinear-extension-computation},
 the verifier can compute the multilinear extension $\widetilde{f}$ in
 $\mathcal{O}(2^v)$ time and space, which is infeasible for large $v$. The
@@ -548,7 +548,7 @@ polynomial time.
 
 Now, similarly to how it is done in R1CS, we \textit{arithmetize} the circuit
 $\mathtt{C}$ to be computable over the finite field $\mathbb{F}$ (let us call it
-$\widetilde{\mathtt{C}}: \mathbb{F}^{\ell} \to \mathbb{F}$). Here how it goes:
+$\widetilde{\mathtt{C}}: \mathbb{F}^{\ell} \to \mathbb{F}$). Here is how it goes:
 \begin{itemize}
     \item Instead of the gate $x \wedge y$, we use the multiplication $x \cdot y$.
     \item Instead of the gate $x \vee y$, we use the addition $x + y - x \cdot y$.
@@ -586,7 +586,7 @@ $\boldsymbol{\alpha} \leftarrowS \mathbb{F}^n$ and verify that
 $A(B\boldsymbol{\alpha}) = C\boldsymbol{\alpha}$ (idea is pretty similar
 to the Schwartz-Zippel lemma where we check the polynomial equation at a 
 random point). However, is there any better way to do that? Sumcheck 
-protocol can help to keep the same assymptotics, but do not reveal 
+protocol can help to keep the same asymptotics, but does not reveal 
 the whole matrices $A,B$ to the verifier.
 
 \textbf{Protocol.} Here is where \textit{multilinear extension} comes into play.
@@ -808,7 +808,7 @@ Turnes out that the claimed sum is $H=6$ while the polynomial is:
 \end{equation*}
 
 So the only thing left is to run the already implemented Sum-Check protocol.
-Here how it goes:
+Here is how it goes:
 \begin{minted}{python}
 # Defining a smaller polynomial ring for the protocol (since g 
 # is polynomial in v variables instead of 2*v)

@@ -174,7 +174,7 @@ $t_{i}<h<t_{i+1}$ for some $i \in [d]$. Then, $h-t_i,t_{i+1}-h \in
 \textbf{Reducing two checks to one.} At this point, one can apply the
 $\mathcal{P}$lon$\mathcal{K}$-based protocol to check whether $\vec{s} =
 (\vec{z}, \vec{t})$ and $\partial\vec{s} = \partial\vec{t}$. However,
-\textit{plookup} allows to use just a single one. Here how it works.
+\textit{plookup} allows one to use just a single one. Here is how it works.
 
 \begin{definition}
     The \textbf{randomized difference set} with randomness $\beta \in
@@ -203,7 +203,7 @@ proposition (without proof).
 \textbf{Intuition.} Such proposition came out of nowhere, so let us explain why
 (intuitively) it works. First, let us see how $\partial_{\beta}\vec{s}$ for
 $\vec{z} \subseteq \vec{t}$ looks like. Compared to $\partial\vec{s}$, two same
-consecutive elements $s_i,s_{i+1}$ with $s_i=s_{i+1}$ don't get zeroed: instead,
+consecutive elements $s_i,s_{i+1}$ with $s_i=s_{i+1}$ do not get zeroed: instead,
 one gets $(1+\beta)s_i$. So at least we know where $1+\beta$ coefficient comes
 from! Other than same elements, in $\partial_{\beta}\vec{s}$, one gets
 coefficients of form $t_i+\beta t_{i+1}$, which is exactly
@@ -350,7 +350,7 @@ obvious (especially the second one). So here is the brief explanation of their m
 
 While \textit{plookup} is the Poly-IOP-based protocol, \textit{logup} allows to
 prove the lookup inclusion using SumCheck and rather more algebraic (compared to
-plookup) approach. Let's see how it works.
+plookup) approach. Let us see how it works.
 
 \subsubsection{Preliminaries}
 
