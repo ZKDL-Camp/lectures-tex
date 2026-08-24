@@ -33,8 +33,9 @@ Firstly, observe that proving $t(x) = l(x)r(x)$ may be reduced to an evaluation 
 $$\mathsf{Pr}[l(u)r(u) = t(u) \vert l(x)r(x) \neq t(x)] \le \frac{\max(\deg(l(x)r(x)), \deg(t(x)))}{p} = \frac{2}{p}$$
 which is typically a negligible function of the security level, making this check \textit{sound}.
 
-\subsubsection{Naїve polynomial multiplication protocol}
-Let us describe a naїve unoptimized version of the \textbf{polynomial multiplication} protocol $\Pi'_{mul} = (\mathsf{Setup},\mathcal{P,V})$ for the relation $\mathcal{R}_{mul}$.
+\subsubsection{Naïve polynomial multiplication protocol}
+
+Let us describe a naïve unoptimized version of the \textbf{polynomial multiplication} protocol $\Pi'_{mul} = (\mathsf{Setup},\mathcal{P,V})$ for the relation $\mathcal{R}_{mul}$.
 During $\mathsf{Setup}$, parties agree on group elements $G,B \in \mathbb{G}$. After that, the parties engage in the following protocol:
 \begin{itemize}
     \item Prover $\mathcal{P}$ computes:

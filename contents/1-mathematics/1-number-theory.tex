@@ -548,7 +548,7 @@ As an exercise and to show where Bezout coefficients are used, let us prove both
 Let $p \mid ab$, but $ p \nmid a$, then $\gcd(a, p) = 1$ because there are no common divisors.
 In which case, by Bezout identity \Cref{lemma:bezout_identity}, there exist such $u, v \in \mathbb{Z}$ that $au + pv = 1$.
 Let us multiply the left and right sides by $b$: $abu + pbv = b$, but $p \mid ab$ and $p \mid pb$, therefore their sum is also divisible by $p \mid abu + pbv$. 
-$\blacktriangleleft$
+\end{proof}
 
 Now, we are ready to introduce the central Number Theory theorem --- Fundamental
 Theorem of Arithmetic.
@@ -1134,9 +1134,9 @@ print(inverse(8, 17)) # Output: 15
 \end{xexercise}
 
 \begin{xexercise}
-    {Exercise 6.} { In the quadratic polynomial $f(x) = (x-p)^2-p(x-q)+x^2-qx$,
+    {Exercise 6.} { In the quadratic polynomial $f(T) = (T-p)^2-p(T-q)+T^2-qT$,
     $p$ and $q$ are \emph{distinct} prime numbers both less than $10$. This
-    polynomial can be rewritten as $f(x) = 2(x-r_1)(x-r_2)$ where $r_1$ and
+    polynomial can be rewritten as $f(T) = 2(T-r_1)(T-r_2)$ where $r_1$ and
     $r_2$ are the roots of $f$. If both $r_1$ and $r_2$ are prime numbers, what
     is their sum $r_1+r_2$? } {4} {
         \item 7
