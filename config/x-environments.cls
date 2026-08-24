@@ -61,7 +61,7 @@
 }
 
 \newcommand{\exerciseList}[1]{
-  \begin{enumerate}[a),left=5mm]
+  \begin{enumerate}[(A),left=5mm]
     #1
   \end{enumerate}
 }
@@ -70,7 +70,7 @@
   \vspace{-3mm}
   
   \begin{multicols}{#1}
-    \begin{enumerate}[a),left=5mm]
+    \begin{enumerate}[(A),left=5mm]
       #2
     \end{enumerate}
   \end{multicols}

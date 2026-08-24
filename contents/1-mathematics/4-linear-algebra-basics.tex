@@ -4,31 +4,674 @@
 
 Although linear algebra is out of the main scope of this course, familiarity
 with its basic definitions and concepts is still essential (especially when
-considering Linear PCPs further from \Cref{section:r1cs}). In this section, we
+considering Linear PCPs (\Cref{section:r1cs}) and Lattices). In this section, we
 provide a brief review of the key principles that are used throughout the
 course. You can skip this section without any doubts if you are already
-familiare with that, and come back to it whenever you need to refresh your
+familiar with that, and come back to it whenever you need to refresh your
 memory.
 
-\subsection{Vector Space}
+\subsection{Motivation}\label{subsec:linalg:motivation}
+
+In this subsection, we give the answer to the question ``why one should learn linear algebra for cryptography?''
+Throughout this section, fix some field $\mathbb{F}$.
+
+\textbf{Boring answer.} In cryptography we commonly need to work with a large set of \textit{linear} relations. 
+For example, the following is a basic example of a linear relation between variables $x_1,\dots,x_n$ over the field $\mathbb{F}$:
+\begin{equation*}
+    \alpha_1x_1 + \alpha_2x_2 + \dots + \alpha_nx_n = 0
+\end{equation*} 
+for some constants $\alpha_1,\dots,\alpha_n \in \mathbb{F}$. 
+Since operating with individual elements in such cases becomes troublesome, we collect them into \textit{vectors} and denote them in bold: say, $\mathbf{x}=(x_1,\dots,x_n)$.
+Naturally, we can perform basic operations with them such as:
+\begin{equation*}
+    \begin{bmatrix}
+        x_1 \\ \vdots \\ x_n
+    \end{bmatrix} + \begin{bmatrix}
+        y_1 \\ \vdots \\ y_n
+    \end{bmatrix} = \begin{bmatrix}
+        x_1 + y_1 \\
+        \vdots \\
+        x_n + y_n
+    \end{bmatrix}, \quad \lambda\begin{bmatrix}
+        x_1 \\ \vdots \\ x_n
+    \end{bmatrix} = \begin{bmatrix}
+        \lambda x_1 \\ \vdots \\ \lambda x_n
+    \end{bmatrix} \quad \textcolor{oc-gray-8}{\textit{// for some $\lambda \in \mathbb{F}$.}}
+\end{equation*}
+
+When dealing with multiple linear relations, say,
+\begin{equation*}
+    \alpha x_1 + \beta x_2 = 0, \quad \gamma x_1 + \delta x_3 = 0, \quad \varepsilon x_2 + \zeta x_3 = 0,
+\end{equation*}
+we introduce the notion of \textit{matrices}. For instance, the equation above can be more concisely written as
+\begin{equation*}
+    A\mathbf{x} = 0, \quad A = \begin{bmatrix}
+        \alpha & \beta & 0 \\
+        \gamma & 0 & \delta \\
+        0 & \varepsilon & \zeta
+    \end{bmatrix}, \quad \mathbf{x} = \begin{bmatrix}
+        x_1 \\ x_2 \\ x_3
+    \end{bmatrix}.
+\end{equation*}
+
+The ``boring'' goal of this section is to give a basic machinery: what is a matrix-vector product (\textit{i.e.}, how to compute $A\mathbf{x}$),
+how to multiply two matrices, and understand other properties of matrix such as determinant or rank.
+
+However, there is much more beauty in studying linear algebra.
+For instance, surprisingly, even studying how to solve a system of linear equations has a lot of hidden geometry which is easy to visualize.
+We will now try to give a more motivating and somewhat complete answer below.
+
+\textbf{Actual answer.} The typical exposition to linear algebra indeed starts from studying \textit{systems of linear equations}. 
+For instance, here is one:
+\begin{equation*}
+    \begin{cases}
+        2x_1 + x_2 = 4 \\
+        x_1 + 2x_2 = 5.
+    \end{cases} \; \textcolor{oc-indigo-7}{\textit{// System (a)}}
+\end{equation*}
+
+Using straightforward manipulations, one might verify that the solution to this equation is $(x_1,x_2)=(1,2)$.
+However, now consider the equation
+\begin{equation*}
+    \begin{cases}
+        4x_1 + 2x_2 = 1 \\
+        2x_1 + 1x_2 = 3.
+    \end{cases} \; \textcolor{oc-indigo-7}{\textit{// System (b)}}
+\end{equation*}
+
+If you try to solve it, you will notice that this equation has no solutions. 
+However, you might wonder what is fundamentally different between these equations.
+Specifically, why the first equation has a solution while the second does not? 
+Do we have some rule when the equation has no solutions or when it has just a single one?
+Can the system of such equations have infinite solutions? (\textit{yes, it can}).
+The questions can go on.
+
+One surprising insight for analyzing these two equations is to take a look at the following values, marked in red and blue:
+\begin{equation*}
+    \begin{cases}
+        \textcolor{oc-red-7}{2} \cdot x_1 + \textcolor{oc-blue-7}{1}\cdot x_2 = 4 \\
+        \textcolor{oc-red-7}{1} \cdot x_1 + \textcolor{oc-blue-7}{2}\cdot x_2 = 5,
+    \end{cases} \quad 
+    \begin{cases}
+        \textcolor{oc-red-7}{4}\cdot x_1 + \textcolor{oc-blue-7}{2}\cdot x_2 = 1 \\
+        \textcolor{oc-red-7}{2}\cdot x_1 + \textcolor{oc-blue-7}{1}\cdot x_2 = 3.
+    \end{cases}
+\end{equation*}
+
+Note that we might arrange marked quantities in vectors, yielding
+\begin{equation*}
+    \begin{bmatrix}
+        \textcolor{oc-red-7}{2} \\
+        \textcolor{oc-red-7}{1}
+    \end{bmatrix}x_1 + \begin{bmatrix}
+        \textcolor{oc-blue-7}{1} \\
+        \textcolor{oc-blue-7}{2}
+    \end{bmatrix}x_2 = \begin{bmatrix}
+        4 \\ 5
+    \end{bmatrix}, \quad 
+    \begin{bmatrix}
+        \textcolor{oc-red-7}{4} \\
+        \textcolor{oc-red-7}{2}
+    \end{bmatrix}x_1 + \begin{bmatrix}
+        \textcolor{oc-blue-7}{2} \\
+        \textcolor{oc-blue-7}{1}
+    \end{bmatrix}x_2 = \begin{bmatrix}
+        1 \\ 3
+    \end{bmatrix}.
+\end{equation*}
+
+This way, we reduced the question from solving an abstract set of equations to: ``can we find a linear combination\footnote{Given vectors $\mathbf{v}_1,\dots,\mathbf{v}_n$, the \textit{linear combination} is an expression of form $\lambda_1\mathbf{v}_1+\dots+\lambda_n\mathbf{v}_n$.} of vectors $\begin{bmatrix}
+        \textcolor{oc-red-7}{2} \\
+        \textcolor{oc-red-7}{1}
+    \end{bmatrix}$ and $\begin{bmatrix}
+        \textcolor{oc-blue-7}{1} \\
+        \textcolor{oc-blue-7}{2}
+    \end{bmatrix}$ that will give $\begin{bmatrix}
+        4 \\ 5
+    \end{bmatrix}$?''
+This problem is in fact much more easily visualizable! 
+See \Cref{fig:linear-eqs-illustration}.
+Notice that when two highlighted vectors are parallel, no matter which $x_1$ and $x_2$ one picks, the sum cannot be a vector that is not parallel to ones given.
+Consequently, since $(1,3)$ is not parallel to $(4,2)$ and $(2,1)$, there are no solutions.
+In contrast, when two vectors are not parallel, we are always guaranteed to find the solution.
+
+\captionsetup[subfigure]{labelformat=empty}
+\begin{figure}[htbp]
+  \centering
+
+  % --- LEFT SIDE: Unique Solution ---
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+    
+    \begin{tikzpicture}[scale=0.5, >=Stealth]
+      % Grid & Axes
+      \draw[gray!20, thin] (-0.5,-0.5) grid (5.5,5.5);
+      \draw[->, thick, gray!70] (-0.5,0) -- (5.5,0) node[right] {$x$};
+      \draw[->, thick, gray!70] (0,-0.5) -- (0,5.5) node[above] {$y$};
+      
+      % Ticks
+      \foreach \x in {1,...,5} \draw (\x,0.05) -- (\x,-0.05) node[below, font=\tiny] {\x};
+      \foreach \y in {1,...,5} \draw (0.05,\y) -- (-0.05,\y) node[left, font=\tiny] {\y};
+
+      % Linear combination path: 1*v1 + 2*v2 = target
+      \draw[dashed, oc-blue-7, thick] (2,1) -- (4,5) 
+        node[midway, right] {$+2\mathbf{v}_2$};
+
+      % Vectors
+      \draw[->, ultra thick, oc-red-7] (0,0) -- (2,1) 
+        node[midway, below right] {$\mathbf{v}_1$};
+      \draw[->, ultra thick, oc-blue-7] (0,0) -- (1,2) 
+        node[midway, above left] {$\mathbf{v}_2$};
+      \draw[->, ultra thick, oc-green-5] (0,0) -- (4,5) 
+        node[above left] {$\mathbf{b}$};
+
+      % Target Point Marker
+      \filldraw[oc-green-5] (4,5) circle (2.5pt);
+    \end{tikzpicture}
+    \caption{\textcolor{oc-indigo-7}{\textit{System (a)}}. Solution exists.}
+  \end{subfigure}
+  \hfill
+  % --- RIGHT SIDE: Parallel / No Solution ---
+  \begin{subfigure}[b]{0.48\textwidth}
+    \centering
+
+    \begin{tikzpicture}[scale=0.5, >=Stealth]
+      % Grid & Axes
+      \draw[gray!20, thin] (-0.5,-0.5) grid (5.5,5.5);
+      \draw[->, thick, gray!70] (-0.5,0) -- (5.5,0) node[right] {$x$};
+      \draw[->, thick, gray!70] (0,-0.5) -- (0,5.5) node[above] {$y$};
+
+      % Ticks
+      \foreach \x in {1,...,5} \draw (\x,0.05) -- (\x,-0.05) node[below, font=\tiny] {\x};
+      \foreach \y in {1,...,5} \draw (0.05,\y) -- (-0.05,\y) node[left, font=\tiny] {\y};
+
+      % Line spanned by parallel vectors (y = 2x)
+      %\draw[dashed, gray!60, thick] (-0.25,-0.5) -- (2.75,5.5) 
+      %  node[above, font=\tiny, rotate=63.4] {$\text{Span}(\mathbf{v}_1, \mathbf{v}_2)$};
+
+      % Parallel Vectors (slightly offset side-by-side for visual clarity)
+      \draw[->, ultra thick, oc-red-7] (0,0) -- (4,2) 
+        node[midway, right=9pt] {$\mathbf{v}_1$};
+      \draw[->, ultra thick, oc-blue-7] (0,0) -- (2,1) 
+        node[midway, below right=-2pt and 0pt] {$\mathbf{v}_2$};
+      
+      % Target Vector
+      \draw[->, ultra thick, oc-green-5] (0,0) -- (1,3) 
+        node[above left] {$\mathbf{b}$};
+
+      % Target Point Marker
+      \filldraw[oc-green-5] (1,3) circle (2.5pt);
+    \end{tikzpicture}
+    \caption{\textcolor{oc-indigo-7}{\textit{System (b)}}. Solution does not exist.}
+  \end{subfigure}
+
+  \caption{Geometric interpretation of the system of linear equations.}
+  \label{fig:linear-eqs-illustration}
+\end{figure}
+
+It turns out that similar idea is valid for system of equations in more variables.
+Say, it is also easy to visualize the following three equations:
+\begin{align*}
+    &\textcolor{oc-indigo-7}{\textit{// System (a)}} && \textcolor{oc-indigo-7}{\textit{// System (b)}} && \textcolor{oc-indigo-7}{\textit{// System (c)}} \\
+    &\begin{cases}
+        2x_1 - x_3 = 1 \\
+        2x_2 + x_3 = 3 \\
+        x_1 + x_2 + 2x_3 = 4
+    \end{cases} && \begin{cases}
+        2x_1 + x_3 = 2 \\
+        2x_2 + x_3 = 2 \\
+        x_1 + x_2 + x_3 = 2
+    \end{cases} && \begin{cases}
+        3x_1 + 2x_2 + x_3 = 1 \\
+        9x_1 + 6x_2 + 3x_3 = 4 \\
+        6x_1 + 4x_2 + 2x_3 = 7
+    \end{cases}
+\end{align*}
+
+Again, by considering these equations in the form $\mathbf{v}_1x_1 + \mathbf{v}_2x_2 + \mathbf{v}_3x_3=\mathbf{t}$ for fixed $\mathbf{v}_1,\mathbf{v}_2,\mathbf{v}_3,\mathbf{t} \in \mathbb{R}^3$, we have:
+\begin{align*}
+    \textcolor{oc-indigo-7}{\textit{// System (a)}}: && \begin{bmatrix}
+        \textcolor{oc-red-7}{2} \\ \textcolor{oc-red-7}{0} \\ \textcolor{oc-red-7}{1}
+    \end{bmatrix}x_1 + \begin{bmatrix}
+        \textcolor{oc-blue-7}{0} \\ \textcolor{oc-blue-7}{2} \\ \textcolor{oc-blue-7}{1}
+    \end{bmatrix}x_2 + \begin{bmatrix}
+        \textcolor{oc-orange-7}{-1} \\ \textcolor{oc-orange-7}{1} \\ \textcolor{oc-orange-7}{2}
+    \end{bmatrix}x_3 = \begin{bmatrix}
+        1 \\ 3 \\ 4
+    \end{bmatrix}, \\
+    \textcolor{oc-indigo-7}{\textit{// System (b)}}: && \begin{bmatrix}
+        \textcolor{oc-red-7}{2} \\ \textcolor{oc-red-7}{0} \\ \textcolor{oc-red-7}{1}
+    \end{bmatrix}x_1 + \begin{bmatrix}
+        \textcolor{oc-blue-7}{0} \\ \textcolor{oc-blue-7}{2} \\ \textcolor{oc-blue-7}{1}
+    \end{bmatrix}x_2 + \begin{bmatrix}
+        \textcolor{oc-orange-7}{1} \\ \textcolor{oc-orange-7}{1} \\ \textcolor{oc-orange-7}{1}
+    \end{bmatrix}x_3 = \begin{bmatrix}
+        2 \\ 2 \\ 2
+    \end{bmatrix}, \\
+    \textcolor{oc-indigo-7}{\textit{// System (c)}}: && \begin{bmatrix}
+        \textcolor{oc-red-7}{3} \\ \textcolor{oc-red-7}{9} \\ \textcolor{oc-red-7}{6}
+    \end{bmatrix}x_1 + \begin{bmatrix}
+        \textcolor{oc-blue-7}{2} \\ \textcolor{oc-blue-7}{6} \\ \textcolor{oc-blue-7}{4}
+    \end{bmatrix}x_2 + \begin{bmatrix}
+        \textcolor{oc-orange-7}{1} \\ \textcolor{oc-orange-7}{3} \\ \textcolor{oc-orange-7}{2}
+    \end{bmatrix}x_3 = \begin{bmatrix}
+        1 \\ 4 \\ 7
+    \end{bmatrix}.
+\end{align*}
+
+As before, we can sketch how vectors in \textcolor{oc-red-7}{red}, \textcolor{oc-blue-7}{blue}, and \textcolor{oc-orange-7}{orange} are positioned with respect to each other.
+Specifically, consider \Cref{fig:linear-eqs-3d-illustration}.
+Notice that there are three primary cases how such vectors and righthand side are located in the space:
+\begin{itemize}
+    \item Vectors lie on the same \textit{line} (as illustrated by \textit{System (c)}).
+    Since $(1,4,7)$ does not lie on the same line as the other vectors, the system has no solutions.
+    Otherwise, it has an infinite number of solutions.
+    \item Vectors lie on the same \textit{plane} (as illustrated by \textit{System (b)}).
+    Since $(2,2,2)$ lies on this plane, there is an infinite number of solutions.
+    Specifically, this set is given by $\{(1-\frac{1}{2}t,1-\frac{1}{2}t,t): t \in \mathbb{R}\}$.
+    \item Vectors are lying ``arbitrarily'' (neither on the same line nor plane).
+    In such case, the system of equations always has a single \textit{unique} solution.
+\end{itemize}
+
+Notice that the three-dimensional case is significantly more complicated than the two-dimensional.
+Moreover, notice that both \textit{System (b)} and \textit{System (c)} might have an infinite number of solutions, yet these numbers are in a way ``different''.
+Specifically, as we observed, we only need a single ``free'' variable $t \in \mathbb{R}$ to describe the set of solutions of \textit{System (b)}.
+In turn, if \textit{System (c)} had solutions, we would need two free variables to describe it. 
+
+\begin{figure}[htbp]
+  \centering
+
+  % --- ROW (a): Unique Solution ---
+  \begin{subfigure}[c]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{contents/images/linear-algebra/3d-system-1.png}
+  \end{subfigure}%
+  \hfill
+  \begin{subfigure}[c]{0.50\textwidth}
+    \caption{\textcolor{oc-indigo-7}{\textit{System (a)}} \\[2pt]
+             Three vectors situated arbitrarily in space (as we will further formally define, they \textit{span the whole $\mathbb{R}^3$}).
+             The solution to the equation always exists regardless of the righthand side.}
+  \end{subfigure}
+
+  \vspace{1em}
+
+  % --- ROW (b): Infinite Solutions (1 Free Var / Coplanar) ---
+  \begin{subfigure}[c]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{contents/images/linear-algebra/3d-system-2.png}
+  \end{subfigure}%
+  \hfill
+  \begin{subfigure}[c]{0.50\textwidth}
+    \caption{\textcolor{oc-indigo-7}{\textit{System (b)}} \\[2pt]
+             Three vectors are situated on the same plane.
+             Consequently, the equation will have an infinite number of solutions if the righthand side also lies on this plane.
+             Otherwise, the system has no solutions.}
+  \end{subfigure}
+
+  \vspace{1em}
+
+  % --- ROW (c): Infinite Solutions (2 Free Vars / Collinear) ---
+  \begin{subfigure}[c]{0.45\textwidth}
+    \centering
+    \includegraphics[width=\linewidth]{contents/images/linear-algebra/3d-system-3.png}
+  \end{subfigure}%
+  \hfill
+  \begin{subfigure}[c]{0.50\textwidth}
+    \caption{\textcolor{oc-indigo-7}{\textit{System (c)}}\\[2pt]
+             Three vectors situated on the same line. Solution only exists if the righthand side lies along this line.}
+  \end{subfigure}
+
+  \caption{Geometric interpretation of $3 \times 3$ linear systems over $\mathbb{R}$ given by $\mathbf{v}_1x_1 + \mathbf{v}_2x_2 + \mathbf{v}_3x_3 = \mathbf{t}$ for the righthand side $\mathbf{t} \in \mathbb{R}^3$.}
+  \label{fig:linear-eqs-3d-illustration}
+\end{figure}
+
+Now, here is the thing: in cryptography, we typically need to operate over systems of \textit{thousands} of linear relations.
+While we could ``manually'' analyze simple cases as $2 \times 2$ or $3 \times 3$ linear equations, we need a more systematic way to give answers to the preceding questions.
+
+The linear algebra gives all the necessary tools. 
+Specifically, as you could have already noticed, the key of studying such equations is to see how column-vectors of some equation are related.
+It is then convenient to collect all such vectors in a single object called a \textit{matrix}.
+For instance, for \textit{System (a)}, we have:
+\begin{equation*}
+    A\mathbf{x} = \mathbf{t}, \quad A = \begin{bmatrix}
+        2 & 0 & -1 \\
+        0 & 2 & 1 \\
+        1 & 1 & 2
+    \end{bmatrix}, \quad \mathbf{t} = \begin{bmatrix}
+        1 \\ 3 \\ 4
+    \end{bmatrix}.
+\end{equation*}
+
+While of course the number of solutions depends on the righthand side, the primary structure of the solution set is \emph{determined by a map $\mathbf{x} \mapsto A\mathbf{x}$}.
+In a sense, this is exactly what we are going to study in this section.
+For example, when we develop the whole toolkit, here is how we can answer the previous questions systematically:
+
+\begin{proposition}\label{prop:basic-facts}
+    Consider the linear equation $A\mathbf{x}=\mathbf{t}$ for arbitrary matrix $A \in \mathbb{R}^{n \times n}$ and $\mathbf{t} \in \mathbb{R}^n$. Then,
+    \begin{enumerate}
+    \item there is always a single solution to the equation iff $\det A \neq 0$;
+    \item \textit{(Rouché-Capelli Theorem)} the solution exists iff $\text{rank}(A \| \mathbf{t})=\text{rank}(A)$;
+    \item if the solution exists, the number of variables needed to describe the solution set is $n-\text{rank}(A)$.
+    \end{enumerate}
+\end{proposition}
+
+Besides, the tools we provide are as geometric as the motivation above. 
+For example, $\det A$ represents the volume of the parallelepiped spanned by columns of $A$ (see figure below).
+So the statement \textit{(i)} of \Cref{prop:basic-facts} basically tells: ``if columns of $A$ span non-zero volume, we can always find a unique solution.''
+This fully coincides with the situation we observed in \Cref{fig:linear-eqs-3d-illustration}: line and plane technically have no volume (determinant is $0$), so the equation has either no or infinite number of solutions.
+\begin{figure}[ht]
+\centering
+\begin{tikzpicture}[scale=0.75, >=Stealth]
+
+% ============================================================
+% Common style:
+%   axes: thick gray
+%   vectors: ultra thick colored arrows
+% ============================================================
+
+
+% ============================================================
+% 1. det(A) != 0 : three-dimensional parallelepiped
+% ============================================================
+\begin{axis}[
+    at={(0,0)},
+    width=5.2cm,
+    height=5.2cm,
+    view={120}{25},
+    axis lines=center,
+    axis line style={thick, gray!70},
+    xmin=0, xmax=4.2,
+    ymin=0, ymax=3.8,
+    zmin=0, zmax=3.5,
+    ticks=none,
+    xlabel style={
+        at={(axis description cs:1.02,0.03)},
+        anchor=west
+    },
+    ylabel style={
+        at={(axis description cs:0.02,1.03)},
+        anchor=south
+    },
+    zlabel style={
+        at={(axis description cs:0.05,0.98)},
+        anchor=south
+    },
+]
+
+% Parallelepiped
+\addplot3[
+    fill=blue!20,
+    draw=blue!60,
+    opacity=0.75
+] coordinates {
+    (0,0,0) (3,0,0) (3,2,0) (0,2,0) (0,0,0)
+};
+
+\addplot3[
+    fill=blue!20,
+    draw=blue!60,
+    opacity=0.75
+] coordinates {
+    (0,0,2) (3,0,2) (3,2,2) (0,2,2) (0,0,2)
+};
+
+\addplot3[blue!60, opacity=0.75] coordinates {(0,0,0) (0,0,2)};
+\addplot3[blue!60, opacity=0.75] coordinates {(3,0,0) (3,0,2)};
+\addplot3[blue!60, opacity=0.75] coordinates {(3,2,0) (3,2,2)};
+\addplot3[blue!60, opacity=0.75] coordinates {(0,2,0) (0,2,2)};
+
+% Vectors
+\addplot3[
+    ->,
+    ultra thick,
+    oc-red-7
+] coordinates {(0,0,0) (3,0,0)};
+
+\addplot3[
+    ->,
+    ultra thick,
+    oc-blue-7
+] coordinates {(0,0,0) (0,2,0)};
+
+\addplot3[
+    ->,
+    ultra thick,
+    oc-green-7
+] coordinates {(0,0,0) (0,0,2)};
+
+\node[
+    oc-red-7,
+    font=\small
+] at (axis cs:1.5,-0.35,0.2) {$\mathbf{v}_1$};
+
+\node[
+    oc-blue-7,
+    font=\small
+] at (axis cs:-0.7,1,0.2) {$\mathbf{v}_2$};
+
+\node[
+    oc-green-7,
+    font=\small
+] at (axis cs:-0.25,0.3,1.15) {$\mathbf{v}_3$};
+
+\node[
+    font=\large\bfseries,
+    anchor=south
+] at (axis description cs:0.5,1.08)
+{$\det(A)\neq0$};
+
+\node[
+    font=\small,
+    anchor=north
+] at (axis description cs:0.5,-0.15)
+{3-dimensional span};
+
+\end{axis}
+
+
+% ============================================================
+% 2. Plane : det(A) = 0
+% ============================================================
+\begin{axis}[
+    at={(6cm,0)},
+    width=5.2cm,
+    height=5.2cm,
+    view={120}{25},
+    axis lines=center,
+    axis line style={thick, gray!70},
+    xmin=0, xmax=4.2,
+    ymin=0, ymax=3.8,
+    zmin=0, zmax=3.5,
+    ticks=none,
+    xlabel style={
+        at={(axis description cs:1.02,0.03)},
+        anchor=west
+    },
+    ylabel style={
+        at={(axis description cs:0.02,1.03)},
+        anchor=south
+    },
+    zlabel style={
+        at={(axis description cs:0.05,0.98)},
+        anchor=south
+    },
+]
+
+\addplot3[
+    surf,
+    domain=0:5,
+    y domain=0:5,
+    samples=8,
+    samples y=8,
+    shader=flat,
+    draw=gray!55,
+    fill=gray!15,
+    opacity=0.45,
+    line join=round
+]
+({x},{y},{0});
+% Three coplanar vectors
+\addplot3[
+    ->,
+    ultra thick,
+    oc-red-7
+] coordinates {(0,0,0) (2,0,0)};
+
+\addplot3[
+    ->,
+    ultra thick,
+    oc-blue-7
+] coordinates {(0,0,0) (0,2,0)};
+
+\addplot3[
+    ->,
+    ultra thick,
+    oc-green-7
+] coordinates {(0,0,0) (3,2,0)};
+
+\node[
+    oc-red-7,
+    font=\small
+] at (axis cs:1.5,-0.15,0.5) {$\mathbf{v}_1$};
+
+\node[
+    oc-blue-7,
+    font=\small
+] at (axis cs:-0.3,2,0.35) {$\mathbf{v}_2$};
+
+\node[
+    oc-green-7,
+    font=\small
+] at (axis cs:2,2,0) {$\mathbf{v}_3$};
+
+\node[
+    font=\large\bfseries,
+    anchor=south
+] at (axis description cs:0.5,1.08)
+{$\det(A)=0$};
+
+\node[
+    font=\small,
+    anchor=north
+] at (axis description cs:0.5,-0.15)
+{2-dimensional span (plane)};
+
+\end{axis}
+
+
+% ============================================================
+% 3. Line : det(A) = 0
+% ============================================================
+\begin{axis}[
+    at={(12cm,0)},
+    width=5.2cm,
+    height=5.2cm,
+    view={120}{25},
+    axis lines=center,
+    axis line style={thick, gray!70},
+    xmin=0, xmax=5.2,
+    ymin=0, ymax=3.8,
+    zmin=0, zmax=4.2,
+    ticks=none,
+    xlabel style={
+        at={(axis description cs:1.02,0.03)},
+        anchor=west
+    },
+    ylabel style={
+        at={(axis description cs:0.02,1.03)},
+        anchor=south
+    },
+    zlabel style={
+        at={(axis description cs:0.05,0.98)},
+        anchor=south
+    },
+]
+
+\addplot3[
+    very thick,
+    dashed,
+    gray
+] coordinates {
+    (0,0,0)
+    (3,3,0)
+};
+
+\addplot3[
+    very thick,
+    dashed,
+    gray
+] coordinates {
+    (3,3,3)
+    (3,3,0)
+};
+
+% Three collinear vectors -- made longer
+\addplot3[
+    ->,
+    ultra thick,
+    oc-green-7
+] coordinates {(0,0,0) (4,4,4)};
+
+\addplot3[
+    ->,
+    ultra thick,
+    oc-blue-7
+] coordinates {(0,0,0) (2.75,2.75,2.75)};
+
+\addplot3[
+    ->,
+    ultra thick,
+    oc-red-7
+] coordinates {(0,0,0) (1.5,1.5,1.5)};
+
+\node[
+    oc-green-7,
+    font=\small
+] at (axis cs:4,3.75,4.4) {$\mathbf{v}_3$};
+
+\node[
+    oc-blue-7,
+    font=\small
+] at (axis cs:2.75,2.5,3.25) {$\mathbf{v}_2$};
+
+\node[
+    oc-red-7,
+    font=\small
+] at (axis cs:1.5,1.25,2) {$\mathbf{v}_1$};
+
+\end{axis}
+
+\end{tikzpicture}
+\end{figure}
+
+\begin{remark}
+    In areas such as Machine Learning, studying large linear systems might give much insight into the structure of the underlying data.
+    Toolkit needed for such areas is arguably much more advanced than what we will require in our course: for instance, it requires analyzing the \textit{spectrum} of linear operators.
+    That said, this section focuses on the very basics.
+\end{remark}
+
+\subsection{Vector Space and Linear Subspace}
 
 Similarly to group theory working with \textit{groups}, the linear algebra also
 has a special designated primitive --- \textbf{vector space}. If previously we
 were working with the (finite) field $\mathbb{F}$, now we will work with the
-vector space $V$ over this field. In many practical applications, vector space
+vector space $V$ over this field. In many \textit{practical} applications, vector space
 is formed by \textbf{vectors} consisting of a finite fixed collection of
-elements from the field $\mathbb{F}$. For example, the vector space might be
-simply $\mathbb{F}^n$: the set of all $n$-tuples $(x_1,x_2,\dots,x_n)$ of
-elements from $\mathbb{F}$. Yet, let us give a bit more general definition.
+elements from the field $\mathbb{F}$. 
+The most common example we will use is $\mathbb{F}^n$: the set of all $n$-tuples $(x_1,x_2,\dots,x_n)$ of
+elements from $\mathbb{F}$.
+We will use bold letters $\mathbf{x}$ to denote such a collection for brevity.
+
+Let us now give a bit more general definition.
 
 \begin{definition}
-    A \textbf{vector space} $V$ over the field $\mathbb{F}$ is an abelian group for addition $+$ together with a scalar multiplication operation $\cdot$ from $\mathbb{F} \times V$ to $V$, sending $(\lambda,x) \mapsto \lambda x$ and such that for any $\mathbf{v},\mathbf{u} \in V$ and $\lambda,\mu \in \mathbb{F}$ we have:
+    A \textbf{vector space} $V$ over the field $\mathbb{F}$ is an abelian group for addition $+$ together with a scalar multiplication operation $\cdot$ from $\mathbb{F} \times V$ to $V$, sending $(\lambda,\mathbf{x}) \mapsto \lambda \mathbf{x}$ and such that for any $\mathbf{v},\mathbf{u} \in V$ and $\lambda,\mu \in \mathbb{F}$ we have:
     \begin{xmulticols}{2}
         \begin{itemize}
             \item $\lambda(\mathbf{u}+\mathbf{v}) = \lambda \mathbf{u} + \lambda \mathbf{v}$
             \item $(\lambda + \mu)\mathbf{v} = \lambda \mathbf{v} + \mu \mathbf{v}$
             \item $(\lambda \mu)\mathbf{v} = \lambda(\mu \mathbf{v})$
-            \item $1\mathbf{v} = \mathbf{v}$
+            \item $1\cdot \mathbf{v} = \mathbf{v}$
         \end{itemize}
     \end{xmulticols}
 
@@ -48,53 +691,177 @@ elements from $\mathbb{F}$. Yet, let us give a bit more general definition.
     is a vector space. Similarly, the following three sets $V_1,V_2,V_3$ with operations defined above are also valid vector spaces:
     \begin{xequation*}
         \begin{aligned}
-            &V_1 = \{(x_1,x_2,\dots,x_n) \in \mathbb{F}^n: x_1 = 0\} \\
-            &V_2 = \{(x_1,x_2,\dots,x_n) \in \mathbb{F}^n: x_1-x_3 = 0\} \\
-            &V_3 = \{(x_1,x_2,\dots,x_n) \in \mathbb{F}^n: x_1+x_2+\dots+x_n = 0\}
+            &V_1 := \{(x_1,x_2,\dots,x_n) \in \mathbb{F}^n: x_1 = 0\} \\
+            &V_2 := \{(x_1,x_2,\dots,x_n) \in \mathbb{F}^n: x_1-x_3 = 0\} \\
+            &V_3 := \{(x_1,x_2,\dots,x_n) \in \mathbb{F}^n: x_1+x_2+\dots+x_n = 0\}
         \end{aligned}
     \end{xequation*}
 
     \textbf{Reasoning.} Let us see why, for example, $V_3$ is a valid vector space. Since all operations 
     are inherited from $\mathbb{F}^n$, we only need to check that $V_3$ is closed under addition and scalar multiplication.
-    Suppose $\mathbf{v}_1=(x_1,\dots,x_n)$ and $\mathbf{v}_2=(y_1,\dots,y_n) \in V_3$. Then:
-    \begin{xequation}
-        \mathbf{v}_1 + \mathbf{v_2} = (x_1+x_2,\dots,x_n+y_n)
-    \end{xequation}
-    Note that $\sum_{i=1}^n x_i+y_i = \left(\sum_{i=1}^n x_i\right) + \left(\sum_{i=1}^ny_i\right) = 0 + 0 = 0$, so the sum is indeed closed.
+    Suppose $\mathbf{u}=(u_1,\dots,u_n) \in V_3$ and $\mathbf{w}=(w_1,\dots,w_n) \in V_3$. Then,
+    $\mathbf{u}+\mathbf{w}=(u_1+w_1,\dots,u_n+w_n)$.
+    Note that $\sum_{i=1}^n u_i+w_i = \left(\sum_{i=1}^n u_i\right) + \left(\sum_{i=1}^nw_i\right) = 0 + 0 = 0$, so indeed $\mathbf{u}+\mathbf{w} \in V_3$.
+    Similarly one can check that $\lambda\mathbf{u} \in V_3$ for any $\lambda \in \mathbb{F}$.
 \end{example}
 
-\vspace{-1mm}
+\begin{remark}
+    Although practically we will only encounter vector spaces of the form $\mathbb{F}^n$, the notion of vector space is very broad. For example, consider the following two sets:
+    \begin{align*}
+        U_1 &:= \mathbb{R}[T]^{\leq n}, \; \textcolor{gray}{\textit{// polynomials in $\mathbb{R}$ of maximum degree $n$}} \\
+        U_2 &:= \{\text{all functions $f: [0,1] \to \mathbb{R}$ continuous over $[0,1]$}\}.
+    \end{align*}
+    One can check, that both $U_1$ and $U_2$ are in fact vector spaces over $\mathbb{R}$ with $U_1$ being of finite dimension while $U_2$ being infinitely-dimensional.
+\end{remark}
 
-We will also need to define one very important notion: the linear dependence and independence of vectors.
-
-\vspace{-1mm}
+Very common in practice we need to work with vector spaces that are subspaces of $\mathbb{F}^n$.
+Naturally, such spaces have a dedicated term.
 
 \begin{definition}
-    A set of vectors $\{\mathbf{v}_1, \mathbf{v}_2, \dots, \mathbf{v}_k\}$ in a vector space $V$ over a field $\mathbb{F}$ is said to be \textbf{linearly independent} if the only scalars $\lambda_1, \lambda_2, \dots, \lambda_k \in \mathbb{F}$ that satisfy the equation
-    \begin{xequation*}
-        \lambda_1 \mathbf{v}_1 + \lambda_2 \mathbf{v}_2 + \cdots + \lambda_k \mathbf{v}_k = \mathbf{0}
-    \end{xequation*}
-    are $\lambda_1 = \lambda_2 = \cdots = \lambda_k = 0$. If there exist scalars, not all zero, that satisfy this equation, then the vectors are said to be \textbf{linearly dependent}.
+    Let $V$ be a vector space over $\mathbb{F}$ and let $W \subseteq V$.
+    $W$ is called a \textbf{linear subspace} of $V$ if $W$ is itself a vector space with operations inherited from $V$.
+    Equivalently, for any $\mathbf{w}_1,\mathbf{w}_2 \in W$ and $\alpha,\beta \in \mathbb{F}$ one has
+    \begin{equation*}
+        \alpha\mathbf{w}_1 + \beta\mathbf{w}_2 \in W.
+    \end{equation*}
 \end{definition}
 
-\vspace{-4mm}
+\begin{example}
+    Let $n \geq 2$ and let
+    \begin{xequation*}
+        \begin{aligned}
+            U &:= \{(x_1,x_2,\dots,x_n) \in \mathbb{F}^n: x_1 = x_2 = 0\} \\
+            W &:= \{(x_1,x_2,\dots,x_n) \in \mathbb{F}^n: x_1 + x_2 = 0\}.
+        \end{aligned}
+    \end{xequation*}
+    Then, \textit{(i)} both $U$ and $W$ are linear subspaces of $\mathbb{F}^n$ and \textit{(ii)} $U$ is a vector subspace of $W$.
+\end{example}
+
+\begin{example}\label{ex:span}
+    One essential type of vector spaces is the so-called \textit{span}. 
+    Let $V$ be a vector space over $\mathbb{F}$ and let $\mathbf{v}_1,\dots,\mathbf{v}_n \in V$. Define
+    \begin{equation*}
+        \text{span}(\mathbf{v}_1,\dots,\mathbf{v}_n) := \{\lambda_1\mathbf{v}_1 + \dots + \lambda_n\mathbf{v}_n: \lambda_1,\dots,\lambda_n \in \mathbb{F}\}.
+    \end{equation*}
+    Then, $\text{span}(\mathbf{v}_1,\dots,\mathbf{v}_n)$ is a linear subspace of $V$.
+\end{example}
+
+One important example of a vector subspace that we considered in the motivation part of this section is \textit{the set of solutions of a homogeneous\footnote{``homogeneous'' is a fancy way to say that the righthand side of an equation is $0$.} system of linear equations}.
+\begin{exercise}
+    Let $V$ be the set of vectors $(x_1,\dots,x_n)$ in $\mathbb{F}^n$ that satisfy:
+    \begin{equation*}
+        \mathbf{u}_1x_1 + \dots + \mathbf{u}_nx_n = 0, \; \text{for some $\mathbf{u}_1,\dots,\mathbf{u}_n \in \mathbb{F}^m$}
+    \end{equation*}
+    Show that $V$ is the linear subspace of $\mathbb{F}^n$.
+
+    \textbf{Hint}: if $\mathbf{x}, \mathbf{y} \in \mathbb{F}^n$ are two solutions of such equation (\textit{i.e.}, $\mathbf{x},\mathbf{y} \in V$), what can we say about $\lambda\mathbf{x}$ and $\mathbf{x}+\mathbf{y}$?
+\end{exercise}
+
+\subsection{Basis and Dimensionality}
+
+Now we define one very important notion: the linear dependence and independence of vectors.
+This will allow us to define the \textit{dimensionality} of vector spaces which will describe their capacity or degree of freedom.
+
+\begin{definition}
+    A set of vectors $\mathbf{v}_1, \mathbf{v}_2, \dots, \mathbf{v}_n$ in a vector space $V$ over a field $\mathbb{F}$ is said to be \textbf{linearly independent} if the only scalars $\lambda_1, \lambda_2, \dots, \lambda_n \in \mathbb{F}$ that satisfy the equation
+    \begin{equation*}
+        \lambda_1 \mathbf{v}_1 + \lambda_2 \mathbf{v}_2 + \cdots + \lambda_n \mathbf{v}_n = \mathbf{0}
+    \end{equation*}
+    are $\lambda_1 = \lambda_2 = \cdots = \lambda_n = 0$. If there exist scalars, not all zero, that satisfy this equation, then the vectors are said to be \textbf{linearly dependent}.
+\end{definition}
 
 \begin{example}
     Consider the vectors $\mathbf{v}_1 = (1, 0, 0)$, $\mathbf{v}_2 = (0, 1, 0)$, and $\mathbf{v}_3 = (0, 0, 1)$ in $\mathbb{R}^3$. These vectors are linearly independent because the only solution to
-    \begin{xequation*}
+    \begin{equation*}
         \lambda_1 \mathbf{v}_1 + \lambda_2 \mathbf{v}_2 + \lambda_3 \mathbf{v}_3 = \mathbf{0}
-    \end{xequation*}
-    is $\lambda_1 = \lambda_2 = \lambda_3 = 0$.
+    \end{equation*}
+    is $\lambda_1 = \lambda_2 = \lambda_3 = 0$. 
 \end{example}
-
-\vspace{-4mm}
 
 \begin{example}
     Consider the vectors $\mathbf{u}_1 = (1, 2, 3)$, $\mathbf{u}_2 = (2, 4, 6)$ in $\mathbb{R}^3$. These vectors are linearly dependent because $\mathbf{u}_2 = 2\mathbf{u}_1$, so the equation
-    \begin{xequation*}
+    \begin{equation*}
         \lambda_1 \mathbf{u}_1 + \lambda_2 \mathbf{u}_2 = \mathbf{0}
-    \end{xequation*}
+    \end{equation*}
     has non-trivial solutions, such as $\lambda_1 = 2$ and $\lambda_2 = -1$.
+\end{example}
+
+We now describe the notion of \textit{basis}. 
+Roughly, this is a set of vectors in $V$ such that \textit{(i)} they are linearly independent and \textit{(ii)} every vector in $V$ can be expressed as a linear combination of them.
+More formally, we have the following definition.
+\begin{definition}
+    Vectors $\mathbf{e}_1,\dots,\mathbf{e}_n$ are a \textbf{basis} of $V$ if:
+    \begin{itemize}
+        \item $\text{span}(\mathbf{e}_1,\dots,\mathbf{e}_n) = V$ (see \Cref{ex:span} for the definition of $\text{span}(\cdot)$);
+        \item $\mathbf{e}_1,\dots,\mathbf{e}_n$ are linearly independent.
+    \end{itemize}
+\end{definition}
+
+This definition requires some examples.
+
+\begin{example}
+    For the vector space $\mathbb{F}^2$, vectors $\mathbf{e}_1=(1,0)$ and $\mathbf{e}_2=(0,1)$ form a basis.
+    Indeed, they are linearly independent and any vector $(x_1,x_2) \in \mathbb{F}^2$ can be written as:
+    \begin{equation*}
+        \begin{bmatrix}
+            x_1 \\ x_2
+        \end{bmatrix} = x_1\begin{bmatrix}
+            1 \\ 0
+        \end{bmatrix} + x_2\begin{bmatrix}
+            0 \\ 1
+        \end{bmatrix} = x_1\mathbf{e}_1 + x_2\mathbf{e}_2.
+    \end{equation*}
+    Such basis is commonly referred to as \textit{canonical}. 
+\end{example}
+
+\begin{example}
+    Basis is typically not unique. 
+    For instance, for $\mathbb{R}^2$, vectors $\mathbf{u}_1=(1,2)$ and $\mathbf{u}_2=(2,1)$ also form a basis.
+    Indeed, one can first check that they are linearly independent. 
+    Besides, for any $(x_1,x_2) \in \mathbb{R}^2$, one can check:
+    \begin{equation*}
+        \begin{bmatrix}
+            x_1 \\ x_2
+        \end{bmatrix} = \left(-\frac{1}{3}x_1 + \frac{2}{3}x_2\right)\mathbf{u}_1 + \left(\frac{2}{3}x_1 - \frac{1}{3}x_2\right)\mathbf{u}_2,
+    \end{equation*}
+    so that any vector of $\mathbb{R}^2$ is expressed as some linear combination of $\mathbf{u}_1$ and $\mathbf{u}_2$.
+    Moreover, any two linearly independent vectors in $\mathbb{F}^2$ are a valid basis of $\mathbb{F}^2$!
+\end{example}
+
+\begin{example}
+    Recall that $\mathbb{F}[T]^{\leq n}$ (the space of polynomials with a degree at most $n$) is a vector space over $\mathbb{F}$.
+    Its canonical basis can be described as:
+    \begin{equation*}
+        e_1 = 1, \; e_2 = T, \; e_3 = T^2, \; \dots \; e_{n+1} = T^n.
+    \end{equation*}
+    Indeed, $e_1,\dots,e_{n+1}$ are linearly independent (otherwise the equation $c_0+c_1T+\dots+c_nT^n=0$ could hold identically for some non-trivial choice of constants $c_0,\dots,c_n \in \mathbb{F}$).
+    Clearly these elements span the whole $\mathbb{F}[T]^{\leq n}$.
+\end{example}
+
+\begin{example}
+    Again, we stress on the fact that the basis might not be unique.
+    For instance, for $\mathbb{F}_{5}[T]^{\leq 2}$, the basis could be 
+    \begin{equation*}
+        e_1 = 3, \; e_2 = T + 2, \; e_3 = T^2 + 4.
+    \end{equation*}
+\end{example}
+
+Notice that while the basis in not unique for the given vector space, the number of basis vectors was the same.
+This raises the natural question: can we find the basis $\mathbf{e}_1,\dots,\mathbf{e}_m$ for $\mathbb{F}^n$ or $\mathbb{F}[T]^{<n}$ with $m \neq n$?
+The answer is no.
+
+\begin{lemma}
+    Any two bases of a vector space have the same length.
+\end{lemma}
+
+This motivates us to give the following definition.
+
+\begin{definition}
+    The \textbf{dimension} of the vector space $V$, denoted by $\dim V$, is the length of any basis of $V$.
+\end{definition}
+
+\begin{example}
+    As we have observed earlier, $\dim \mathbb{F}^n=\dim \mathbb{F}[T]^{\leq n-1} = n$.
 \end{example}
 
 \subsection{Matrix}
@@ -102,19 +869,18 @@ We will also need to define one very important notion: the linear dependence and
 Besides vectors, frequently we are working with \textbf{matrices}. In the most
 basic sense, the matrix is a rectangular array of numbers, symbols, or
 expressions, arranged in rows and columns. For example, the matrix $A$ with $m$
-rows and $n$ columns, consisting of elements from the finite field $\mathbb{F}$
+rows and $n$ columns, consisting of elements from the field $\mathbb{F}$
 is denoted as $A \in \mathbb{F}^{m \times n}$. Additionally, we use notation $A
-= \{a_{i,j}\}_{i,j=1}^{m \times n}$ to denote the square matrix $A$ of size $m
+= (a_{i,j})_{i,j=1}^{m \times n}$ to denote the matrix $A$ of size $m
 \times n$ with elements $a_{i,j}$. Now, let us define operations on matrices.
 
-\vspace{-1mm}
-
-\begin{definition}
-    Let $A,B$ be two matrices over the field $\mathbb{F}$. The following operations are defined:
+\begin{definition}[Matrix operations]\label{def:matrix-ops}
+    We define the following operations over matrices:
     \begin{itemize}
-        \item \textbf{Matrix addition/subtraction}: $A \pm B = \{a_{i,j} \pm b_{i,j}\}_{i,j=1}^{m \times n}$. The matrices $A$ and $B$ must have the same size $m \times n$.
-        \item \textbf{Scalar multiplication}: $\lambda A = \{\lambda a_{i,j}\}_{1\leq i,j \leq n}$ for any $\lambda \in \mathbb{F}$.
-        \item \textbf{Matrix multiplication}: $C = AB$ is a matrix $C \in \mathbb{F}^{m \times p}$ with elements $c_{i,j} = \sum_{\ell=1}^{n} a_{i,\ell}b_{\ell,j}$. The number of columns in $A$ must be equal to the number of rows in $B$, that is $A \in \mathbb{F}^{m \times n}$ and $B \in \mathbb{F}^{n \times p}$.
+        \item for matrices $A,B \in \mathbb{F}^{m \times n}$ of the same size, the \textbf{addition/subtraction} is defined as $A \pm B = (a_{i,j} \pm b_{i,j})_{i,j=1}^{m \times n}$;
+        \item for matrix $A \in \mathbb{F}^{m \times n}$ and scalar $\lambda \in \mathbb{F}$, the \textbf{scalar multiplication} is defined as $\lambda A = (\lambda a_{i,j})_{i,j=1}^{m \times n}$;
+        \item for matrices\footnote{ Note that the number of columns in $A$ must be equal to the number of rows in $B$.} $A \in \mathbb{F}^{m \times n}$ and $B \in \mathbb{F}^{n \times p}$, the \textbf{matrix multiplication} $C := AB$ is a matrix $C \in \mathbb{F}^{m \times p}$ with elements $c_{i,j} := \sum_{\ell=1}^{n} a_{i,\ell}b_{\ell,j}$.
+        \item for matrix $A \in \mathbb{F}^{m \times n}$, the \textbf{transpose} is a matrix $A^{\top} \in \mathbb{F}^{n \times m}$ with elements given by $A^{\top}_{i,j} = A_{j,i}$.
     \end{itemize}
 \end{definition}
 
@@ -145,179 +911,181 @@ is denoted as $A \in \mathbb{F}^{m \times n}$. Additionally, we use notation $A
     To see why, for example, the upper left element of $AB$ is $5$, we can calculate it as $\sum_{\ell=1}^3 a_{1,\ell}b_{\ell,1} = 1 \times 2 + 1 \times 1 + 2 \times 1 = 5$.
 \end{example}
 
-\vspace{-4mm}
+\begin{exercise}
+    Let $\mathbf{x} = \begin{bmatrix}
+        1 \\ 2 \\ 1
+    \end{bmatrix}$. Compute $\mathbf{x}^{\top}\mathbf{x}$ and $\mathbf{x}\mathbf{x}^{\top}$ using definitions above.
+\end{exercise}
+
+Notice that with the definition of matrix multiplication above, the matrix-vector product $A\mathbf{x}$ of $A \in \mathbb{F}^{m \times n}$ and $\mathbf{x} \in \mathbb{F}^n$ is
+\begin{equation*}
+    \begin{bmatrix}
+        a_{1,1} & a_{1,2} & \dots & a_{1,n} \\
+        a_{2,1} & a_{2,2} & \dots & a_{2,n} \\
+        \vdots & \vdots & \ddots & \vdots \\
+        a_{m,1} & a_{m,2} & \dots & a_{m,n}
+    \end{bmatrix}\begin{bmatrix}
+        x_1 \\ x_2 \\ \vdots \\ x_n
+    \end{bmatrix} = \begin{bmatrix}
+        a_{1,1}x_1 + a_{1,2}x_2 + \dots + a_{1,n}x_n \\
+        a_{2,1}x_1 + a_{2,2}x_2 + \dots + a_{2,n}x_n \\
+        \vdots \\
+        a_{m,1}x_1 + a_{m,2}x_2 + \dots + a_{m,n}x_n
+    \end{bmatrix},
+\end{equation*}
+
+which is (despite the scary look) a very expected expression.
+For example, consider the following linear system of equations:
+\begin{equation*}
+    \begin{cases}
+        x_1 + 2x_2 + 3x_3 = 2 \\
+        2x_1 + x_2 + 3x_3 = 1 \\
+        -x_1 + x_2 + 1x_3 = 0
+    \end{cases}
+\end{equation*}
+
+By introducing\footnote{Despite writing $\mathbf{x}=(x_1,\dots,x_n)$, we consider vectors \emph{to be written in columns}, \textit{i.e.}, $\mathbf{x}=\begin{bmatrix}
+    x_1 \\ \vdots \\ x_n
+\end{bmatrix}$.}, $\mathbf{x}=(x_1,x_2,x_3)$, we can write it more succinctly as
+\begin{equation*}
+    A\mathbf{x} = \mathbf{t}, \quad A = \begin{bmatrix}
+        1 & 2 & 3 \\
+        2 & 1 & 3 \\
+        -1 & 1 & 1
+    \end{bmatrix}, \quad \mathbf{t} = \begin{bmatrix}
+        2 \\ 1 \\ 0
+    \end{bmatrix}.
+\end{equation*}
 
 \begin{remark}
-    Now, we add a very important remark. It just so happens that when working with vectors, we usually assume that they are \textbf{column vectors}. This means that the vector $v = (v_1,v_2,\dots,v_n)$ is represented as a matrix:
+    Among the provided operations above, the matrix-matrix multiplication seems the least intuitive.
+    Here is the sketch why it is defined the way it is. 
+    Recall that our goal is to study the operation $T: \mathbf{x} \mapsto A\mathbf{x}$.
+    Now assume that we have another operation of such kind: $L: \mathbf{z} \mapsto B\mathbf{z}$.
+    Naturally, we want to be able to compose these two operations; say, let
     \begin{equation*}
-        \mathbf{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{bmatrix}
-    \end{equation*} 
-
-    This is a common convention in linear algebra, and we will use it in the following sections.
-\end{remark}
-
-Sometimes we may derive some rows or columns of the matrix from the others. There is a very important notion related to this.
-
-\begin{definition}
-    The \textbf{rank} of a matrix $A \in \mathbb{F}^{m \times n}$ is the maximum number of linearly independent rows or columns in $A$. This is also known as the \textbf{row rank} or \textbf{column rank} of the matrix.
-\end{definition}
-
-\vspace{-4mm}
-
-\begin{remark}
-    The row rank and column rank of a matrix are always equal.
-\end{remark}
-
-\vspace{-4mm}
-
-\begin{example}
-    Consider the matrix $A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$. To
-    determine the rank of $A$, we can perform certain linear rows (or columns)
-    permutations to show that the rows (or columns) are linearly independent
-    vectors. For example, we can perform the following operations:
-    \begin{xequation*}
-        \begin{bmatrix} 
-            1 & 2 \\ 
-            3 & 4 
-        \end{bmatrix} 
-        \xrightarrow{R_2 \gets R_2 - 3R_1} 
-        \begin{bmatrix} 
-            1 & 2 \\ 
-            0 & -2 
-        \end{bmatrix} 
-        \xrightarrow{R_2 \gets - \frac{1}{2}R_2} 
-        \begin{bmatrix} 
-            1 & 2 \\ 
-            0 & 1 
-        \end{bmatrix} 
-        \xrightarrow{R_1 \gets R_1 - 2R_2} 
-        \begin{bmatrix}
-            1 & 0 \\
-            0 & 1 
-        \end{bmatrix}
-    \end{xequation*}
-    
-    Since we can clearly see that the rows (and columns) are linearly independent, the rank of $A$ is $2$.
-\end{example}
-
-\begin{example}
-    Consider the matrix $B = \begin{bmatrix} 1 & 2 \\ 2 & 4 \end{bmatrix}$. Let us perform the following operations:
-    \begin{equation*}
-        \begin{bmatrix} 
-            1 & 2 \\ 
-            2 & 4 
-        \end{bmatrix} 
-        \xrightarrow{R_2 \gets R_2 - 2R_1} 
-        \begin{bmatrix} 
-            1 & 2 \\ 
-            0 & 0 
-        \end{bmatrix}
+        F := T \circ L \qquad \textcolor{gray}{\textit{// where $(f \circ g)(x) = f(g(x))$.}}
     \end{equation*}
-    Here we can see that the second row is a linear combination of the first row, so the rank of $B$ is $1$.
-\end{example}
+    
+    Naturally, we expect that $F$ must also be of form $\mathbf{x} \mapsto C\mathbf{x}$.
+    The only way for $C=AB$ to be correctly computed from $A$ and $B$ is by means of \Cref{def:matrix-ops}.
+\end{remark}
 
-One important operation we will be frequently working with is the \textbf{transpose} of the matrix. The transpose of a matrix is an operator that flips a matrix over its diagonal, that is, it switches the row and column indices of the matrix by producing another matrix denoted as $A^{\top}$.
-
-\begin{definition}[Transposition]
-    Given a matrix $A \in \mathbb{F}^{m \times n}$, the \textbf{transpose} of $A$ is a matrix $A^{\top} \in \mathbb{F}^{n \times m}$ with elements $A^{\top}_{ij} = A_{ji}$.
-\end{definition}
-
-\begin{example}
-    For example, consider the square matrix $A = \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix}$. 
-    Then, the transpose of $A$ is $A^{\top} = \begin{bmatrix} 1 & 3 \\ 2 & 4 \end{bmatrix}$. 
-    % However, we can transpose any matrix, for example, the matrix 
-    % $B = \begin{bmatrix} 1 & 2 & 3 \\ 4 & 5 & 6 \end{bmatrix}$ has the transpose 
-    % $B^{\top} = \begin{bmatrix} 1 & 4 \\ 2 & 5 \\ 3 & 6 \end{bmatrix}$. 
-    % Finally, what is probably very important to us, the column vector
-    % $\mathbf{v} = \begin{bmatrix} 1 \\ 2 \\ 3 \end{bmatrix}$ has the transpose
-    % $\mathbf{v}^{\top} = [1,2,3]$.
-\end{example}
-
-Finally, is just happens that we can construct matrix from the vectors. Therefore, let us introduce the corresponding notation.
-\begin{definition}[Composing Matrix from vectors]
-    Suppose we are given $n$ vectors $\mathbf{v}_1,\mathbf{v}_2,\dots,\mathbf{v}_n \in \mathbb{F}^m$. Then, we might define matrix $A$ as a matrix with columns $\mathbf{v}_1,\mathbf{v}_2,\dots,\mathbf{v}_n$ as follows:
-    \begin{xequation*}
-        A = \begin{bmatrix}
-            \mathbf{v}_1 & \mathbf{v}_2 & \dots & \mathbf{v}_n
-        \end{bmatrix} = \begin{bmatrix}
-            v_{1,1} & v_{2,1} & \dots & v_{n,1} \\
-            v_{1,2} & v_{2,2} & \dots & v_{n,2} \\
-            \vdots & \vdots & \ddots & \vdots \\
-            v_{1,m} & v_{2,m} & \dots & v_{n,m}
-        \end{bmatrix}
-    \end{xequation*}
-
-    Alternatively, vectors might be represented as rows, and the matrix $A$ might be defined as a matrix with rows $\mathbf{v}_1,\mathbf{v}_2,\dots,\mathbf{v}_n$:
-    \begin{xequation}
-        A = \begin{bmatrix}
-            \mathbf{v}_1^{\top} \\ \mathbf{v}_2^{\top} \\ \vdots \\ \mathbf{v}_n^{\top}
-        \end{bmatrix} = \begin{bmatrix}
-            v_{1,1} & v_{1,2} & \dots & v_{1,m} \\
-            v_{2,1} & v_{2,2} & \dots & v_{2,m} \\
-            \vdots & \vdots & \ddots & \vdots \\
-            v_{n,1} & v_{n,2} & \dots & v_{n,m}
-        \end{bmatrix}
-    \end{xequation}
-\end{definition}
-
-\begin{example}
-    For example, consider the vectors $\mathbf{v}_1 = (1,2,3)$ and $\mathbf{v}_2 = (4,5,6)$. Then, the matrix $A$ with columns $\mathbf{v}_1$ and $\mathbf{v}_2$ is:
-    \begin{xequation*}
-        A = \begin{bmatrix}
-            \mathbf{v}_1 & \mathbf{v}_2
-        \end{bmatrix} = \begin{bmatrix}
-            1 & 4 \\
-            2 & 5 \\
-            3 & 6
-        \end{bmatrix}
-    \end{xequation*}
-
-    Similarly, the matrix $B$ with rows $\mathbf{v}_1$ and $\mathbf{v}_2$ is:
-    \begin{xequation}
-        B = \begin{bmatrix}
-            \mathbf{v}_1^{\top} \\ \mathbf{v}_2^{\top}
-        \end{bmatrix} = \begin{bmatrix}
-            1 & 2 & 3 \\
-            4 & 5 & 6
-        \end{bmatrix}
-    \end{xequation}
-\end{example}
-
-\subsection{Inner Product}
+Note that in \Cref{subsec:linalg:motivation} while considering simple systems of linear equations, we put a batch of (vertical) vectors into the matrix.
+More concretely, given $\mathbf{v}_1,\dots,\mathbf{v}_n \in \mathbb{F}^n$, we formed the matrix $A := (\mathbf{v}_1,\dots,\mathbf{v}_n) \in \mathbb{F}^{n \times n}$.
+Depending on what portion of $\mathbb{F}^n$ these vectors spanned, we drew different conclusions about the set of solutions of a linear equation.
+Now we can naturally define the measure that will show this ``portion'' of $\mathbb{F}^n$.
 
 \begin{definition}
-    Consider the vector space $\mathbb{F}^n$. The \textbf{inner product} is a function $\langle \cdot, \cdot \rangle: \mathbb{F}^n \times \mathbb{F}^n \to \mathbb{F}$ satisfying the following conditions for all $\mathbf{u},\mathbf{v},\mathbf{w} \in \mathbb{F}^n$:
+    The \textbf{column rank} of a matrix $A \in \mathbb{F}^{m \times n}$ is the maximum number of linearly independent columns in $A$. 
+    That is, if we represent the matrix in the form $A=(\mathbf{v}_1,\dots,\mathbf{v}_n) \in \mathbb{F}^{m \times n}$, then
+    \begin{equation*}
+        \text{col-rank}(A) := \dim \text{span}(\mathbf{v}_1,\dots,\mathbf{v}_n).
+    \end{equation*}
+\end{definition}
+
+However, nothing restricts us from considering the matrix in the row-vector format.
+That is, for $A \in \mathbb{F}^{m \times n}$, let
+\begin{equation*}
+    A = \begin{bmatrix}
+        \mathbf{u}_1^{\top} \\
+        \vdots \\
+        \mathbf{u}_m^{\top}
+    \end{bmatrix} \; \text{for some} \; \mathbf{u}_1,\dots,\mathbf{u}_m \in \mathbb{F}^n.
+\end{equation*}
+
+Similarly, we might ask: what portion of $\mathbb{F}^n$ do $\mathbf{u}_1,\dots,\mathbf{u}_m$ span?
+
+\begin{definition}
+    The \textbf{row rank} of a matrix $A \in \mathbb{F}^{m \times n}$ is the maximum number of linearly independent rows in $A$. 
+    That is, if $A$ consists of rows $\mathbf{u}_1^{\top}, \dots, \mathbf{u}_m^{\top}$, then
+    \begin{equation*}
+        \text{row-rank}(A) := \dim \text{span}(\mathbf{u}_1,\dots,\mathbf{u}_m).
+    \end{equation*}
+\end{definition}
+
+Fortunately, thanks to the following lemma, it turns out that it does not matter which type of rank we refer to.
+
+\begin{lemma}
+    The row rank and column rank of a matrix are always equal.
+\end{lemma}
+
+This allows us to simply define the \textbf{rank} of the matrix $A$ (and denote it by $\text{rank}(A)$) as either a row or column rank of $A$.
+
+\subsection{Inner Product Spaces}
+
+Now we switch to more geometric notions.
+Commonly, when we need to work with the real field (for instance, when further dealing with lattices), we naturally want to give vectors a measure of length.
+Additionally, we could ask the questions like ``what is the angle between these two vectors.''
+Finally, with proper definitions, we can ask much more abstract questions: for example, given some continuous function $f: [0,1] \to \mathbb{R}$, can we define the ``length'' of this function?
+
+To equip our vector space $V$ with a geometry, we turn it into the so-called \textbf{inner product space} which we define below.
+
+\begin{definition}
+    An \textbf{inner product} on $V$ is a function $\langle \cdot, \cdot \rangle: V \times V \to \mathbb{F}$ that satisfies the following properties:
     \begin{itemize}
-        \item $\langle \mathbf{u} + \mathbf{v}, \mathbf{w} \rangle = \langle \mathbf{u}, \mathbf{w} \rangle + \langle \mathbf{v}, \mathbf{w} \rangle$.
-        \item $\langle \mathbf{u}, \mathbf{v} + \mathbf{w} \rangle = \langle \mathbf{u}, \mathbf{v} \rangle + \langle \mathbf{u}, \mathbf{w} \rangle$.
-        \item $\langle \mathbf{u}, \mathbf{v} \rangle = 0$ for all $\mathbf{u} \in \mathbb{F}^n$ iff $\mathbf{v} = \mathbf{0}$.
-        \item $\langle \mathbf{u}, \mathbf{v} \rangle = 0$ for all $\mathbf{v} \in \mathbb{F}^n$ iff $\mathbf{u} = \mathbf{0}$.
+        \item \textbf{positivity}: $\langle \mathbf{v}, \mathbf{v} \rangle \geq 0$ for all $\mathbf{v} \in V$;
+        \item \textbf{definiteness}: $\langle \mathbf{v}, \mathbf{v} \rangle = 0$ iff $\mathbf{v}=0$;
+        \item \textbf{additivity}: $\langle \mathbf{u}+\mathbf{v}, \mathbf{w} \rangle = \langle \mathbf{u}, \mathbf{w} \rangle + \langle \mathbf{v}, \mathbf{w} \rangle$ for all $\mathbf{u}, \mathbf{v}, \mathbf{w} \in V$;
+        \item \textbf{homogeneity}: $\langle \lambda\mathbf{u}, \mathbf{v} \rangle = \lambda\langle \mathbf{u}, \mathbf{v} \rangle$ for all $\lambda \in \mathbb{F}$ and $\mathbf{u},\mathbf{v} \in V$.
+        \item \textbf{symmetry}: $\langle \mathbf{u}, \mathbf{v} \rangle = \overline{\langle \mathbf{v}, \mathbf{u} \rangle}$ for all $\mathbf{v}, \mathbf{u} \in V$.\footnote{Here, $\overline{\lambda}$ denotes conjugation; for $\mathbb{F}=\mathbb{R}$, one can forget about it as $\overline{\lambda}=\lambda$.}
     \end{itemize}
+
+    An \textbf{inner product space} is a vector space $V$ along with an inner product.
 \end{definition}
 
-Plenty of functions can be built that satisfy the inner product definition, we will use the one that
-is usually called \textbf{dot product}.
-\begin{definition}
-    Consider the vector space $\mathbb{F}^n$. The \textbf{dot product} on $\mathbb{F}^n$ is a function $\langle \cdot, \cdot \rangle: V \times V \rightarrow \mathbb{F}$, 
+\begin{remark}
+    Note that the definition above does not make sense for finite fields or more generally for $\mathbb{Z}_N$ since expression $x \geq 0$ is meaningless for such structures.
+    Consequently, when working with inner products over $\mathbb{Z}_N$, we typically require only \textit{additivity}, \textit{homogeneity}, and \textit{symmetry}.
+\end{remark}
+
+Plenty of functions can be built that satisfy the inner product definition, we will most commonly use the one that is usually called \textbf{dot product}.
+\begin{example}
+    Consider the vector space $V := \mathbb{F}^n$. The \textbf{dot product} on $\mathbb{F}^n$ is a function $\langle \cdot, \cdot \rangle: V \times V \rightarrow \mathbb{F}$, 
     defined for every $\mathbf{u}, \mathbf{v} \in \mathbb{F}^n$ as follows:
     \begin{xequation*}
         \langle \mathbf{u}, \mathbf{v} \rangle := \mathbf{u}^{\top}\mathbf{v} = \sum_{i=1}^{n} u_i v_i
     \end{xequation*}
 
-    Alternatively, the dot product can also be denoted using the dot notation as $\mathbf{u} \cdot \mathbf{v}$. That is why it is called the ``dot`` product.
-\end{definition}
-
-\begin{example}
-    Let $\mathbf{u}, \mathbf{v}$ are vectors over the real number $\mathbb{R}$, where
-    $\mathbf{u}~=~(1, 2, 3)$, and $\mathbf{v} = (2, 4, 3)$. Then: 
-    \begin{xequation}
-        \langle \mathbf{u}, \mathbf{v}\rangle = \sum_{i=1}^{3}u_iv_i = 2 \cdot 1 + 2 \cdot 4 + 3 \cdot 3 = 2 + 8 + 9 = 19
-    \end{xequation}
+    For example, let $\mathbb{F}=\mathbb{R}$ and let $\mathbf{u}=(1, 2, 3)$, $\mathbf{v} = (2, 4, 3)$. Then,
+    \begin{xequation*}
+        \langle \mathbf{u}, \mathbf{v}\rangle = \sum_{i=1}^{3}u_iv_i = 1 \cdot 2 + 2 \cdot 4 + 3 \cdot 3 = 2 + 8 + 9 = 19
+    \end{xequation*}
 \end{example}
 
-\subsection{Hadamard Product}
+\begin{example}
+    We say that the square matrix $Q \in \mathbb{R}^{n \times n}$ is \textit{positive-definite} if $\mathbf{x}^{\top}Q\mathbf{x}>0$ for any non-zero $\mathbf{x} \in \mathbb{R}^n$.
+    Then, the following function $\langle \cdot, \cdot \rangle_Q: \mathbb{R}^n \times \mathbb{R}^n \to \mathbb{R}$ is a valid inner product if $Q=Q^{\top}$:
+    \begin{equation*}
+        \langle \mathbf{x}, \mathbf{y} \rangle_Q := \mathbf{x}^{\top}Q\mathbf{y}.
+    \end{equation*}
+\end{example}
 
-Yet another product we are going to use is the \textbf{Hadamard product}. Let us see how it works.
+The notion of inner product naturally gives the measure of length, which is called a \textit{norm}.
+Additionally, from the high-school geometry, one might remember that the dot product (with a proper rescaling) represents the angle between vectors in the Euclidean space.
+In particular, when the dot product is $0$, two vectors are perpendicular/orthogonal. 
+With our inner product definition, we can generalize this notion.
+
+\begin{definition}\label{def:length}
+    Let $V$ be an inner product space. Then,
+    \begin{itemize}
+        \item For $\mathbf{v} \in V$, the \textbf{norm} of $\mathbf{v}$, denoted $\|\mathbf{v}\|$, is defined by
+        \begin{equation*}
+            \|\mathbf{v}\| := \sqrt{\langle \mathbf{v}, \mathbf{v} \rangle}.
+        \end{equation*}
+        \item Two vectors $\mathbf{v},\mathbf{u} \in V$ are \textbf{orthogonal} if $\langle \mathbf{v}, \mathbf{u} \rangle = 0$.
+    \end{itemize}
+\end{definition}
+
+\subsection{Other useful operations}
+
+Finally, we list two other operations (\textit{Hadamard} and \textit{outer} products) that will be commonly used throughout.
+
+\subsubsection{Hadamard Product}
+
+Recall how inconvenient the matrix-matrix product looked like?
+It turns out that a ``convenient'' way of doing this product (multiplying elementwise) has a special name.
+
 \begin{definition}
     Suppose $A,B \in \mathbb{F}^{m \times n}$. The \textbf{Hadamard product} $A \odot B$ gives a matrix $C$ such that $C_{i,j} = A_{i,j}B_{i,j}$. Essentially, we multiply elements elementwise.
 \end{definition}
@@ -342,9 +1110,19 @@ Yet another product we are going to use is the \textbf{Hadamard product}. Let us
     \end{xequation}
 \end{example}
 
-\subsection{Outer Product}
+Despite the simplicity of such an operation, it is very common in various applications.
+For example, suppose we want to prove that $\mathbf{z} \in \mathbb{F}^n$ is a bit-vector (\textit{i.e.}, every $z_i \in \{0,1\}$).
+The natural way to represent this relation is as follows:
+\begin{equation*}
+    \mathbf{z} \odot (\mathbf{1}_n - \mathbf{z}) = \mathbf{0},
+\end{equation*}
 
-The final product we want to introduce is the \textbf{outer product}.
+where $\mathbf{1}_n$ represents the vector of length $n$ consisting of $1$'s.
+More generally, a R1CS relation, further considered in \Cref{section:r1cs}, is concisely represented in terms of Hadamard product between two specifically chosen large vectors.
+
+\subsubsection{Outer Product}
+
+The final product we introduce is the \textbf{outer product}.
 
 \begin{definition}
     Given two vectors $\mathbf{u} \in \mathbb{F}^n$, $\mathbf{v} \in \mathbb{F}^m$ the \textbf{outer product} is a
@@ -352,10 +1130,10 @@ The final product we want to introduce is the \textbf{outer product}.
     in the second vector:
     \begin{xequation}
         \mathbf{u} \otimes \mathbf{v} := \mathbf{u}\mathbf{v}^{\top} = \begin{bmatrix}
-            u_1 v_1 & u_1 v_2 & \cdots & u_1 v_n \\
-            u_2 v_1 & u_2 v_2 & \cdots & u_2 v_n \\
+            u_1 v_1 & u_1 v_2 & \cdots & u_1 v_m \\
+            u_2 v_1 & u_2 v_2 & \cdots & u_2 v_m \\
             \vdots & \vdots & \ddots & \vdots \\
-            u_m v_1 & u_m v_2 & \cdots & u_m v_n
+            u_n v_1 & u_n v_2 & \cdots & u_n v_m
         \end{bmatrix}
     \end{xequation}
 \end{definition}
@@ -376,8 +1154,8 @@ The final product we want to introduce is the \textbf{outer product}.
 \vspace{-4.2mm}
 
 \begin{example}
-    Let $\mathbf{u}, \mathbf{v}$ are vectors over the real number $\mathbb{R}$, where
-    $\mathbf{u}~=~(1, 2, 3)$ and \quad $\mathbf{v} = (2, 4, 3)$. Then: 
+    Let $\mathbf{u}, \mathbf{v}$ be vectors over the real number $\mathbb{R}$, where
+    $\mathbf{u}=(1, 2, 3)$ and $\mathbf{v} = (2, 4, 3)$. Then: 
     \begin{xequation*}
         \mathbf{u} \otimes \mathbf{v} = \mathbf{u}\mathbf{v}^{\top} = \begin{bmatrix}
         1 \\ 2 \\ 3
@@ -393,10 +1171,65 @@ The final product we want to introduce is the \textbf{outer product}.
             6 & 12 & 9
         \end{bmatrix}
     \end{xequation*}
-    Additionally, as we can see the rows number 2 and 3 in the result matrix can be represented
+    
+    Additionally, as we can see, the rows \#2 and \#3 in the resultant matrix can be represented
     as a linear combination of the first row, specifically by multiplying it by 2 and 3, 
     respectively. The same property applies to the columns. This demonstrates the property of the
     outer product, that the resulting matrix has a rank of 1.
 \end{example}
+
+\subsection{Exercises}
+
+\textbf{Exercise 1.} Let $V := \{(x,y,z) \in \mathbb{R}^3: x+y+z=0\}$. Compute $\dim V$.
+\begin{enumerate}[(A)]
+    \item $0$.
+    \item $1$.
+    \item $2$.
+    \item $3$.
+\end{enumerate}
+
+\textbf{Exercise 2.} Let $\mathbb{F}$ be a field and let $V := \{\mathbf{z} \in \mathbb{F}^n: \mathbf{z} \odot (\mathbf{1}_n - \mathbf{z}) = \mathbf{0}\}$.
+When is $V$ a linear subspace of $\mathbb{F}^n$?
+\begin{enumerate}[(A)]
+    \item This never happens.
+    \item $V$ is always a linear subspace of $\mathbb{F}^n$ with $\dim V = n$.
+    \item $V$ is always a linear subspace of $\mathbb{F}^n$ with $\dim V = n-1$.
+    \item Only when $\mathbb{F}=\mathbb{Z}_2$, otherwise it is not a linear subspace.
+\end{enumerate}
+
+\textbf{Exercise 3.} Let $A=\begin{bmatrix}
+    1 & 2 \\ 0 & 1
+\end{bmatrix}$. Compute $A^n$ for arbitrary $n \in \mathbb{N}$.
+\begin{enumerate}[(A)]
+    \item $\begin{bmatrix} 1 & 2n \\ 0 & 1 \end{bmatrix}$.
+    \item $\begin{bmatrix} 1 & 2^n \\ 0 & 1 \end{bmatrix}$.
+    \item $\begin{bmatrix} 1 & n \\ 0 & 1 \end{bmatrix}$.
+    \item $\begin{bmatrix} n & 2n \\ 0 & n \end{bmatrix}$.
+\end{enumerate}
+
+\textbf{Exercise 4.} How many distinct $1$-dimensional linear subspaces (lines through the origin) exist in the vector space $\mathbb{F}_3^3$ over the finite field $\mathbb{F}_3$?
+\begin{enumerate}[(A)]
+    \item $9$.
+    \item $13$.
+    \item $26$.
+    \item $27$.
+\end{enumerate}
+
+\textbf{Exercise 5*.} Recall that $V := \mathbb{R}[T]^{\leq 2}$ is a vector space over $\mathbb{R}$.
+Define the inner product over $V$ as follows\footnote{You might use the fact that $\int_0^1 \sum_{n=0}^N \alpha_n\tau^nd\tau = \sum_{n=0}^N \frac{\alpha_n}{n+1}$.}:
+\begin{equation*}
+    \langle p,q \rangle := \int_0^1 p(\tau)q(\tau)d\tau, \quad p,q \in V.
+\end{equation*}
+Compute the ``length'' of the polynomial $T$ in $V$ (\textit{i.e.}, its norm $\|T\|$).
+\begin{enumerate}[(A)]
+    \item $1/\sqrt{3}$.
+    \item $1/\sqrt{2}$.
+    \item $\sqrt{2}$.
+    \item $1$.
+\end{enumerate}
+
+\textbf{Exercise 6*.} Using $V$ and inner product from the previous exercise, find any polynomial $q \in V$ orthogonal to $T^2$.
+
+\textit{Hint:} Let $q(T) := \alpha T+\beta$ for some $\alpha,\beta \in \mathbb{R}$. Is it possible for the identity $\langle q(T), T^2 \rangle=0$ to hold for some choice of $\alpha,\beta$?
 
 \end{document}

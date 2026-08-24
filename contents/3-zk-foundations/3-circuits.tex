@@ -40,7 +40,7 @@ cryptographic applications.
 This is defined quite broadly and maybe not so obvious if you do not have any background. Let us take a
 look at the example.
 
-\begin{example}
+\begin{intuition}
     Imagine you are the part of a treasure hunt, and you have found a hidden treasure chest. You want to 
     prove to the treasure hunt organizer that you know where the chest is hidden without revealing
     its location. Here is how zk-SNARKs can be used in this context: \\
@@ -68,7 +68,7 @@ look at the example.
 
     Here you can think of zk-SNARK as a golden coin from the chest where the pirates' sign is 
     engraved, so the organizer can be sure you've found the treasure.
-\end{example}
+\end{intuition}
 
 But the problems that we want to solve are in a slightly different format. We can't bring a coin to
 the verifier. Our goal is to prove that we've executed a specific program on a set of data that 
@@ -428,7 +428,7 @@ $r$, the assertion fails, and the input values do not resolve the circuit.
 
 This example is trivial; let us consider a more complex one.
 
-\textbf{Example 2: Multivariate Polynomial.} Now, suppose we want to implement the evaluation of the polynomial $Q(x_1,x_2) = x_1^3 + x_2^2 \in \mathbb{F}[X_1,X_2]$ using arithmetic circuits. The corresponding program is as follows:
+\textbf{Example 2: Multivariate Polynomial.} Now, suppose we want to implement the evaluation of the polynomial $Q(x_1,x_2) = x_1^3 + x_2^2 \in \mathbb{F}[x_1,x_2]$ using arithmetic circuits. The corresponding program is as follows:
 \begin{lstlisting}[language=Python,numbers=none]
     def evaluate(x1: F, x2: F) -> F:
         return x1**3 + x2**2

@@ -11,14 +11,12 @@
 % --- Required packages ---
 
 % --- Fonts and Encoding ---
-\RequirePackage[T1,T2A]{fontenc}
+\RequirePackage[T1]{fontenc}
 \RequirePackage[utf8]{inputenc}
 \RequirePackage[english]{babel}
 
-% --- MATH & FONT PACKAGES (Corrected and Synced with bionetta.cls) ---
 % 1. Load the main math/text font package FIRST.
 %    This sets the main font to XCharter and configures math to match.
-%\RequirePackage[amsthm,xcharter,bigdelims,vvarbb]{newtxmath}
 \let\oldttdefault\ttdefault
 \RequirePackage{libertine}
 \let\ttdefault\oldttdefault
@@ -31,20 +29,21 @@
 \RequirePackage[makeroom]{cancel}
 \RequirePackage{extarrows}
 \RequirePackage{bbm}
+\RequirePackage{stmaryrd} % For fancy double brackets
 
 % --- Layout and Formatting ---
 \RequirePackage[
     paperwidth=145mm,
     paperheight=215mm,
     top=5mm,
-    bottom=12mm, 
+    bottom=16mm, 
     left=15mm, 
     right=15mm, 
     includehead,
     headheight=5mm,
     headsep=2mm,
     includefoot,
-    footskip=4mm
+    footskip=8mm
 ]{geometry}
 \RequirePackage{indentfirst}
 \RequirePackage{multicol}
@@ -63,6 +62,8 @@
 \RequirePackage{blkarray}
 \RequirePackage{arydshln}
 \RequirePackage{makecell}
+\RequirePackage{subcaption}
+\RequirePackage{titlesec}
 \RequirePackage[labelfont=bf]{caption}
 \setlength{\belowcaptionskip}{0mm}
 \setlength{\textfloatsep}{1mm}
@@ -71,6 +72,7 @@
 % --- Lists, Footnotes, and Utilities ---
 \RequirePackage[inline,shortlabels]{enumitem}
 \setlist{topsep=2pt,itemsep=2pt,parsep=0pt,partopsep=0pt}
+\setlist[enumerate]{label=\textit{(\roman*)}, ref=(\roman*)}
 \RequirePackage[bottom,multiple]{footmisc}
 \RequirePackage{subfiles}
 \RequirePackage{pifont}
@@ -78,10 +80,60 @@
 % --- Hyperref and Cleverref ---
 \RequirePackage{hyperref}
 \hypersetup{pdflang=en}
-    \hypersetup{colorlinks=true,
-      citecolor=blue!80,
-      linkcolor=black!70!red}
+
+% -- Hyperref coloring --
+\definecolor{linkcol}{HTML}{2E7D46} % green — internal links / TOC / theorems
+\definecolor{citecol}{HTML}{A6192E} % cherry red — citations
+\definecolor{urlcol}{HTML}{1C5F9C}  % blue — URLs
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=linkcol,
+    citecolor=citecol,
+    urlcolor=urlcol,
+}
+
 \RequirePackage[nameinlink]{cleveref}
+
+% --- Table of contents must display hidden sections ---
+\makeatletter
+\let\old@section\section
+\RenewDocumentCommand{\section}{s o m}{%
+  \IfBooleanTF{#1}{%
+    \old@section*{#3}%
+    \phantomsection
+    \addcontentsline{toc}{section}{#3}%
+    \markboth{#3}{#3}% Updates footer mark ONLY for sections
+  }{%
+    \IfValueTF{#2}{\old@section[#2]{#3}}{\old@section{#3}}%
+  }%
+}
+
+\let\old@subsection\subsection
+\RenewDocumentCommand{\subsection}{s o m}{%
+  \IfBooleanTF{#1}{%
+    \old@subsection*{#3}%
+    \phantomsection
+    \addcontentsline{toc}{subsection}{#3}%
+  }{%
+    \IfValueTF{#2}{\old@subsection[#2]{#3}}{\old@subsection{#3}}%
+  }%
+}
+
+\let\old@subsubsection\subsubsection
+\RenewDocumentCommand{\subsubsection}{s o m}{%
+  \IfBooleanTF{#1}{%
+    \old@subsubsection*{#3}%
+    \phantomsection
+    \addcontentsline{toc}{subsubsection}{#3}%
+  }{%
+    \IfValueTF{#2}{\old@subsubsection[#2]{#3}}{\old@subsubsection{#3}}%
+  }%
+}
+\makeatother
+
+% Ensure the ToC depth includes subsubsections (level 3)
+\setcounter{tocdepth}{3}
 
 % --- Tikz settings ---
 \RequirePackage {
@@ -130,6 +182,7 @@
     postbreak=\mbox{\hspace{-1.4em}\textcolor{purple}{$\hookrightarrow$}\space},
     escapeinside={<@}{@>}
 }
+
 % --- Linter settings (Combined for tidiness)---
 \RequirePackage{config/listlings/listings-rust}
 \RequirePackage{config/listlings/listings-circom}
@@ -145,9 +198,21 @@
 \setminted{
   fontfamily=cmtt,
   frame=lines,      % Adding a frame for style
-  fontsize=\small   % Using a slightly smaller font for code
+  fontsize=\footnotesize   % Using a slightly smaller font for code
 }
 \usemintedstyle{colorful}
+
+% --- Section numbering format: "Section 11: Title" instead of bare "11" ---
+% Only \section gets the "Section N:" prefix; \subsection, \subsubsection, etc.
+% keep the normal numeric format (e.g. "11.2") via the \@ifundefined fallback.
+\makeatletter
+\def\@seccntformat#1{%
+  \@ifundefined{#1cntformat}
+    {\csname the#1\endcsname\quad}%
+    {\csname #1cntformat\endcsname}%
+}
+\newcommand{\sectioncntformat}{{\Huge\thesection}\hspace{5px}\ }
+\makeatother
 
 % --- Headers and Footers ---
 \RequirePackage{fancyhdr}
@@ -155,9 +220,35 @@
 \fancyhf{}
 \lhead{}
 \rhead{}
-\cfoot{\thepage}
+
+% Capture the current section (number + title) so it can appear in the footer,
+% matching the "Section N: Title" format used in the body headings
+\makeatletter
+\@ifundefined{sectionmark}
+  {\newcommand{\sectionmark}[1]{\markboth{Section~\thesection: #1}{Section~\thesection: #1}}}
+  {\renewcommand{\sectionmark}[1]{\markboth{Section~\thesection: #1}{Section~\thesection: #1}}}
+\makeatother
+
+% Book-style footer: page number on the outer edge, running section title
+% toward the spine, with a thin hairline separating it from the body text
+\fancyfoot[L]{%
+  \footerfont
+  \ifodd\value{page}
+    \itshape\nouppercase{\leftmark}%
+  \else
+    \thepage%
+  \fi
+}
+\fancyfoot[R]{%
+  \footerfont
+  \ifodd\value{page}
+    \thepage%
+  \else
+    \itshape\nouppercase{\leftmark}%
+  \fi
+}
 \renewcommand{\headrulewidth}{0.0mm}
-\renewcommand{\footrulewidth}{0.0mm}
+\renewcommand{\footrulewidth}{0.3pt}
 
 % --- Shortcuts ---
 
@@ -242,22 +333,80 @@
 \newcommand{\Circ}{\textit{\texttt{C}}}
 
 % --- Theorem environments ---
+
+% Filled box (colored background)
+% --- Box styles using tcolorbox ---
+\RequirePackage{etoolbox}
+\RequirePackage[most]{tcolorbox}
+\RequirePackage{fontawesome5} % For nice icons
+
+\newcommand{\niceboxfilled}[3]{% #1 env, #2 back color, #3 border color
+  \tcolorboxenvironment{#1}{%
+    breakable, boxrule=0pt, boxsep=0pt,
+    colback={#2}, left=8pt, right=8pt,
+    enhanced jigsaw, borderline west={2.5pt}{0pt}{#3},
+    sharp corners, before skip=10pt, after skip=10pt,
+    drop fuzzy shadow={black!15}%
+  }%
+}
+
+% Plain box (border only, no fill)
+\newcommand{\niceboxplain}[2]{% #1 env, #2 border color
+  \tcolorboxenvironment{#1}{%
+    breakable, boxrule=0pt, boxsep=0pt, blanker,
+    borderline west={2.5pt}{0pt}{#2}, left=8pt, right=8pt,
+    sharp corners, before skip=10pt, after skip=10pt%
+  }%
+}
+
 \newtheoremstyle{mystyle}{}{}{}{}{\bfseries}{.}{ }{}
 \newtheoremstyle{cstyle}{}{}{}{}{\bfseries}{.}{ }{\thmnote{#3}}
 \makeatletter
 \renewenvironment{proof}[1][\proofname] {\par\pushQED{\qed}{\normalfont\bfseries\topsep6\p@\@plus6\p@\relax #1\@addpunct{.} }}{\popQED\endtrivlist\@endpefalse}
 \makeatother
-\theoremstyle{mystyle}{\newtheorem{definition}{Definition}[section]}
-\theoremstyle{mystyle}{\newtheorem{proposition}[definition]{Proposition}}
-\theoremstyle{mystyle}{\newtheorem{theorem}[definition]{Theorem}}
-\theoremstyle{mystyle}{\newtheorem{lemma}[definition]{Lemma}}
-\theoremstyle{mystyle}{\newtheorem{corollary}[definition]{Corollary}}
-\theoremstyle{mystyle}{\newtheorem*{remark}{Remark}}
-\theoremstyle{mystyle}{\newtheorem*{remarks}{Remarks}}
-\theoremstyle{mystyle}{\newtheorem{example}{Example}[section]}
-\theoremstyle{mystyle}{\newtheorem{examples}{Examples}[section]}
-\theoremstyle{definition}{\newtheorem*{exercise}{Exercise}}
-\theoremstyle{cstyle}{\newtheorem*{cthm}{}}
+
+\theoremstyle{mystyle}
+\newtheorem{definition}{Definition}[section]
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}{Lemma}[section]
+\newtheorem{corollary}{Corollary}[section]
+
+% Environments with inline icons embedded in their title
+\newtheorem*{remark}{{\small\textcolor{oc-green-7}{\faCommentDots}}\ Remark}
+\newtheorem*{remarks}{{\small\textcolor{oc-green-7}{\faCommentDots}}\ Remarks}
+\newtheorem{example}{Example}[section]
+\newtheorem{examples}{Examples}[section]
+
+\newtheorem{intuition}{{\small\textcolor{oc-yellow-7}{\faLightbulb}}\ Intuition}[section]
+\newtheorem{intuitions}{{\small\textcolor{oc-yellow-7}{\faLightbulb}}\ Intuitions}[section]
+
+% For a range of exercises
+\newenvironment{exbox}[1]{%
+  \par\noindent{\bfseries{\small\textcolor{oc-pink-7}{\faPencil*}}\ #1}\par\nobreak\smallskip\noindent\ignorespaces
+}{\par}
+
+\theoremstyle{definition}
+\newtheorem*{exercise}{{\small\textcolor{oc-pink-7}{\faPencil*}}\ Exercise}
+
+\theoremstyle{cstyle}
+\newtheorem*{cthm}{}
+
+% --- Map shared counter environments to their proper cleveref types ---
+\crefname{definition}{definition}{definitions}
+\Crefname{definition}{Definition}{Definitions}
+\crefname{theorem}{theorem}{theorems}
+\Crefname{theorem}{Theorem}{Theorems}
+\crefname{lemma}{lemma}{lemmas}
+\Crefname{lemma}{Lemma}{Lemmas}
+\crefname{corollary}{corollary}{corollaries}
+\Crefname{corollary}{Corollary}{Corollaries}
+\crefname{proposition}{proposition}{propositions}
+\Crefname{proposition}{Proposition}{Propositions}
+\crefalias{example}{example}
+\crefalias{examples}{example}
+\crefname{intuition}{intuition}{intuitions}
+\Crefname{intuition}{Intuition}{Intuitions}
 
 % Load custom environment 
 \input{config/x-environments.cls}
@@ -271,19 +420,34 @@
 \newcommand{\warningsign}[1]{\tikz[scale=#1,every node/.style={transform shape}]{\draw[-,line width={#1*0.8mm},red,fill=yellow,rounded corners={#1*2.5mm}] (0,0)--(1,{-sqrt(3)})--(-1,{-sqrt(3)})--cycle;
 \node at (0,-1) {\fontsize{48}{60}\selectfont\bfseries!};}}
 
-% --- Box styles using tcolorbox ---
-\RequirePackage[most]{tcolorbox}
-\tcolorboxenvironment{definition}{   breakable, boxrule=0pt, boxsep=0pt, colback={blue!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{blue},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{proposition}{  breakable, boxrule=0pt, boxsep=0pt, colback={Orange!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{Orange},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{theorem}{      breakable, boxrule=0pt, boxsep=0pt, colback={blue!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{blue},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{lemma}{        breakable, boxrule=0pt, boxsep=0pt, colback={Cyan!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{Cyan},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{corollary}{    breakable, boxrule=0pt, boxsep=0pt, colback={violet!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{violet},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{proof}{        breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{CadetBlue!80!white},left=8pt,right=8pt,sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{remark}{       breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{Green},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{remarks}{      breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{Green},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{example}{      breakable, boxrule=0pt, boxsep=0pt, colback={Gray!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{Gray},sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{examples}{     breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{Black},left=8pt,right=8pt,sharp corners,before skip=10pt,after skip=10pt}
-\tcolorboxenvironment{cthm}{         breakable, boxrule=0pt, boxsep=0pt, colback={gray!10},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{gray},sharp corners,before skip=10pt,after skip=10pt}
+% Filling boxes for theorems/lemmas
+\niceboxfilled{definition}{oc-indigo-1}{oc-indigo-7}
+\niceboxfilled{theorem}{oc-indigo-1}{oc-indigo-7}
+\niceboxfilled{proposition}{oc-orange-1}{oc-orange-7}
+\niceboxfilled{lemma}{oc-blue-1}{oc-blue-7}
+\niceboxfilled{corollary}{oc-violet-1}{oc-violet-7}
+\niceboxfilled{cthm}{oc-gray-1}{oc-gray-7}
+\niceboxfilled{example}{oc-gray-1}{oc-gray-7}
+
+\niceboxplain{examples}{Black}
+\niceboxplain{remark}{oc-green-7}
+\niceboxplain{remarks}{oc-green-7}
+\niceboxplain{exercise}{oc-pink-7}
+\niceboxplain{exbox}{oc-pink-7}
+\niceboxplain{intuition}{oc-yellow-7}
+
+% \tcolorboxenvironment{definition}{   breakable, boxrule=0pt, boxsep=0pt, colback={oc-indigo-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-indigo-7},sharp corners,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{proposition}{  breakable, boxrule=0pt, boxsep=0pt, colback={oc-orange-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-orange-7},sharp corners,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{theorem}{      breakable, boxrule=0pt, boxsep=0pt, colback={oc-indigo-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-indigo-7},sharp corners,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{lemma}{        breakable, boxrule=0pt, boxsep=0pt, colback={oc-blue-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-blue-7},sharp corners,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{corollary}{    breakable, boxrule=0pt, boxsep=0pt, colback={oc-violet-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-violet-7},sharp corners,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{remark}{       breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{oc-green-7},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{remarks}{      breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{oc-green-7},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{example}{      breakable, boxrule=0pt, boxsep=0pt, colback={oc-gray-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-gray-7},sharp corners,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{examples}{     breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{Black},left=8pt,right=8pt,sharp corners,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{cthm}{         breakable, boxrule=0pt, boxsep=0pt, colback={oc-gray-1},left=8pt,right=8pt,enhanced jigsaw, borderline west={2pt}{0pt}{oc-gray-7},sharp corners,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{exercise}{     breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{oc-pink-7},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
+% \tcolorboxenvironment{exbox}{        breakable, boxrule=0pt, boxsep=0pt, blanker,borderline west={2pt}{0pt}{oc-pink-7},left=8pt,right=8pt,before skip=10pt,after skip=10pt}
 
 % --- Algorithm packages ---
 \RequirePackage[titlenumbered,linesnumbered,ruled]{algorithm2e}
@@ -331,10 +495,18 @@
 \newcommand{\keywordsfont}{\itshape\linespread{1.2}\fontsize{11}{12}\selectfont}
 \newcommand{\copyrightfont}{\normalfont\fontsize{7}{9}\selectfont}
 % \newcommand{\footerfont}{\color{black}\normalfont\fontsize{10}{10}\selectfont}
-\newcommand{\footerfont}{\color{black}\normalfont\fontsize{11}{12}\selectfont}
+\newcommand{\footerfont}{\color{black}\normalfont\fontsize{9}{11}\selectfont}
 \newcommand{\subjectfont}{\color{white}\bfseries\fontsize{10}{12}\selectfont}
 \newcommand{\headingfont}{\color{black}\bfseries\fontsize{13}{14}\selectfont}
 
+% --- Part pages: "Part I: Title" on one line, centered, with a rule below ---
+\titleformat{\part}[block]
+  {\centering\headingfont}
+  {\partname~\thepart:}
+  {0.5em}
+  {}
+  [\vspace{4pt}\titlerule]
+\titlespacing*{\part}{0pt}{0pt}{4ex}
 
 \let\oldsection\section
 \renewcommand{\section}{\clearpage\oldsection}
@@ -348,3 +520,22 @@
 \setlength{\parindent}{0.2in}
 \setlength{\parskip}{0pt}
 \setlength{\columnseprule}{0pt}
+
+% --- Nice comments ---
+\newcommand{\commentgray}[1]{%
+  \hspace{3px}%
+  {\textcolor{gray!70!black}{\small\textit{// #1}}}%
+}
+
+% --- Nice algorithmic enumerate lists ---
+\newlist{algoen}{enumerate}{1}
+\setlist[algoen]{
+    label=\textcolor{gray!90!black}{\arabic*:},
+    %font=\small,
+    align=right,
+    widest=0,
+    labelsep=0.75em,
+    leftmargin=2.0em,
+    labelindent=0.5em,
+    nosep
+}

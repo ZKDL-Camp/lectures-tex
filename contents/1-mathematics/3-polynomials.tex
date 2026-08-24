@@ -6,39 +6,31 @@
 
 Polynomials are intensively used in almost all areas of cryptography. In our
 particular case, polynomials will encode the information about statements we
-will need to prove. That being said, let us define what polynomial is.
+will need to prove. That being said, let us define what a polynomial is.
 
 \begin{definition}
-    A \textbf{polynomial} $f(x)$ is a function of the form
+    A \textbf{polynomial} $p(T)$ is a function of the form
     \begin{xequation*}
-        p(x) = c_0 + c_1 x + c_2 x^2 + \cdots + c_n x^n = \sum_{k=0}^{n} c_k x^k,
+        p(T) = c_0 + c_1 T + c_2 T^2 + \cdots + c_n T^n = \sum_{k=0}^{n} c_k T^k,
     \end{xequation*}
-    where $c_0, c_1, \dots, c_n$ are coefficients of the polynomial.
+    where $c_0, c_1, \dots, c_n$ are called coefficients of the polynomial.
 \end{definition}
 
 Notice that for now we did not specify what are $c_i$'s. We are interested in the case where $c_i \in \mathbb{F}$, where $\mathbb{F}$ is a field. 
 
 \begin{definition}
-    A set of polynomials depending on $x$ with coefficients in a field $\mathbb{F}$ is denoted as $\mathbb{F}[x]$, that is
+    A set of polynomials depending on $T$ with coefficients in a field $\mathbb{F}$ is denoted as $\mathbb{F}[T]$, that is
     \begin{xequation}
-        \mathbb{F}[x] = \left\{p(x) = \sum_{k=0}^{n} c_k x^k: c_k \in \mathbb{F}, \; k = 0,\dots,n\right\}.
+        \mathbb{F}[T] = \left\{p(T) = \sum_{k=0}^{n} c_k T^k: c_k \in \mathbb{F}, \; k = 0,\dots,n\right\}.
     \end{xequation}
 \end{definition}
 
-\vspace{-4mm}
-
-\begin{definition}
-    Evaluation of a polynomial $p(x) \in \mathbb{F}[x]$ at point $x_0 \in \mathbb{F}$ is simply finding the value of $p(x_0) \in \mathbb{F}$.
-\end{definition}
-
-\vspace{-4mm}
-
 \begin{example}
-    Consider the finite field $\mathbb{F}_3$. Then, some examples of polynomials from $\mathbb{F}_3[x]$ are listed below:
+    Consider the finite field $\mathbb{F}_3$. Then, some examples of polynomials from $\mathbb{F}_3[T]$ are listed below:
     \begin{enumerate}
-        \item $p(x) = 1 + x + 2x^2$.
-        \item $q(x) = 1 + x^2 + x^3$.
-        \item $r(x) = 2x^3$.
+        \item $p(T) = 1 + T + 2T^2$.
+        \item $q(T) = 1 + T^2 + T^3$.
+        \item $r(T) = 2T^3$.
     \end{enumerate}
 
    If we were to evaluate these polynomials at $1 \in \mathbb{F}_3$, we would get:
@@ -52,16 +44,16 @@ Notice that for now we did not specify what are $c_i$'s. We are interested in th
 \vspace{-4mm}
 
 \begin{definition}
-    The \textbf{degree} of a polynomial $p(x) = c_0+c_1x+c_2x^2+\dots$ is the largest $k \in \mathbb{Z}_{\geq 0}$ such that $c_k \neq 0$. We denote the degree of a polynomial as $\deg p$. We also denote by $\mathbb{F}^{(\leq m)}[x]$ a set of polynomials of degree at most $m$.
+    The \textbf{degree} of a polynomial $p(T) = c_0+c_1T+c_2T^2+\dots$ is the largest $k \in \mathbb{Z}_{\geq 0}$ such that $c_k \neq 0$. We denote the degree of a polynomial as $\deg p$. We also denote by $\mathbb{F}[T]^{\leq m} := \{p \in \mathbb{F}[T]: \deg p \leq m\}$.
 \end{definition}
 
 \begin{example}
-    The degree of the polynomial $p(x) = 1 + 2x + 3x^2$ is $2$, so $p(x) \in
-    \mathbb{F}_5^{(\leq 2)}[x]$.
+    The degree of the polynomial $p(T) = 1 + 2T + 3T^2$ is $2$. Consequently, $p \in
+    \mathbb{F}_5[T]^{\leq 2}$.
 \end{example}
 
 \begin{theorem}
-    For any two polynomials $p,q \in \mathbb{F}[x]$ and $n = \deg p, m = \deg q$, the following two statements are true:
+    For any polynomials $p,q \in \mathbb{F}[T]$ and $n := \deg p$, $m := \deg q$, the following two statements are true:
     \begin{enumerate}
         \item $\deg (pq) = n + m$.
         \item $\deg (p + q) = \max\{n,m\}$ if $n \neq m$ and $\deg (p+q) \leq m$ for $m=n$.
@@ -71,79 +63,82 @@ Notice that for now we did not specify what are $c_i$'s. We are interested in th
 \subsection{Roots and divisibility}
 
 \begin{definition}
-    Let $p(x) \in \mathbb{F}[x]$ be a polynomial of degree $\deg p \geq 1$. A field element $x_0 \in \mathbb{F}$ is called a root of $p(x)$ if $p(x_0) = 0$.
+    Let $p \in \mathbb{F}[T]$ be a polynomial of degree $\deg p \geq 1$. A field element $\alpha \in \mathbb{F}$ is called a \textbf{root} of $p$ if $p(\alpha) = 0$.
 \end{definition}
 
 \vspace{-4mm}
 
 \begin{example}
-    Consider the polynomial $p(x) = 1 + x + x^2 \in \mathbb{F}_3[x]$. Then, $x_0=1$ is a root of $p(x)$ since $p(x_0) = 1 + 1 + 1 \; \text{mod} \; 3 = 0$.
+    Consider the polynomial $p(T) = 1 + T + T^2 \in \mathbb{F}_3[T]$. Then, $\alpha=1$ is a root of $p(T)$ since $p(\alpha) = 1 + 1 + 1 \; \text{mod} \; 3 = 0$.
 \end{example}
 
-One of the fundamental theorems of polynomials is following.
+One of the fundamental theorems of polynomials is the following.
+
+\begin{theorem}\label{th:root-div}
+    Let $p \in \mathbb{F}[T], \deg p \geq 1$. Then, $\alpha \in \mathbb{F}$ is a root of $p$ if and only if there exists a polynomial $q$ (with $\deg q=n-1$) such that
+    \begin{equation*}
+        p(T) = (T-\alpha)q(T).
+    \end{equation*}
+\end{theorem}
+
+\begin{example}
+    For example, $\alpha=1$ is a root of $p(T) = T^2+2$ over $\mathbb{F}_3$. Indeed, $p(T) = (T-1)(T-2)$ (thus $q(T) = T - 2$ according to Theorem~\ref{th:root-div}).
+\end{example}
+
+Also, this might not be immediately obvious, but we can also divide polynomials in the same way as we divide integers. The result of division is not always a polynomial, so we also get a remainder.
 
 \begin{theorem}
-    Let $p(x) \in \mathbb{F}[x], \deg p \geq 1$. Then, $x_0 \in \mathbb{F}$ is a root of $p(x)$ if and only if there exists a polynomial $q(x)$ (with $\deg q = n-1$) such that
+    Given $f,g \in \mathbb{F}[T]$ with $g \neq 0$, there are unique polynomials $p,q \in \mathbb{F}[T]$ such that 
     \begin{xequation}
-        p(x) = (x-x_0)q(x)
+        f = q \cdot g + r, \; 0 \leq \deg r < \deg g.
     \end{xequation}
 \end{theorem}
 
 \begin{example}
-    Note that $x_0=1$ is a root of $p(x) = x^2+2$. Indeed, we can write $p(x) = (x-1)(x-2)$, so here $q(x) = x-2$.
-\end{example}
-
-Also, this might not be obvious, but we can also divide polynomials in the same way as we divide integers. The result of division is not always a polynomial, so we also get a remainder.
-
-\begin{theorem}
-    Given $f,g \in \mathbb{F}[x]$ with $g \neq 0$, there are unique polynomials $p,q \in \mathbb{F}[x]$ such that 
-    \begin{xequation}
-        f = q \cdot g + r, \; 0 \leq \deg r < \deg g
-    \end{xequation}
-\end{theorem}
-
-\begin{example}
-    Consider $f(x) = x^3+2$ and $g(x) = x+1$ over $\mathbb{R}$. Then, we can write $f(x) = (x^2-x+1)g(x) + 1$, so the remainder of the division is $1$. Typically, we denote this as:
+    Consider $f(T) = T^3+2$ and $g(T) = T+1$ over $\mathbb{R}$. Then, we can write $f(T) = (T^2-T+1)g(T) + 1$, so the remainder of the division is $1$. Typically, we denote this as:
     \begin{xequation*}
-        f \, \text{div} \, g = x^2-x+1, \quad f \, \text{mod} \, g = 1.
+        f \, \text{div} \, g = T^2-T+1, \quad f \, \text{mod} \, g = 1.
     \end{xequation*}
 
-    The notation is pretty similar to one used in integer division.
+    The notation is similar to the one used in integer division.
 \end{example}
 
-Similarly, one can define $\text{gcd}$, $\text{lcm}$, and other number field theory operations for polynomials. However, we will not go into details here, besides mentioning the divisibility.
+Similarly, one can define $\text{gcd}$, $\text{lcm}$, and other number field theory operations for polynomials\footnote{This follows from the fact that both $\mathbb{Z}$ and $\mathbb{F}[T]$ are so-called \textit{principal ideal domains}. For a careful treatment of the details, see for example \cite[Chapters 1 \& 2]{ireland}.}. However, we will not go into details here, besides mentioning the divisibility.
 
 \begin{definition}
-    A polynomial $f(x) \in \mathbb{F}[x]$ is called \textbf{divisible} by $g(x) \in \mathbb{F}[x]$ (or, $g$ \textbf{divides} $f$, written as $g \mid f$) if there exists a polynomial $h(x) \in \mathbb{F}[x]$ such that $f=gh$.
+    A polynomial $f \in \mathbb{F}[T]$ is called \textbf{divisible} by $g \in \mathbb{F}[T]$ (or, $g$ \textbf{divides} $f$, written as $g \mid f$) if there exists $h \in \mathbb{F}[T]$ such that $f=gh$.
 \end{definition}
 
-\begin{theorem}
-    If $x_0 \in \mathbb{F}$ is a root of $p(x) \in \mathbb{F}[x]$, then $(x-x_0) \mid p(x)$.
-\end{theorem}
+\begin{proposition}[Theorem~\ref{th:root-div} restated]
+    If $\alpha \in \mathbb{F}$ is a root of polynomial $p \in \mathbb{F}[T]$, then $(T-\alpha) \mid p$.
+\end{proposition}
 
 \begin{definition}
-    A polynomial $f(x) \in \mathbb{F}[x]$ is said to be \textbf{irreducible} in $\mathbb{F}$ if there are no polynomials $g,h \in \mathbb{F}[x]$ both of degree more than $1$ such that $f = gh$.
+    A polynomial $f \in \mathbb{F}[T]$ is said to be \textbf{irreducible} in $\mathbb{F}$ if there are no polynomials $g,h \in \mathbb{F}[T]$ both of positive degree such that $f = gh$.
 \end{definition}
 
 \begin{example}
-    A polynomial $f(x) = x^2+16$ is irreducible in $\mathbb{R}$. In turn, $f(x) = x^2-2$ is not irreducible since $f(x) = (x-\sqrt{2})(x+\sqrt{2})$. 
+    A polynomial $f(T) = T^2+16$ is irreducible in $\mathbb{R}$. On the other hand, $f(T) = T^2-2$ is not irreducible since $f(T) = (T-\sqrt{2})(T+\sqrt{2})$. 
 \end{example}
 
 \begin{example}
-    There are no polynomials over complex numbers $\mathbb{C}$ with degree more than $2$ that are irreducible. This follows from the \textit{fundamental theorem of algebra}.
+    There are no polynomials over complex numbers $\mathbb{C}$ with degree greater than $1$ that are irreducible. This follows from the \textit{fundamental theorem of algebra}.
 \end{example}
 
 \subsection{Interpolation}
 
-Now, let us ask the question: what defines the polynomial? Well, given expression $p(x) = \sum_{k=0}^n c_kx^k$ one can easily say: ``hey, I need to know the coefficients $\{c_k\}_{k=0}^n$''.
+Now, let us ask the question: what defines the polynomial? 
+Given expression $p = \sum_{k=0}^n c_kT^k$, one can respond: ``I just need to know the coefficients $\{c_k\}_{k=0}^n$''.
 
-Indeed, each polynomial of degree $n$ is uniquely determined by the vector of its coefficients $(c_0,c_1,\dots,c_n) \in \mathbb{F}^n$. However, that is not the only way to define a polynomial.
+Indeed, each polynomial of degree $n$ is uniquely determined by the vector of its coefficients $(c_0,c_1,\dots,c_n) \in \mathbb{F}^{n+1}$. However, that is not the only way to define a polynomial.
 
-Suppose I tell you that $p(x) = ax + b$ -- just a simple linear function over $\mathbb{R}$. Suppose I tell you that $p(x)$ intercepts $(0,0)$ and $(1,2)$. Then, you can easily say that $p(x) = 2x$. 
+Suppose that $p(T) = aT + b$ -- just a simple linear function over $\mathbb{R}$. Suppose that $p$ intercepts $(0,0)$ and $(1,2)$. Then, you can easily say that $p(T) = 2T$. 
 
-The more general question is: suppose $\deg p = n$, how many points do I need to define the polynomial $p(x)$ uniquely? The answer is $n+1$ distinct points. This is the idea behind the interpolation:
+The more general question is: suppose $\deg p = n$, how many points do I need to define the polynomial $p(T)$ uniquely? 
+The answer is $n+1$ distinct points. 
+This is the idea behind the interpolation:
 the polynomial is uniquely defined by $n+1$ distinct points on the plane. An example is depicted 
-in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the polynomial practically.
+in \Cref{fig:interpolation}. Now, let us see how we can interpolate the polynomial practically.
 
 \begin{figure}[H]
     \centering
@@ -153,33 +148,34 @@ in Figure~\ref{fig:interpolation}. Now, let us see how we can interpolate the po
 \end{figure}
 
 \begin{theorem}
-    Given a set of points $\{(x_0,y_0),(x_1,y_1),\dots,(x_n,y_n)\} \subset
-    \mathbb{F} \times \mathbb{F}$, there is a unique polynomial $L(x)$ of degree
+    Given a set of points $\{(x_0,y_0),(x_1,y_1),\dots,(x_n,y_n)\} \subseteq
+    \mathbb{F} \times \mathbb{F}$, there is a unique polynomial $L$ of degree
     $n$ such that $L(x_i) = y_i$ for all $i=0,\dots,n$. This polynomial is
     called the \textbf{Lagrange interpolation polynomial} and can be found
     through the following formula:
     \begin{xequation}
-        L(x) = \sum_{i=0}^{n} y_i \ell_i(x), \quad \ell_i(x) = \prod_{j=0, j \neq i}^{n} \frac{x-x_j}{x_i-x_j}.
+        L(T) = \sum_{i=0}^{n} y_i \ell_i(T), \quad \ell_i(T) = \prod_{j=0, j \neq i}^{n} \frac{T-x_j}{x_i-x_j}.
     \end{xequation}
 \end{theorem}
 
 \begin{lemma}
-    The polynomials $\{\ell_i\}_{i=1}^n$, in fact, have quite an interesting property:
+    The polynomials $\{\ell_i\}_{i=0}^n$, in fact, have quite an interesting property:
     \begin{xequation*}
         \ell_i(x_j) = \delta_{ij} = \begin{cases}
             1, & i = j \\ 0, & i \neq j
         \end{cases},
     \end{xequation*}
-    where $\delta_{ij}$ is the Kronecker delta. Moreover, $\{\ell_i\}_{i=1}^n$ form a basis of $\mathbb{F}^{(\leq n)}[x]$: for any polynomial $p(x) \in \mathbb{F}^{(\leq n)}[x]$ there exist unique coefficients $\alpha_0,\dots,\alpha_n \in \mathbb{F}$ such that
+
+    where $\delta_{ij}$ is the so-called \textit{Kronecker delta}. Moreover, $\{\ell_i\}_{i=0}^n$ form a \textit{basis} of $\mathbb{F}[T]^{\leq n}$ (see \Cref{section:linear-algebra} for the definition). Put simply, for any polynomial $p \in \mathbb{F}[T]^{\leq n}$ there exist unique coefficients $\alpha_0,\dots,\alpha_n \in \mathbb{F}$ such that
     \begin{xequation}
-        p(x) = \sum_{i=0}^{n} \alpha_i \ell_i(x).
+        p(T) = \sum_{i=0}^{n} \alpha_i \ell_i(T).
     \end{xequation}
 \end{lemma}
 
 \begin{example}
     Suppose we have points $(0,1)$ and $(1,2)$. Then, the Lagrange interpolation polynomial is
     \begin{equation*}
-        L(x) = 1 \cdot \frac{x-1}{0-1} + 2 \cdot \frac{x-0}{1-0} = (-1) \cdot (x-1) + 2 \cdot x = x + 1
+        L(T) = 1 \cdot \frac{T-1}{0-1} + 2 \cdot \frac{T-0}{1-0} = (-1) \cdot (T-1) + 2 \cdot T = T + 1.
     \end{equation*}
 \end{example}
 
@@ -196,19 +192,19 @@ single-variable case, which is easiest to understand.
 \vspace{-0.6mm}
 
 \begin{lemma}[Single Variable Schwartz-Zippel Lemma]\label{lemma:one-sz} Let
-    $\mathbb{F}$ be a finite field and let $f \in \mathbb{F}[x]$ be a
+    $\mathbb{F}$ be a finite field and let $f \in \mathbb{F}[T]$ be a non-zero
     polynomial. Then,
     \begin{xequation}
-        \underset{x \leftarrowS \mathbb{F}}{\text{Pr}}
-        [f(x) = 0] \leq \frac{\deg f}{\left|\mathbb{F}\right|}.
+        \underset{\alpha \leftarrowS \mathbb{F}}{\text{Pr}}
+        [f(\alpha) = 0] \leq \frac{\deg f}{\#\mathbb{F}}.
     \end{xequation}
 \end{lemma}
 
 \vspace{-0.6mm}
 
 \textbf{Proof Idea.} The proof is quite simple. The polynomial of degree up to
-$n:=\deg f$ can have up to $n$ roots. Therefore, when we pick the point $x$
-uniformly at random from the field $\mathbb{F}$, there is at most $n/|\mathbb{F}|$
+$n:=\deg f$ can have up to $n$ roots. Therefore, when we pick the point $\alpha$
+uniformly at random from the field $\mathbb{F}$, there is at most $n/\#\mathbb{F}$
 chance to pick the root of the polynomial.
 
 However, the lemma can be generalized to the multi-variable case, which is more
@@ -217,15 +213,15 @@ difficult to prove. The generalization is as follows.
 \vspace{-0.6mm}
 
 \begin{lemma}[Multivariable Schwartz-Zippel] \label{lemma:sz} Let $\mathbb{F}$
-    be a finite field and $\mathbb{S} \subseteq \mathbb{F}^n$ be a finite
-    $n$-dimensional subspace. Let $f: \mathbb{S} \to \mathbb{F}$ be a polynomial
+    be a finite field and $S \subseteq \mathbb{F}^n$ be a finite
+    $n$-dimensional subspace. Let $f: S \to \mathbb{F}$ be a polynomial
     in $n$ variables. Then,
     
     \vspace{-1.1mm}
     
     \begin{xequation}
-        \underset{\mathbf{x} \leftarrowS \mathbb{S}}{\text{Pr}}
-        [f(\mathbf{x}) = 0] \leq \frac{\deg f}{\left|\mathbb{S}\right|}.
+        \underset{\bm{\alpha} \leftarrowS S}{\text{Pr}}
+        [f(\bm{\alpha}) = 0] \leq \frac{\deg f}{\#S}.
     \end{xequation}
 \end{lemma}
 
@@ -233,9 +229,9 @@ difficult to prove. The generalization is as follows.
 
 \begin{example}
 Suppose we are working over the Mersenne prime field of order $p=2^{31}-1$ with
-a polynomial $f(x_1,x_2) = x_1^{50} + 3x_1x_2 + x_2^5$. If we pick $(x_1,x_2)$
-at random from $\mathbb{F}_p^2$, the probability of $f(x_1,x_2) = 0$ is at most
-$50/(2^{31}-1)$, providing approximately 25 bits of security.
+a polynomial $f(T,W) = T^{50} + 3TW + W^5$. If we pick $(\alpha,\beta)$
+at random from $\mathbb{F}_p^2$, the probability of $f(\alpha,\beta) = 0$ is at most
+$50/(2^{31}-1)$, providing approximately $25$ bits of security.
 \end{example}
 
 \subsection{Some Fun: Shamir's Secret Sharing}
@@ -266,18 +262,18 @@ Now, let us define the sharing scheme.
 Now, Shamir's protocol is one of the most famous secret sharing schemes. It works as follows: our finite set is $\mathbb{F}_q$ for some large prime $q$. Then, algorithms in the protocol are defined as follows:
 \begin{itemize}
     \item $\mathsf{Gen}(\alpha, k, n)$: choose random $k_1,\dots,k_{t-1}
-    \leftarrowS \mathbb{F}_q$ and define polynomial $\omega(x) := \alpha +
-    \sum_{j=1}^{t-1}k_jx^j \in \mathbb{F}_q^{\leq (t-1)}[x]$. Then, compute
+    \leftarrowS \mathbb{F}_q$ and define polynomial $\omega(T) := \alpha +
+    \sum_{j=1}^{t-1}k_jT^j \in \mathbb{F}_q[T]^{<t}$. Then, compute
     $\alpha_i \gets \omega(i) \in \mathbb{F}_q$ for each $i$ and return
     $(\alpha_1,\dots,\alpha_n)$.
-    \item $\mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}})$: reconstruct the polynomial $\omega(x)$ using Lagrange interpolation and return $\omega(0) = \alpha$.
+    \item $\mathsf{Comb}(\mathcal{I}, \{\alpha_i\}_{i \in \mathcal{I}})$: reconstruct the polynomial $\omega$ using Lagrange interpolation and return $\omega(0) = \alpha$.
 \end{itemize}
 
-The combination function is possible since, having $t$ points $\{i,\alpha_i\}_{i
+The combination function is possible since, having $t$ points $\{(i,\alpha_i)\}_{i
 \in \mathcal{I}}$ with $\omega(i) = \alpha_i$, we can fully reconstruct the
-polynomial $\omega(x)$ and then evaluate it at $0$ to get $\alpha$. Instead,
-suppose we have only $t-1$ (or less) pairs $\{i,\alpha_i\}_{i \in \mathcal{I}}$.
-Then, there are many polynomials $\omega(x)$ that pass through these points (in
+polynomial $\omega$ and then evaluate it at $0$ to get $\alpha$. Instead,
+suppose we have only $t-1$ (or less) pairs $\{(i,\alpha_i)\}_{i \in \mathcal{I}}$.
+Then, there are many polynomials $\omega$ that pass through these points (in
 fact, if we were in the field of real numbers, this number would be infinite),
 and thus the secret $\alpha$ is not uniquely determined. The intuition behind
 Shamir's Secret Sharing protocol is illustrated in Figure~\ref{fig:shamir}: for
@@ -294,12 +290,77 @@ uniquely determine the polynomial and thus get value at $0$.
     \label{fig:shamir}
 \end{figure}
 
+\subsubsection{SageMath Implementation}\label{sec:shamir-impl}
+
+Let us implement this protocol in SageMath.
+First, we will set up our finite field $\mathbb{F}_q$ and polynomial ring $\mathbb{F}_q[T]$.
+
+\begin{minted}{python}
+from typing import List, Tuple
+
+q = 2^(31) - 1
+Fq = GF(q)
+P.<x> = PolynomialRing(Fq)
+\end{minted}
+
+Now, let us write the $\mathsf{Gen}$ function that returns shares $\{(i, f(i))\}_{i \in [n]}$.
+
+\begin{minted}{python}
+def generate(n: int, k: int) -> List[[Fq, int]]:
+    """
+    Generate a Shamir secret sharing scheme with n shares and k threshold.
+    """
+
+    # Generate a random polynomial
+    f = P.random_element(degree=k-1)
+    
+    # Generate a secret
+    secret = Fq.random_element()
+    print(f'Chosen secret: {secret}')
+
+    # Set the constant term as the secret
+    f = P([secret] + [f[i] for i in range(1, k)])
+    print(f'Polynomial: {f}')
+    
+    # Return shares
+    return [(Fq(i), f(i)) for i in range(1, n+1)]
+\end{minted}
+
+This way, using the following function, we generate shares:
+
+\vspace{-6px}
+\begin{minted}{python}
+shares = generate(5, 3) # Generate 3-of-5 shares
+\end{minted}
+\vspace{-6px}
+
+Finally, we write the $\mathsf{Comb}$ function that reconstructs the secret value by interpolating given values.
+
+\begin{minted}{python}
+def reconstruct(shares: List[Tuple[int, Fq]], threshold: int) -> Fq:
+    """
+    Reconstruct the secret from the shares using Lagrange interpolation.
+    """
+    
+    assert len(shares) >= threshold, f"Not enough shares to reconstruct 
+                                    the secret, got {len(shares)}"
+
+    reconstructed_polynomial = P.lagrange_polynomial(shares)
+    print(f'Reconstructed polynomial: {reconstructed_polynomial}')
+
+    # The secret is the constant term of the polynomial
+    return reconstructed_polynomial(0)
+
+recovered_secret = reconstruct(shares[1:4], 3) # Try any subset of 3 elements
+print(f'Recovered secret: {recovered_secret}')
+\end{minted}
+
 \subsection{Exercises}
 
 \begin{xexercise}
     {Exercise 1.}
     {
-        Suppose for three polynomials $p,q,r \in \mathbb{F}[x]$ we have $\deg p = 3, \deg q = 4, \deg r = 5$. 
+        Suppose for three polynomials $p,q,r \in \mathbb{F}[T]$ we have $\deg p = 3, \deg q = 4, \deg r = 5$. 
         Which of the following is true for $n := \deg \{(p-q)r\}$?
     }
     {2}
@@ -314,7 +375,7 @@ uniquely determine the polynomial and thus get value at $0$.
 \begin{xexercise}
     {Exercise 2.}
     {
-        Define the polynomial over $\mathbb{F}_5$: $f(x) := 4x^2 + 2$. Which of the following is the root of $f(x)$?
+        Define the polynomial over $\mathbb{F}_5$: $f(T) := 4T^2 + 2$. Which of the following is the root of $f$?
     }
     {2}
     {
@@ -328,7 +389,7 @@ uniquely determine the polynomial and thus get value at $0$.
 \begin{xexercise}
     {Exercise 3.}
     {
-        Quadratic polynomial $p(x) = ax^2+bx+c \in \mathbb{R}[x]$ has zeros at $1$ and $2$ and $p(0) = 2$. 
+        Quadratic polynomial $p(T) = aT^2+bT+c \in \mathbb{R}[T]$ has zeros at $1$ and $2$ and $p(0) = 2$. 
         Find the value of $a+b+c$.
     }
     {2}
@@ -345,9 +406,9 @@ uniquely determine the polynomial and thus get value at $0$.
     {
         Consider two polynomials: 
         \begin{xequation}
-            P_n(x) = x^{2n} + x^n -2, \quad Q(x) = x^2 + 1
+            p_n(T) = T^{2n} + T^n -2, \quad q(T) = T^2 + 1
         \end{xequation}
-        For which values of $n$ does polynomial $Q(x)$ divides $P_n(x)$
+        For which values of $n$ does polynomial $q$ divide $p_n$?
     }
     {1}
     {
@@ -360,7 +421,7 @@ uniquely determine the polynomial and thus get value at $0$.
 \end{xexercise}
 
 \begin{xexercise}
-    {Exercise 5.} { Suppose $f \in \mathbb{F}_p[x]$ is a $d$-degree polynomial
+    {Exercise 5.} { Suppose $f \in \mathbb{F}_p[T]$ is a $d$-degree polynomial
     with $d$ \textbf{distinct} roots in $\mathbb{F}_p$. Suppose Alice wants to
     fool Bob by claiming that $f$ is not a zero polynomial. The protocol
     consists of $n$ rounds, where on each round Bob samples the random scalar
@@ -375,12 +436,12 @@ uniquely determine the polynomial and thus get value at $0$.
 \end{xexercise}
 
 \begin{xexercise}
-    {Exercise 6.} { Suppose $f \in \mathbb{F}_p[x_1,\dots,x_n]$ is an
-    $n$-variable polynomial. Carol randomly samples the point $\mathbf{x}
-    \leftarrowS \mathbb{S}$ where $\mathbb{S} \subseteq \mathbb{F}_p^n$ is a
-    set of points $(x_1,\dots,x_n)$ such that $\sum_{i=1}^n x_i=1$ over
+    {Exercise 6.} { Suppose $f \in \mathbb{F}_p[T_1,\dots,T_n]$ is an
+    $n$-variable polynomial. Carol randomly samples the point $\bm{\alpha}
+    \leftarrowS S$ where $S \subseteq \mathbb{F}_p^n$ is a
+    set of points $(\alpha_1,\dots,\alpha_n)$ such that $\sum_{i=1}^n \alpha_i=1$ over
     $\mathbb{F}_p$. According to the Schwartz-Zippel Lemma, what is the tightest
-    upper bound for $\Pr[f(\mathbf{x})=0]$ among specified below?}
+    upper bound for $\Pr[f(\bm{\alpha})=0]$ among specified below?}
     {1} {
         \item $\deg f/p^n$
         \item $\deg f/p^{n-1}$

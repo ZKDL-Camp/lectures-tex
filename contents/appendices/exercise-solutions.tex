@@ -21,10 +21,10 @@ only if $n-1=0$. Thus, $n=1$ is the only such number.
 
 \textbf{Exercise 6. Answer: C.} Let us find roots of $f$. Notice that:
 \begin{equation*}
-    f(x) = 2x^2 - (3p+q)x + (p^2 + pq)
+    f(T) = 2T^2 - (3p+q)T + (p^2 + pq)
 \end{equation*}
 
-By equating $f(x)=0$ we get two solutions: $r_1 = p$ and $r_2=\frac{p+q}{2}$. One 
+By equating $f(T)=0$ we get two solutions: $r_1 = p$ and $r_2=\frac{p+q}{2}$. One 
 can easily check that the only possible $p$ and $q$ for $r_2$ to be prime is $(7,3)$.
 Thus, the sum is $10$.
 
@@ -89,12 +89,12 @@ does not exist for $A$.
     as a function $i(\omega) = e$ for any $\omega \in \Omega$ where $e$ is an
     identity element in $\mathbb{G}$. Then:
     \begin{equation*}
-        (f \star i)(\omega) = f(\omega) \times i(\omega) = f(\omega) \times e = f(\omega) \implies f \star i = f
+        (f \star i)(\omega) = f(\omega) \times i(\omega) = f(\omega) \times e = f(\omega) \Rightarrow f \star i = f
     \end{equation*}
     \item \textbf{Inverse:} Define inverse element for $f \in \mathcal{F}$ as 
     $g$ defined as $g := (f(\omega))^{-1}$ for every $\omega \in \Omega$. Then:
     \begin{equation*}
-        (f \star g)(\omega) = f(\omega) \times (f(\omega))^{-1} = e \; \forall \omega \in \Omega \implies f \star g = i
+        (f \star g)(\omega) = f(\omega) \times (f(\omega))^{-1} = e \; \forall \omega \in \Omega \Rightarrow f \star g = i
     \end{equation*}
     \item \textbf{Associativity:} Holds due to the associativity of $\times$.
     \item \textbf{Commutativity:} Holds due to the commutativity of $\times$.
@@ -142,7 +142,7 @@ Let us show it is a bijection. Suppose $\psi(a+bi)=\psi(c+di)$. Then:
         a & -b \\ b & a
     \end{bmatrix} = \begin{bmatrix}
         c & -d \\ d & c
-    \end{bmatrix} \implies a=c, b=d
+    \end{bmatrix} \Rightarrow a=c, b=d
 \end{equation*}
 
 Thus, $\psi$ is injective. To show the surjectivity notice that for any matrix
@@ -188,36 +188,68 @@ Therefore, $yx=xy$, so $\mathbb{G}$ is an abelian group.
 different degrees. Therefore, $\deg((p-q)r)=\deg(p-q)+\deg(r) = 4+5=9$.
 
 \textbf{Exercise 2. Answer: D.} It suffices to plug each of $\{0,1,2,3,4\}$
-in $4x^2+7$ and verify that the result is never $0$ over $\mathbb{F}_5$.
+in $4T^2+7$ and verify that the result is never $0$ over $\mathbb{F}_5$.
 
-\textbf{Exercise 3. Answer: A.} Note that $p(x)=a(x-1)(x-2)$. Since $p(0)=2$, 
-we have $a=1$. Therefore, $p(x)=x^2-3x+2$ and thus $b=-3$, $c=2$. The sum 
+\textbf{Exercise 3. Answer: A.} Note that $p(T)=a(T-1)(T-2)$. Since $p(0)=2$, 
+we have $a=1$. Therefore, $p(x)=T^2-3T+2$ and thus $b=-3$, $c=2$. The sum 
 $a+b+c$ is then $0$.
 
-\textbf{Exercise 4. Answer: C.} Roots of $Q$ are $\pm i$. If $Q(x) \mid P(x)$,
-we must have $P(\pm i) = 0$. Thus we have $P(i)=i^{2n}+i^n-2=(-1)^n+i^n-2$. 
+\textbf{Exercise 4. Answer: C.} Roots of $q$ are $\pm i$. If $q \mid p_n$,
+we must have $p_n(\pm i) = 0$. Thus we have $p_n(i)=i^{2n}+i^n-2=(-1)^n+i^n-2$. 
 Consider four cases:
 \begin{itemize}
-    \item $n=4k$. Then, $P(i)=(-1)^{4k}+i^{4k}-2=0$.
-    \item $n=4k+1$. Then, $P(i)=(-1)^{4k+1}+i^{4k+1}-2=-3+i \neq 0$.
-    \item $n=4k+2$. Then, $P(i)=(-1)^{4k+2}+i^{4k+2}-2=-2 \neq 0$.
-    \item $n=4k+3$. Then, $P(i)=(-1)^{4k+3}+i^{4k+3}-2=-3-i \neq 0$.
+    \item $n=4k$. Then, $p_n(i)=(-1)^{4k}+i^{4k}-2=0$.
+    \item $n=4k+1$. Then, $p_n(i)=(-1)^{4k+1}+i^{4k+1}-2=-3+i \neq 0$.
+    \item $n=4k+2$. Then, $p_n(i)=(-1)^{4k+2}+i^{4k+2}-2=-2 \neq 0$.
+    \item $n=4k+3$. Then, $p_n(i)=(-1)^{4k+3}+i^{4k+3}-2=-3-i \neq 0$.
 \end{itemize}
 
 Therefore, $n$ must be divisible by $4$. It is easy to check that in such 
-case $P(-i)$ equals $0$ as well.
+case $p_n(-i)$ equals $0$ as well.
 
 \textbf{Exercise 5. Answer: A.} Since polynomial has $d$ distinct roots,
 the probability of choosing a root is \emph{exactly} $d/p$. The probability 
 that Alice fools Bob after $n$ rounds is then $(d/p)^n$.
 
 \textbf{Exercise 6. Answer: B.} According to the Schwartz-Zippel Lemma, we have
-$\text{Pr}[f(\mathbf{x})=0 \,|\, \mathbf{x} \xleftarrow{R} \mathbb{S}] \leq \deg
-f/|\mathbb{S}|$, so we need to find the size $|\mathbb{S}|$. Our claim is that 
-the number of solutions to $x_1+\dots+x_n=1$ over $\mathbb{F}_p$ is exactly 
-$p^{n-1}$. Indeed, for any $p^{n-1}$ possible values of $(x_2,\dots,x_n)$ there 
-is a unique $x_1$ such that $x_1+\dots+x_n=1$, which is $1-\sum_{i=2}^nx_i$. 
-Therefore, $\text{Pr}[f(\mathbf{x})=0] \leq \deg f/p^{n-1}$.
+$\text{Pr}[f(\bm{\alpha})=0 \,|\, \bm{\alpha} \leftarrowS S] \leq \deg
+f/\#S$, so we need to find the size $\#S$. Our claim is that 
+the number of solutions to $\alpha_1+\dots+\alpha_n=1$ over $\mathbb{F}_p$ is exactly 
+$p^{n-1}$. Indeed, for any $p^{n-1}$ possible values of $(\alpha_2,\dots,\alpha_n)$ there 
+is a unique $\alpha_1$ such that $\alpha_1+\dots+\alpha_n=1$, which is $1-\sum_{i=2}^n\alpha_i$. 
+Therefore, $\text{Pr}[f(\bm{\alpha})=0] \leq \deg f/p^{n-1}$.
+
+\subsection*{Vector Spaces and Inner Products}
+
+\textbf{Exercise 1. Answer: C.} One might check that $\{(1,-1,0),(1,0,-1)\}$ is the basis of $V$.
+
+\textbf{Exercise 2. Answer: D.} The condition $\mathbf{z}\odot(\mathbf{1}_n-\mathbf{z})=\mathbf{0}$ says $z_i(1-z_i)=0$ for every coordinate, \textit{i.e.} $z_i \in \{0,1\}$ for all $i$. 
+If $\mathbb{F}=\mathbb{Z}_2$, every field element already lies in $\{0,1\}$, so $V = \mathbb{F}^n$ trivially, which is of course a subspace. 
+If $\mathbb{F}$ has more than two elements, pick any $\gamma \in \mathbb{F}\setminus\{0,1\}$ and $\mathbf{z}:=(1,0,\dots,0)\in V$; then $\gamma\mathbf{z} = (\gamma,0,\dots,0)$ has first coordinate $\gamma\notin\{0,1\}$, so $\gamma\mathbf{z}\notin V$. Hence $V$ fails closure under scalar multiplication, and is not a subspace.
+
+\textbf{Exercise 3. Answer: A.} Write $A = \mathbb{I}_{2 \times 2} + N$ where $N = \begin{bmatrix} 0&2\\0&0\end{bmatrix}$. Since $N^2 = 0$, the binomial theorem gives
+\begin{equation*}
+    A^n = (\mathbb{I}_{2 \times 2}+N)^n = \mathbb{I}_{2 \times 2} + nN = \begin{bmatrix} 1 & 2n \\ 0 & 1\end{bmatrix}.
+\end{equation*}
+\textit{(This can also be checked directly by induction on $n$.)}
+
+\textbf{Exercise 4. Answer: B.} Every nonzero vector in $\mathbb{F}_3^3$ spans a $1$-dimensional subspace, and two nonzero vectors span the same line iff one is a nonzero scalar multiple of the other. There are $3^3-1=26$ nonzero vectors, and each line contains $|\mathbb{F}_3|-1=2$ of them (the nonzero scalar multiples), so the number of distinct lines is $26/2=13$.
+
+\textbf{Exercise 5. Answer: A.} We compute
+\begin{equation*}
+    \|T\|^2 = \langle T, T\rangle = \int_0^1 \tau^2\,d\tau = \frac{1}{3},
+\end{equation*}
+so $\|T\| = 1/\sqrt{3}$.
+
+\textbf{Exercise 6.} Let $q(T) = \alpha T + \beta$. Then
+\begin{equation*}
+    \langle q, T^2\rangle = \int_0^1 (\alpha \tau+\beta)\tau^2\,d\tau = \int_0^1 (\alpha \tau^3 + \beta \tau^2)\,d\tau = \frac{\alpha}{4}+\frac{\beta}{3}.
+\end{equation*}
+Setting this equal to $0$ gives $3\alpha = -4\beta$, so any pair $(\alpha,\beta)$ proportional to $(4,-3)$ works. Taking $\alpha=4,\ \beta=-3$ yields
+\begin{equation*}
+    q(T) = 4T-3,
+\end{equation*}
+and one checks directly that $\int_0^1 (4\tau-3)\tau^2\,d\tau = \left[\tau^4-\tau^3\right]_0^1 = 0$, as required.
 
 \subsection*{Field Extensions}
 
@@ -252,6 +284,117 @@ parts are same and equal to $\xi$.
 a_0b_1j+a_1b_1j^2=a_1b_1\xi+a_0b_1j$. So the real part is thus $a_1b_1\xi$.
 
 \textbf{Exercise 9. Answer: B.} $z\overline{z}=(c_0+c_1j)(c_0-c_1j) = c_0^2-c_1^2j^2=c_0^2-\xi c_1^2$.
+
+\subsection*{Security Analysis}
+
+\subsection*{Solutions to Exercises}
+
+\textbf{Exercise 1. Answer: (D).} A function $\mu(\lambda)$ is negligible if $\lim_{\lambda \to \infty}\mu(\lambda)\lambda^{\gamma}=0$ for all $\gamma \in \mathbb{R}$. Options (A) ($\lambda^{-1024}$) and (B) ($\lambda^{-\log 5}$) decay polynomially. Option (C) fails the requirement for all sufficiently large $\lambda$ because it equals $\lambda^{-1000}$ on all odd integers. Option (D) ($\lambda^{100}e^{-\sqrt{\lambda}}$) decays exponentially.
+
+\textbf{Exercise 2. Answer: (A).} Yes. For any message $m \in \mathbb{Z}_p^\times$, when key $k$ is sampled uniformly at random from $\mathbb{Z}_p^\times$, the ciphertext $c = k \cdot m \pmod p$ is uniformly distributed over $\mathbb{Z}_p^\times$. Thus $\Pr[C = c \mid M = m] = 1/\#\mathbb{Z}_p^{\times} = \Pr[C = c]$.
+
+\textbf{Exercise 3. Answer: (A).} In the semantic security game, adversary $\mathcal{B}$ queries on $m_0$ (last bit 0) and $m_1$ (last bit 1). Upon receiving ciphertext $c_b$, $\mathcal{B}$ returns $\widehat{b} \gets f(c_b)$. Since $f$ correctly predicts the last bit with probability $\frac{1}{2}+\varepsilon$, we have $\Pr[\widehat{b} = b] = \frac{1}{2}+\varepsilon$. By definition:
+\begin{equation*}
+    \text{Adv}^{\text{SS}}_{\mathcal{B},\mathcal{E}} = \left| \Pr[\widehat{b} = b] - \frac{1}{2} \right| = \left| \left(\frac{1}{2}+\varepsilon\right) - \frac{1}{2} \right| = \varepsilon.
+\end{equation*}
+
+\textbf{Exercise 4. Answer: (A), (C), (D), (F).}
+\begin{itemize}
+    \item \textbf{(A)}: Secure. Prepending a constant bit $0$ preserves semantic security via a standard reduction.
+    \item \textbf{(B)}: Insecure. Appending $\text{parity}(m)$ directly leaks 1 bit of information about plaintext $m$.
+    \item \textbf{(C)}: Secure. Bit reversal is a deterministic bijection on $\{0,1\}^\lambda$, so any adversary breaking $E'$ breaks $E$.
+    \item \textbf{(D)}: Secure. Reversing the message prior to encryption is an injective transformation on $\{0,1\}^\lambda$, preserving semantic security.
+    \item \textbf{(E)}: Insecure. Appending $k$ to the ciphertext reveals the secret key entirely.
+    \item \textbf{(F)}: Secure. Encrypting $m$ under two independent keys $(k, k')$ is semantically secure.
+\end{itemize}
+
+\textbf{Exercise 5. Answer: (D).} If the DDH assumption holds in $\mathbb{G}$, then $(g^\alpha, g^\beta, g^{\alpha\beta})$ is computationally indistinguishable from a uniform random triple $(g^\alpha, g^\beta, g^\gamma) \in \mathbb{G}^3$, making $G$ a secure PRG. Neither DL nor CDH assumptions are sufficient because they only guarantee the hardness of computing $\alpha$ or $g^{\alpha\beta}$, not the indistinguishability of $g^{\alpha\beta}$ from a uniform group element.
+
+\textbf{Exercise 6. Answer: (B), (C), (D), (F).}
+\begin{itemize}
+    \item \textbf{(A)}: Insecure. Output always ends in $0$, allowing a statistical test checking the last bit to distinguish it with advantage $1/2$.
+    \item \textbf{(B)}: Secure. XORing two independent PRG outputs yields a secure PRG.
+    \item \textbf{(C)}: Secure. Bitwise XOR with $1^\lambda$ is a bijection on $\{0,1\}^\lambda$, preserving pseudorandomness.
+    \item \textbf{(D)}: Secure. Truncating the output of a secure PRG preserves pseudorandomness.
+    \item \textbf{(E)}: Insecure. Outputting two identical halves $G(s) \parallel G(s)$ is trivially distinguishable.
+    \item \textbf{(F)}: Secure. Since $s_1$ is uniform and independent of $s_2$, outputting $(s_1, G(s_2))$ gives independent uniform and pseudorandom strings.
+    \item \textbf{(G)}: Insecure. $G'(s) = G(0)$ is a constant function.
+\end{itemize}
+
+\textbf{Exercise 7. Answer: (A).} For statistical test $\mathcal{A}_0$, $\Pr_{k \leftarrowS \mathcal{K}}[\mathcal{A}_0(G(k))=1] = 0$ and $\Pr_{x \leftarrowS \{0,1\}^\lambda}[\mathcal{A}_0(x)=1] = 0$, giving advantage $|0 - 0| = 0$. Similarly, for $\mathcal{A}_1$, both probabilities equal $1$, giving $|1 - 1| = 0$.
+
+\textbf{Exercise 8. Answer: (E).} By the definition of test $\mathcal{A}$, $\Pr_{k \leftarrowS \mathcal{K}}[\mathcal{A}(G(k))=1] = \frac{2}{3}$. For a uniformly chosen $x \leftarrowS \{0,1\}^\lambda$, the last bit is $1$ with probability $\frac{1}{2}$. Thus,
+\begin{equation*}
+    \text{Adv}^{\text{PRG}}_{\mathcal{A},G} = \left| \frac{2}{3} - \frac{1}{2} \right| = \frac{1}{6}.
+\end{equation*}
+
+\textbf{Exercise 9. Answer: (D).} Because $G$ is a secure PRG, the first bit of $G(k_1)$ and $G(k_2)$ are each $1$ with probability $\frac{1}{2} \pm \text{negl}(\lambda)$. Since $k_1, k_2$ are independent, $\Pr[\mathcal{A}(G'(k_1, k_2))=1] \approx \frac{1}{2} \cdot \frac{1}{2} = \frac{1}{4}$. For a random string $x \leftarrowS \{0,1\}^\lambda$, $\Pr[\mathcal{A}(x)=1] = \frac{1}{2}$. Hence:
+\begin{equation*}
+    \text{Adv}^{\text{PRG}}_{\mathcal{A},G'} \approx \left| \frac{1}{4} - \frac{1}{2} \right| = \frac{1}{4}.
+\end{equation*}
+
+\textbf{Exercise 10. Answer: (C), (D), (E).} 
+\begin{enumerate}[(A)]
+    \item This is the DL problem, so it is not polynomially equivalent to CDH.
+    \item This problem is the DDH problem and is obviously not polynomially equivalent to CDH.
+    \item This is the so-called \textit{Square Computational Diffie-Hellman} (SCDH) and it is polynomially equivalent to CDH. Let's show this. \textbf{Step 1.}
+    $\textbf{CDH} \Rightarrow \textbf{SCDH}$. Suppose we can solve CDH using an oracle $\mathcal{O}_{\text{CDH}}: (g^{\alpha},g^{\beta})
+    \mapsto g^{\alpha\beta}$. Then to construct the mapping
+    $\mathcal{O}_{\text{SCDH}}: g^{\alpha} \mapsto g^{\alpha^2}$, we simply
+    compute $\mathcal{O}_{\text{CDH}}(g^{\alpha},g^{\alpha})$. \textbf{Step
+    2.} $\textbf{SCDH} \Rightarrow \textbf{CDH}$. To prove it in the other direction,
+    note that $(\alpha+\beta)^2=\alpha^2+2\alpha\beta+\beta^2$. If we need to
+    compute $g^{\alpha\beta}$ given $g^{\alpha}$, $g^{\beta}$, and the oracle
+    $\mathcal{O}_{\text{SCDH}}: g^{\alpha} \mapsto g^{\alpha^2}$, we perform the
+    following steps: 
+    \begin{itemize}
+        \item Compute $u = \mathcal{O}_{\text{SCDH}}(g^{\alpha})$.
+        \item Compute $v = \mathcal{O}_{\text{SCDH}}(g^{\beta})$.
+        \item Compute $w = \mathcal{O}_{\text{SCDH}}(g^{\alpha}g^{\beta})$.
+        \item Return $(w/uv)^{1/2}$ (the root is found efficiently).
+    \end{itemize}
+    \item This is the so-called \textit{Inverse Computational Diffie-Hellman} (ICDH),
+    and it is also equivalent to CDH. \textbf{Step 1.} $\textbf{ICDH} \Rightarrow
+    \textbf{CDH}$. Suppose we have an oracle $\mathcal{O}_{\text{ICDH}}: g^{\alpha}
+    \mapsto g^{1/\alpha}$. Then:
+    \begin{itemize}
+        \item Compute $u \gets \mathcal{O}_{\text{ICDH}}(g^{\alpha}/g) =
+        g^{1/(\alpha-1)}$.
+        \item Compute $v \gets \mathcal{O}_{\text{ICDH}}(g^{\alpha})=g^{1/\alpha}$.
+        \item Compute $w \gets u/v = g^{1/(\alpha^2-\alpha)}$.
+        \item Compute $h \gets \mathcal{O}_{\text{ICDH}}(w)=g^{\alpha^2-\alpha}$.
+        \item Return $t \gets h \cdot g^{\alpha} = g^{\alpha^2}$.
+    \end{itemize}
+    Thus, we have reduced the ICDH problem to the SCDH problem. But having SCDH, we already
+    know how to compute CDH. \textbf{Step 2.} $\textbf{CDH} \Rightarrow
+    \textbf{ICDH}$. The reduction of CDH to ICDH is also done through an intermediate
+    reduction of CDH to SCDH, and then SCDH to ICDH. The first is obviously obtained from
+    $\mathcal{O}_{\text{SCDH}}(g^{\alpha})=\mathcal{O}_{\text{CDH}}(g^{\alpha},
+    g^{\alpha})$. The second reduction is obtained from the fact that
+    $g^{1/{\alpha}}=g^{{\alpha}^{-1} \, \text{mod} \, r}=g^{\alpha^{r-2}}$, where
+    $r$ is the order of the group $\mathbb{G}$. From here we decompose $r-2$ into
+    $\sum_{i=0}^{n-1} 2^i r_i$, and then by applying the \textit{Double and
+    Add} algorithm, along with the oracles $\mathcal{O}_{\text{CDH}}$ (for addition) and
+    $\mathcal{O}_{\text{SCDH}}$ (for multiplication by two), we find
+    $g^{\alpha^{r-2}}$.
+    \item This problem is called the \textit{Divisible Computational Diffie-Hellman
+    Assumption} (DCDH), and it is again polynomially equivalent to CDH.
+    \textbf{Step 1.} $\textbf{DCDH} \Rightarrow \textbf{CDH}$. Suppose we have
+    an oracle $\mathcal{O}_{\text{DCDH}}: (g^{\alpha},g^{\beta}) \mapsto
+    g^{\alpha/\beta}$. To compute $\mathcal{O}_{\text{CDH}}$, we perform the following steps:
+    \begin{itemize}
+        \item Choose $a,b \leftarrowS \mathbb{F}_r$.
+        \item Compute $u \gets \mathcal{O}_{\text{DCDH}}(g^{\alpha},g^a) = g^{\alpha/a}$.
+        \item Compute $v \gets \mathcal{O}_{\text{DCDH}}(g^{\beta},g^b) = g^{\beta/b}$.
+        \item Compute $w \gets \mathcal{O}_{\text{DCDH}}(u,v) = g^{\alpha\beta/(ab)}$.
+        \item Return $t \gets w^{ab} = g^{\alpha\beta} =
+        \mathcal{O}_{\text{CDH}}(\alpha,\beta)$.
+    \end{itemize}
+    \textbf{Step 2.} $\textbf{CDH} \Rightarrow \textbf{DCDH}$. Since we
+    know how to compute CDH, we have access to the oracle
+    $\mathcal{O}_{\text{ICDH}}: g^{\alpha} \mapsto g^{1/\alpha}$. Then, return
+    $\mathcal{O}_{\text{CDH}}(g^{\alpha},\mathcal{O}_{\text{ICDH}}(g^{\beta}))$.
+\end{enumerate}
 
 \subsection*{Elliptic Curves and Pairing}
 
@@ -314,38 +457,22 @@ whether $e(P,P)e(Q,Q)=e(G,G)$ is equivalent to checking whether $x^2+y^2=1$.
 
 \subsection*{Commitment Schemes}
 
-\textbf{Exercise 1. Answer: C.} We have $H(x)=C$. By the definition of $H$,
+\textbf{Exercise 1. Answer: C.} We have $\mathsf{H}(x)=c$. By the definition of $\mathsf{H}$,
 we have $13x+17=39$ over $\mathbb{F}_{41}$. Therefore, $13x=22$,
 so $x=22 \cdot 13^{-1} = 8$. 
 
-\textbf{Exercise 2. Answer: A.} If $U=[6]G$ then the Pedersen commitment for element
-$(m,r)$ can be written as $\mathsf{com}(m,r) = [m]G+[r]U=[m]G+[6r]G=[m+6r]G$.
-Therefore, to fool Dmytro, if suffices to take such $(m_2,r_2)$ that
-$m_2+6r_2=m_1+6r_1$. Substituting numbers we get $15+6r_2=3+6\cdot 7=45$.
-Therefore, $6r_2=30$ so finally $r_2=5$.
+\textbf{Exercise 2. Answer: A.} If $h=g^6$ then the Pedersen commitment for element
+$(m,r)$ can be written as $\mathsf{com}(m,r) = g^mh^r=g^mg^{6r}=g^{m+6r}$.
+Therefore, to fool Dmytro, if suffices to take such $(m',r')$ that
+$m'+6r'=m+6r$. Substituting numbers we get $15+6r'=3+6\cdot 7=45$.
+Therefore, $6r'=30$ so finally $r'=5$.
 
 \textbf{Exercise 3. Answer: D.} It suffices to manually check every option. For
-option (D) we indeed have $H(H(17, H(3,4)), 13) = 37$.  
+option (D) we indeed have $\mathsf{H}(\mathsf{H}(17, \mathsf{H}(3,4)), 13) = 37$.  
 
-\textbf{Exercise 4. Answer: C.} The quotient polynomial $q(x)$ must satisfy
-$q(x)\cdot (x-2)=p(x)$. It is easy to check that for $q(x)=x^2-8x+15$ we indeed
-have $(x^2-8x+15)(x-2) = x^3-10x^2+31x-30$.
-
-\subsection*{Security Analysis}
-
-\textbf{Exercise 1. Answer: B.} Adversary $\mathcal{A}$ can safely send two
-different messages $m_0$ and $m_1$ to the challenger with $\mathsf{lsb}(m_b)=b$
-for $b \in \{0,1\}$. Then, having received $c$, $\mathcal{A}$ can output $b'
-\gets \mathcal{O}_{\text{lsb}}(c)$ where $\mathcal{O}_{\text{lsb}}(c)$ is an
-oracle that returns the least significant bit of $m$. Thus,
-$\text{Pr}[b=\hat{b}] = 1$ and thus $\text{SSAdv}[\mathcal{A}]=1/2$.
-
-\textbf{Exercise 2. Answer: D.} The probability should be subtracted from 
-the probability of random guess. The random guess corresponds to the probability 
-$1/|\mathcal{M}|$, thus the answer.
-
-\textbf{Exercise 3. Answer: D.} Take $f=g$. Then, $f/g=1 \neq
-\text{negl}(\lambda)$.
+\textbf{Exercise 4. Answer: C.} The quotient polynomial $g$ must satisfy
+$g(T)\cdot (T-2)=f(T)$. It is easy to check that for $g(T)=T^2-8T+15$ we indeed
+have $(T^2-8T+15)(T-2) = T^3-10T^2+31T-30$.
 
 \subsection*{Introduction to Zero-Knowledge Proofs}
 

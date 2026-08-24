@@ -16,7 +16,7 @@ Now, suppose during the setup phase, we have a trusted party that generated a ra
     \mathsf{com}(\ell) \triangleq g^{\ell(\tau)} = g^{\sum_{i=0}^d \ell_i \tau^i} = \prod_{i=0}^d (g^{\tau^i})^{\ell_i},
 \end{equation*}
 
-and the same goes for $g^{r(\tau)}, g^{o(\tau)}, g^{h(\tau)}, g^{z(\tau)}$. Now, with these points, how can we verify that the polynomial $m(X) = \ell(X)r(X) - o(X)$ is correct? Well, first notice that the check is equivalent to
+and the same goes for $g^{r(\tau)}, g^{o(\tau)}, g^{h(\tau)}, g^{z(\tau)}$. Now, with these points, how can we verify that the polynomial $m(T) = \ell(T)r(T) - o(T)$ is correct? Well, first notice that the check is equivalent to
 \begin{equation*}
     \ell(\tau)r(\tau) = z(\tau)h(\tau) + o(\tau).
 \end{equation*}
@@ -34,7 +34,7 @@ Notice that we transferred $o(\tau)$ to the right side of the equation to furthe
         \Leftrightarrow \quad & e(g,g)^{\ell(\tau)r(\tau)} = e(g,g)^{z(\tau)h(\tau)}e(g,g)^{o(\tau)}\\
         \Leftrightarrow \quad & e(g,g)^{\ell(\tau)r(\tau)} = e(g,g)^{z(\tau)h(\tau) + o(\tau)} \\
         \Leftrightarrow \quad & \ell(\tau)r(\tau) = z(\tau)h(\tau) + o(\tau) \\
-        \Leftrightarrow \quad & \ell(X)r(X) \equiv z(X)h(X) + o(X)
+        \Leftrightarrow \quad & \ell(T)r(T) \equiv z(T)h(T) + o(T)
     \end{flalign*}
 \end{remark}
 
@@ -51,7 +51,7 @@ So, sounds like we are done. Let us summarize what we have done so far:
     colback=blue!20!white,
     colupper=blue!75!gray} ]
 
-    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $z(X)$.
+    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $z(T)$.
 
     \tcbsubtitle{$\mathsf{Setup}(1^{\lambda})$}
     The \emph{trusted party} conducts the following steps:
@@ -66,9 +66,9 @@ So, sounds like we are done. Let us summarize what we have done so far:
     \begin{itemize}[label=\ding{51}]
         \item Runs the circuit with the statement $\mathbbm{x}$ and witness
         $\mathbbm{w}$, obtains the intermediate constraint values encoded in
-        solution witness $\mathbf{z}$, and calculates the polynomials $\ell(X)$,
-        $r(X)$, $o(X)$ through Lagrange Interpolation.
-        \item Calculates $h(X) \gets (\ell(X)r(X) - o(X))\big/ z(X)$.
+        solution witness $\mathbf{z}$, and calculates the polynomials $\ell(T)$,
+        $r(T)$, $o(T)$ through Lagrange Interpolation.
+        \item Calculates $h(T) \gets (\ell(T)r(T) - o(T))\big/ z(T)$.
         \item Calculates the KZG commitments as follows: 
         \begin{equation*}
             \pi_L \gets \mathsf{com}(\ell), \pi_R \gets \mathsf{com}(r), \pi_O \gets \mathsf{com}(o), \pi_H \gets \mathsf{com}(h),
@@ -83,7 +83,7 @@ So, sounds like we are done. Let us summarize what we have done so far:
     \end{equation*}
 \end{tcolorbox}
 
-This sounds like an end to the story. However, there is a problem with this approach: there is no guarantee that commitments $\pi_L$, $\pi_R$, $\pi_O$, $\pi_H$ were indeed obtained through exponentiating the base $g$ by the corresponding values $\ell(\tau)$, $r(\tau)$, $o(\tau)$, and $h(\tau)$. In other words, how can the verifier know that prover indeed knows, say, polynomial $\ell(X)$ such that $\pi_L = g^{\ell(\tau)}$?
+This sounds like an end to the story. However, there is a problem with this approach: there is no guarantee that commitments $\pi_L$, $\pi_R$, $\pi_O$, $\pi_H$ were indeed obtained through exponentiating the base $g$ by the corresponding values $\ell(\tau)$, $r(\tau)$, $o(\tau)$, and $h(\tau)$. In other words, how can the verifier know that prover indeed knows, say, polynomial $\ell(T)$ such that $\pi_L = g^{\ell(\tau)}$?
 
 \subsubsection{Attempt \#2: Including Proof of Exponent}
 
@@ -101,7 +101,7 @@ In this section, we introduce the \textbf{Proof of Exponent assumption} (PoE) wh
     \end{enumerate}
 \end{definition}
 
-The informal reason why this makes KZG commitment sound is the following: suppose we have an adversary prover $\mathcal{P}^*$ that published commitment $c$ without knowing underlying polynomial $f(X)$. Now, there is no way for him to cheat the verifier. 
+The informal reason why this makes KZG commitment sound is the following: suppose we have an adversary prover $\mathcal{P}^*$ that published commitment $c$ without knowing underlying polynomial $f(T)$. Now, there is no way for him to cheat the verifier. 
 Indeed, what $\mathcal{P}^*$ needs to do is calculating $c^{\alpha}$, but he does not know $\alpha$ since, similarly to $\tau$, it was deleted as a part of the toxic waste. Besides, he cannot obtain $\alpha$ for the same reason he cannot obtain $\tau$.
 
 For that reason, we modify the SNARK protocol to include not only commitments to polynomials but also PoE for each of them. Let us see what it looks like.
@@ -118,7 +118,7 @@ For that reason, we modify the SNARK protocol to include not only commitments to
     colback=blue!20!white,
     colupper=blue!75!gray} ]
 
-    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $z(X)$.
+    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $z(T)$.
 
     \tcbsubtitle{$\mathsf{Setup}(1^{\lambda})$}
     The \emph{trusted party} conducts the following steps:
@@ -131,8 +131,8 @@ For that reason, we modify the SNARK protocol to include not only commitments to
     \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbbm{x}, \mathbbm{w})$}
     The prover $\mathcal{P}$ conducts the following steps:
     \begin{itemize}[label=\ding{51}]
-        \item Runs the circuit with the statement $\mathbbm{x}$ and witness $\mathbbm{w}$, obtains the intermediate constraint values, and calculates the polynomials $\ell(X), r(X), o(X)$ through Lagrange Interpolation.
-        \item Calculates $h(X) \gets (\ell(X)r(X) - o(X))\big/ z(X)$.
+        \item Runs the circuit with the statement $\mathbbm{x}$ and witness $\mathbbm{w}$, obtains the intermediate constraint values, and calculates the polynomials $\ell(T), r(T), o(T)$ through Lagrange Interpolation.
+        \item Calculates $h(T) \gets (\ell(T)r(T) - o(T))\big/ z(T)$.
         \item Calculates the sound KZG commitments as follows: 
         \begin{align*}
             \pi_L \gets g^{\ell(\tau)}, & \quad\textcolor{green!50!black}{\pi_L' \gets g^{\alpha \ell(\tau)}} \\
@@ -161,15 +161,15 @@ additionally include one more optimization we have not included so far.
 
 \textcolor{blue!75!gray}{\textbf{Optimization. Left/Right/Output Polynomial Preprocessing.}} Recall that:
 \begin{equation*}
-    \ell(X) = \sum_{i=0}^n z_i\ell_i(X), \quad r(X) = \sum_{i=0}^n z_i r_i(X), \quad o(X) = \sum_{i=0}^n z_io_i(X).
+    \ell(T) = \sum_{i=0}^n z_i\ell_i(T), \quad r(T) = \sum_{i=0}^n z_i r_i(T), \quad o(T) = \sum_{i=0}^n z_io_i(T).
 \end{equation*}
-while $m(X) = \ell(X)r(X) - o(X)$ is only known to the prover $\mathcal{P}$ since it contains the extended witness ($\mathbf{z}$) coefficients. However, the set of polynomials
+while $m(T) = \ell(T)r(T) - o(T)$ is only known to the prover $\mathcal{P}$ since it contains the extended witness ($\mathbf{z}$) coefficients. However, the set of polynomials
 \begin{equation*}
-    \{\ell_i(X)\}_{i \in [n]}, \{r_i(X)\}_{i \in [n]}, \{o_i(X)\}_{i \in [n]}
+    \{\ell_i(T)\}_{i \in [n]}, \{r_i(T)\}_{i \in [n]}, \{o_i(T)\}_{i \in [n]}
 \end{equation*}
 are known in advance. Meaning, we can precompute the values of $\{g^{\ell_i(\tau)}\}_{i \in [n]}$, $\{g^{\alpha \ell_i(\tau)}\}_{i \in [n]}$, $\{g^{r_i(\tau)}\}_{i \in [n]}$, $\{g^{\alpha r_i(\tau)}\}_{i \in [n]}$, $\{g^{o_i(\tau)}\}_{i \in [n]}$, $\{g^{\alpha o_i(\tau)}\}_{i \in [n]}$ and use them in the prover parameters $\mathsf{pp}$.
 
-How? Suppose the prover $\mathcal{P}$ knows the extended witness $\mathbf{z}$. Consider the polynomial $\ell(X) = \sum_{i=0}^n z_i\ell_i(X)$. $\mathcal{P}$ can compute the KZG commitment $\pi_L$ and its PoE $\pi_L'$ as follows:
+How? Suppose the prover $\mathcal{P}$ knows the extended witness $\mathbf{z}$. Consider the polynomial $\ell(T) = \sum_{i=0}^n z_i\ell_i(T)$. $\mathcal{P}$ can compute the KZG commitment $\pi_L$ and its PoE $\pi_L'$ as follows:
 \begin{equation*}
     \begin{aligned}
         &\pi_L \triangleq g^{\ell(\tau)} = g^{\sum_{i=0}^n z_i\ell_i(\tau)} = \prod_{i=0}^n (g^{\ell_i(\tau)})^{z_i}, \\
@@ -179,7 +179,7 @@ How? Suppose the prover $\mathcal{P}$ knows the extended witness $\mathbf{z}$. C
 
 \textcolor{green!50!black}{\textbf{Fix. Witness consistency check.}} 
 
-\textbf{Introducing new term with $\beta$}. To prove that the same $\mathbf{z}$ is used in all commitments, we need some ``checksum'' term that will somehow combine all polynomials $\ell(X)$, $r(X)$, and $o(X)$ with the witness $\mathbf{z}$. Moreover, we will need to compare this term with proofs $\pi_L$, $\pi_R$, and $\pi_O$. The best candidate for this is the following group element for some other random $\beta \leftarrowS \mathbb{F}$:
+\textbf{Introducing new term with $\beta$}. To prove that the same $\mathbf{z}$ is used in all commitments, we need some ``checksum'' term that will somehow combine all polynomials $\ell(T)$, $r(T)$, and $o(T)$ with the witness $\mathbf{z}$. Moreover, we will need to compare this term with proofs $\pi_L$, $\pi_R$, and $\pi_O$. The best candidate for this is the following group element for some other random $\beta \leftarrowS \mathbb{F}$:
 \begin{equation*}
     \begin{aligned}
         &\pi_{\beta} = g^{\ell(\tau) + r(\tau) + o(\tau)} = \prod_{i=1}^n (g^{\ell_i(\tau) + r_i(\tau) + o_i(\tau)})^{z_i}, \\ 
@@ -187,7 +187,7 @@ How? Suppose the prover $\mathcal{P}$ knows the extended witness $\mathbf{z}$. C
     \end{aligned}
 \end{equation*}
 
-This way, we get a term that includes all three polynomials $\ell(X)$, $r(X)$, and $o(X)$, and all coefficients of the extended witness $\mathbf{z}$. Moreover, verifier $\mathcal{V}$ can compare $\pi_{\beta}$ with three other commitments $\pi_L$, $\pi_R$, $\pi_O$ to ensure that all of them are consistent. This is done through the following check:
+This way, we get a term that includes all three polynomials $\ell(T)$, $r(T)$, and $o(T)$, and all coefficients of the extended witness $\mathbf{z}$. Moreover, verifier $\mathcal{V}$ can compare $\pi_{\beta}$ with three other commitments $\pi_L$, $\pi_R$, $\pi_O$ to ensure that all of them are consistent. This is done through the following check:
 \begin{equation*}
     e(\pi_L\pi_R\pi_O, g^{\beta}) = e(\pi_{\beta}', g).
 \end{equation*}
@@ -206,7 +206,7 @@ For arbitrarily chosen $z_{r,i}$ and $z_{o,i}$, the adversary prover $\mathcal{P
 
 One might ask: well, situation when $\ell_i \equiv r_i$ is very rare! Indeed, but there also might be situations where $\ell_i \equiv 5r_i$, $r_i \equiv 100o_i$, or $\ell_i \equiv 235o_i$ --- all of them would lead to the same issue. So what is the solution? 
 
-\textbf{Introducing separate $\beta_L$, $\beta_R$, $\beta_O$.} Our proposal is to make $\beta$ different for each polynomial $\ell(X)$, $r(X)$, $o(X)$, making it much harder for the adversary to find inconsistent witnesses. That being said, during the setup phase, we choose arbitrary $\beta_L,\beta_R,\beta_O \leftarrowS \mathbb{F}$ and publish $\{g^{\beta_L\ell_i(\tau)+\beta_Rr_i(\tau)+\gamma_Oo_i(\tau)}\}_{i \in [n]}$ as a part of the prover parameters $\mathsf{pp}$. Then, the prover $\mathcal{P}$ calculates the following additional commitment:
+\textbf{Introducing separate $\beta_L$, $\beta_R$, $\beta_O$.} Our proposal is to make $\beta$ different for each polynomial $\ell(T)$, $r(T)$, $o(T)$, making it much harder for the adversary to find inconsistent witnesses. That being said, during the setup phase, we choose arbitrary $\beta_L,\beta_R,\beta_O \leftarrowS \mathbb{F}$ and publish $\{g^{\beta_L\ell_i(\tau)+\beta_Rr_i(\tau)+\beta_Oo_i(\tau)}\}_{i \in [n]}$ as a part of the prover parameters $\mathsf{pp}$. Then, the prover $\mathcal{P}$ calculates the following additional commitment:
 \begin{equation*}
     \pi_{\beta} \gets \prod_{i=1}^n (g^{\beta_L\ell_i(\tau) + \beta_Rr_i(\tau) + \beta_Oo_i(\tau)})^{z_i}
 \end{equation*}
@@ -234,7 +234,7 @@ Oof, that was a long fix! Let us come back to the new version of the SNARK proto
     colback=blue!20!white,
     colupper=blue!75!gray} ]
 
-    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $z(X)$.
+    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $z(T)$.
 
     \tcbsubtitle{$\mathsf{Setup}(1^{\lambda})$}
     The \emph{trusted party} conducts the following steps:
@@ -251,8 +251,8 @@ Oof, that was a long fix! Let us come back to the new version of the SNARK proto
     \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbbm{x}, \mathbbm{w})$}
     The prover $\mathcal{P}$ conducts the following steps:
     \begin{itemize}[label=\ding{51}]
-        \item Runs the circuit to get $\mathbf{z}$ and $\ell(X),r(X),o(X)$.
-        \item Calculates $h(X) \gets (\ell(X)r(X) - o(X))\big/ z(X)$.
+        \item Runs the circuit to get $\mathbf{z}$ and $\ell(T),r(T),o(T)$.
+        \item Calculates $h(T) \gets (\ell(T)r(T) - o(T))\big/ z(T)$.
         \item Calculates the sound KZG commitments as follows: 
         \begin{align*}
             \pi_L \gets g^{\ell(\tau)}, \quad \pi_L' \gets g^{\alpha \ell(\tau)}, \\
@@ -331,7 +331,7 @@ Now, let us formulate the updated SNARK protocol with the extended witness split
     colback=blue!20!white,
     colupper=blue!75!gray} ]
 
-    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $z(X)$. \textcolor{green!50!black}{Additionally, we know that $\mathcal{I}_{\text{io}}$ corresponds to public signals, while $\mathcal{I}_{\text{mid}}$ corresponds to private signals.}
+    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $z(T)$. \textcolor{green!50!black}{Additionally, we know that $\mathcal{I}_{\text{io}}$ corresponds to public signals, while $\mathcal{I}_{\text{mid}}$ corresponds to private signals.}
 
     \tcbsubtitle{$\mathsf{Setup}(1^{\lambda})$}
     The \emph{trusted party} conducts the following steps:
@@ -351,9 +351,9 @@ Now, let us formulate the updated SNARK protocol with the extended witness split
     \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbbm{x}, \mathbbm{w})$}
     The prover $\mathcal{P}$ conducts the following steps:
     \begin{itemize}[label=\ding{51}]
-        \item Runs the circuit to get $\mathbf{z}$ and $\ell(X),r(X),o(X)$.
-        \item Calculates $h(X) \gets (\ell(X)r(X) - o(X))\big/ z(X)$.
-        \item \textcolor{green!50!black}{Splits $\ell(X) = \ell_{\text{mid}}(X) + \ell_{\text{io}}(X)$ --- intermediate and input/output parts. That being said, $\ell_{\text{mid}}(X) = \sum_{i \in \mathcal{I}_{\text{mid}}}\ell_i(X)$. Repeat for $r(X)$ and $o(X)$.}
+        \item Runs the circuit to get $\mathbf{z}$ and $\ell(T),r(T),o(T)$.
+        \item Calculates $h(T) \gets (\ell(T)r(T) - o(T))\big/ z(T)$.
+        \item \textcolor{green!50!black}{Splits $\ell(T) = \ell_{\text{mid}}(T) + \ell_{\text{io}}(T)$ --- intermediate and input/output parts. That being said, $\ell_{\text{mid}}(T) = \sum_{i \in \mathcal{I}_{\text{mid}}}\ell_i(T)$. Repeat for $r(T)$ and $o(T)$.}
         \item Calculates the following values: 
         \begin{align*}
             \pi_L \gets g^{\textcolor{green!50!black}{\ell_{\text{mid}}(\tau)}}, \quad \pi_L' \gets g^{\alpha \textcolor{green!50!black}{\ell_{\text{mid}}(\tau)}}, \\
@@ -385,7 +385,7 @@ Now, let us formulate the updated SNARK protocol with the extended witness split
 Finally, we came to the point where we need to make the protocol zero-knowledge. As it turns out, it is not that hard to do (compared to what we have done so far)!
 
 \begin{remark}
-    Currently, you might have a reasonable question: the proof contains quantities such as $g^{\ell(\tau)}$, $g^{r(\tau)}$, $g^{o(\tau)}$ and variations of them. As long as discrete logarithm holds, there is no PPT adversary that would be able to extract coefficients of $\ell(X)$, $r(X)$, $o(X)$ from published KZG commitments (and respective PoE shifts and witness consistency proof). So what could be the issue?
+    Currently, you might have a reasonable question: the proof contains quantities such as $g^{\ell(\tau)}$, $g^{r(\tau)}$, $g^{o(\tau)}$ and variations of them. As long as discrete logarithm holds, there is no PPT adversary that would be able to extract coefficients of $\ell(T)$, $r(T)$, $o(T)$ from published KZG commitments (and respective PoE shifts and witness consistency proof). So what could be the issue?
 
     This reasoning is correct. In other words, the adversary will not learn coefficients of polynomials and therefore will not be able to get the witness fully. However, the zero-knowledge property ensures that the adversary cannot draw conclusions based on proof $\boldsymbol{\pi}$. However, in our current version, we do have a SNARK, but not a zk-SNARK. For instance, currently anyone can check whether $\ell \equiv r$ (by checking $\pi_L = \pi_R$) or that $\ell \equiv 11r$ (by checking $\pi_L = \pi_R^{11}$).  
 \end{remark}
@@ -399,22 +399,22 @@ The main idea to make our protocol zero-knowledge is to ``shift'' our commitment
     \end{aligned}
 \end{equation*}
 
-for randomly selected $\delta_L, \delta_R, \delta_O \leftarrowS \mathbb{Z}_q$. Good, we concealed all the information about the witness $\mathbbm{w}$ in the commitment. However, we need to make sure that the verifier $\mathcal{V}$ can still verify the proof, but without modifying the verification mechanism itself. Notice that PoE verifications are still valid, but we need to modify something to make polynomial equality test hold. This can be done by perturbating the polynomial $h(X)$ by some (currently) unknown value $\Delta_H$. Let us derive it from the polynomial equality test:
+for randomly selected $\delta_L, \delta_R, \delta_O \leftarrowS \mathbb{Z}_q$. Good, we concealed all the information about the witness $\mathbbm{w}$ in the commitment. However, we need to make sure that the verifier $\mathcal{V}$ can still verify the proof, but without modifying the verification mechanism itself. Notice that PoE verifications are still valid, but we need to modify something to make polynomial equality test hold. This can be done by perturbating the polynomial $h(T)$ by some (currently) unknown value $\Delta_H$. Let us derive it from the polynomial equality test:
 \begin{equation*}
-    (\ell(X) + \delta_L z(X))(r(X) + \delta_R z(X)) = (h(X) + \Delta_H)z(X) + (o(X) + \delta_O z(X)), \\
+    (\ell(T) + \delta_L z(T))(r(T) + \delta_R z(T)) = (h(T) + \Delta_H)z(T) + (o(T) + \delta_O z(T)), \\
 \end{equation*}
 
 which, by expanding, gives us the following equation:
 \begin{equation*}
     \begin{aligned}
-        &\cancel{\ell(X)r(X)} + \delta_R \ell(X)z(X) + \delta_L z(X)r(X) + \delta_L \delta_R z(X)^2 = \\ 
-        &= \cancel{h(X)z(X) + o(X)} + \Delta_Hz(X) + \delta_O z(X), \\
+        &\cancel{\ell(T)r(T)} + \delta_R \ell(T)z(T) + \delta_L z(T)r(T) + \delta_L \delta_R z(T)^2 = \\ 
+        &= \cancel{h(T)z(T) + o(T)} + \Delta_Hz(T) + \delta_O z(T), \\
     \end{aligned}
 \end{equation*}
 
-where we can cancel out $\ell(X)r(X)$ and $h(X)z(X) + o(X)$ terms since they are equal based on initial construction. This way, we get the following expression for $\Delta_H$:
+where we can cancel out $\ell(T)r(T)$ and $h(T)z(T) + o(T)$ terms since they are equal based on initial construction. This way, we get the following expression for $\Delta_H$:
 \begin{equation*}
-    \Delta_H = \delta_O + \delta_R \ell(X) + \delta_L r(X) + \delta_L \delta_R z(X)
+    \Delta_H = \delta_O + \delta_R \ell(T) + \delta_L r(T) + \delta_L \delta_R z(T)
 \end{equation*}
 
 Therefore, our fourth proof system becomes:
@@ -470,7 +470,7 @@ Let us now look at the final version of our basic SNARK protocol.
     colback=blue!20!white,
     colupper=blue!75!gray} ]
     \small
-    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $z(X)$. Additionally, we know that $\mathcal{I}_{\text{io}}$ corresponds to public signals, while $\mathcal{I}_{\text{mid}}$ corresponds to private signals.
+    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $z(T)$. Additionally, we know that $\mathcal{I}_{\text{io}}$ corresponds to public signals, while $\mathcal{I}_{\text{mid}}$ corresponds to private signals.
 
     \tcbsubtitle{$\mathsf{Setup}(1^{\lambda})$}
     The \emph{trusted party} conducts the following steps:
@@ -488,9 +488,9 @@ Let us now look at the final version of our basic SNARK protocol.
     \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbbm{x}, \mathbbm{w})$}
     The prover $\mathcal{P}$ conducts the following steps:
     \begin{itemize}[label=\ding{51}]
-        \item Runs the circuit to get $\mathbf{z}$ and $\ell(X),r(X),o(X)$.
-        \item Calculates $h(X) \gets (\ell(X)r(X) - o(X))\big/ z(X)$.
-        \item Splits $\ell(X) = \ell_{\text{mid}}(X) + \ell_{\text{io}}(X)$ --- intermediate and input/output parts. That being said, $\ell_{\text{mid}}(X) = \sum_{i \in \mathcal{I}_{\text{mid}}}\ell_i(X)$. Repeat for $r(X)$ and $o(X)$.
+        \item Runs the circuit to get $\mathbf{z}$ and $\ell(T),r(T),o(T)$.
+        \item Calculates $h(T) \gets (\ell(T)r(T) - o(T))\big/ z(T)$.
+        \item Splits $\ell(T) = \ell_{\text{mid}}(T) + \ell_{\text{io}}(T)$ --- intermediate and input/output parts. That being said, $\ell_{\text{mid}}(T) = \sum_{i \in \mathcal{I}_{\text{mid}}}\ell_i(T)$. Repeat for $r(T)$ and $o(T)$.
         \item \textcolor{purple}{Samples $\delta_L, \delta_R, \delta_O \leftarrowS \mathbb{F}$} and calculates the following values: 
         \begin{align*}
             \pi_L \gets g^{\ell_{\text{mid}}(\tau)}\textcolor{purple}{\left(g^{z(\tau)}\right)^{\delta_L}}, \quad \pi_L' \gets g^{\alpha \ell_{\text{mid}}(\tau)}\textcolor{purple}{\left(g^{\alpha z(\tau)}\right)^{\delta_L}}, \\
@@ -545,14 +545,14 @@ Now, this is not bad at all! In fact, this is already practical for many applica
 We first begin from the non-zero-knowledge version of the Pinocchio Protocol and then extend it to the zero-knowledge version.
 
 \textcolor{blue!75!gray}{\textbf{Setup Procedure.}} The Pinocchio Protocol exploits the idea that we might 
-choose different generators for $\ell(X)$, $r(X)$, and $o(X)$. 
+choose different generators for $\ell(T)$, $r(T)$, and $o(T)$. 
 Namely, the protocol begins from choosing random $\rho_L,\rho_R \leftarrowS \mathbb{F}$. 
 Then, we define $\rho_O \triangleq \rho_L\rho_R$, and finally introduce the following generators:
 \begin{equation*}
     g_L \triangleq g^{\rho_L}, \quad g_R \triangleq g^{\rho_R}, \quad g_O \triangleq g^{\rho_O} = g^{\rho_L\rho_R}
 \end{equation*}
 
-The next change is that we use different $\alpha$ values for $\ell(X)$, $r(X)$, and $o(X)$. Namely, we define $\alpha_L,\alpha_R,\alpha_O \leftarrowS \mathbb{F}$ and use them in the commitments. This way, in the setup phase, we additionally prepare the following values:
+The next change is that we use different $\alpha$ values for $\ell(T)$, $r(T)$, and $o(T)$. Namely, we define $\alpha_L,\alpha_R,\alpha_O \leftarrowS \mathbb{F}$ and use them in the commitments. This way, in the setup phase, we additionally prepare the following values:
 \begin{equation*}
     \{g_L^{\ell_i(\tau)}, g_L^{\alpha_L\ell_i(\tau)}, g_R^{r_i(\tau)}, g_R^{\alpha_Rr_i(\tau)}, g_O^{o_i(\tau)}, g_O^{\alpha_O o_i(\tau)}\}_{i \in \mathcal{I}_{\text{mid}}}
 \end{equation*}
@@ -567,7 +567,7 @@ And finally, since we also have a $\gamma \leftarrowS \mathbb{F}$ for the extend
     g_O^{z(\tau)}, g^{\alpha_L}, g^{\alpha_R}, g^{\alpha_O},g^{\beta\gamma}, g^{\gamma}
 \end{equation*}
 
-\textcolor{green!50!black}{\textbf{Proving.}} Again, suppose intermediate polynomials for indices $\mathcal{I}_{\text{mid}}$ are $\ell_{\text{mid}}(X) = \sum_{i \in \mathcal{I}_{\text{mid}}}z_i\ell_i(X)$ and similarly for $r_{\text{mid}}(X)$ and $o_{\text{mid}}(X)$. The prover $\mathcal{P}$ calculates the following commitments:
+\textcolor{green!50!black}{\textbf{Proving.}} Again, suppose intermediate polynomials for indices $\mathcal{I}_{\text{mid}}$ are $\ell_{\text{mid}}(T) = \sum_{i \in \mathcal{I}_{\text{mid}}}z_i\ell_i(T)$ and similarly for $r_{\text{mid}}(T)$ and $o_{\text{mid}}(T)$. The prover $\mathcal{P}$ calculates the following commitments:
 
 \begin{align*}
     \pi_L \gets g_L^{\ell_{\text{mid}}(\tau)}, & \quad \pi_L' \gets g_L^{\alpha_LL_{\text{mid}}(\tau)}, \\
@@ -631,7 +631,7 @@ Let us see the complete specification of the Pinocchio Protocol.
     colback=blue!20!white,
     colupper=blue!75!gray} ]
     \small
-    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $z(X)$. Additionally, we know that $\mathcal{I}_{\text{io}}$ corresponds to public signals, while $\mathcal{I}_{\text{mid}}$ corresponds to private signals.
+    Suppose we are given a circuit $\Circ$ with a maximum degree $d$ of polynomials used underneath. Thus, all parties additionally know the target polynomial $z(T)$. Additionally, we know that $\mathcal{I}_{\text{io}}$ corresponds to public signals, while $\mathcal{I}_{\text{mid}}$ corresponds to private signals.
 
     \tcbsubtitle{$\mathsf{Setup}(1^{\lambda})$}
     The \emph{trusted party} conducts the following steps:
@@ -650,9 +650,9 @@ Let us see the complete specification of the Pinocchio Protocol.
     \tcbsubtitle{$\mathsf{Prove}(\mathsf{pp}, \mathbbm{x}, \mathbbm{w})$}
     The prover $\mathcal{P}$ conducts the following steps:
     \begin{itemize}[label=\ding{51}]
-        \item Runs the circuit to get $\mathbf{z}$ and $\ell(X),r(X),o(X)$.
-        \item Calculates $h(X) \gets (\ell(X)r(X) - o(X))\big/ z(X)$.
-        \item Splits $\ell(X) = \ell_{\text{mid}}(X) + \ell_{\text{io}}(X)$ --- intermediate and input/output parts. Repeat for $r(X)$ and $o(X)$.
+        \item Runs the circuit to get $\mathbf{z}$ and $\ell(T),r(T),o(T)$.
+        \item Calculates $h(T) \gets (\ell(T)r(T) - o(T))\big/ z(T)$.
+        \item Splits $\ell(T) = \ell_{\text{mid}}(T) + \ell_{\text{io}}(T)$ --- intermediate and input/output parts. Repeat for $r(T)$ and $o(T)$.
         \item Samples $\delta_L, \delta_R, \delta_O \leftarrowS \mathbb{F}$ and publishes the following values as a proof $\boldsymbol{\pi}$: 
         \begin{align*}
             \pi_L \gets g_L^{\ell_{\text{mid}}(\tau)}\left(g_L^{z(\tau)}\right)^{\delta_L}, \quad \pi_L' \gets g_L^{\alpha_LL_{\text{mid}}(\tau)}\left(g_L^{\alpha_L z(\tau)}\right)^{\delta_L}, \\
@@ -681,7 +681,7 @@ Let us see the complete specification of the Pinocchio Protocol.
 
 \subsection{Groth16 Protocol}
 
-Finally, Groth16 \cite{groth16} allows to reduce the number of pairings \textbf{down to 3}! This is done through a technique called \textbf{Generic Group Model} (GGM for short). Simply put, GGM allows the adversary to only make oracle requests to compute the group operations. For example, having a set $\{g^{\alpha r_i(\tau)}\}_{i \in [d]}$, adversary can compute only linear combinations of these values. In the particular case of Groth16, instead of considering $\ell_i(X)$, $r_i(X)$, and $o_i(X)$ separately, we construct their linear combinations as $Q_i(X) := \beta \ell_i(X) + \alpha r_i(X) + o_i(X)$, where $\alpha$ and $\beta$ are toxic parameters.
+Finally, Groth16 \cite{groth16} allows to reduce the number of pairings \textbf{down to 3}! This is done through a technique called \textbf{Generic Group Model} (GGM for short). Simply put, GGM allows the adversary to only make oracle requests to compute the group operations. For example, having a set $\{g^{\alpha r_i(\tau)}\}_{i \in [d]}$, adversary can compute only linear combinations of these values. In the particular case of Groth16, instead of considering $\ell_i(T)$, $r_i(T)$, and $o_i(T)$ separately, we construct their linear combinations as $Q_i(T) := \beta \ell_i(T) + \alpha r_i(T) + o_i(T)$, where $\alpha$ and $\beta$ are toxic parameters.
 
 Let us now concretely describe the Groth16 construction.
 

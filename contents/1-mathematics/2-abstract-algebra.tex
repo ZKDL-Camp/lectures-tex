@@ -8,7 +8,7 @@ cryptography. But you might wonder: why should we study abstract algebra?
 
 Consider the set $\mathbb{Z}_n$. Naturally, we want to define certain
 arithmetical operations over $\mathbb{Z}_n$. For example, having $3, 6 \in
-\mathbb{Z}_9$ I would like to know what it means to add them. Natually, one
+\mathbb{Z}_9$ we would like to know what it means to add them. Naturally, one
 would say that $3+6=0$ in $\mathbb{Z}_9$ since $3+6$ over $\mathbb{Z}$ gives $9$,
 which is congruent to $0$ modulo $9$. However, while such a structure is
 straightforward for such a set, we can define operations over much more
@@ -20,39 +20,80 @@ languages, where interfaces specify certain common patterns observed in differen
 instances of this interface. 
 
 Let us explore this concept on the previously defined set $\mathbb{Z}_n$. We present 
-the following lemma to show the properties of modular arithmetic.
+the following proposition to show the properties of modular arithmetic.
 
 \vspace{-1.2mm}
 
-\begin{lemma}
+\begin{proposition}
     Suppose $a, b, c \in \mathbb{Z}_n$, then we have the following modular addition properties,
 
     \begin{enumerate}
         \item $\textit{Addition associative: } a + (b + c) \equiv (a + b) + c \pmod{n}$. The order in 
         which we compute pairwise sums does not matter.
         \item $\textit{Addition identity: } a + 0 \equiv a \pmod{n}$. We always have an element which 
-        behaves like ``zero'' in the addition operation (or like ``one'' when multipling).
-        \item $\textit{Additive inverse: } a + (-a) \equiv 1 \pmod{n}$. For any
+        behaves like ``zero'' in the addition operation (or like ``one'' when multiplying).
+        \item $\textit{Additive inverse: } a + (-a) \equiv 0 \pmod{n}$. For any
         element $a$ we always have an element $-a$ which ``zeroes out'' an element $a$.
-        \item $\textit{Addition commutative: } a + b \equiv b + a \pmod{n}$. The order of elements in
+        \item $\textit{Addition commutativity: } a + b \equiv b + a \pmod{n}$. The order of elements in
         the addition operation does not matter.
     \end{enumerate}
-\end{lemma}
+\end{proposition}
 
 \vspace{-4mm}
 
 \begin{remark}
     All these properties also hold for multiplication operation, but with one 
-    drastic exception: the existence of the inverse element. So in other words, the multiplicative 
-    inverse property does not hold in $\mathbb{Z}_{16}$.
+    drastic exception: the existence of the inverse element. 
+    For instance, this does not work in $\mathbb{Z}_4$ where $2$ has no multiplicative inverse.
 \end{remark}
 
 \vspace{-1.3mm}
 
-In abstract algebra, we explore algebraic structures defined by abstract operations. These 
-structures possess specific properties that help us understand the behavior of their elements.
-By examining these properties, we can derive general principles and insights applicable to 
-any mathematical systems.
+Using algebraic terms, the previous proposition can be formulated concisely: \emph{$(\mathbb{Z}_n,+)$ is an abelian group}.
+We will define this term shortly.
+
+To summarize, in (abstract) algebra we study certain sets equipped with operations.
+When we have a single properly defined operation, the set with this operation is called a \textit{group}.
+When we have two operations (think of addition and multiplication), the set with these two operations is called a \textit{ring}.
+Finally, if multiplication behaves nicely, we obtain a \textit{field}.
+
+It then makes sense to study these sets with operations abstractly.
+After all, we should not care what type of set we have underneath, be it a set of elliptic curve points or simply $\mathbb{Z}_n$.\footnote{Moreover, for cyclic elliptic curves these two groups are equivalent, thanks to \Cref{th:cyclic-group-isomorphism}.}
+All theorems and facts we will develop will apply to both, which is surely convenient.
+
+% \subsection*{What modern algebra studies?}
+
+% \begin{remark}
+%     Notes below are fairly complex, so one might skip them if this does not help.
+% \end{remark}
+
+% Interestingly, the modern algebra takes a step further.
+% Instead of studying objects/sets, algebraists commonly study \textit{functions} (or in more fancy categorical terms, \textit{morphisms}) between algebraic structures.
+% This, in turn, provide a much richer structure to study.
+
+% As a concrete example, consider the set of points lying on the curve given by equation $f(x,y)=0$, \textit{i.e.}:
+% \begin{equation*}
+%     X(\mathbb{F}) = \{(x,y) \in \mathbb{F}^2: f(x,y) = 0\} \; \textcolor{gray}{\textit{// for some field $\mathbb{F}$ and $f \in \mathbb{F}[x,y]$.}}
+% \end{equation*}
+
+% Studying $X$ on its own is not very illuminating. 
+% For instance, depending on the field $\mathbb{F}$, the set might be empty! (think of $\mathbb{F}=\mathbb{R}$ and $f(x,y)=x^2+y^2+1$). 
+% Turns out that one might get much insight by considering an associated \textit{ring} instead, called a \textit{coordinate ring}:
+% \begin{equation*}
+%     \mathcal{O}_X := \mathbb{F}[x,y]/(f) \; \textcolor{gray}{\textit{// where $A/B$ denotes the quotient ring}}.
+% \end{equation*}
+
+% While $X(\mathbb{R})$ does not make sense for $f(x,y)=x^2+y^2+1$, it makes total sense to study $\mathbb{R}[x,y]/(x^2+y^2+1)$ instead.
+% However, as mentioned early, algebraist take a step further. Instead of studying this ring, one studies ``nice functions'' over $X$:
+% \begin{equation*}
+%     \mathcal{O}_X(U) := \{f: U \to \overline{\mathbb{F}}, \; f \; \text{is a ``nice'' (regular) function on $U$}\}.
+% \end{equation*}
+
+% Here, $U \subseteq X$ is some ``nice'' set. 
+% The association $U \mapsto \mathcal{O}_X(U)$ is called\footnote{Formally it is just a presheaf, yet it can be proven to be an actual sheaf.} a \textit{sheaf} and it is a main object in \textit{algebraic geometry}.
+
+% For all previous discussion to make sense, one needs heavy preliminaries in category theory and commutative algebra.
+% Fortunately, in this section we only deal with sets and operations over them (such as $X$ without considering $\mathcal{O}_X$ or $\mathcal{O}_X(U)$).
 
 \subsection{Groups}
 
@@ -70,14 +111,15 @@ are specified in the following definition.
     \end{enumerate}
 \end{definition}
 
-Quite confusing at first glance, right? The best way to grasp this concept is to consider a couple of examples.
+If you see this definition for the first time, you might be confused. 
+That said, the best way to grasp this concept is to consider a couple of examples.
 
 \begin{example}
-    A group of integers with the regular addition $(\mathbb{Z},+)$ (also called the \textit{additive} group of integers) is a group. Indeed, an identity element is $e_{\mathbb{Z}}=0$, associativity obviously holds, and an inverse for each element $a \in \mathbb{Z}$ is $(\ominus a) := -a \in \mathbb{Z}$. 
+    A group of integers with the regular addition $(\mathbb{Z},+)$ (also called the \textit{additive} group of integers) is a group. Indeed, an identity element is $e_{\mathbb{Z}}=0$, associativity obviously holds, and the inverse for each element $a \in \mathbb{Z}$ is given by $(\ominus a) := -a \in \mathbb{Z}$. 
 \end{example}
 
 \begin{remark}
-    We use the term \textbf{additive group} when we mean that the binary operation is addition $+$, while \textbf{multiplicative group} means that we are multiplying two numbers via $\times$\footnote{In this section, regard $\cdot$ and $\times$ as the same operation of multiplication.}.
+    We use the term \textbf{additive group} when we mean that the binary operation is addition $+$, while \textbf{multiplicative group} means that we are multiplying two numbers via $\times$\footnote{In this section, $\cdot$ and $\times$ denote the same operation of multiplication.}.
 \end{remark}
 
 \begin{example}
@@ -106,28 +148,28 @@ For this reason, it makes sense to give a special name to a group in which the o
 \end{example}
 
 \begin{example}
-    The set of $2 \times 2$ matrices with real entries and determinant $1$ (denoted by $\text{SL}(2,\mathbb{R})$) is a group with respect to matrix multiplication. However, this group is not abelian! Take
+    The set of $2 \times 2$ matrices with real entries and determinant equal to $1$ (denoted by $\text{SL}_2(\mathbb{R})$) is a group with respect to matrix multiplication\footnote{If you do not know how to multiply matrices, do not worry. We will cover specifics further in \Cref{section:linear-algebra}.}. However, this group is not abelian! Take
     \begin{xequation*}
-        A = \begin{pmatrix}
+        A = \begin{bmatrix}
             1 & 1 \\
             0 & 1
-        \end{pmatrix}, \quad B = \begin{pmatrix}
+        \end{bmatrix}, \quad B = \begin{bmatrix}
             1 & 0 \\
             1 & 1
-        \end{pmatrix}.
+        \end{bmatrix}.
     \end{xequation*}
 
     Then, it is easy to verify that
     \begin{xequation*}
-        AB = \begin{pmatrix}
+        AB = \begin{bmatrix}
             2 & 1 \\
             1 & 1
-        \end{pmatrix}, \quad BA = \begin{pmatrix}
+        \end{bmatrix}, \quad BA = \begin{bmatrix}
             1 & 1 \\
             1 & 2
-        \end{pmatrix},
+        \end{bmatrix},
     \end{xequation*}
-    so clearly $AB \neq BA$ -- the elements of $\text{SL}(2, \mathbb{R})$ do not commute.
+    so clearly $AB \neq BA$ -- the elements of $\text{SL}_2(\mathbb{R})$ do not commute.
 \end{example}
 
 \begin{remark}
@@ -136,14 +178,14 @@ For this reason, it makes sense to give a special name to a group in which the o
 
 Finally, for cryptography it is important to know the number of elements in a group. This number is called the \textit{order} of the group.
 \begin{definition}
-    The \textbf{order} of a finite group $\mathbb{G}$ is the number of elements in the group. We denote the order of a group as $|\mathbb{G}|$.
+    The \textbf{order} of a finite group $\mathbb{G}$ is the number of elements in the group. We denote the order of a group by $|\mathbb{G}|$ (or less frequently, by $\#\mathbb{G}$).
 \end{definition}
 \begin{example}
     Integers modulo $13$, denoted by $\mathbb{Z}_{13}$, is a group with respect to addition modulo $13$ 
     (e.g., $5+12=4$ in $\mathbb{Z}_{13}$). The order of this group is $13$.
 \end{example}
 
-Despite the aforementioned definitions, many things are not generally obvious. For example, one might ask whether the identity element is unique. Or, 
+Despite the aforementioned definitions, many things are not generally obvious. For example, one might ask whether the identity element is unique. Or
 whether the inverse element is unique for each group element. For that reason, we formulate the following lemma.
 
 \begin{lemma}
@@ -158,15 +200,13 @@ whether the inverse element is unique for each group element. For that reason, w
 
 Since this guide is not a textbook on abstract algebra, we will not prove all the statements. However, we will prove the first and second one to show the nature of the proofs in abstract algebra.
 
-\textbf{Proof (first statement).}
-$\blacktriangleright$ Suppose we have two identity elements $e_1, e_2 \in
+\begin{proof}
+\textit{Statement (i).} Suppose we have two identity elements $e_1, e_2 \in
 \mathbb{G}$. Consider their product $e_1e_2$. By the identity element
 definition, we know that $e_1e_2 = e_1$ and $e_1e_2 = e_2$. It follows
-immediately that $e_1=e_2$. $\blacktriangleleft$
+immediately that $e_1=e_2$.
 
-\textbf{Proof (second statement).} 
-$\blacktriangleright$ 
-Take some element $g \in \mathbb{G}$ and suppose $a, b \in \mathbb{G}$ are both inverses of $g$. 
+\textit{Statement (ii).} Take some element $g \in \mathbb{G}$ and suppose $a, b \in \mathbb{G}$ are both inverses of $g$. 
 By the inverse element definition, we have
 \begin{xequation}
     ag = ga = e, \quad bg = gb = e.
@@ -176,7 +216,7 @@ Now, notice the following:
     a = ae = a (gb) = (a g) b = e b = b
 \end{xequation}
 Thus, we have proven that $a = b$.
-$\blacktriangleleft$
+\end{proof}
 
 \begin{exercise}
     Prove the third and fourth statements.
@@ -187,13 +227,13 @@ $\blacktriangleleft$
 When we are finally comfortable with the concept of a group, we can move on to the concept of a \textit{subgroup}. 
 
 Suppose we have a group $(\mathbb{G},\oplus)$. Suppose one takes the subset 
-$\mathbb{H} \subset \mathbb{G}$. Of course, since all elements in $\mathbb{H}$ are still 
+$\mathbb{H} \subseteq \mathbb{G}$. Of course, since all elements in $\mathbb{H}$ are still 
 elements in $\mathbb{G}$, we can conduct operations between them via $\oplus$. 
 The natural question to ask is whether $\mathbb{H}$ is a group itself. We say that 
 $\mathbb{H}$ is a \textbf{subgroup} of $\mathbb{G}$ if this is indeed the case.
 
 \begin{definition}
-    A subset $\mathbb{H} \subset \mathbb{G}$ is called a \textbf{subgroup} of
+    A subset $\mathbb{H} \subseteq \mathbb{G}$ is called a \textbf{subgroup} of
     $\mathbb{G}$ if $\mathbb{H}$ is a group with respect to the same operation
     $\oplus$. 
     We denote this as $\mathbb{H} \leq \mathbb{G}$.
@@ -235,10 +275,10 @@ $g^{-n} = (g^{-1})^n$. Now, let us consider the first definition.
 \end{definition}
 
 \begin{example}
-    Let $\mathbb{Z}_{12}$ be the group of integers modulo $12$. 
-    Consider element $2 \in \mathbb{Z}_{12}$ then the group generated by $2$ is
+    Let $\mathbb{Z}_{12}$ be the \emph{additive} group of integers modulo $12$. 
+    Consider the element $2 \in \mathbb{Z}_{12}$. Then, the group generated by $2$ is
     \begin{xequation}
-        \langle 2 \rangle = \{ 2, 4, 6, 8, 10, 0 \}
+        \langle 2 \rangle = \{ 2, 4, 6, 8, 10, 0 \}.
     \end{xequation}
 \end{example}
 
@@ -247,8 +287,8 @@ $g^{-n} = (g^{-1})^n$. Now, let us consider the first definition.
 Note that the set $\langle g \rangle = \{g^n: n \in \mathbb{Z}\}$ is indeed a
 subgroup of $\mathbb{G}$. Indeed, it is closed under multiplication, has an
 identity element $e \in \langle g \rangle$ (corresponding to $g^0$), and has an
-inverse for each element (since for each $g^n \in \langle g \rangle$ the inverse is defined 
-as $g^{-n} \in \langle g \rangle$).
+inverse for each element (since for each $g^n \in \langle g \rangle$ the inverse is given 
+by $g^{-n} \in \langle g \rangle$).
 
 For finite groups $\mathbb{G}$ we naturally expect $\langle g \rangle$ to have a finite 
 size. Such size is what we call the \textit{order} of the element $g$.
@@ -258,7 +298,7 @@ size. Such size is what we call the \textit{order} of the element $g$.
 \begin{definition}
     Let $\mathbb{G}$ be group and $g \in \mathbb{G}$. The minimal natural number
     $n$ for which $g^n = 1$ is called the \textbf{order} of element $g$ and
-    denote it by $\text{ord}(g)$. If such integer does not exist, we assume that
+    we denote it by $\text{ord}(g)$. If such integer does not exist, we write
     $\text{ord}(g)=\infty$.
 \end{definition}
 
@@ -299,10 +339,7 @@ subgroups. We start with the following theorem.
     Every cyclic group is abelian.
 \end{theorem}
 
-\textbf{Reasoning.} Suppose the generator of the group is $g$. Then, for any $a,b \in \mathbb{G}$ we have
-\begin{xequation}
-    ab = g^m g^n = g^{m+n} = g^{n+m} = g^n g^m = ba.
-\end{xequation}
+\textbf{Reasoning.} Suppose the generator of the group is $g$. Then, for any $a,b \in \mathbb{G}$ we have $ab = g^m g^n = g^{m+n} = g^{n+m} = g^n g^m = ba$.
 
 \vspace{5px}
 Cryptographic protocols typically rely on the properties of cyclic groups, so it
@@ -317,7 +354,7 @@ are cyclic and, therefore, abelian.
 
 \begin{lemma}\label{lemma:cyclic-group-order}
     Let $\mathbb{G}=\langle g \rangle$ be a cyclic group of order $n$. Then
-    $g^{m} = e$ holds if and only if $m \mid n$.
+    $g^{m} = e$ holds if and only if $n \mid m$.
 \end{lemma}
 
 \begin{theorem}
@@ -329,7 +366,7 @@ Consider this theorem as a generalization of \Cref{lemma:cyclic-group-order}. By
 using the above theorem, we can derive a criterion which the generators
 of~$\mathbb{Z}_n$ must adhere to.
 
-\begin{corollary} \label{cor:}
+\begin{corollary}\label{cor:}
     The generators of group $\mathbb{Z}_n$ are the integers from $\mathbb{Z}_n^{\times}$.
 \end{corollary}
 
@@ -342,34 +379,37 @@ It is also easy to see that the order of any group generator is the same as the 
     \rangle$:
     \begin{xmulticols}{3}
         \begin{itemize}
-            \item $5^{1} = 0 + 5 = 5$
-            \item $5^{2} = 5 + 5 = 10$
-            \item $5^{3} = 10 + 5 = 3$
-            \item $5^{4} = 3  + 5 = 8$
+            \item $5 \cdot 1 = 5$
+            \item $5 \cdot 2 = 10$
+            \item $5 \cdot 3 = 3$
+            \item $5 \cdot 4 = 8$
             
-            \item $5^{5} = 8 + 5 = 1$
-            \item $5^{6} = 6 + 5 = 6$
-            \item $5^{7} = 11 + 5 = 11$
-            \item $5^{8} = 4 + 5 = 4$
+            \item $5 \cdot 5 = 1$
+            \item $5 \cdot 6 = 6$
+            \item $5 \cdot 7 = 11$
+            \item $5 \cdot 8 = 4$
             
-            \item $5^{9} = 4 + 5= 9$
-            \item $5^{10} = 2 + 5 = 2$
-            \item $5^{11} = 7 + 5 = 7$
-            \item $5^{12} = 7 + 5 = 0$
+            \item $5 \cdot 9 = 9$
+            \item $5 \cdot 10 = 2$
+            \item $5 \cdot 11 = 7$
+            \item $5 \cdot 12 = 0$
         \end{itemize}        
     \end{xmulticols}
 
     As we see, all elements of $\mathbb{G}$ are generated by the element $5$.
     However, does it hold for any other integer from $\mathbb{Z}_n \setminus
     \mathbb{Z}_n^{\times}$? Consider $\langle 3 \rangle$ as an example:
-    \begin{xmulticols}{4}
+    \small
+    \begin{xmulticols}{5}
         \begin{itemize}
-            \item $3^{1} = 3$
-            \item $3^{2} = 6$
-            \item $3^{3} = 9$
-            \item $3^{4} = 0$
+            \item $3 \cdot 1 = 3$
+            \item $3 \cdot 2 = 6$
+            \item $3 \cdot 3 = 9$
+            \item $3 \cdot 4 = 0$
+            \item $3 \cdot 5 = 3$
         \end{itemize}
     \end{xmulticols} 
+    \normalsize
 
     While this is a valid subgroup, it does not generate the whole group
     ($\mathbb{Z}_{12}, +$).
@@ -380,15 +420,15 @@ of cyclic groups. For example, can we find some non-cyclic subgroup of $\mathbb{
 out that this is not possible due to the subsequent theorem.
 
 \begin{theorem}
-    Every subgroup of cyclic group is cyclic.
+    Every subgroup of a cyclic group is cyclic.
 \end{theorem}
 
 \subsection{Cosets and Lagrange's Theorem*}
  
 Lagrange's Theorem is one of the most important
-results in finite group theorem, considering all the consequences. Central to
-understanding Lagranges's Theorem is the notion of a \textit{coset}. While 
-this concept is essential for Cryptography, feel free to skip this section if feel 
+results in finite group theory, considering all the consequences. Central to
+understanding Lagrange's Theorem is the notion of a \textit{coset}. While 
+this concept is essential for cryptography, feel free to skip this section if feel 
 uncomfortable with the material.
 
 \begin{definition}
@@ -406,7 +446,7 @@ uncomfortable with the material.
         \vspace{-8mm}
         \item $0 + \mathbb{H} = 4 + \mathbb{H} = \{0, 4\}$
         \item $1 + \mathbb{H} = 5 + \mathbb{H} = \{1, 5\}$
-        \item $2 + \mathbb{H} = 6 + \mathbb{H} = \{0, 6\}$
+        \item $2 + \mathbb{H} = 6 + \mathbb{H} = \{2, 6\}$
         \item $3 + \mathbb{H} = 7 + \mathbb{H} = \{3, 7\}$
     \end{center}
 \end{example}
@@ -441,35 +481,36 @@ Note that in a commutative group, left and right cosets are always identical, so
 %     \end{multicols} 
 % \end{example}
 
-Finally, we are ready for Lagrange's Theorem. This is a fundamental result in the group
+Finally, we are ready for Lagrange's Theorem. This is a fundamental result in group
  theory, crucial for understanding the structure of finite groups.
 
-\begin{theorem} [Lagrange]
-    If $\mathbb{H}$ is a subgroup of an any finite group $\mathbb{G}$, 
+\begin{theorem}[Lagrange]
+    If $\mathbb{H}$ is a subgroup of any finite group $\mathbb{G}$, 
     then $\left| \mathbb{G} \right| = \left[ \mathbb{G} : \mathbb{H} \right] \left| \mathbb{H} \right|$.
 \end{theorem}
 
-\textbf{Proof.} 
-$\blacktriangleright$ 
+\begin{proof}
 The group $\mathbb{G}$ is partitioned into $\left[ \mathbb{G} : \mathbb{H} \right]$ distinct left cosets.
 Each left coset has $\left| \mathbb{H} \right|$ elements, therefore 
 $\left|\mathbb{G}\right| = \left[ \mathbb{G} : \mathbb{H} \right] \left| \mathbb{H} \right|$.
-$\blacktriangleleft$.
+\end{proof}
 
 \begin{corollary}
     Suppose $\mathbb{H}$ is subgroup of a finite group $\mathbb{G}$, 
-    then $\left| \mathbb{H} \right| \mid \left| \mathbb{G} \right|$.
+    then $\#\mathbb{H} \mid \#\mathbb{G}$.
 \end{corollary}
 
-\textbf{Proof.} $\blacktriangleright$ By Lagrange's theorem, the order of the group $\mathbb{G}$ 
+\begin{proof}
+By Lagrange's theorem, the order of the group $\mathbb{G}$ 
 decomposes as the product of the index $\left[ \mathbb{G} : \mathbb{H} \right]$ and the order of the 
 subgroup $\mathbb{H}$. Therefore, by the definition of divisibility (see \Cref{def:divisibility}), 
-it follows directly that $\left| \mathbb{H} \right|$ divides $\left| \mathbb{G} \right|$ $\blacktriangleleft$.
+it follows directly that $\left| \mathbb{H} \right|$ divides $\left| \mathbb{G} \right|$.
+\end{proof}
 
 \begin{corollary}
     Let $\mathbb{G}$ be a finite group and $g \in \mathbb{G}$, 
-    then $\text{ord}(g) \mid \left| \mathbb{G} \right|$. In other words, the order of $g$ must 
-    divide the numbers of elements in $\mathbb{G}$. 
+    then $\text{ord}(g) \mid \#\mathbb{G}$. In other words, the order of $g$ must 
+    divide the number of elements in $\mathbb{G}$. 
 \end{corollary}
 
 Additionally, consider the following fact which seems to be obvious but required aforementioned 
@@ -489,7 +530,7 @@ theorems to be easily proven.
 \end{example}
 
 Based on the example above, one might notice that \Cref{corollary:group-exp}
-serves as a generalization of Euler's Theorem for arbitrary finite group.
+serves as a generalization of Euler's Theorem for an arbitrary finite group.
 
 \subsection{Isomorphisms and Endomorphisms}
 
@@ -497,7 +538,7 @@ Finally, we will define the concept of isomorphisms and endomorphisms. These are
 suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is there any way to state that these two groups are the same? The answer is yes, and this is done via isomorphisms.
 
 \begin{definition}
-    A function $\varphi: \mathbb{G} \to \mathbb{H}$ is called an \textbf{homomorphism} if it is a function that preserves the group operation, that is, 
+    A function $\varphi: \mathbb{G} \to \mathbb{H}$ is called a \textbf{homomorphism} if it is a function that preserves the group operation, that is, 
     \begin{xequation}
         \forall a,b \in \mathbb{G}: \varphi(a \oplus b) = \varphi(a) \odot \varphi(b).
     \end{xequation}
@@ -514,12 +555,13 @@ suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is t
 \end{definition}
 
 \begin{example}
-    Consider the group of integers $(\mathbb{Z},+)$ and the group of integers modulo $12$ $(\mathbb{Z}_{12},+)$. The function $\varphi: \mathbb{Z} \to \mathbb{Z}_{12}$ defined as $\varphi(x) = x \;\text{mod}\; 12$ is a homomorphism. Indeed:
+    Consider the group of integers $(\mathbb{Z},+)$ and the group of integers modulo $12$ $(\mathbb{Z}_{12},+)$. The function $\pi: \mathbb{Z} \to \mathbb{Z}_{12}$ defined as $\pi(x) = x \;\text{mod}\; 12$ is a homomorphism. Indeed:
     \begin{xequation*}
-        \varphi(a+b) = (a+b) \;\text{mod}\; 12 = (a \;\text{mod}\; 12) + (b \;\text{mod}\; 12) = \varphi(a) + \varphi(b).
+        \pi(a+b) = (a+b) \;\text{mod}\; 12 = (a \;\text{mod}\; 12) + (b \;\text{mod}\; 12) = \pi(a) + \pi(b).
     \end{xequation*}
 
-    However, this function is not an isomorphism, since it is not bijective. For example, $\varphi(0) = \varphi(12) = 0$.
+    However, $\pi$ is not an isomorphism, since it is not bijective. For example, $\pi(0) = \pi(12) = 0$.
+    Such map is commonly called a \textit{canonical projection}.
 \end{example}
 
 \begin{example}
@@ -537,31 +579,44 @@ suppose we have two groups $(\mathbb{G},\oplus)$ and $(\mathbb{H}, \odot)$. Is t
 
 A generalization of the above example is the following interesting theorem.
 
-\begin{theorem}
-    Suppose $\mathbb{G} = \langle g \rangle$ is a finite cyclic group and $|G| = n \in \mathbb{N}$. Then, $\mathbb{G} \cong \mathbb{Z}_n$.
+\begin{theorem}\label{th:cyclic-group-isomorphism}
+    Let $\mathbb{G} = \langle g \rangle$ be a finite cyclic group of order $n$. Then, $\mathbb{G} \cong \mathbb{Z}_n$.
 \end{theorem}
 
-\textbf{Idea of the proof.} Define a function $\varphi: \mathbb{Z}_n \to \mathbb{G}$ as $m \mapsto g^m$. One can prove that this is an isomorphism.
+\textbf{Proof idea.} Define a function $\varphi: \mathbb{Z}_n \to \mathbb{G}$ as $m \mapsto g^m$. One can prove that this is an isomorphism.
 
-Here, it is quite evident that isomorphism tells us that the groups have the same structure. Moreover, it is correct to say that if $\mathbb{G} \equiv \mathbb{H}$, then $\mathbb{G}$ and $\mathbb{H}$ are \textit{equivalent} since $\cong$ is an equivalence relation.
+Here, it is quite evident that isomorphism tells us that the groups have the same structure. 
+In fact, $\cong$ is an equivalence relation on the class of groups
+(see the exercise below), which is precisely why it is standard
+practice to call two isomorphic groups \textit{equivalent}.
 
 \textbf{Exercise (*).} Prove that $\cong$ is an equivalence relation.
+
+Using the notion of isomorphism, we can restate Chinese Remainder Theorem (\Cref{th:chinese_remainder_theorem}) in the algebraic form.
+\begin{theorem}[Restated \Cref{th:chinese_remainder_theorem}]
+    Let $N=n_1\dots n_k$ and $n_1,\dots,n_k$ be pairwise coprime. Then, the map
+    $[x]_N \mapsto ([x]_{n_1}, \dots, [x]_{n_k})$ defines the isomorphism\footnote{Here, this is a \textit{ring} isomorphism, meaning, that it preserves both addition and multiplication: \textit{i.e.,} $\varphi(x+y)=\varphi(x)+\varphi(y)$, $\varphi(xy)=\varphi(x)\varphi(y)$, and $\varphi(1)=1$.}
+    \begin{equation*}
+        \mathbb{Z}_N \cong \mathbb{Z}_{n_1} \times \dots \times \mathbb{Z}_{n_k}.
+    \end{equation*}
+\end{theorem} 
 
 Finally, we will define the concept of an endomorphism and automorphism to finish the section.
 
 \begin{definition}
-    An \textbf{endomorphism} is a function $\varphi$ which maps set $X$ to itself ($\varphi: X \to X$).
+    An \textbf{endomorphism} of a group $\mathbb{G}$ is a homomorphism $\qquad \varphi: \mathbb{G} \to \mathbb{G}$
+    from $\mathbb{G}$ to itself.
 \end{definition}
 
 \begin{definition}
-    An \textbf{automorphism} is an isomorphic endomorphism.
+    An \textbf{automorphism} is a bijective endomorphism.
 \end{definition}
 
 \begin{example}
-    Given a group $\mathbb{G}$, fixate $a \in \mathbb{G}$. The map $\varphi: x \mapsto axa^{-1}$ is an automorphism.
+    Given a group $\mathbb{G}$ and a fixed element $a \in \mathbb{G}$, the map $\varphi: x \mapsto axa^{-1}$ is an automorphism.
 \end{example}
 
-Last two definitions are especially frequently used in Elliptic Curves theory.
+The last two definitions are especially frequently used in Elliptic Curves theory.
 
 \subsection{Fields}
 
@@ -613,7 +668,7 @@ What this definition states is that we can perform the following operations:
 Interestingly though, it is very difficult to come up with some more complicated, non-trivial examples. For that 
 reason, we will simply move to the most central field used in cryptography -- finite fields.
 
-\subsection{Finite Fields}
+\subsection{Prime Fields}
 Notice that $(\mathbb{Z},+,\times)$ does not form a field since division is not
 closed. Similarly, the tuple $(\mathbb{Z}_n,+,\times)$ also does not always form
 a field since the multiplicative inverses are defined only for coprime numbers.
@@ -627,7 +682,7 @@ every integer has a well-defined inverse modulo $p$. Such fields are called
     finite fields are denoted as $\mathbb{F}_p$ or $\text{GF}(p)$.
 \end{definition}
 
-Finite fields is the core object in cryptography. Instead of real numbers or pure integers, we will almost always 
+Finite fields are the core object in cryptography. Instead of real numbers or pure integers, we will almost always 
 use finite fields.
 
 \begin{remark}
@@ -636,7 +691,7 @@ use finite fields.
     the ring\footnote{We have not defined as of now what ring is, but, roughly speaking, this is a field without 
     multiplicative inverses (such as $\mathbb{Z}_n$ for composite $n$)} of integers modulo $p$ (meaning, we need only addition, subtraction, and multiplication 
     in the protocol), while division is of little interest. When one refers to $\mathbb{F}_p$, it is typically 
-    assumed that we need full arithmetic (including division) for the procool.
+    assumed that we need full arithmetic (including division) for the protocol.
 \end{remark}
 
 \begin{example}
@@ -654,11 +709,11 @@ use finite fields.
 In programming, we can think of a group as an interface, having a single binary operation defined, that obeys the 
 rules of closure, associativity, identity element, and inverse element.
 
-For that reason, we might even code a group in Rust! We will also write a simple test to check whether the group is 
+For that reason, we can code a group in Rust. We will also write a simple test to check whether the group is 
 valid and whether the group is abelian.
 
 \textbf{Trait for Group.} First, we define a trait for a group. We will define a group as a trait with the following methods:
-\begin{lstlisting}[language=Rust]
+\begin{minted}{rust}
 /// Trait that represents a group.
 pub trait Group: Sized {
     /// Checks whether the two elements are equal.
@@ -674,11 +729,11 @@ pub trait Group: Sized {
         self.add(&a.negate())
     }
 }
-\end{lstlisting}
+\end{minted}
 
-\textbf{Checking group validity.} Now observer the following: we get closure for free, since the compiler will check 
+\textbf{Checking group validity.} Now observe the following: we get closure for free, since the compiler will check 
 whether the return type of the operation is the same as the type of the group. However, there is no guarantee that 
-associativity holds, and our identity element is at all valid. For that reason, we need to somehow additionally check 
+associativity holds, and our identity element is valid at all. For that reason, we need to somehow additionally check 
 the validity of implementation.
 
 We propose to do the following: we will randomly sample three elements from the group 
@@ -692,16 +747,16 @@ $a,b,c \leftarrowS \mathbb{G}$ and check our three properties:
 Additionally, if we want to verify whether the group is abelian, we can check whether $a \oplus b \xlongequal{?} b \oplus a$. 
 
 For that reason, for the check, we require the group to be samplable (i.e. we can randomly sample elements from the group):
-\begin{lstlisting}[language=Rust]
+\begin{minted}{rust}
 /// Trait for sampling a random element from a group.
 pub trait Samplable {
     /// Returns a random element from the group.
     fn sample() -> Self;
 }
-\end{lstlisting}
+\end{minted}
 
 And now, our test looks as follows:
-\begin{lstlisting}[language=Rust]
+\begin{minted}{rust}
 /// Number of tests to check the group properties.
 const TESTS_NUMBER: usize = 100;
 
@@ -724,21 +779,21 @@ where
         let ab_c = a.add(&b).add(&c);
         let a_bc = a.add(&b.add(&c));
         let associativity_holds = ab_c.eq(&a_bc);
-        assert!(associativity_holds, "Associativity does not hold for the given group");
+        assert!(associativity_holds, "Associativity does not hold");
 
         // Check whether identity element is valid
         let e = G::identity();
         let ae = a.add(&e);
         let ea = e.add(&a);
         let identity_holds = ae.eq(&a) && ea.eq(&a);
-        assert!(identity_holds, "Identity element does not hold for the given group");
+        assert!(identity_holds, "Identity element does not hold");
 
         // Check whether inverse element is valid
         let a_neg = a.negate();
         let a_neg_add_a = a_neg.add(&a);
         let a_add_a_neg = a.add(&a_neg);
         let inverse_holds = a_neg_add_a.eq(&e) && a_add_a_neg.eq(&e);
-        assert!(inverse_holds, "Inverse element does not hold for the given group");
+        assert!(inverse_holds, "Inverse element does not hold");
     }
 }
 
@@ -759,17 +814,17 @@ where
         // Check whether commutativity holds
         let ab = a.add(&b);
         let ba = b.add(&a);
-        assert!(ab.eq(&ba), "Commutativity does not hold for the given group");
+        assert!(ab.eq(&ba), "Commutativity does not hold");
     }
 }    
-\end{lstlisting}
+\end{minted}
 
 \textbf{Testing the group $(\mathbb{Z}, +)$.} And now, we can define a group for integers and check whether it is valid and abelian:
-\begin{lstlisting}[language=Rust]
+\begin{minted}{rust}
 use crate::group::{Group, Samplable};
 use rand::Rng;
 
-/// Implementing group for Rotation3<f32>
+/// Implementing group for i64
 impl Group for i64 {
     fn eq(&self, other: &Self) -> bool {
         self == other
@@ -798,13 +853,13 @@ impl Samplable for i64 {
         gen.gen_range(min..max)
     }
 }
-\end{lstlisting}
+\end{minted}
 
 Just a small note: since we cannot generate infinite integers, we restrict the range of integers to prevent overflow. So, 
 for the sake of simplicity, we divide the range of integers by $3$, in which overflow never occurs.
 
-And now, the moment of truth! Let us define some tests and run them:
-\begin{lstlisting}[language=Rust]
+Finally, we define the tests and run them:
+\begin{minted}{rust}
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -820,19 +875,19 @@ mod tests {
         assert_group_abelian::<i64>();
     }
 }
-\end{lstlisting}
+\end{minted}
 
-Both tests pass! Now let us consider something a bit trickier.
+Both tests pass. Now let us consider something a bit trickier.
 
 \textbf{Testing the group $\text{SO}(3)$.} We can define a group for $3 \times 3$ rotation matrices. Of course, 
-composition of two rotation is not commutative, so we expect the abelian test to fail. However, the group is still 
+composition of two rotations is not commutative, so we expect the abelian test to fail. However, the group is still 
 valid! For example, there is an identity rotation matrix $E$, and for each rotation matrix $A \in \text{SO}(3)$, 
 there exists a rotation matrix $A^{-1} \in \text{SO}(3)$ such that $AA^{-1} = A^{-1}A = E$. Finally, the associativity 
 holds as well.
 
 We will use the \texttt{nalgebra} library for this purpose, which contains the implementation of rotation matrices. 
 So our implementation can look as follows:
-\begin{lstlisting}[language=Rust]
+\begin{minted}{rust}
 /// A threshold below which two floating point numbers are considered equal.
 const EPSILON: f32 = 1e-6;
 
@@ -869,13 +924,13 @@ impl Samplable for Rotation3<f32> {
         Rotation3::from_euler_angles(roll, pitch, yaw)
     }
 }
-\end{lstlisting}
+\end{minted}
 
 \vspace{-2mm}
 
 Here, there are two tricky moments:
 \begin{enumerate}
-    \item We cannot compare floating point numbers directly, since they might differ by a small amount. For that reason, we define a small threshold $\varepsilon$. We say that two matrices are equal iff the norm\footnote{one can think of norm as being the measure of ``distance'' between two objects. Similarly, we can define norm not only on matrices, but on vectors as well.} of their difference is less than $\varepsilon$.
+    \item We cannot compare floating point numbers directly, since they might differ by a small amount. For that reason, we define a small threshold $\varepsilon$. We say that two matrices are equal iff the norm\footnote{One can think of norm as being the measure of ``distance'' between two objects. Similarly, we can define norm not only on matrices, but on vectors as well: see Definition~\ref{def:length}.} of their difference is less than $\varepsilon$.
     \item To generate a random rotation matrix, we generate three random angles and create a rotation matrix from these angles.
 \end{enumerate}
 
@@ -977,8 +1032,8 @@ highly recommend these resources.
 \begin{xexercise}
     {Exercise 7*.}
     {
-        Denote by $\text{GL}(2,\mathbb{R})$ a set of $2\times 2$ invertable matrices with real entries. Define 
-        two functions $\varphi: \text{GL}(2,\mathbb{R}) \to \mathbb{R}$:
+        Denote by $\text{GL}_2(\mathbb{R})$ a set of $2\times 2$ invertible matrices with real entries. Define 
+        two functions $\varphi: \text{GL}_2(\mathbb{R}) \to \mathbb{R}$:
         
         \begin{equation*}
             \varphi_1 \left(\begin{bmatrix}
@@ -990,8 +1045,8 @@ highly recommend these resources.
         
         Den claims the following:
         \begin{enumerate}
-            \item $\varphi_1$ is a group homomorphism between multiplicative groups $(\text{GL}(2,\mathbb{R}), \times)$ and $(\mathbb{R}, \times)$.
-            \item $\varphi_2$ is a group homomorphism between additive groups $(\text{GL}(2, \mathbb{R}), +)$ and $(\mathbb{R}, +)$.
+            \item $\varphi_1$ is a group homomorphism between multiplicative groups $(\text{GL}_2(\mathbb{R}), \times)$ and $(\mathbb{R}, \times)$.
+            \item $\varphi_2$ is a group homomorphism between additive groups $(\text{GL}_2(\mathbb{R}), +)$ and $(\mathbb{R}, +)$.
         \end{enumerate}
         
         Which of the following is \textbf{true}?
@@ -1032,6 +1087,6 @@ highly recommend these resources.
     }
 \end{xexercise}
 
-\textbf{Exercise 9*.} Prove that a group of order $9$ is abelian.
+\textbf{Exercise 9*.} Prove that any group of order $9$ is abelian\footnote{This result might be generalized for groups of order $p^2$ for $p$ being prime.}.
 
 \end{document}

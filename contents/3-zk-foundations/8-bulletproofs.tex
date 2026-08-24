@@ -30,15 +30,16 @@ Let $a,b,c \in \mathbb{F}_p$. Here we build a zero-knowledge protocol for the re
 Consider the first-degree polynomials $l(x) = a + s_L x, r(x) = b + s_R x \in \mathbb{F}_p[x]$. Let $t(x) = l(x)r(x)$ and consider the relation
 $$\mathcal{R}_{mul} = \{ (\bot;l(x),r(x),t(x)) \vert t(x) = l(x)r(x)\}$$
 Firstly, observe that proving $t(x) = l(x)r(x)$ may be reduced to an evaluation check at some challenge point $u \in \mathbb{F}_p$: $t(u) = l(u)r(u)$, due to the \textit{Schwartz-Zippel lemma} (\Cref{lemma:one-sz}):
-$$\mathsf{Pr}[l(u)r(u) = t(u) \vert l(x)r(x) \neq t(x)] \le \frac{max(\deg(l(x)r(x)), \deg(t(x)))}{p} = \frac{2}{p}$$
+$$\mathsf{Pr}[l(u)r(u) = t(u) \vert l(x)r(x) \neq t(x)] \le \frac{\max(\deg(l(x)r(x)), \deg(t(x)))}{p} = \frac{2}{p}$$
 which is typically a negligible function of the security level, making this check \textit{sound}.
 
-\subsubsection{Naїve polynomial multiplication protocol}
-Let us describe a naїve unoptimized version of the \textbf{polynomial multiplication} protocol $\Pi'_{mul} = (\mathsf{Setup},\mathcal{P,V})$ for the relation $\mathcal{R}_{mul}$.
+\subsubsection{Naïve polynomial multiplication protocol}
+
+Let us describe a naïve unoptimized version of the \textbf{polynomial multiplication} protocol $\Pi'_{mul} = (\mathsf{Setup},\mathcal{P,V})$ for the relation $\mathcal{R}_{mul}$.
 During $\mathsf{Setup}$, parties agree on group elements $G,B \in \mathbb{G}$. After that, the parties engage in the following protocol:
 \begin{itemize}
     \item Prover $\mathcal{P}$ computes:
-        $$t(x) = l(x)r(x) = (a+s_L x)(b+s_R x) = ab + (as_R + bs_L) + s_L s_R x^2$$
+        $$t(x) = l(x)r(x) = (a+s_L x)(b+s_R x) = ab + (as_R + bs_L)x + s_L s_R x^2$$
     \item Prover $\mathcal{P}$ draws blinding factors $\alpha_0, \alpha_1, \beta_0, \beta_1, \tau_0, \tau_1, \tau_2 \leftarrowS \mathbb{F}_p$ forming blinding polynomials 
     $$\alpha(x) = \alpha_0 + \alpha_1 x, \beta(x) = \beta_0 + \beta_1 x, \tau(x) = \tau_0 + \tau_1 x + \tau_2 x^2$$
     and sends to $\mathcal{V}$ Pedersen commitments (\Cref{section:commitment-schemes}) for each coefficient of $l(x), r(x), t(x)$:
@@ -76,7 +77,7 @@ During $\mathsf{Setup}$, parties agree on group elements $G,B \in \mathbb{G}$. A
         \end{equation}
 \end{itemize}
 \begin{theorem}
-    Naїve \textbf{polynomial multiplication} protocol $\Pi'_{mul}$ has \textit{perfect completeness, 3-special soundness, perfect honest-verifier zero-knowledge}
+    Naïve \textbf{polynomial multiplication} protocol $\Pi'_{mul}$ has \textit{perfect completeness, 3-special soundness, perfect honest-verifier zero-knowledge}
     \label{th:poly_mul_naive}
 \end{theorem}
 \textbf{Proof idea.} \textit{Perfect completeness} holds due to:
@@ -657,10 +658,11 @@ Here we can soundly combine all three checks into one using a random linear comb
 $$z^2 \cdot \langle \mathbf{a}_L, \mathbf{2}^n \rangle + z \cdot \langle \mathbf{a}_L - \mathbf{a}_R - \mathbf{1}^n, \mathbf{y}^n \rangle + \langle \mathbf{a}_L, \mathbf{a}_R \circ \mathbf{y}^n \rangle = z^2v$$
 
 \begin{remark}
-    The naїve check $\langle \mathbf{a}_L, \mathbf{2}^n \rangle + \langle \mathbf{a}_L, \mathbf{a}_R \circ \mathbf{y}^n \rangle + \langle \mathbf{a}_L - \mathbf{a}_R - \mathbf{1}^n, \mathbf{y}^n \rangle = v$ is not sound, as the prover could adjust the vectors to be non-zero but still satisfy the check.
+    The naïve check $\langle \mathbf{a}_L, \mathbf{2}^n \rangle + \langle \mathbf{a}_L, \mathbf{a}_R \circ \mathbf{y}^n \rangle + \langle \mathbf{a}_L - \mathbf{a}_R - \mathbf{1}^n, \mathbf{y}^n \rangle = v$ is not sound, as the prover could adjust the vectors to be non-zero but still satisfy the check.
 \end{remark}
 
 Now simplify this expression to have only one inner-product check:
+\small
 \begin{equation*}
     \begin{aligned}
         & z^2 \cdot \langle \mathbf{a}_L, \mathbf{2}^n \rangle + z \cdot \langle \mathbf{a}_L - \mathbf{a}_R - \mathbf{1}^n, \mathbf{y}^n \rangle + \langle \mathbf{a}_L, \mathbf{a}_R \circ \mathbf{y}^n \rangle = z^2v \\
@@ -671,8 +673,10 @@ Now simplify this expression to have only one inner-product check:
         & \boxed{\langle \mathbf{a}_L, z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n + \mathbf{a}_R \circ \mathbf{y}^n\rangle}  + \langle \mathbf{a}_R \circ \mathbf{y}^n, - z \cdot \mathbf{1}^n \rangle = z^2v + \langle z \cdot \mathbf{1}^n, \mathbf{y}^n \rangle \\
     \end{aligned}
 \end{equation*}
+\normalsize
 
 Now adding to both sides $\langle z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n, - z \cdot \mathbf{1}^n \rangle$:
+\small
 \begin{equation*}
     \begin{aligned}
         & \langle \mathbf{a}_L, z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n + \mathbf{a}_R \circ \mathbf{y}^n\rangle + \langle \mathbf{a}_R \circ \mathbf{y}^n, - z \cdot \mathbf{1}^n \rangle + \boxed{\langle z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n, - z \cdot \mathbf{1}^n \rangle} = \\
@@ -682,6 +686,7 @@ Now adding to both sides $\langle z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n,
         & \langle \mathbf{a}_L - z \cdot \mathbf{1}^n, z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n + \mathbf{a}_R \circ \mathbf{y}^n\rangle = z^2v + \boxed{\delta(y,z)}
     \end{aligned}
 \end{equation*}
+\normalsize
 
 where $\delta(y,z)$ can easily be computed by the verifier:
 $$\delta(y,z) = \langle z \cdot \mathbf{1}^n, \mathbf{y}^n \rangle + \langle z^2 \cdot \mathbf{2}^n + z \cdot \mathbf{y}^n, - z \cdot \mathbf{1}^n \rangle = (z-z^2)\langle \mathbf{1}^n, \mathbf{y}^n \rangle - z^3 \langle \mathbf{1}^n, \mathbf{2}^n \rangle $$
@@ -963,7 +968,7 @@ A = \begin{bmatrix}
 0 & 1 & 0 & 0 & 0 & 0 \\
 0 & 0 & 0 & 1 & 0 & 0 \\
 0 & 0 & 1 & 0 & 0 & 0 \\
-0 & 0 & 0 & 0 & 1 & 0 \\
+b & a & 0 & 0 & 1 & 0 \\
 \end{bmatrix}
 \]
 \[
@@ -971,7 +976,7 @@ B = \begin{bmatrix}
 0 & 1 & 0 & 0 & 0 & 0 \\
 0 & 1 & 0 & 0 & 0 & 0 \\
 0 & 0 & 1 & 0 & 0 & 0 \\
-1 & a & 0 & 0 & 0 & 0 \\
+1 & 0 & 0 & 0 & 0 & 0 \\
 \end{bmatrix}
 \]
 \[
@@ -1052,6 +1057,8 @@ Now we could finally rewrite the equation as:
 \end{equation*}
 
 Then rearrange and combine terms so that $\mathbf{a}_L$, $\mathbf{a}_O$ are on the left side and $\mathbf{a}_R$ is on the right side:
+
+\small
 \begin{equation*}
     \begin{aligned}
         \langle \mathbf{a}_L \circ \mathbf{a}_R, \mathbf{y}^n \rangle - \langle \mathbf{a}_O, \mathbf{y}^n \rangle + \langle \mathbf{w}_L, \mathbf{a}_L \rangle + \langle \mathbf{w}_R, \mathbf{a}_R \rangle + \langle \mathbf{w}_O, \mathbf{a}_O \rangle = \langle \mathbf{w}_V, \mathbf{v} \rangle + w_c \\
@@ -1060,6 +1067,7 @@ Then rearrange and combine terms so that $\mathbf{a}_L$, $\mathbf{a}_O$ are on t
         \langle \mathbf{a}_L + \mathbf{y}^{-n} \circ \mathbf{w_R}, \mathbf{y}^n \circ \mathbf{a}_R \rangle + \langle \mathbf{a}_O, - \mathbf{y}^n + \mathbf{w}_O \rangle + \langle \mathbf{w}_L, \mathbf{a}_L \rangle = \langle \mathbf{w}_V, \mathbf{v} \rangle + w_c \\
     \end{aligned}
 \end{equation*}
+\normalsize
 
 Add $\delta(y, z) = \langle \mathbf{y}^{-n} \circ \mathbf{w}_R, \mathbf{w}_L \rangle $ to both sides:
 $$

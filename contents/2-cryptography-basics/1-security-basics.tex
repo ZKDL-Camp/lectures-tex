@@ -2,11 +2,28 @@
 
 \begin{document}
 
-In many cases, technical papers include the analysis on the key question: ``How secure is this cryptographic algorithm?'' or rather ``Why this cryptographic algorithm is secure?''. In this section, we will shortly describe the notation and typical construction for justifying the security of cryptographic algorithms.
+In many cases, technical papers include the analysis on the key question: ``How secure is this cryptographic algorithm?'' or rather ``Why this cryptographic algorithm is secure?''. 
+In this section, we will shortly describe the notation and typical construction for justifying the security of cryptographic algorithms.
 
-Typically, the cryptographic security is defined in a form of a game between the adversary (who we call $\mathcal{A}$) and the challenger (who we call $\mathcal{C}h$). The adversary is trying to break the security of the cryptographic algorithm using arbitrary (but still efficient) protocol, while the challenger is following a simple, fixed protocol. The game is played in a form of a challenge, where the adversary is given some information and is asked to perform some task. The security of the cryptographic algorithm is defined based on the probability of the adversary to win the game.
+Typically, the cryptographic security is defined in a form of a game between the adversary (who we call $\mathcal{A}$) and the challenger (who we call $\mathcal{C}h$). 
+The adversary is trying to break the security of the cryptographic algorithm using arbitrary (but still efficient\footnote{Further, \emph{efficient} means that an algorithm requires polynomial time and memory with respect to the security parameter (which we will define below).}) protocol, while the challenger is following a simple, fixed protocol. 
+The game is played in a form of a challenge, where the adversary is given some information and is asked to perform some task. 
+The security of the cryptographic algorithm is defined based on the probability of the adversary to win the game.
 
-\subsection{Cipher Semantic Security}
+Certain problems described using idea above form the basis of assumptions that we believe to be secure (for example, discrete logarithm assumption which we will describe further).
+When constructing protocols and defining their security notions, we rely on the security of these basic problems.
+More specifically, using the notion of \emph{security reductions}, we can prove that a certain protocol is secure if the underlying basis problem is secure.
+
+This section is dedicated to:
+\begin{enumerate}
+    \item demonstrating how to define the notion of security (\Cref{subsec:defining-security});
+    \item showing how to prove that some construction is secure given some specific assumption (\Cref{subsec:security-reduction});
+    \item defining key group-based assumptions using developed toolkit (discrete logarithm and Diffie-Hellman assumptions, \Cref{subsec:group-based-assumptions}).
+\end{enumerate}
+
+For fulfilling first two goals we will use arguably the most basic cryptographic primitive: \emph{symmetric encryption scheme}.
+
+\subsection{Defining Security}\label{subsec:defining-security}
 Let us get into specifics. Suppose that we want to specify that the encryption scheme is secure. Recall that 
 cipher $\mathcal{E} = (E,D)$ over the space $(\mathcal{K}, \mathcal{M}, \mathcal{C})$ (here, $\mathcal{K}$ is 
 the space containing all possible keys, $\mathcal{M}$ --- all possible messages and $\mathcal{C}$ --- all 
@@ -18,16 +35,16 @@ possible ciphers) consists of two efficiently computable methods:
 
 Of course, we require the \textbf{correctness}:
 \begin{equation*}
-    (\forall k \in \mathcal{K}) \, (\forall m \in \mathcal{M}): \{D(k,E(k,m)) = m\}
+    D(k,E(k,m)) = m \; \commentgray{for all messages $m \in \mathcal{M}$ and all keys $k \in \mathcal{K}$.}
 \end{equation*}
 
-Now let us play the following game between adversary $\mathcal{A}$ and challenger $\mathcal{C}h$:
-\begin{enumerate}
-    \item $\mathcal{A}$ picks any two messages $m_0,m_1 \in \mathcal{M}$ on his choice.
+Now let us play the following game between adversary $\mathcal{A}$ and challenger $\mathcal{C}h$ (see \Cref{fig:semantic-security-def} for illustration):
+\begin{algoen}
+    \item $\mathcal{A}$ picks two messages $m_0,m_1 \in \mathcal{M}$ of the same length on his choice.
     \item $\mathcal{C}h$ picks a random key $k \leftarrowS \mathcal{K}$ and random bit $b \leftarrowS \{0,1\}$ and sends the cipher $c = E(k,m_b)$ to $\mathcal{A}$.
     \item $\mathcal{A}$ is trying to guess the bit $b$ by using the cipher $c$.
-    \item $\mathcal{A}$ outputs the guess $\hat{b}$.
-\end{enumerate}
+    \item $\mathcal{A}$ outputs the guess $\widehat{b}$.
+\end{algoen}
 
 \begin{figure}[H]
     \centering
@@ -41,7 +58,7 @@ Now let us play the following game between adversary $\mathcal{A}$ and challenge
 
         \draw[-{Stealth[length=3mm]},line width=0.4mm] ([yshift=-1.5cm]adversary.south) coordinate (l2)--(l2-|challenger) node[midway, above=2mm, fill=white]{Send $m_0, m_1 \in \mathcal{M}, |m_0| = |m_1|$};
 
-        \node[align=center,fill=white!5,thick,below=2.5cm of challenger](challenger-actions){
+        \node[align=left,fill=white!5,thick,below=2.5cm of challenger](challenger-actions){
         \noindent\rule{3.5cm}{0.8pt}\\
         $b \leftarrowS \{0,1\}$ \\
         $k \leftarrowS \mathcal{K}$ \\
@@ -52,159 +69,170 @@ Now let us play the following game between adversary $\mathcal{A}$ and challenge
 
         \node[align=center,fill=white!5,thick,below=7cm of adversary](adversary-guess){
         \noindent\rule{3.5cm}{0.8pt}\\
-        Guess bit $\hat{b} \in \{0,1\}$\\
+        Guess bit $\widehat{b} \in \{0,1\}$\\
         \noindent\rule{3.5cm}{0.8pt}};
     \end{tikzpicture}
     }
     \caption{The game between the adversary $\mathcal{A}$ and the challenger $\mathcal{C}h$ for defining the semantic security.}
+    \label{fig:semantic-security-def}
 \end{figure}
 
 Now, what should happen if our encryption scheme is secure? The adversary should not be able to guess the bit $b$ with a probability significantly higher than $1/2$ (a random guess). Formally, define the 
 \textbf{advantage} of the adversary $\mathcal{A}$ as:
 \begin{equation*}
-    \text{SSAdv}[\mathcal{E}, \mathcal{A}] := \left| \Pr[\hat{b} = b] - \frac{1}{2} \right|
+    \textsf{Adv}^{\textsf{SS}}_{\mathcal{A},\mathcal{E}} := \left| \Pr[\widehat{b} = b] - \frac{1}{2} \right|.
 \end{equation*}
 
 We say that the encryption scheme is \textbf{semantically secure}\footnote{This version of definition is called a 
-\textbf{bit-guessing} version.} if for any efficient adversary $\mathcal{A}$ the advantage $\text{SSAdv}[\mathcal{A}]$ 
-is negligible. In other words, the adversary cannot guess the bit $b$ with a probability significantly higher than~$1/2$.
+\textbf{bit-guessing} version.} if for any efficient adversary $\mathcal{A}$ the advantage $\textsf{Adv}^{\textsf{SS}}_{\mathcal{A},\mathcal{E}}$ 
+is \emph{negligible}. In other words, the adversary cannot guess the bit $b$ with a probability significantly higher than~$1/2$.
 
-Now, what negligible means? Let us give the formal definition!
+However, now we have a reasonable question: what is $\textsf{Adv}^{\textsf{SS}}_{\mathcal{A},\mathcal{E}}$ specifically?
+Consequently, what do we mean by ``negligible'' in this context?
+Currently, for fixed scheme $\mathcal{E}$, $\textsf{Adv}^{\textsf{SS}}_{\mathcal{A},\mathcal{E}}$ is just a single number.
+\emph{In practice}, when this number is below $2^{-128}$, the scheme is commonly considered to be secure\footnote{Such probability very roughly corresponds to National Institute of Standards and Technology (NIST) Category 1: meeting all NIST criteria for Category 1 is generally taken as evidence of security.}.
+However, for theoretical analysis, perceiving $\textsf{Adv}^{\textsf{SS}}_{\mathcal{A},\mathcal{E}}$ as a specific number is not convenient for many reasons.
+It turns out that a much more fruitful approach is to consider $\textsf{Adv}^{\textsf{SS}}_{\mathcal{A},\mathcal{E}}$ as a function of the ``logarithmic size'' of the scheme, which is denoted by $\lambda \in \mathbb{N}$ and formally called a \textit{security parameter}.
+For example, $\lambda$ might correspond to the logarithm of the order of the underlying finite field or, in our case, we might set $\lambda := \text{``ciphertext size in bits''}$.
+
+By thinking of $\textsf{Adv}^{\textsf{SS}}_{\mathcal{A},\mathcal{E}}$ as a function $\mathbb{N} \to \mathbb{R}_{\geq 0}$, we can give the following definition of \textit{negligibility}.
 
 \begin{definition}
-    A function $f: \mathbb{N} \to \mathbb{R}$ is called \textbf{negligible} if for all $c \in \mathbb{R}_{>0}$ there exists $n_c \in \mathbb{N}$ such that for any $n \geq n_c$ we have $|f(n)| < 1/n^c$.
+    A function $f: \mathbb{N} \to \mathbb{R}$ is called \textbf{negligible} if for all $\gamma \in \mathbb{R}_{>0}$ there exists $n_{\gamma} \in \mathbb{N}$ such that for any $n \geq n_{\gamma}$ we have $|f(n)| < 1/n^{\gamma}$.
 \end{definition}
 
-The alternative definition, which is problably easier to interpret, is the following.
+Less formally: $f$ decays faster than any polynomial. 
+The alternative definition, which is problably easier to interpret (depending on your mathematical background), is what follows.
 
 \begin{theorem}
-    A function $f: \mathbb{N} \to \mathbb{R}$ is \textbf{negligible} if and only if for any $c \in \mathbb{R}_{>0}$, we have
+    A function $f: \mathbb{N} \to \mathbb{R}$ is \textbf{negligible} if and only if for any $\gamma \in \mathbb{R}_{>0}$, we have
     \begin{equation*}
-        \lim_{n \to \infty} f(n)n^c = 0
+        \lim_{\lambda \to \infty} f(\lambda)\lambda^{\gamma} = 0.
     \end{equation*}
 \end{theorem}
 
 \begin{example}
-    The function $f(n) = 2^{-n}$ is negligible since for any $c \in \mathbb{R}_{>0}$ we have
+    The function $f(\lambda) = 2^{-\lambda}$ is negligible since for any $\gamma \in \mathbb{R}_{>0}$ we have
     \begin{equation*}
-        \lim_{n \to \infty} 2^{-n}n^c = 0
+        \lim_{\lambda \to \infty} 2^{-\lambda}\lambda^{\gamma} = 0.
     \end{equation*}
 
-    The function $g(n) = \frac{1}{n!}$ is also negligible for similar reasons.
+    The function $g(\lambda) = \frac{1}{\lambda!}$ is also negligible for similar reasons.
 \end{example}
 
 \begin{example}
-    The function $h(n) = \frac{1}{n}$ is not negligible since for $c = 1$ we have
+    The function $h(\lambda) = \frac{1}{\lambda}$ is not negligible since for $\gamma = 1$ we have
     \begin{equation*}
-        \lim_{n \to \infty} \frac{1}{n} \times n = 1 \neq 0
+        \lim_{\lambda \to \infty} \frac{1}{\lambda} \times \lambda = 1.
     \end{equation*}
 \end{example}
 
-Well, that is weird. For some reason we are considering a function the depends on some natural number $n$, but what is this number?
+This way, we say that some cryptographic scheme is secure if some advantage (for instance, $\textsf{Adv}^{\textsf{SS}}_{\mathcal{A},\mathcal{E}}(\lambda)$), as a function of security parameter $\lambda$, decays faster than any polynomial.
+For instance, if $\textsf{Adv}^{\textsf{SS}}_{\mathcal{A},\mathcal{E}}(\lambda)=2^{-\lambda/2}$ for some cipher $\mathcal{E}$, the scheme is semantically secure.
 
-Typically, when defining the security of the cryptographic algorithm, we are considering the security parameter $\lambda$ (e.g., the length of the key). The function is negligible if the probability of the adversary to break the security of the cryptographic algorithm is decreasing with the increasing of the security parameter $\lambda$. Moreover, we require that the probability of the adversary to break the security of the cryptographic algorithm is decreasing faster than any polynomial function of the security parameter $\lambda$.
+However, many cryptographic papers avoid such explicit definitions as was illustrated in \Cref{fig:semantic-security-def}.
+Here is another way to write the same security definition.
 
-So all in all, we can define the semantic security as follows.
-
-\begin{definition}
+\begin{definition}\label{def:semantic-security}
     The encryption scheme $\mathcal{E}$ with a security paramter $\lambda \in \mathbb{N}$ is \textbf{semantically secure} if for any efficient adversary $\mathcal{A}$ we have:
     \begin{equation*}
-        \left|\text{Pr}\begin{bmatrix}[c|c]
-            & m_0, m_1 \gets \mathcal{A}, \; k \leftarrowS \mathcal{K}, \; b \leftarrowS \{0,1\} \\
-            b = \hat{b} & c \gets E(k,m_b) \\
-            &\hat{b} \gets \mathcal{A}(c)
-        \end{bmatrix} - \frac{1}{2}\right| < \text{negl}(\lambda)
+        \left|\text{Pr}\left[
+            b = \widehat{b}
+            \;\middle|\;
+        \begin{aligned}
+            &m_0, m_1 \gets \mathcal{A}(\cdot) \\
+            &k \leftarrowS \mathcal{K} \\
+            &c_i \gets E(k,m_i), i \in \{0,1\}\\
+            &b \leftarrowS \{0,1\}, \widehat{b} \gets \mathcal{A}(c_b) \\
+        \end{aligned}\right] - \frac{1}{2}\right| = \text{negl}(\lambda)
     \end{equation*}
 \end{definition}
 
-Do not be afraid of such complex notation, it is quite simple. Notation $\text{Pr}[A \mid B]$ means ``the probability of $A$, given that $B$ occurred''. So our inner probability is read as ``the probability that the guessed bit $\hat{b}$ equals $b$ given the setup on the right''. Then, on the right we define the setup: first we generate two messages $m_0,m_1 \in \mathcal{M}$, then we choose a random bit $b$ and a key $k$, cipher the message $m_b$, send it to the adversary and the adversary, based on provided cipher, gives $\hat{b}$ as an output. We then claim that the probability of the adversary to guess the bit $b$ is close to $1/2$.
+You shall not be afraid of such complex notation; it is in fact quite simple. Notation $\text{Pr}[A \mid B]$ means ``the probability of $A$, given that $B$ occurred''. So our inner probability is read as ``the probability that the guessed bit $\widehat{b}$ equals $b$ given the setup on the right''. 
+Then, on the right we define the setup: first the adversary $\mathcal{A}$ generates two messages $m_0,m_1$, then the challenger chooses a random bit $b$ and a key $k$, cipher the message $m_b$, send it to the adversary and the adversary, based on provided cipher $c_b$, gives his guess $\widehat{b}$ as an output. 
+We then claim that the probability of the adversary to guess the bit $b$ is close to $1/2$.
 
-Let us see some more examples of how to define the security of certain crypographic objects.
+Let us see some more examples of how to define the security of certain cryptographic objects.
 
-\subsection{Message recovery attacks}
+\subsection{Security Reductions}\label{subsec:security-reduction}
 
-Essentially, message recovery attacks \cite[chapter 2]{Dan_Boneh_2023} are types of attacks that, from given ciphertext, recover the message with significantly better probability than random guessing, which is obviously $1/|\mathcal{M}|$.
+Essentially, message recovery attacks \cite[chapter 2]{Dan_Boneh_2023} are types of attacks that, from given ciphertext, recover the message with significantly better probability than random guessing, which is obviously $1/\#\mathcal{M}$.
 Of course, any reasonable notion of security should rule out such an attack, and indeed, semantic security does.
 
 Although this might seem intuitively obvious, we provide a formal proof to clarify the reasoning. 
 One of the reasons for doing this is to thoroughly demonstrate the concept of a \emph{security reduction}, which is the primary method used to assess the security of systems.
 
-Let us play the following attack game message recovery between adversary $\mathcal{A}$ and challenger $\mathcal{C}h$.
+Let us play the following message recovery attack game between adversary $\mathcal{A}$ and challenger $\mathcal{C}h$.
 For a given cipher $\mathcal{E} = (E, D)$, defined over $\mathcal{K}, \mathcal{M}, \mathcal{C}$, and for a given adversary $\mathcal{A}$, the attack game proceeds as follows: 
 
-\begin{itemize}
-    \item The challenger computes $m \leftarrowS \mathcal{M}$, $k \leftarrowS \mathcal{K}$, $c \leftarrowS E(k, m)$ and sends c to the adversary.
-    \item the adversary output a message $\hat{m} \in \mathcal{M}$.
-\end{itemize}
+\begin{algoen}
+    \item The challenger computes $m \leftarrowS \mathcal{M}$, $k \leftarrowS \mathcal{K}$, $c \gets E(k, m)$ and sends $c$ to the adversary.
+    \item The adversary outputs a message $\widehat{m} \in \mathcal{M}$.
+\end{algoen}
 
-We say that $\mathcal{A}$ wins the game in this case, and we define $\mathcal{A}$'s message recovery advantage with respect to $\mathcal{E}$ as:
+We say that $\mathcal{A}$ wins the game if $m=\widehat{m}$, and we define $\mathcal{A}$'s message recovery advantage with respect to $\mathcal{E}$ as\footnote{In most practical applications, $\#\mathcal{M}$ is \textit{super-poly} with respect to $\lambda$ (\textit{i.e.}, $1/\#\mathcal{M}=\text{negl}(\lambda)$). Consequently, defining $\textsf{Adv}^{\textsf{MR}}_{\mathcal{A},\mathcal{E}}(\lambda) := \text{Pr}[\widehat{m}=m]$ is also technically correct for large enough $\mathcal{M}$.}:
 
 \begin{equation*}
-    \text{MRadv}[\mathcal{E}, \mathcal{A}] := \Bigg|\text{Pr}[\hat{m} = m] - \frac{1}{|\mathcal{M}|}\Bigg|.
+    \textsf{Adv}^{\textsf{MR}}_{\mathcal{A},\mathcal{E}}(\lambda) := \left|\text{Pr}[\widehat{m} = m] - \frac{1}{\#\mathcal{M}}\right|.
 \end{equation*}
 
 \begin{definition} [Security against message recovery]
-    A cipher $\mathcal{E}$ is secure against message recovery if for all efficient adversaries $\mathcal{A}$, the value MRadv[$\mathcal{E}, \mathcal{A}$] is negligible.
+    A cipher $\mathcal{E}$ is said to be \emph{secure against message recovery} if for all efficient adversaries $\mathcal{A}$, the function $\textsf{Adv}^{\textsf{MR}}_{\mathcal{A},\mathcal{E}}(\lambda)$ is $\text{negl}(\lambda)$.
 \end{definition}
+
+We shall now prove the following reduction.
 
 \begin{theorem}
     Let $\mathcal{E} = (E, D)$ be a cipher defined over $(\mathcal{K}, \mathcal{M}, \mathcal{C})$. If $\mathcal{E}$ is semantically secure then $\mathcal{E}$ is secure against message recovery.
 \end{theorem}
 
-$\blacktriangleright$ 
-Let us prove by assuming the opposite statement. 
-In other words, if $\mathcal{E}$ is not secure against message recovery, then $\mathcal{E}$ is not semantically secure.
+\begin{proof}
+Let $\mathsf{A}:=$ ``\textcolor{gray!80!black}{$\mathcal{E}$ is semantically secure}'' while $\mathsf{B}:=$ ``\textcolor{gray!80!black}{$\mathcal{E}$ is secure against message recovery}''.
+The theorem asks to prove $\mathsf{A} \Rightarrow \mathsf{B}$. 
+However, proving this statement is very complicated.
+Indeed, both statements require some advantage to be negligible for \textit{all} possible efficient adversaries.
+On the other hand, proving the opposite statements (either $\neg\mathsf{A}$ or $\neg\mathsf{B}$) is significantly easier.
+For example, $\neg\mathsf{A}=$ ``\textcolor{gray!80!black}{there exists an adversary $\mathcal{A}$ that breaks a semantic security of $\mathcal{E}$}''.
+Such a statement, in turn, requires merely providing a single efficient adversary that yields a non-negligible advantage in the game defined previously.
 
-Assume that $\mathcal{E}$ is not secure against message recovery. 
-We have an efficient adversary $\mathcal{A}$ who has a significant advantage in the 
-message recovery game and an efficient adversary $\mathcal{B}$ who is trying to 
-compromise $\mathcal{E}$.
-The proof idea is to use an efficient adversary $\mathcal{A}$ as a "black box" (or oracle machine). % that wins message recovery game.
-We construct $\mathcal{B}$ as follows:
-\begin{enumerate}
-    \item Adversary $\mathcal{B}$ generates $m_0, m_1 \in \mathcal{M}$ and sends them to the semantic security challenger.
-    \item The semantic security challenger returns ciphertext $c$ to adversary $\mathcal{B}$. Since $\mathcal{B}$ can use 
+The key idea behind the \emph{security reduction} is the following logical identity:
+\begin{equation*}
+    (\mathsf{A} \Rightarrow \mathsf{B}) \iff (\textcolor{oc-blue-7}{\neg\mathsf{B} \Rightarrow \neg\mathsf{A}}).
+\end{equation*}
+
+So in other words, our key statement reduces to the following: ``given an efficient adversary $\mathcal{A}$ who breaks the message recovery property, show that there exists an adversary $\mathcal{B}$ who breaks the semantic security.''
+Notice that while constructing $\mathcal{B}$, we might use $\mathcal{A}$ as a black-box algorithm that somehow solves one of the assumptions (the security of which is typically proven).
+A more formal and fancier way to say this is ``$\mathcal{B}$ uses $\mathcal{A}$ as an oracle'' and is denoted by $\mathcal{B}^{\mathcal{A}}$.
+
+Now, here is how we can construct $\mathcal{B}$ specifically:
+\begin{algoen}
+    \item Adversary $\mathcal{B}$ generates $m_0, m_1 \in \mathcal{M}$ and sends them to the semantic security challenger (see game described in \Cref{fig:semantic-security-def}).
+    \item The semantic security challenger sends a ciphertext $c$ to adversary $\mathcal{B}$. Since $\mathcal{B}$ can use 
     the message recovery oracle, it sends $c$ to $\mathcal{A}$. 
-    \item $\mathcal{A}$ returns $\hat{m}$. If $\hat{m} = m_0$, then $b = 0$ otherwise, $b = 1$.
-    \item Sends $b$ to the semantic security challenger. 
-\end{enumerate}
+    \item $\mathcal{A}$ returns $\widehat{m}$. If $\widehat{m} = m_0$, then output $\widehat{b} := 0$; otherwise, $\widehat{b} := 1$.
+    \item $\mathcal{B}$ sends $\widehat{b}$ to the semantic security challenger. 
+\end{algoen}
 
-Intuitively, this implies that $\text{SSadv}[\mathcal{E}, \mathcal{B}]$ is exactly equal 
-to $\text{MRadv}[\mathcal{E}, \mathcal{A}]$.~$\blacktriangleleft$
+One can show that in such case $\textsf{Adv}^{\textsf{SS}}_{\mathcal{A},\mathcal{E}} = \textsf{Adv}^{\textsf{MR}}_{\mathcal{A},\mathcal{E}}$, proving that $\mathcal{B}$ breaks the semantic security with a non-negligible probability.
 
-This means that if an adversary is capable of successfully winning the 
-message recovery game, then they can also effectively win the semantic security game.
-In essence, security against message recovery is a stronger property than
-semantic security. 
+\end{proof}
 
-Our motivation for demonstrating proof is to illustrate in detail the notion of a security
-reduction, which is the main technique used to reason about the security of systems.
+Here is a small ``recipe'' of the idea described above for a more general scenario.
 
-Security reduction is typically applied to certain computational problems. To be more precise, 
-we will now explain how security reduction operates in general.
-\begin{definition} [Security Reduction]
-    \hfill
-    \begin{enumerate}
-        \item Let $\mathcal{A}$ be an efficient adversary who is trying to
-        compromise the cryptosystem $\mathcal{E}$.
-        \item We construct an efficient algorithm $\mathcal{A}'$, which we call the
+\begin{proposition}[Security Reduction]
+    Suppose we have a cryptosystem $\mathcal{E}$ and we believe the problem $\mathcal{X}$ is computationally hard.
+    Here is how we typically prove that $\mathcal{E}$ is secure based on $\mathcal{X}$:
+    \begin{algoen}
+        \item Assume there exists an efficient adversary $\mathcal{A}$ who breaks cryptosystem $\mathcal{E}$ with a non-negligible probability $\varepsilon(\lambda)$.
+        \item We construct an efficient algorithm $\mathcal{B}$, which we call the
         \textbf{reduction}, that will solve the computationally hard problem
-        $\mathcal{X}$ while using an oracle access to $\mathcal{A}$. For any
-        input $x$ of the problem $\mathcal{X}$, the algorithm $\mathcal{A}'$
-        generates the input of the cryptosystem $\mathcal{E}$ for $\mathcal{A}$.
-        Once it wins the corresponding experiment, $\mathcal{A}'$ solves
-        $\mathcal{X}$ for input $x$ with a certain non-negligible probability
-        $\mu(n)$. Typically, such probability turns out to be bounded below by
-        $1/n^c, c \in \mathbb{N}$.
-        \item Thus, the algorithm $\mathcal{A}'$ solves $\mathcal{X}$ with the
-        non-negligible probability $\varepsilon(n)\mu(n)$ (or typically
-        $\varepsilon(n)/n^c$). This quantity is non-negligible 
-        if $\varepsilon(n)$ is assumed to be non-negligible.
-        \item Since the problem $\mathcal{X}$ is computationally hard, we get a
-        contradiction. It follows that no attacker $\mathcal{A}$ can effectively
-        crack $\mathcal{E}$, i.e., this cryptosystem is computationally strong.
-    \end{enumerate}
-\end{definition}
+        $\mathcal{X}$ while using an oracle access to $\mathcal{A}$. Specifically, for any
+        input $x$ of the problem $\mathcal{X}$, the algorithm $\mathcal{B}$
+        generates the input to the security game of the cryptosystem $\mathcal{E}$, uses $\mathcal{A}$ as a black-box, obtains some output, and tries to use it to solve $\mathcal{X}$.
+        \item If $\mathcal{B}$ is constructed properly, the probability of $\mathcal{B}$ solving $\mathcal{X}$ is typically at least $\varepsilon(\lambda)/\lambda^{\gamma}$ for some $\gamma$, which is a non-negligible quantity.
+        \item Since we constructed an efficient adversary $\mathcal{B}$ who efficiently breaks $\mathcal{X}$ based on $\mathcal{A}$, we infer that assumption $\mathcal{X}$ implies security of $\mathcal{E}$.
+    \end{algoen}
+\end{proposition}
 
 % TODO: Make use of this in the future
 
@@ -280,35 +308,42 @@ we will now explain how security reduction operates in general.
 % In summary, the security of cryptosystems depends on a blend of both theoretical 
 % principles and practical considerations.
 
-\subsection{Discrete Logarithm Assumption}
+\subsection{Group-based Assumptions}\label{subsec:group-based-assumptions}
+
+In this section we will formally define group-based assumptions, which are one of the most central assumptions in the pre-quantum cryptography.
+Further fix some group $\mathbb{G}$. 
+All subsequent definitions are valid for \textit{any} group, but in practice we will substitute $\mathbb{G}$ with a \emph{group of points on some elliptic curve} (this group will be formally defined in \Cref{section:elliptic-curves}) since such group is believed to be the most suitable for all subsequent assumptions to be hard.
+
+\subsubsection{Discrete Logarithm Assumption}
 
 Now, let us define the fundamental assumption used in cryptography formally: the \textbf{Discrete Logarithm Assumption} (DL) \cite[chapter 16]{Dan_Boneh_2023}.
 
-\begin{definition}
-    Assume that $\mathbb{G}$ is a cyclic group of prime order $r$ generated by $g \in \mathbb{G}$. Define the 
-    following game:
-    \begin{enumerate}
+\begin{definition}\label{def:discrete-log}
+    Assume that $\mathbb{G}$ is a cyclic group of prime order $r$ generated by $g \in \mathbb{G}$. 
+    Further assume $r=\Theta(2^{\lambda})$.
+    Define the following game:
+    \begin{algoen}
         \item Both challenger $\mathcal{C}h$ and adversary $\mathcal{A}$ take a description $\mathbb{G}$ as an 
         input: order $r$ and generator $g \in \mathbb{G}$.
         \item $\mathcal{C}h$ computes $\alpha \leftarrowS \mathbb{Z}_r, u \gets g^{\alpha}$ and sends 
         $u \in \mathbb{G}$ to $\mathcal{A}$.
-        \item The adversary $\mathcal{A}$ outputs $\hat{\alpha} \in \mathbb{Z}_r$.
-    \end{enumerate}
+        \item The adversary $\mathcal{A}$ outputs $\widehat{\alpha} \in \mathbb{Z}_r$.
+    \end{algoen}
 
     We define $\mathcal{A}$'s \textbf{advantage in solving the discrete logarithm problem in $\mathbb{G}$}, 
-    denoted as $\text{DL}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as the probability that $\hat{\alpha} = \alpha$.
+    denoted as $\text{Adv}^{\text{DL}}_{\mathcal{A},\mathbb{G}}$, as the probability that $\widehat{\alpha} = \alpha$.
 \end{definition}
 
 \begin{definition}
     The \textbf{Discrete Logarithm Assumption} holds in the group $\mathbb{G}$ 
-    if for any efficient adversary $\mathcal{A}$ the advantage $\text{DL}\mathsf{adv}[\mathcal{A},\mathbb{G}]$ 
-    is negligible.
+    if for any efficient adversary $\mathcal{A}$ the advantage $\text{Adv}^{\text{DL}}_{\mathcal{A},\mathbb{G}}(\lambda)$ 
+    is negligible in $\lambda$.
 \end{definition}
 
 Informally, this assumption means that given $u$, it is very hard to find $\alpha$ such that $u = g^{\alpha}$. 
-But now we can write down this formally!
+Using tools from the previous sections, we now defined this formally.
 
-\subsection{Computational Diffie-Hellman}
+\subsubsection{Computational Diffie-Hellman}
 
 Another fundamental problem in cryptography is the \textbf{Computational Diffie-Hellman} (CDH) problem \cite[chapter 16]{Dan_Boneh_2023}. 
 It states that given $g^{\alpha},g^{\beta}$ it is hard to find $g^{\alpha\beta}$. This property is frequently used 
@@ -317,51 +352,54 @@ in the construction of cryptographic protocols such as the Diffie-Hellman key ex
 Let us define this problem formally.
 
 \begin{definition}
-    Let $\mathbb{G}$ be a cyclic group of prime order $r$ generated by $g \in \mathbb{G}$. Define the following game:
-    \begin{enumerate}
-        \item Both challenger $\mathcal{C}h$ and adversary $\mathcal{A}$ take a description $\mathbb{G}$ as an input: order $r$ and generator $g \in \mathbb{G}$.
-        \item $\mathcal{C}h$ computes $\alpha, \beta \leftarrowS \mathbb{Z}_r, u \gets g^{\alpha}, v \gets g^{\beta}, w \gets g^{\alpha\beta}$ and sends $u,v \in \mathbb{G}$ to $\mathcal{A}$.
-        \item The adversary $\mathcal{A}$ outputs $\hat{w} \in \mathbb{G}$.
-    \end{enumerate}
+    Define the following game:
+    \begin{algoen}
+        \item Both challenger $\mathcal{C}h$ and adversary $\mathcal{A}$ take a description $\mathbb{G}$ as an input: specifically, an order $r=\Theta(2^{\lambda})$ and generator $g \in \mathbb{G}$.
+        \item $\mathcal{C}h$ computes quantities $\alpha, \beta \leftarrowS \mathbb{Z}_r, u \gets g^{\alpha}, v \gets g^{\beta}, w \gets g^{\alpha\beta}$ and sends $u,v \in \mathbb{G}$ to $\mathcal{A}$.
+        \item The adversary $\mathcal{A}$ outputs $\widehat{w} \in \mathbb{G}$.
+    \end{algoen}
 
-    We define $\mathcal{A}$'s \textbf{advantage in solving the computational Diffie-Hellman problem in $\mathbb{G}$}, 
-    denoted as $\text{CDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as the probability that $\hat{w} = w$.
+    We define $\mathcal{A}$'s \textbf{advantage in solving the computational Diffie-Hellman problem in $\mathbb{G}$}
+    as $\text{Adv}^{\text{CDH}}_{\mathcal{A},\mathbb{G}}(\lambda) := \Pr[\widehat{w} = w]$.
 \end{definition}
 
 \begin{definition}
     The \textbf{Computational Diffie-Hellman Assumption} holds in the group $\mathbb{G}$ if for any efficient 
-    adversary $\mathcal{A}$ the advantage $\text{CDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$ is negligible.
+    adversary $\mathcal{A}$, $\text{Adv}^{\text{CDH}}_{\mathcal{A},\mathbb{G}}(\lambda)=\text{negl}(\lambda)$.
 \end{definition}
 
-\subsection{Decisional Diffie-Hellman}
+\subsubsection{Decisional Diffie-Hellman}
 
 Now, we loosen the requirements a bit. The \textbf{Decisional Diffie-Hellman} (DDH) problem \cite[chapter 16]{Dan_Boneh_2023} 
 states that given $g^{\alpha},g^{\beta},g^{\alpha\beta}$ it is ``hard'' to distinguish $g^{\alpha\beta}$ from a 
 random element in $\mathbb{G}$. Formally, we define this problem as follows.
 
 \begin{definition}
-    Let $\mathbb{G}$ be a cyclic group of prime order $r$ generated by $g \in \mathbb{G}$. Define the following game:
-    \begin{enumerate}
-        \item Both challenger $\mathcal{C}h$ and adversary $\mathcal{A}$ take a description $\mathbb{G}$ as an input: order $r$ and generator $g \in \mathbb{G}$.
-        \item $\mathcal{C}h$ computes $\alpha, \beta,\gamma \leftarrowS \mathbb{Z}_r, u \gets g^{\alpha}, v \gets g^{\beta}, w_0 \gets g^{\alpha\beta}, w_1 \gets g^{\gamma}$. Then, $\mathcal{C}h$ flips a coin $b \leftarrowS \{0,1\}$ and sends $u,v,w_b$ to $\mathcal{A}$.
-        \item The adversary $\mathcal{A}$ outputs the predicted bit $\hat{b} \in \{0,1\}$.
-    \end{enumerate}
+    Define the following game:
+    \begin{algoen}
+        \item Both challenger $\mathcal{C}h$ and adversary $\mathcal{A}$ take a description $\mathbb{G}$ as an input: order $r=\Theta(2^{\lambda})$ and generator $g \in \mathbb{G}$.
+        \item $\mathcal{C}h$ computes $\alpha, \beta,\gamma \leftarrowS \mathbb{Z}_r, u \gets g^{\alpha}, v \gets g^{\beta}, w_0 \gets g^{\alpha\beta}, w_1 \gets g^{\gamma}$. Then, $\mathcal{C}h$ flips a coin $b \leftarrowS \{0,1\}$ and sends $(u,v,w_b)$ to $\mathcal{A}$.
+        \item The adversary $\mathcal{A}$ outputs the predicted bit $\widehat{b} \in \{0,1\}$.
+    \end{algoen}
 
-    We define $\mathcal{A}$'s \textbf{advantage in solving the Decisional Diffie-Hellman problem in $\mathbb{G}$}, denoted as $\text{DDH}\mathsf{adv}[\mathcal{A},\mathbb{G}]$, as
+    We define $\mathcal{A}$'s \textbf{advantage in solving the Decisional Diffie-Hellman problem in $\mathbb{G}$}, denoted as $\text{Adv}^{\text{DDH}}_{\mathcal{A},\mathbb{G}}(\lambda)$, as
     \begin{equation*}
-        \text{DDH}\mathsf{adv}[\mathcal{A},\mathbb{G}] := \left| \Pr[b = \hat{b}] - \frac{1}{2} \right|
+        \text{Adv}^{\text{DDH}}_{\mathcal{A},\mathbb{G}}(\lambda) := \left| \Pr[b = \widehat{b}] - \frac{1}{2} \right|.
     \end{equation*}
 \end{definition}
 
-Now, let us break this assumption for some quite generic group! Consider the following example.
+As mentioned earlier, DDH assumption is considerably \emph{stronger} than CDH.
+It is far more fragile and fails even in seemingly straightforward settings, such as any cyclic group of even order (this condition is satisfied by, \textit{e.g.}, $\mathbb{Z}_p^{\times}$ for any odd prime $p$, since $\#\mathbb{Z}_p^{\times} = p-1$).
+Consider the following theorem which we prove as an exercise.
 
 \begin{theorem}
-    Suppose that $\mathbb{G}$ is a cyclic group of an even order. Then, the Decision
+    Suppose that $\mathbb{G}$ is a cyclic group of even order. Then, the Decision
     Diffie-Hellman Assumption does not hold in $\mathbb{G}$. In fact, there is an efficient adversary $\mathcal{A}$ 
     that can distinguish $g^{\alpha\beta}$ from a random element in $\mathbb{G}$ with an advantage $1/4$.
 \end{theorem}
 
-\textbf{Proof.} If $|\mathbb{G}|=2n$ for $n \in \mathbb{N}$, it means that we can split the group into two subgroups 
+\begin{proof}
+If $\#\mathbb{G}=2n$ for $n \in \mathbb{N}$, it means that we can split the group into two subgroups 
 of order $n$, say, $\mathbb{G}_1$ and $\mathbb{G}_2$. The first subgroup consists of elements in a form $g^{2k}$, 
 while the second subgroup consists of elements in a form $g^{2k+1}$.
 
@@ -375,7 +413,7 @@ following lemma.
 
 \textbf{Proof.} If $\alpha$ is even, then $\alpha = 2\alpha'$ and thus
 \begin{equation*}
-    u^n = (g^{2\alpha'})^n = g^{2n\alpha'} = (g^{2n})^{\alpha'} = 1^{\alpha'} = 1
+    u^n = (g^{2\alpha'})^n = g^{2n\alpha'} = (g^{2n})^{\alpha'} = 1^{\alpha'} = 1.
 \end{equation*}
 
 Conversely, if $u^n = 1$ then $u^{\alpha n}=1$, meaning that $2n \mid \alpha n$, implying that $\alpha$ is even. 
@@ -387,24 +425,17 @@ Now, we can construct our adversary $\mathcal{A}$ as follows. Suppose $\mathcal{
     \item Based on $v$, get the parity of $\beta$, say $p_{\beta} \in \{\text{even}, \text{odd}\}$.
     \item Based on $w$, get the parity of $\gamma$, say $p_{\gamma} \in \{\text{even}, \text{odd}\}$.
     \item Calculate $p_{\gamma}'\in \{\text{even}, \text{odd}\}$ --- parity of $\alpha\beta$.
-    \item Return $\hat{b}=0$ if $p_{\gamma}' = p_{\gamma}$, and $\hat{b}=1$, otherwise.
+    \item Return $\widehat{b}=0$ if $p_{\gamma}' = p_{\gamma}$, and $\widehat{b}=1$, otherwise.
 \end{enumerate}
 
 Suppose $\gamma$ is indeed $\alpha \times \beta$. Then, condition $p_{\gamma}'=p_{\gamma}$ will always hold. 
 If $\gamma$ is a random element, then the probability that $p_{\gamma}'=p_{\gamma}$ is $1/2$. Therefore, the 
 probability that $\mathcal{A}$ will guess the bit $b$ correctly is $3/4$, and the advantage is $1/4$ therefore. 
-$\blacksquare$
-
-\vspace{10pt}
-
-Why is this necessary? Typically, it is impossible to prove the predicate ``for every efficient adversary 
-$\mathcal{A}$ this probability is negligible'' and therefore we need to make assumptions, such as the Discrete 
-Logarithm Assumption or the Computational Diffie-Hellman Assumption. In turn, proving the statement ``if $X$ is 
-secure then $Y$ is also secure'' is manageable and does not require solving any fundamental problems. So, for 
-example, knowing that the probability of the adversary to break the Diffie-Hellman assumption is negligible, we 
-can prove that the Diffie-Hellman key exchange is secure. 
+\end{proof}
 
 \subsection{Exercises}
+
+\subsubsection*{Encryption Scheme and Semantic Security}
 
 \begin{xexercise}
     {Exercise 1.}
@@ -425,23 +456,28 @@ can prove that the Diffie-Hellman key exchange is secure.
         E(k,m) = k \cdot m \pmod{p}, \quad D(k,c) = k^{-1} \cdot c \pmod{p}
     \end{equation*}
     Is the scheme $\mathcal{E}$ perfectly secure? (\textit{Perfect security
-    means that adversary's advantage is exactly $0$}).} {1} {
+    means that adversary's advantage $\text{Adv}^{\text{SS}}_{\mathcal{A},\mathcal{E}}$ is exactly $0$ for any efficient $\mathcal{A}$}).} {1} {
         \item Yes.
         \item No, because only the one-time pad can be perfectly secret.
-        \item No, because $|\mathcal{K}|$ must be greater than $|\mathcal{M}|$.
+        \item No, because $\#\mathcal{K}$ must be greater than $\#\mathcal{M}$.
         \item No, because there is a simple strategy for an adversary to find the message given the ciphertext.
     }
 \end{xexercise}
 
 \begin{xexercise}
     {Exercise 3.}
-    {For an encryption scheme $\mathcal{E}$, an adversary can guess the last bit of a message $m$ from its ciphertext $c$ with probability $\frac{1}{2}+\varepsilon$ via a function $f(c)$. The adversary plays the IND-CPA game by choosing $m_0$ with last bit 0 and $m_1$ with last bit 1. Upon receiving ciphertext $c_b$, the adversary returns $\hat{b} = f(c_b)$. What is the adversary's advantage, defined as $\text{SSadv}[\mathcal{A},\mathcal{E}] := 2\left|\text{Pr}[\hat{b}=b]-\frac{1}{2}\right|$?}
+    {Suppose that for some encryption scheme $\mathcal{E}$ over $(\mathcal{K},\mathcal{M},\mathcal{C})$, an adversary can guess the last bit of a message $m$ from its ciphertext $c$ with probability $\frac{1}{2}+\varepsilon$ via a function $f: \mathcal{C} \to \{0,1\}$. The adversary $\mathcal{B}$ plays the semantic security game (\Cref{fig:semantic-security-def}) as follows: 
+    \begin{algoen}
+        \item let $m_0,m_1 \in \mathcal{M}$ be any two messages where the last bit of $m_0$ is $0$ and the last bit of $m_1$ is $1$;
+        \item upon receiving ciphertext $c_b$, the adversary returns $\widehat{b} \gets f(c_b)$.
+    \end{algoen}
+    What is the adversary's advantage $\text{Adv}^{\text{SS}}_{\mathcal{B},\mathcal{E}}$? (see \Cref{def:semantic-security})}
     {1}
     {
-        \item $2\varepsilon$.
+        \item $\varepsilon$.
         \item $\frac{1}{2}+\varepsilon$.
         \item $\varepsilon^2$.
-        \item $1-2\varepsilon$.
+        \item $1-\varepsilon$.
     }
 \end{xexercise}
 
@@ -461,8 +497,68 @@ can prove that the Diffie-Hellman key exchange is secure.
     }
 \end{xexercise}
 
+\subsubsection*{Pseudo-random Generators}
+
+\textit{Read the following paragraph before solving Exercises 5--10}
+
+We now introduce another fundamental primitive, the \textbf{pseudorandom generator} 
+(PRG), and define its security using the same way as in \Cref{subsec:defining-security,subsec:security-reduction}.
+
+\begin{definition}
+    A \textbf{pseudorandom generator} (PRG) over $(\mathcal{K},\mathcal{X})$ is a deterministic, efficient algorithm 
+    $G: \mathcal{K} \to \mathcal{X}$ that takes as input a \textbf{seed} $k \in \mathcal{K}$ and 
+    outputs a string $x \in \mathcal{X}$. We additionally require $\#\mathcal{X}>\#\mathcal{K}$: this way, $G$ 
+    \textbf{stretches} a short seed into a longer output.
+\end{definition}
+
+The point of a PRG is to act as a cheap substitute for true randomness: instead of sampling 
+$\log_2 \#\mathcal{X}$ random bits directly, we sample a much shorter seed $k$ and expand it via $G$. For this 
+substitution to be useful cryptographically, the output of $G$ must be impossible to 
+distinguish from a genuinely random string of the same length, even though $G$ is completely 
+deterministic. Informally, we write this as
+\begin{equation*}
+    \left[G(k): k \leftarrowS \mathcal{K}\right] \approx \mathcal{X}.
+\end{equation*}
+where $\approx$ denotes that no efficient algorithm can tell the two distributions apart. As 
+before, we make this precise via a game.
+
+\begin{definition}
+    Let $G: \mathcal{K} \to \mathcal{X}$ be a PRG.
+    Define the following game between a challenger $\mathcal{C}h$ and an adversary $\mathcal{A}$:
+    \begin{algoen}
+        \item $\mathcal{C}h$ flips a coin $b \leftarrowS \{0,1\}$.
+        \item \textbf{if} $b = 0$: $\mathcal{C}h$ samples $k \leftarrowS \mathcal{K}$ and sets 
+        $x \gets G(k)$. \\
+        \textbf{if} $b = 1$: $\mathcal{C}h$ samples $x \leftarrowS \mathcal{X}$ directly. \\
+        In either case, $\mathcal{C}h$ sends $x$ to $\mathcal{A}$.
+        \item The adversary $\mathcal{A}$ outputs a guess $\widehat{b} \in \{0,1\}$.
+    \end{algoen}
+
+    We define $\mathcal{A}$'s \textbf{advantage in distinguishing output of $G$ from random}, denoted 
+    $\text{Adv}^{\text{PRG}}_{\mathcal{A},G}(\lambda)$, as $\text{Adv}^{\text{PRG}}_{\mathcal{A},G}(\lambda) := \left| \Pr[b = \widehat{b}] - \frac{1}{2} \right|$.
+\end{definition}
+
+\begin{definition}
+    We say that $G$ is a \textbf{secure pseudorandom generator} if for every efficient 
+    adversary $\mathcal{A}$, the advantage $\text{Adv}^{\text{PRG}}_{\mathcal{A},G}(\lambda)$ is 
+    negligible in $\lambda$.
+\end{definition}
+
 \begin{xexercise}
     {Exercise 5.}
+    {Let $\mathbb{G}$ be a cyclic group of order $q$ with generator $g \in \mathbb{G}$. Define a pseudorandom generator $G(\alpha,\beta) = (g^{\alpha},g^{\beta},g^{\alpha\beta})$ over $(\mathbb{Z}_q^2,\mathbb{G}^3)$. Select the correct statements. (\textit{Multiple options may be correct.})}
+    {1}
+    {
+        \item $G$ is always a secure PRG.
+        \item $G$ is a secure PRG if $\mathbb{G}$ is a group secure under the DL assumption.
+        \item $G$ is a secure PRG if $\mathbb{G}$ is a group secure under the CDH assumption.
+        \item $G$ is a secure PRG if $\mathbb{G}$ is a group secure under the DDH assumption.
+        \item $G$ is not a secure PRG: there exists an efficient algorithm that distinguishes the output of $G(\alpha,\beta)$, for random $\alpha,\beta$, from a random element of $(\mathbb{Z}_q^2,\mathbb{G}^3)$.
+    }
+\end{xexercise}
+
+\begin{xexercise}
+    {Exercise 6.}
     {Let $G(s)$ be a secure pseudorandom generator (PRG) that generates $\lambda$ bits. Which of the following generators are secure? (\textit{Multiple options may be correct.})}
     {1}
     {
@@ -476,32 +572,31 @@ can prove that the Diffie-Hellman key exchange is secure.
     }
 \end{xexercise}
 
-\begin{tcolorbox}
-[ colback=blue!5!white, fonttitle=\bfseries, colframe=blue!80!white,
-    title=Exercises 6-8. PRG Security and Statistical Tests]
+\begin{exbox}{Exercises 7--9. PRG Security through Statistical Tests}
+In this small paragraph, we give an alternative definition of PRG security that one might encounter in different sources. 
 Let $G: \mathcal{K} \to \{0,1\}^{\lambda}$ be a pseudorandom generator. We want to test if $G$ is secure using a function $\mathcal{A}: \{0,1\}^{\lambda} \to \{0,1\}$, which we call a \textit{statistical test}. The advantage of $\mathcal{A}$ is defined as:
 \begin{equation*}
-    \text{PRGadv}[\mathcal{A},G] = \left|\underset{k \leftarrowS \mathcal{K}}{\text{Pr}}[\mathcal{A}(G(k))=1] - \underset{r \leftarrowS \{0,1\}^{\lambda}}{\text{Pr}}[\mathcal{A}(r)=1]\right|
+    \text{Adv}^{\text{PRG}}_{\mathcal{A},G}(\lambda) := \left|\underset{k \leftarrowS \mathcal{K}}{\text{Pr}}[\mathcal{A}(G(k))=1] - \underset{x \leftarrowS \{0,1\}^{\lambda}}{\text{Pr}}[\mathcal{A}(x)=1]\right|
 \end{equation*}
-An alternative definition for the security of $G$ is that $\text{PRGadv}[\mathcal{A},G]$ is negligible for all efficient algorithms $\mathcal{A}$.
-\end{tcolorbox}
+We naturally require $\text{Adv}^{\text{PRG}}_{\mathcal{A},G}(\lambda)$ to be negligible for all efficient $\mathcal{A}$.
+\end{exbox}
 
 \begin{xexercise}
-    {Exercise 6.}
+    {Exercise 7.}
     {Consider two trivial statistical tests: (a) $\mathcal{A}_0(x)=0$ for all 
     $x$ and (b) $\mathcal{A}_1(x)=1$ for all $x$. Which of the following statements is true?}
     {1}
     {
-        \item $\text{PRGadv}[\mathcal{A}_0,G] = \text{PRGadv}[\mathcal{A}_1,G] = 0$.
-        \item $\text{PRGadv}[\mathcal{A}_0,G] = \text{PRGadv}[\mathcal{A}_1,G] = 1$.
-        \item $\text{PRGadv}[\mathcal{A}_0,G] = \text{PRGadv}[\mathcal{A}_1,G] = \frac{1}{2}$.
-        \item $\text{PRGadv}[\mathcal{A}_0,G] = 0, \text{PRGadv}[\mathcal{A}_1,G] = 1$.
+        \item $\text{Adv}^{\text{PRG}}_{\mathcal{A}_0,G} = \text{Adv}^{\text{PRG}}_{\mathcal{A}_1,G} = 0$.
+        \item $\text{Adv}^{\text{PRG}}_{\mathcal{A}_0,G} = \text{Adv}^{\text{PRG}}_{\mathcal{A}_1,G} = 1$.
+        \item $\text{Adv}^{\text{PRG}}_{\mathcal{A}_0,G} = \text{Adv}^{\text{PRG}}_{\mathcal{A}_1,G} = \frac{1}{2}$.
+        \item $\text{Adv}^{\text{PRG}}_{\mathcal{A}_0,G} = 0, \text{Adv}^{\text{PRG}}_{\mathcal{A}_1,G} = 1$.
     }
 \end{xexercise}
 
 \begin{xexercise}
-    {Exercise 7.}
-    {Let a PRG $G: \mathcal{K} \to \{0,1\}^{\lambda}$ satisfy the condition that the last bit of $G(k)$ is one for $2/3$ of the keys in $\mathcal{K}$. Consider the statistical test $\mathcal{A}(x)$ which outputs 1 if the last bit of $x$ is one, and 0 otherwise. What is the advantage $\text{PRGadv}[\mathcal{A},G]$?}
+    {Exercise 8.}
+    {Suppose $G: \mathcal{K} \to \{0,1\}^{\lambda}$ satisfies the condition that the last bit of $G(k)$ is one for $2/3$ of the keys in $\mathcal{K}$. Consider the statistical test $\mathcal{A}(x)$ which outputs $1$ if the last bit of $x$ is one, and $0$ otherwise. Compute $\text{Adv}^{\text{PRG}}_{\mathcal{A},G}$.}
     {5}
     {
         \item $1$.
@@ -513,20 +608,34 @@ An alternative definition for the security of $G$ is that $\text{PRGadv}[\mathca
 \end{xexercise}
 
 \begin{xexercise}
-    {Exercise 8.}
+    {Exercise 9.}
     {Let $G: \mathcal{K} \to \{0,1\}^{\lambda}$ be a secure PRG. Define a new generator $G': \mathcal{K} \times \mathcal{K} \to \{0,1\}^{\lambda}$ as: 
     \begin{equation*}
-        G'(k_1,k_2) = G(k_1) \wedge G(k_2), \quad \text{where $\wedge$ is bitwise AND.}
+        G'(k_1,k_2) = G(k_1) \wedge G(k_2) \quad \commentgray{where $\wedge$ is a bitwise \textsf{AND}.}
     \end{equation*}
-    Consider the statistical test $\mathcal{A}(x) = \{\text{the first bit of } x\}$. What is the advantage $\text{PRGadv}[\mathcal{A},G']$?}
-    {1}
+    Consider the statistical test $\mathcal{A}(x) := \{\text{the first bit of } x\}$. Compute (approximately) the value of $\text{Adv}^{\text{PRG}}_{\mathcal{A},G'}$.}
+    {5}
     {
-        \item $G'$ is secure.
+        \item $0$.
         \item $1/2$.
         \item $1/3$.
         \item $1/4$.
         \item $1$.
     }
 \end{xexercise}
+
+\begin{xexercise}
+    {Exercise 10** (Inspired by \cite[Exercise 10.17]{Dan_Boneh_2023}).}
+    {Let $\mathbb{G}$ be some cyclic group with a generator $g \in \mathbb{G}$. Which of the following problems are polynomially equivalent to the CDH (\textit{Computational Diffie-Hellman}) assumption?}
+    {1}
+    {
+        \item Given $g^{\alpha}$, compute $\alpha$.
+        \item Given $g^{\alpha}$, $g^{\beta}$, and $h \in \mathbb{G}$, determine whether $h = g^{\alpha\beta}$.
+        \item Given $g^{\alpha}$, compute $g^{\alpha^2}$.
+        \item Given $g^{\alpha}$ ($\alpha \neq 0$), compute $g^{1/\alpha}$.
+        \item Given $g^{\alpha}$, $g^{\beta}$ ($\beta \neq 0$), compute $g^{\alpha/\beta}$.
+    }
+\end{xexercise}
+\textcolor{gray}{\textbf{Comment.} We say that problems $\mathsf{A}$ and $\mathsf{B}$ are polynomially equivalent if a polynomial-time solution to problem $\mathsf{A}$ allows one to solve problem $\mathsf{B}$ in polynomial time as well (and vice versa).}
 
 \end{document}

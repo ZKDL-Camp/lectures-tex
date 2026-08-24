@@ -5,7 +5,7 @@
 Before delving into the world of zero-knowledge, we need to settle the notation
 which we are going to use throughout the book. 
 
-\subsection*{Set Theory}
+\subsection{Set Theory}
 
 A \textbf{set} is a well-defined collection of objects. The objects that belong
 to a set are called its \textbf{elements}. We will denote sets by capital
@@ -19,13 +19,13 @@ Let us enumerate some fundamental sets:
     \item $\mathbb{Q} = \{\frac{n}{m}: n \in \mathbb{Z}, m \in \mathbb{N}\}$ -- a set of rational numbers.
     \item $\mathbb{R}$ -- a set of real numbers. Examples: $2.2, -3.9, 0.12, 1.4, -6.7, \dots$
     \item $\mathbb{R}_{>0}$ -- a set of positive real numbers. Examples: $2.6, 10.4, 100.2$.
-    \item $\mathbb{C}$ -- a set of complex numbers\footnote{Complex number is an expression in a form $x+iy$ for $i^2=-1$}. 
+    \item $\mathbb{C}$ -- a set of complex numbers\footnote{Complex number is, simply put, a formal expression $x+iy$ for $i^2=-1$ and $x,y \in \mathbb{R}$.}. 
     Examples: $1+2i, 5i, -7-5.7i, \dots$.
 \end{itemize}
 
-To represent the number of elements in a set $A$, we write $|A|$. If the set is finite, $|A| \in \mathbb{N}$, 
-otherwise $|A| = \infty$. $A \subset B$ denotes ``$A$ is a subset of $B$'' (meaning that all elements of $A$ 
-are also in $B$, e.g., $\mathbb{Q} \subset \mathbb{R}$).
+To represent the number of elements in a set $A$, we either write $|A|$ or $\#A$. If the set is finite, $\#A \in \mathbb{N}$, 
+otherwise $\#A = \infty$. $A \subseteq B$ denotes ``$A$ is a subset of $B$'' (meaning that all elements of $A$ 
+are also in $B$, e.g., $\mathbb{Q} \subseteq \mathbb{R}$).
 
 $A \cap B$ means the intersection of $A$ and $B$ (a set of elements belonging to both $A$ and $B$), while 
 $A \cup B$ -- the union of $A$ and $B$ (the set of elements belonging to either $A$ or $B$). $A \setminus B$ 
@@ -94,7 +94,7 @@ function and $\phi(a)$ is a predicate (function, inputting $a$ and returning tru
 on $a$ is met). For example, $\{x^3: x \in \mathbb{R}, x^2 = 4\}$ is ``a set of values $x^3$ which are the real 
 solutions to equation $x^2 = 4$''. It is quite easy to see that this set is simply $\{2^3, (-2)^3\} = \{8,-8\}$. 
 
-\subsection*{Cartesian Products and Functions}
+\subsection{Cartesian Products and Functions}
 
 The notation $A \times B$ means a set of pairs $(a,b)$ where $a \in A$ and $b \in B$ (or, written shortly, 
 $A \times B = \{(a,b): a \in A, b \in B\}$), called a Cartesian product. We additionally introduce notation 
@@ -102,10 +102,10 @@ $A^n := A \times A \times \dots \times A$ -- Cartesian product $n$ times. For ex
 $(a,b,c)$ where $a,b,c \in \mathbb{Q}$, while $\mathbb{Q}^2 \times \mathbb{R}$ is a set of triplets $(a,b,c)$ where 
 $a,b \in \mathbb{Q}$ and $c \in \mathbb{R}$.
 
-Subsets of $ A \times B$ are called relations. We define a function $f \subset A
+Subsets of $ A \times B$ are called relations. We define a function $f \subseteq A
 \times B$ from a set $A$ to a set $B$, as the special type of relation in which
 for each element $a \in A$ there is a \textit{unique} element $b \in B$ such
-that $(a, b) \in f$. In other words, for every element in $A$ we assigns a
+that $(a, b) \in f$. In other words, for every element in $A$ we assign a
 unique element in $B$. We usually write $f : A \to B$ to denote such a relation
 and write $f(a) = b$ instead of writing down $(a,b) \in f$.
 
@@ -116,38 +116,38 @@ both injective and surjective is called a \textbf{bijection}.
 
 % todo: add injective, surjective and bijective illustrations
 
-\subsection*{Logic}
+\subsection{Logic}
 
-Statement beginning with $\forall$ means ``for all...''. For instance, $(\forall a \in A \subset \mathbb{R}): \{a < 1\}$ is 
+Symbol $\forall$ means ``for all...''. For instance, $(\forall a \in A \subseteq \mathbb{R}): \{a < 1\}$ is 
 read as: ``For any $a$ in set $A$ (which is a subset of real numbers), it is true that $a<1$''. Or, more shortly, ``Any (real) 
 $a$ from $A$ is less than $1$''.
 
-Statement beginning from $\exists$ means ``there exists such...''. Let us consider the following example: 
+Symbol $\exists$ means ``there exists such...''. Let us consider the following example: 
 $(\exists \varepsilon > 0) (\forall a \in A): \{a > \varepsilon\}$ is read as ``there exists such a positive $\varepsilon$ such 
 that for any element $a$ from $A$, $a$ is greater than $\varepsilon$'', or, more concisely, ``there exists a positive constant 
 $\varepsilon$ such that any element from $A$ is greater than $\varepsilon$''.
 
-Statement beginning from $\exists !$ means ``there exists a unique...''. For example, $(\exists! x \in \mathbb{R}_{>0}): \{x^2 = 4\}$ 
+Symbol $\exists !$ means ``there exists a unique...''. For example, $(\exists! x \in \mathbb{R}_{>0}): \{x^2 = 4\}$ 
 is read as ``there exists a unique positive real $x$ such that $x^2 = 4$''.
 
 Symbol $\wedge$ means ``and''. For example, $\{x \in \mathbb{R}: x^2 = 4 \wedge x > 0\}$ is read as ``a set of real $x$ such that 
 $x^2=4$ and $x$ is positive''. Of course, $\{x \in \mathbb{R}: x^2 = 4 \wedge x > 0\} = \{2\}$.
 
 Symbol $\vee$ means ``or''. For example, $\{x \in \mathbb{R}: x^2 = 4 \vee x^2 = 9\}$ is read as ``a set of real $x$ such that 
-either $x^2=4$ or $x^2=9$'', this set is equal to~$\{\pm 2, \pm 3\}$.
+either $x^2=4$ or $x^2=9$''; this set is equal to~$\{\pm 2, \pm 3\}$.
 
-\subsection*{Sequences, Matrices, and Vectors}
+\subsection{Sequences, Matrices, and Vectors}
 
 A \textbf{sequence} is a mapping from natural numbers $\mathbb{N}$ to some
 specific set $X$. To denote the sequence, we write $\{x_n\}_{n \in \mathbb{N}}
-\subset X$. If the sequence iterates through some specific set $\mathcal{I}
+\subseteq X$. If the sequence iterates through some specific set $\mathcal{I}
 \subseteq \mathbb{N}$, we write $\{x_n\}_{n \in \mathcal{I}}$. For example,
 $\{x_n\}_{n \in \{1,2,5\}} = (x_1, x_2, x_5)$. We write vectors in bold font,
 e.g., $\mathbf{x} = (x_1, x_2, x_3) \in \mathbb{F}^3$, while matrices are
 denoted by capital letters in regular font. Here is an example matrix: $A =
 \begin{bmatrix} 1 & 2 \\ 3 & 4 \end{bmatrix} \in \mathbb{F}^{2 \times 2}$. For
 additional linear algebra notation, refer to \Cref{section:linear-algebra},
-where we introduce the very basics of linear algebra.
+where we introduce basics of linear algebra.
 
 Finally, we denote the set $\{0,\dots,n-1\}$ for $n \in \mathbb{N}$ by $[n]$.
 This notation is used very extensively in the book, so make sure to remember it.
@@ -156,7 +156,7 @@ For example, instead of writing $\sum_{k=0}^{n-1}k$ we sometimes write $\sum_{k
 $z_1=f(x_0)$, $z_2=f(x_1)$, \dots, $z_n=f(x_{n-1})$ explicitly, we simply say
 $z_{i+1} = f(x_i)$ for all $i \in [n]$.
 
-\subsection*{Algorithms and Probabilities}
+\subsection{Algorithms and Probabilities}
 
 Suppose we specified the algorithm $A$ that takes some input $x$ and returns
 some output $y$. We write $y \gets A(x)$ to denote that the algorithm $A$ is
@@ -168,7 +168,7 @@ the prover, based on $x$, has outputted $y$.
 
 To denote the probability of an event $E$ happening, we write $\Pr[E]$. For
 example, if $E$ is an event of rolling a dice and getting a number $4$, then
-$\Pr[E] = \frac{1}{6}$. To denote the random sampling from the finite set $X$,
+$\Pr[E] = \frac{1}{6}$. To denote the random \textit{uniform} sampling from the finite set $X$,
 we write $x \leftarrowS X$. For example, $x \leftarrowS \{1,2,3,4,5,6\}$
 denotes the random sampling of $x$ from the set $\{1,2,3,4,5,6\}$.
 

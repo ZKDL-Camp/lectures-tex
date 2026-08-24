@@ -42,9 +42,13 @@
 
     % --- Introduction and Notation ---
 
-    \section{Preface}
+    \section*{Preface}
     \subfile{contents/0-auxiliary/preface}
 
+    % -- Acknowledgements --
+    \subfile{contents/0-auxiliary/acknowledgements.tex}
+
+    % --- Preliminary Section: Notation ---
     \section{Notation}\label{section:notation}
     \subfile{contents/1-mathematics/0-notation}
 
@@ -129,35 +133,34 @@
 
     \section{UltraGroth}\label{section:ultragroth}
     \subfile{contents/4-sumcheck-lookups/5-ultragroth.tex}
+
+    % WIP: --- Chapter V: Post-Quantum Zero-Knowledge Protocols
+    % \part{Post-Quantum Zero-Knowledge Protocols}
+    % \subfile{contents/0-auxiliary/chapter-intros/chapter-5.tex}
+
+    % \section{Introduction to Lattice-based Cryptography}
+    % \subfile{contents/5-post-quantum/1-lattices.tex}
+
+    % \section{LatticeFold}
+    % \subfile{contents/5-post-quantum/2-latticefold.tex}
     
-    % --- Solutions ---
+        
+    % --- References ---
+    \bibliographystyle{alpha} 
+    \bibliography{bibliography,cryptobib/abbrev3,cryptobib/crypto}
+
+    % --- Closing Remarks ---
     \part{Concluding Remarks}\label{section:solutions}
-    \subsection*{Solutions to Exercises}
+
+    % -- Changelog --
+    \subsection*{Changelog}
+    \subfile{contents/0-auxiliary/changelog.tex}
+
+    % --- Exercise Solutions ---
+    \section*{Solutions to Exercises}
     \subfile{contents/appendices/exercise-solutions.tex}
 
-    \section{Acknowledgements}
-    \subfile{contents/0-auxiliary/acknowledgements.tex}
-
-    % --- References ---
-
-    \bibliographystyle{alpha} 
-    \bibliography{bibliography}
-
     % --- Contact Page ---
-
-    \newpage
-    \pagestyle{empty}
-
-    \ifodd\value{page}
-        \newpage
-    \fi
-
-    \vspace*{\fill}
-
-    \begin{center}
-        \url{https://blockstream.com/contact/}
-    \end{center}
-
-    \vspace*{\fill}
+    \input{contents/0-auxiliary/contact-page.tex}
 
 \end{document}
