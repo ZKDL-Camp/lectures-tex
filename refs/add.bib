@@ -1,0 +1,282 @@
+@inproceedings{FC:PBFMW18,
+    author = {Poelstra, Andrew and Back, Adam and Friedenbach, Mark and Maxwell, Gregory and Wuille, Pieter},
+    title = {Confidential Assets},
+    year = {2018},
+    isbn = {978-3-662-58819-2},
+    publisher = {Springer-Verlag},
+    address = {Berlin, Heidelberg},
+    url = {https://doi.org/10.1007/978-3-662-58820-8_4},
+    doi = {10.1007/978-3-662-58820-8_4},
+    abstract = {Bitcoin is an online distributed ledger in which coins are distributed according to the unspent transaction output (UTXO) set, and transactions describe changes to this set. Every UTXO has associated to it an amount and signature verification key, representing the quantity that can be spent and the entity authorized to do so, respectively.Because the ledger is distributed and publicly verifiable, every UTXO (and the history of all changes) is publicly available and may be used for analysis of all users’ payment history. Although this history is not directly linked to users in any way, it exposes enough structure that even small amounts of personally identifiable information may completely break users’ privacy. Further, the ability to trace coin history creates a market for “clean” coins, harming the fungibility of the underlying asset.In this paper we describe a scheme, confidential transactions, which blinds the amounts of all UTXOs, while preserving public verifiability that no transaction creates or destroys coins. This removes a significant amount of information from the transaction graph, improving privacy and fungibility without a trusted setup or exotic cryptographic&nbsp;assumptions.We further extend this to confidential assets, a scheme in which a single blockchain-based ledger may track multiple asset types. We extend confidential transactions to blind not only output amounts, but also their asset type, improving the privacy and fungibility of all assets.},
+    booktitle = {Financial Cryptography and Data Security: FC 2018 International Workshops, BITCOIN, VOTING, and WTSC, Nieuwpoort, Cura\c{c}ao, March 2, 2018, Revised Selected Papers},
+    pages = {43–63},
+    numpages = {21},
+    location = {Nieuwpoort, Cura\c{c}ao}
+}
+
+@book{taylor,
+    author    = "Taylor, Joseph L.",
+    title     = "Complex Variables",
+    publisher = {AMS},
+    year      = {2011},
+    isbn      = {978-0-8218-6901-7},
+    keywords  = {complex,variables,analysis}
+}
+
+@unpublished{sekhon,
+    author    = "Sekhon, Senan",
+    title     = "Metric and Topological Spaces",
+    year      = {2019},
+    note      = "Unpublished",
+    keywords  = {metric spaces,topological spaces}
+}
+
+// part 1
+@book{Judson_2012,
+  author    = {Thomas W. Judson},
+  title     = {Abstract Algebra: Theory and Applications},
+  year      = {2012},
+  publisher = {Stephen F. Austin State University},
+}
+
+@book{Cohen_Frey_2005,
+  author    = {Cohen, H. and Frey, G. and Avanzi, Roberto and Doche, C. and Lange, T. and Nguyen, Kaven and Vercauteren, F.},
+  year      = {2005},
+  pages     = {1-808},
+  title     = {Handbook of elliptic and hyperelliptic curve cryptography},
+  journal   = {Handbook of Elliptic and Hyperelliptic Curve Cryptography}
+}
+
+@book{Galbraith_2012, 
+  place     = {Cambridge}, 
+  title     = {Mathematics of Public Key Cryptography},
+  publisher = {Cambridge University Press}, 
+  author    = {Galbraith, Steven D.}, 
+  year      = {2012}
+}
+
+@book{Dan_Boneh_2023,
+  title     = {A Graduate Course in Applied Cryptography},
+  author    = {Dan Boneh and Victor Shoup},
+  year      = {2023},
+  note      = {Available at: \url{https://toc.cryptobook.us/#toc}},
+}
+
+@book{Ben_Lynn_1980,
+  author    = {Ben Lynn},
+  title     = {Number Theory},
+  year      = {1980}
+}
+
+@misc{Oveis_Gharan_2017_Lecture7,
+  author    = {Shayan Oveis Gharan},
+  title     = {CSE521: Design and Analysis of Algorithms I, Lecture 7: Schwartz-Zippel Lemma, Perfect Matching},
+  year      = {2017},
+  note      = {Winter 2017, Lecture},
+  howpublished = {Lecture Notes, University of Washington},
+}
+
+@article{Saniee_2007_LagrangeInterpolation,
+  author    = {Kamron Saniee},
+  title     = {A Simple Expression for Multivariate Lagrange Interpolation},
+  year      = {2007},
+}
+
+// part 2 -- ZK protocols
+
+@inproceedings{fiat1986,
+  author    = {Amos Fiat and Adi Shamir},
+  title     = {How to Prove Yourself: Practical Solutions to Identification and Signature Problems},
+  booktitle = {Advances in Cryptology -- CRYPTO 1986},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {263},
+  pages     = {186--194},
+  publisher = {Springer},
+  year      = {1986},
+}
+
+@inproceedings{schnorr1989,
+  author    = {Claus-Peter Schnorr},
+  title     = {Efficient Identification and Signatures for Smart Cards},
+  booktitle = {Advances in Cryptology -- CRYPTO 1989},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {435},
+  pages     = {239--252},
+  publisher = {Springer},
+  year      = {1989},
+}
+
+@inproceedings{pedersen1991,
+  author    = {Torben Pryds Pedersen},
+  title     = {Non-Interactive and Information-Theoretic Secure Verifiable Secret Sharing},
+  booktitle = {Advances in Cryptology -- CRYPTO 1991},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {576},
+  pages     = {129--140},
+  publisher = {Springer},
+  year      = {1991},
+}
+
+@misc{qap,
+  author       = {Rosario Gennaro and Craig Gentry and Bryan Parno and Mariana Raykova},
+  title        = {Quadratic Span Programs and Succinct {NIZKs} without {PCPs}},
+  howpublished = {Cryptology {ePrint} Archive, Paper 2012/215},
+  year         = {2012},
+  url          = {https://eprint.iacr.org/2012/215},
+}
+
+@inproceedings{pinocchio,
+  author    = {Bryan Parno and Jon Howell and Craig Gentry and Mariana Raykova},
+  title     = {Pinocchio: Nearly Practical Verifiable Computation},
+  booktitle = {IEEE Symposium on Security and Privacy},
+  pages     = {238--252},
+  publisher = {IEEE},
+  year      = {2013},
+}
+
+@misc{groth16,
+  author       = {Jens Groth},
+  title        = {On the Size of Pairing-Based Non-interactive Arguments},
+  howpublished = {Cryptology {ePrint} Archive, Paper 2016/260},
+  year         = {2016},
+  url          = {https://eprint.iacr.org/2016/260},
+}
+
+@misc{pairing-for-beginners,
+  author       = {Craig Costello},
+  title        = {Pairings for beginners},
+  year         = {2012},
+  url          = {https://www.craigcostello.com.au/s/PairingsForBeginners.pdf},
+}
+
+@article{Schoof1995,
+  author    = {Schoof, Ren{\'e}},
+  title     = {Counting points on elliptic curves over finite fields},
+  journal   = {Journal de th{\'e}orie des nombres de Bordeaux},
+  volume    = {7},
+  number    = {1},
+  pages     = {219--254},
+  year      = {1995},
+  publisher = {Universit{\'e} Bordeaux I},
+  doi       = {10.5802/jtnb.142},
+  url       = {https://www.numdam.org/item/JTNB_1995__7_1_219_0/}
+}
+
+@misc{plonk,
+  author       = {Ariel Gabizon and Zachary J. Williamson and Oana Ciobotaru},
+  title        = {{PLONK}: Permutations over Lagrange-bases for Oecumenical Noninteractive arguments of Knowledge},
+  howpublished = {Cryptology {ePrint} Archive, Paper 2019/953},
+  year         = {2019},
+  url          = {https://eprint.iacr.org/2019/953},
+}
+
+@article{sumcheck,
+  author    = {Carsten Lund and Lance Fortnow and Howard Karloff and Noam Nisan},
+  title     = {Algebraic Methods for Interactive Proof Systems},
+  journal   = {Journal of the ACM},
+  volume    = {39},
+  number    = {4},
+  pages     = {859--868},
+  year      = {1992},
+  publisher = {ACM},
+}
+
+@inproceedings{gkr,
+  author    = {Shafi Goldwasser and Yael Tauman Kalai and Guy N. Rothblum},
+  title     = {Delegating Computation: Interactive Proofs for Muggles},
+  booktitle = {Proceedings of the 40th Annual ACM Symposium on Theory of Computing (STOC)},
+  pages     = {113--122},
+  publisher = {ACM},
+  year      = {2008},
+}
+
+@misc{plookup,
+  author       = {Ariel Gabizon and Zachary J. Williamson},
+  title        = {plookup: A simplified polynomial protocol for lookup tables},
+  howpublished = {Cryptology {ePrint} Archive, Paper 2020/315},
+  year         = {2020},
+  url          = {https://eprint.iacr.org/2020/315},
+}
+
+@misc{mirage,
+  author       = {Ahmed Kosba and Cheng Feng and Zheng Yang and Xiaodong Lin and Man Ho Au and Qiuliang Xu},
+  title        = {{MIRAGE}: Succinct Arguments for Randomized Algorithms with Applications to Universal {zk-SNARKs}},
+  howpublished = {Cryptology {ePrint} Archive, Paper 2020/278},
+  year         = {2020},
+  url          = {https://eprint.iacr.org/2020/278},
+}
+
+@misc{mirageplus,
+  author       = {Alex Ozdemir and Evan Laufer and Dan Boneh},
+  title        = {Jolt-{zk}: Efficient {zk-SNARKs} via {MLE}-based Lookup Arguments},
+  howpublished = {Cryptology {ePrint} Archive, Paper 2024/979},
+  year         = {2024},
+  url          = {https://eprint.iacr.org/2024/979},
+}
+
+@misc{petkus2019,
+  author       = {Maksym Petkus},
+  title        = {Why and How {zk-SNARK} Works: Definitive Explanation},
+  howpublished = {arXiv preprint arXiv:1906.07221},
+  year         = {2019},
+  url          = {https://arxiv.org/abs/1906.07221},
+}
+
+@misc{bulletproofs,
+      author = {Benedikt Bünz and Jonathan Bootle and Dan Boneh and Andrew Poelstra and Pieter Wuille and Greg Maxwell},
+      title = {Bulletproofs: Short Proofs for Confidential Transactions and More},
+      howpublished = {Cryptology {ePrint} Archive, Paper 2017/1066},
+      year = {2017},
+      url = {https://eprint.iacr.org/2017/1066}
+}
+
+@misc{dalek_bulletproofs,
+  author = {Cathie Yun, Henry de Valence, Oleg Andreev},
+  title = {bulletproofs rust crate},
+  year = {2019},
+  note = {Available at: \url{https://doc-internal.dalek.rs/bulletproofs/index.html}},
+}
+
+@misc{pvss,
+  author = {Craig Gentry and Shai Halevi and Vadim Lyubashevsky},
+  title = {Practical Non-interactive Publicly Verifiable Secret Sharing with Thousands of Parties},
+  howpublished = {Cryptology {ePrint} Archive, Paper 2021/1397},
+  year = {2021},
+  url = {https://eprint.iacr.org/2021/1397}
+}
+@misc{cryptoeprint:2019/550,
+    author = {Srinath Setty},
+    title = {Spartan: Efficient and general-purpose {zkSNARKs} without trusted setup},
+    howpublished = {Cryptology {ePrint} Archive, Paper 2019/550},
+    year = {2019},
+    url = {https://eprint.iacr.org/2019/550}
+}
+
+@article{thaler2022proofs,
+    author    = {Justin Thaler},
+    title     = {Proofs, Arguments, and Zero-Knowledge},
+    journal   = {Foundations and Trends in Privacy and Security},
+    volume    = {4},
+    number    = {2--4},
+    pages     = {117--660},
+    year      = {2022},
+    publisher = {now publishers},
+}
+
+@book{ireland,
+    title={A Classical Introduction to Modern Number Theory},
+    author={Ireland, K. and Rosen, M.I.},
+    isbn={9780387973296},
+    lccn={90009848},
+    series={Graduate Texts in Mathematics},
+    url={https://books.google.com.ua/books?id=jhAXHuP2y04C},
+    year={1990},
+    publisher={Springer}
+}
+
+@book{guide-to-ec,
+	title={Guide to elliptic curve cryptography},
+	author={Hankerson, Darrel and Menezes, Alfred J and Vanstone, Scott},
+	year={2004},
+	publisher={Springer Science \& Business Media}
+}
